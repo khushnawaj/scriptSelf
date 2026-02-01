@@ -1,0 +1,237 @@
+const Note = require('../models/Note');
+const fs = require('fs');
+const pdf = require('pdf-parse');
+
+// @desc      Get all notes
+// @route     GET /api/v1/notes
+// @access    Private
+exports.getNotes = async (req, res, next) => {
+  try {
+    let query;
+
+    if (req.query.public === 'true') {
+      // Fetch all public notes
+      query = Note.find({ isPublic: true })
+        .populate({ path: 'category', select: 'name slug' })
+        .populate({ path: 'user', select: 'username avatar' });
+    } else {
+      // Fetch USER's notes (private + public)
+      query = Note.find({ user: req.user.id })
+        .populate({ path: 'category', select: 'name slug' });
+    }
+
+    // Search Support
+    if (req.query.search) {
+      const regex = new RegExp(req.query.search, 'i');
+      query = query.find({
+        $or: [
+          { title: regex },
+          { tags: { $in: [regex] } },
+          { searchableText: regex }
+        ]
+      });
+    }
+
+    // Default Sorting
+    if (req.query.sort) {
+      const sortBy = req.query.sort.split(',').join(' ');
+      query = query.sort(sortBy);
+    }
+
+    // Sort by pinned first, then newest
+    query = query.sort('-isPinned -createdAt');
+
+    const notes = await query;
+
+    res.status(200).json({
+      success: true,
+      count: notes.length,
+      data: notes
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+// @desc      Get single note
+// @route     GET /api/v1/notes/:id
+// @access    Private / Public (if public)
+exports.getNote = async (req, res, next) => {
+  try {
+    const note = await Note.findById(req.params.id)
+      .populate({ path: 'category', select: 'name' })
+      .populate({ path: 'relatedNotes', select: 'title' })
+      .populate({ path: 'user', select: 'username avatar bio socialLinks' });
+
+    if (!note) {
+      return res.status(404).json({ success: false, error: `No note found with id ${req.params.id}` });
+    }
+
+    if (!note.isPublic && note.user._id.toString() !== req.user.id) {
+      return res.status(403).json({ success: false, error: `Not authorized to view this private note` });
+    }
+
+    res.status(200).json({
+      success: true,
+      data: note
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+// @desc      Create note
+// @route     POST /api/v1/notes
+exports.createNote = async (req, res, next) => {
+  try {
+    req.body.user = req.user.id;
+
+    if (req.params.categoryId) req.body.category = req.params.categoryId;
+
+    if (req.file) {
+      req.body.attachment = {
+        path: req.file.path, // Cloudinary URL
+        originalName: req.file.originalname,
+        mimeType: req.file.mimetype
+      };
+      req.body.attachmentUrl = req.file.path;
+    }
+
+    // Ensure title exists since it is required in the Model
+    if (!req.body.title) req.body.title = "Untitled Note";
+
+    const note = await Note.create(req.body);
+
+    res.status(201).json({
+      success: true,
+      data: note
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+// @desc      Update note
+// @route     PUT /api/v1/notes/:id
+exports.updateNote = async (req, res, next) => {
+  try {
+    let note = await Note.findById(req.params.id);
+
+    if (!note) {
+      return res.status(404).json({ success: false, error: `No note with id ${req.params.id}` });
+    }
+
+    if (note.user.toString() !== req.user.id) {
+      return res.status(403).json({ success: false, error: `Not authorized to update this note` });
+    }
+
+    if (req.body.content || req.body.codeSnippet) {
+      if ((req.body.content && req.body.content !== note.content) || (req.body.codeSnippet && req.body.codeSnippet !== note.codeSnippet)) {
+        await Note.updateOne(
+          { _id: req.params.id },
+          {
+            $push: {
+              history: {
+                content: note.content,
+                codeSnippet: note.codeSnippet,
+                updatedAt: new Date()
+              }
+            }
+          }
+        );
+      }
+    }
+
+    if (req.file) {
+      req.body.attachment = {
+        path: req.file.path, // Cloudinary URL
+        originalName: req.file.originalname,
+        mimeType: req.file.mimetype
+      };
+      req.body.attachmentUrl = req.file.path;
+    }
+
+    note = await Note.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+      runValidators: true
+    });
+
+    res.status(200).json({
+      success: true,
+      data: note
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+// @desc      Delete note
+// @route     DELETE /api/v1/notes/:id
+exports.deleteNote = async (req, res, next) => {
+  try {
+    const note = await Note.findById(req.params.id);
+
+    if (!note) {
+      return res.status(404).json({ success: false, error: `No note found` });
+    }
+
+    if (note.user.toString() !== req.user.id) {
+      return res.status(403).json({ success: false, error: `Not authorized to delete this note` });
+    }
+
+    await note.deleteOne();
+
+    res.status(200).json({
+      success: true,
+      data: {}
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+// @desc      Export notes as Markdown Bundle (ZIP)
+// @route     GET /api/v1/notes/export
+// @access    Private
+exports.exportNotes = async (req, res, next) => {
+  const archiver = require('archiver');
+
+  try {
+    const archive = archiver('zip', {
+      zlib: { level: 9 }
+    });
+
+    res.attachment('notes-export.zip');
+    archive.pipe(res);
+
+    let query = { user: req.user.id };
+
+    if (req.query.category) {
+      query.category = req.query.category;
+    }
+
+    const notes = await Note.find(query).populate('category');
+
+    for (const note of notes) {
+      const safeTitle = note.title.replace(/[^a-z0-9]/gi, '_').toLowerCase();
+      const filename = `${note.category?.name || 'Uncategorized'}/${safeTitle}.md`;
+
+      let fileContent = `# ${note.title}\n\n`;
+      fileContent += `**Category:** ${note.category?.name}\n`;
+      fileContent += `**Tags:** ${note.tags.join(', ')}\n`;
+      if (note.videoUrl) fileContent += `**Video Tutorial:** ${note.videoUrl}\n`;
+      fileContent += `\n## Content\n\n${note.content}\n\n`;
+
+      if (note.codeSnippet) {
+        fileContent += `## Code Snippet\n\n\`\`\`javascript\n${note.codeSnippet}\n\`\`\`\n`;
+      }
+
+      archive.append(fileContent, { name: filename });
+    }
+
+    await archive.finalize();
+
+  } catch (err) {
+    next(err);
+  }
+};

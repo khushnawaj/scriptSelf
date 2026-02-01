@@ -1,0 +1,241 @@
+@import "tailwindcss";
+
+@plugin "tailwindcss-animate";
+@plugin "@tailwindcss/typography";
+
+@theme {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --radius-lg: 0.5rem;
+  --radius-md: calc(0.5rem - 2px);
+  --radius-sm: calc(0.5rem - 4px);
+  
+  --font-sans: 'Inter', system-ui, sans-serif;
+}
+
+/* Base Variables - Light Mode */
+:root {
+  --background: hsl(180 20% 99%);
+  --foreground: #092327;
+
+  --card: hsl(0 0% 100%);
+  --card-foreground: #092327;
+
+  --popover: hsl(0 0% 100%);
+  --popover-foreground: #092327;
+
+  --primary: #0B5351;
+  --primary-foreground: hsl(0 0% 98%);
+
+  --secondary: hsl(180 10% 96%);
+  --secondary-foreground: #0B5351;
+
+  --muted: hsl(180 10% 96%);
+  --muted-foreground: hsl(180 15% 40%);
+
+  --accent: hsl(178 30% 95%);
+  --accent-foreground: #0B5351;
+
+  --destructive: #3C0919;
+  --destructive-foreground: hsl(0 0% 98%);
+
+  --border: hsl(180 10% 90%);
+  --input: hsl(180 10% 90%);
+  --ring: #0B5351;
+}
+
+/* Dark Mode Variables */
+.dark {
+  --background: hsl(224 71% 4%);
+  --foreground: hsl(210 40% 98%);
+
+  --card: hsl(222 47% 6%);
+  --card-foreground: hsl(210 40% 98%);
+
+  --popover: hsl(224 71% 4%);
+  --popover-foreground: hsl(213 31% 91%);
+
+  --primary: hsl(212 100% 60%);
+  --primary-foreground: hsl(222.2 47.4% 11.2%);
+
+  --secondary: hsl(217.2 32.6% 17.5%);
+  --secondary-foreground: hsl(210 40% 98%);
+
+  --muted: hsl(217.2 32.6% 17.5%);
+  --muted-foreground: hsl(215 20.2% 65.1%);
+
+  --accent: hsl(217.2 32.6% 17.5%);
+  --accent-foreground: hsl(210 40% 98%);
+
+  --destructive: hsl(0 62.8% 30.6%);
+  --destructive-foreground: hsl(210 40% 98%);
+
+  --border: hsl(217.2 32.6% 17.5%);
+  --input: hsl(217.2 32.6% 17.5%);
+  --ring: hsl(212 100% 60%);
+}
+
+@layer base {
+  * {
+    border-color: var(--border);
+  }
+  
+  html {
+     font-size: 14px;
+     scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: var(--background);
+    color: var(--foreground);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Custom Scrollbar */
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: var(--muted-foreground);
+    border: 3px solid var(--background);
+    border-radius: 10px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--primary);
+  }
+
+  input, textarea, select {
+    transition: all 0.2s ease;
+  }
+
+  input:focus, textarea:focus, select:focus {
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--primary) 20%, transparent);
+  }
+}
+
+/* Custom Premium Button Styles (Vanilla CSS to avoid Tailwind v4 apply issues) */
+.btn-premium-primary, 
+.btn-premium-secondary, 
+.btn-premium-outline, 
+.btn-premium-danger {
+  position: relative;
+  overflow: hidden;
+  padding: 0.75rem 1.5rem;
+  border-radius: 1rem;
+  font-weight: 700;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  box-shadow: 0 4px 12px -2px rgba(0, 0, 0, 0.1);
+}
+
+.btn-premium-primary:hover, 
+.btn-premium-secondary:hover, 
+.btn-premium-outline:hover, 
+.btn-premium-danger:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+.btn-premium-primary:active, 
+.btn-premium-secondary:active, 
+.btn-premium-outline:active, 
+.btn-premium-danger:active {
+  transform: scale(0.95);
+}
+
+.btn-premium-primary {
+  background-color: var(--primary);
+  color: var(--primary-foreground);
+  border: none;
+}
+
+.btn-premium-secondary {
+  background-color: var(--muted);
+  color: var(--muted-foreground);
+  border: none;
+}
+.btn-premium-secondary:hover {
+  background-color: color-mix(in srgb, var(--muted) 80%, white);
+  color: var(--foreground);
+}
+
+.btn-premium-outline {
+  background-color: transparent;
+  border: 1px solid var(--border);
+  color: var(--foreground);
+}
+.btn-premium-outline:hover {
+  background-color: var(--muted);
+  border-color: transparent;
+}
+
+.btn-premium-danger {
+  background-color: var(--destructive);
+  color: var(--destructive-foreground);
+  border: none;
+  box-shadow: 0 4px 12px -2px rgba(220, 38, 38, 0.2);
+}
+
+.btn-premium-ghost {
+  position: relative;
+  overflow: hidden;
+  padding: 0.5rem 1rem;
+  border-radius: 0.75rem;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  background-color: transparent;
+  color: var(--muted-foreground);
+  border: none;
+}
+
+.btn-premium-ghost:hover {
+  background-color: var(--muted);
+  color: var(--foreground);
+}
+
+.btn-premium-ghost:active {
+  transform: scale(0.95);
+}
