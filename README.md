@@ -69,3 +69,28 @@
 ---
 
 Built with ❤️ for the Developer Community.
+
+---
+
+## 🚀 Deployment
+
+### Backend (Render / Heroku)
+1. Set the **Build Command** to `npm install`.
+2. Set the **Start Command** to `npm start`.
+3. Add the following **Environment Variables**:
+   - `NODE_ENV`: `production`
+   - `MONGO_URI`: Your MongoDB Atlas connection string.
+   - `JWT_SECRET`: A long random string.
+   - `EMAIL_USER`: Your Gmail address.
+   - `EMAIL_PASS`: Your Gmail App Password.
+   - `CLOUDINARY_CLOUD_NAME`: Your Cloudinary Cloud Name.
+   - `CLOUDINARY_API_KEY`: Your Cloudinary API Key.
+   - `CLOUDINARY_API_SECRET`: Your Cloudinary API Secret.
+   - `CLIENT_URL`: The URL of your deployed frontend (e.g., `https://script-shelf.vercel.app`).
+
+### Frontend (Vercel)
+1. Connect your repository to Vercel.
+2. The **Framework Preset** should be `Vite`.
+3. Add the following **Environment Variable**:
+   - `VITE_API_URL`: The URL of your deployed backend (e.g., `https://scriptshelf-api.onrender.com/api/v1`).
+4. Vercel will automatically use the `vercel.json` provided in the `client` folder for routing.
