@@ -74,10 +74,11 @@ Built with ❤️ for the Developer Community.
 
 ## 🚀 Deployment
 
-### Backend (Render / Heroku)
-1. Set the **Build Command** to `npm install`.
-2. Set the **Start Command** to `npm start`.
-3. Add the following **Environment Variables**:
+### Backend (Render)
+1. Set the **Root Directory** to `server`. (Crucial! Render needs to know where `package.json` is).
+2. Set the **Build Command** to `npm install`.
+3. Set the **Start Command** to `npm start`.
+4. Add the following **Environment Variables**:
    - `NODE_ENV`: `production`
    - `MONGO_URI`: Your MongoDB Atlas connection string.
    - `JWT_SECRET`: A long random string.
