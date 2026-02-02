@@ -17,7 +17,8 @@ import {
     Plus,
     Trash2,
     Code2,
-    Terminal
+    Terminal,
+    ShieldCheck
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import Spinner from '../components/Spinner';
@@ -128,8 +129,13 @@ const Profile = () => {
                 <div className="flex-1 space-y-4">
                     <div className="flex flex-col sm:flex-row justify-between items-start gap-4">
                         <div>
-                            <h1 className="text-[34px] font-normal text-foreground leading-tight">
+                            <h1 className="text-[34px] font-normal text-foreground leading-tight flex items-center gap-3">
                                 {user?.username}
+                                {user?.role === 'admin' && (
+                                    <span className="bg-primary/10 text-primary text-[11px] font-bold px-2 py-1 rounded-[3px] flex items-center gap-1 border border-primary/20">
+                                        <ShieldCheck size={14} /> ADMIN SYSTEM ACCESS
+                                    </span>
+                                )}
                             </h1>
                             <div className="flex flex-wrap gap-4 text-[13px] text-muted-foreground mt-2">
                                 <span className="flex items-center gap-1"><Calendar size={14} /> Registered {new Date(user?.createdAt).toLocaleDateString()}</span>

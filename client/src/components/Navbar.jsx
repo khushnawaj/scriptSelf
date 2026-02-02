@@ -13,6 +13,7 @@ import {
     Search,
     Inbox,
     Trophy,
+    ShieldCheck,
     HelpCircle,
     Menu
 } from 'lucide-react';
@@ -121,12 +122,24 @@ const Navbar = ({ onMenuClick }) => {
                                             className="absolute right-0 top-full mt-2 w-48 bg-card border border-border shadow-lg py-1 z-[100] text-[13px] rounded-[3px]"
                                         >
                                             <div className="px-4 py-2 border-b border-border mb-1">
-                                                <p className="font-bold text-foreground">{user.username}</p>
+                                                <div className="flex items-center gap-2">
+                                                    <p className="font-bold text-foreground">{user.username}</p>
+                                                    {user.role === 'admin' && (
+                                                        <span className="bg-primary/20 text-primary text-[9px] font-bold px-1.5 py-0.5 rounded-[2px] flex items-center gap-0.5">
+                                                            <ShieldCheck size={10} /> ADMIN
+                                                        </span>
+                                                    )}
+                                                </div>
                                                 <p className="text-[11px] text-muted-foreground truncate">{user.email}</p>
                                             </div>
                                             <Link to="/profile" onClick={() => setIsProfileOpen(false)} className="block px-4 py-1.5 text-foreground hover:bg-muted/50">
                                                 Profile
                                             </Link>
+                                            {user.role === 'admin' && (
+                                                <Link to="/admin" onClick={() => setIsProfileOpen(false)} className="block px-4 py-1.5 text-foreground hover:bg-muted/50 border-t border-border mt-1">
+                                                    Admin Center
+                                                </Link>
+                                            )}
                                             <button onClick={handleLogout} className="w-full text-left px-4 py-1.5 text-foreground hover:bg-muted/50">
                                                 Log out
                                             </button>
