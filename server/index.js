@@ -45,7 +45,9 @@ if (process.env.NODE_ENV === 'development') {
 app.use(mongoSanitize());
 
 // Set security headers
-app.use(helmet());
+app.use(helmet({
+  crossOriginResourcePolicy: false,
+}));
 
 // Prevent XSS attacks
 app.use(xss());
@@ -58,12 +60,31 @@ const allowedOrigins = [
   'http://localhost:5173',
   'http://localhost:5174',
   'http://localhost:5175',
-  process.env.CLIENT_URL
 ].filter(Boolean);
 
+if (process.env.CLIENT_URL) {
+  // Normalize by removing trailing slash
+  const clientUrl = process.env.CLIENT_URL.replace(/\/$/, "");
+  allowedOrigins.push(clientUrl);
+  // Also push with trailing slash just in case
+  allowedOrigins.push(`${clientUrl}/`);
+}
+
 app.use(cors({
-  origin: allowedOrigins,
-  credentials: true
+  origin: function (origin, callback) {
+    // Allow requests with no origin (like mobile apps/Postman)
+    if (!origin) return callback(null, true);
+
+    if (allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      console.log('Blocked by CORS:', origin);
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
 }));
 
 // Mount routers
