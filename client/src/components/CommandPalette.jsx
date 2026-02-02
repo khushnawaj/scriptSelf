@@ -1,12 +1,9 @@
 import { useState, useEffect } from "react";
-
-import { Search, Hash, FileCode, ArrowRight } from "lucide-react"; // Install @headlessui/react for accessible modal if needed or use simple div
-// We will use a simple fixed overlay for now to avoid installing new UI libs unless user wanted.
-// For "Senior-Level", headless UI or Radix is robust. I will use a simple accessible div implementation to be safe on dependencies.
-
+import { Search, Hash, FileCode, ArrowRight, Command, Plus, HelpCircle, FileText } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-import api from '../utils/api'; // Direct API call for search
+import api from '../utils/api';
+import { motion, AnimatePresence } from 'framer-motion';
 
 export default function CommandPalette() {
     const [isOpen, setIsOpen] = useState(false);
@@ -14,9 +11,9 @@ export default function CommandPalette() {
     const [results, setResults] = useState([]);
     const navigate = useNavigate();
 
-    // Toggle with CMD+K / CTRL+K
     useEffect(() => {
         const handleKeyDown = (e) => {
+            // CTRL+K search shortcut
             if ((e.metaKey || e.ctrlKey) && e.key === "k") {
                 e.preventDefault();
                 setIsOpen((prev) => !prev);
@@ -29,110 +26,137 @@ export default function CommandPalette() {
         return () => window.removeEventListener("keydown", handleKeyDown);
     }, []);
 
-    // Debounced Search
     useEffect(() => {
-        if (!isOpen || !query) {
+        if (!isOpen) {
+            setQuery("");
             setResults([]);
             return;
         }
 
         const timer = setTimeout(async () => {
-            try {
-                // Assuming we use the existing GET /notes?search=...
-                const { data } = await api.get(`/notes?search=${query}`);
-                setResults(data.data.slice(0, 5)); // Limit to 5
-            } catch (err) {
-                console.error(err);
+            if (!query.trim()) {
+                setResults([]);
+                return;
             }
-        }, 300);
+            try {
+                const { data } = await api.get(`/notes?search=${query}`);
+                setResults(data.data.slice(0, 5));
+            } catch (err) {
+                console.error("Search error:", err);
+            }
+        }, 150);
 
         return () => clearTimeout(timer);
     }, [query, isOpen]);
 
-    if (!isOpen) return null;
-
     return (
-        <div className="fixed inset-0 z-[100] bg-black/50 backdrop-blur-sm flex items-start justify-center pt-[20vh] animate-in fade-in duration-200" onClick={() => setIsOpen(false)}>
-            <div
-                className="bg-card w-full max-w-lg rounded-xl shadow-2xl border border-border overflow-hidden animate-in zoom-in-95 duration-200"
-                onClick={e => e.stopPropagation()}
-            >
-                {/* Search Input */}
-                <div className="flex items-center gap-3 px-4 py-3 border-b border-border">
-                    <Search className="text-muted-foreground" size={20} />
-                    <input
-                        className="flex-1 bg-transparent border-none outline-none text-lg text-foreground placeholder:text-muted-foreground"
-                        placeholder="Type a command or search..."
-                        autoFocus
-                        value={query}
-                        onChange={(e) => setQuery(e.target.value)}
+        <AnimatePresence>
+            {isOpen && (
+                <div className="fixed inset-0 z-[1000] flex items-start justify-center pt-[10vh] px-4">
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="fixed inset-0 bg-black/40 backdrop-blur-[2px]"
+                        onClick={() => setIsOpen(false)}
                     />
-                    <kbd className="hidden sm:inline-block pointer-events-none h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground opacity-100">
-                        <span className="text-xs">ESC</span>
-                    </kbd>
-                </div>
 
-                {/* Results List */}
-                <div className="max-h-[300px] overflow-y-auto p-2 space-y-1">
-                    {query === "" && (
-                        <div className="px-3 py-2 text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                            Suggestions
-                        </div>
-                    )}
-
-                    {query === "" && (
-                        <>
-                            <button onClick={() => { navigate('/notes/new'); setIsOpen(false); }} className="w-full flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-muted text-left text-sm transition-colors group">
-                                <FileCode size={16} className="text-primary" />
-                                <span>Create New Note</span>
-                                <ArrowRight size={14} className="ml-auto opacity-0 group-hover:opacity-100 transition-opacity" />
-                            </button>
-                            <button onClick={() => { navigate('/dashboard'); setIsOpen(false); }} className="w-full flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-muted text-left text-sm transition-colors group">
-                                <Search size={16} className="text-primary" />
-                                <span>Go to Dashboard</span>
-                            </button>
-                        </>
-                    )}
-
-                    {results.map((note) => (
-                        <button
-                            key={note._id}
-                            onClick={() => { navigate(`/notes/${note._id}`); setIsOpen(false); }}
-                            className="w-full flex items-start gap-3 px-3 py-2 rounded-lg hover:bg-muted text-left transition-colors group"
-                        >
-                            <FileCode size={18} className="text-blue-500 mt-0.5" />
-                            <div className="flex-1 overflow-hidden">
-                                <div className="text-sm font-medium truncate">{note.title}</div>
-                                <div className="flex items-center gap-2 mt-1">
-                                    <span className="text-xs text-muted-foreground bg-secondary px-1.5 py-0.5 rounded">{note.category?.name}</span>
-                                    {note.tags.slice(0, 2).map(tag => (
-                                        <span key={tag} className="text-xs text-muted-foreground flex items-center gap-0.5">
-                                            <Hash size={10} /> {tag}
-                                        </span>
-                                    ))}
-                                </div>
+                    <motion.div
+                        initial={{ opacity: 0, scale: 0.98, y: -10 }}
+                        animate={{ opacity: 1, scale: 1, y: 0 }}
+                        exit={{ opacity: 0, scale: 0.98, y: -10 }}
+                        className="bg-card w-full max-w-[600px] rounded-[3px] shadow-[0_12px_40px_rgba(0,0,0,0.3)] border border-border overflow-hidden relative"
+                        onClick={e => e.stopPropagation()}
+                    >
+                        {/* Search Input - SO Field Style */}
+                        <div className="flex items-center gap-3 px-4 py-4 bg-secondary border-b border-border">
+                            <Search className="text-muted-foreground" size={20} />
+                            <input
+                                className="flex-1 bg-transparent border-none outline-none text-[16px] text-foreground placeholder:text-muted-foreground/50"
+                                placeholder="Search all records (Ctrl+K)..."
+                                autoFocus
+                                value={query}
+                                onChange={(e) => setQuery(e.target.value)}
+                            />
+                            <div className="flex items-center gap-1.5 shrink-0">
+                                <kbd className="px-1.5 py-0.5 rounded-[3px] border border-border bg-card text-[10px] font-bold text-muted-foreground">ESC</kbd>
                             </div>
-                            <span className="text-xs text-muted-foreground opacity-0 group-hover:opacity-100 self-center">Jump to</span>
-                        </button>
-                    ))}
-
-                    {query && results.length === 0 && (
-                        <div className="px-4 py-8 text-center text-muted-foreground text-sm">
-                            No results found.
                         </div>
-                    )}
-                </div>
 
-                <div className="px-4 py-2 bg-muted/30 border-t border-border flex items-center justify-between text-[10px] text-muted-foreground">
-                    <div className="flex gap-3">
-                        <span><strong>↑↓</strong> to navigate</span>
-                        <span><strong>↵</strong> to select</span>
-                    </div>
-                    <div>
-                        ScriptShelf PRO
-                    </div>
+                        {/* Search Results */}
+                        <div className="max-h-[450px] overflow-y-auto bg-card">
+                            {!query && (
+                                <div className="p-2">
+                                    <div className="px-3 py-2 text-[11px] font-bold text-muted-foreground uppercase tracking-wider">Quick Actions</div>
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-1">
+                                        <button onClick={() => { navigate('/notes/new'); setIsOpen(false); }} className="flex items-center gap-3 px-3 py-3 rounded-[3px] hover:bg-accent text-left text-[14px] text-foreground transition-colors group">
+                                            <Plus size={16} className="text-primary" />
+                                            <span>New Vault Record</span>
+                                        </button>
+                                        <button onClick={() => { navigate('/notes'); setIsOpen(false); }} className="flex items-center gap-3 px-3 py-3 rounded-[3px] hover:bg-accent text-left text-[14px] text-foreground transition-colors group">
+                                            <FileText size={16} className="text-primary" />
+                                            <span>Explore Archive</span>
+                                        </button>
+                                        <button onClick={() => { navigate('/categories'); setIsOpen(false); }} className="flex items-center gap-3 px-3 py-3 rounded-[3px] hover:bg-accent text-left text-[14px] text-foreground transition-colors group">
+                                            <Hash size={16} className="text-primary" />
+                                            <span>Browse Syntax Tags</span>
+                                        </button>
+                                        <button onClick={() => { navigate('/dashboard'); setIsOpen(false); }} className="flex items-center gap-3 px-3 py-3 rounded-[3px] hover:bg-accent text-left text-[14px] text-foreground transition-colors group">
+                                            <Command size={16} className="text-primary" />
+                                            <span>System Metrics</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            )}
+
+                            {results.length > 0 && (
+                                <div className="p-2 border-t border-border mt-2">
+                                    <div className="px-3 py-2 text-[11px] font-bold text-muted-foreground uppercase tracking-wider">Matched Records</div>
+                                    <div className="space-y-1">
+                                        {results.map((note) => (
+                                            <button
+                                                key={note._id}
+                                                onClick={() => { navigate(`/notes/${note._id}`); setIsOpen(false); }}
+                                                className="w-full flex items-center gap-3 px-3 py-3 rounded-[3px] hover:bg-accent text-left transition-all group"
+                                            >
+                                                <div className="w-10 h-10 shrink-0 flex items-center justify-center bg-secondary text-primary rounded-[3px]">
+                                                    <FileCode size={20} />
+                                                </div>
+                                                <div className="flex-1 min-w-0">
+                                                    <div className="text-[15px] font-medium text-link group-hover:text-link-hover truncate transition-colors">{note.title}</div>
+                                                    <div className="flex items-center gap-2 mt-0.5">
+                                                        <span className="so-tag text-[10px] m-0 px-1.5 py-0.5">{note.category?.name || 'GENERIC'}</span>
+                                                        <span className="text-[11px] text-muted-foreground truncate">{note.tags.join(', ')}</span>
+                                                    </div>
+                                                </div>
+                                                <ArrowRight size={14} className="text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
+
+                            {query && results.length === 0 && (
+                                <div className="py-20 text-center">
+                                    <HelpCircle size={48} className="mx-auto text-muted/20 mb-4" />
+                                    <p className="text-[15px] text-muted-foreground">Archive search yield: 0 results for "<span className="font-bold text-foreground">{query}</span>"</p>
+                                </div>
+                            )}
+                        </div>
+
+                        {/* Footer Tips - System Style */}
+                        <div className="px-4 py-3 bg-accent/30 border-t border-primary/20 flex items-center justify-between text-[11px] text-muted-foreground">
+                            <div className="flex gap-4">
+                                <span><span className="font-bold text-foreground">↵</span> to select</span>
+                                <span><span className="font-bold text-foreground">ESC</span> to exit archive</span>
+                            </div>
+                            <div className="flex items-center gap-1.5 font-bold text-primary uppercase tracking-widest">
+                                ScriptShelf Search
+                            </div>
+                        </div>
+                    </motion.div>
                 </div>
-            </div>
-        </div>
+            )}
+        </AnimatePresence>
     );
 }

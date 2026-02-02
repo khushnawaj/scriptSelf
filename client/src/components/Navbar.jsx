@@ -1,62 +1,32 @@
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { logout, reset } from '../features/auth/authSlice';
 import { useTheme } from '../context/ThemeContext';
 import {
-    Search,
-    Menu,
-    X,
     Moon,
     Sun,
     LogOut,
     User,
     Code2,
     ChevronDown,
-    Plus
+    Plus,
+    Search,
+    Inbox,
+    Trophy,
+    HelpCircle,
+    Menu
 } from 'lucide-react';
 import { useState, useRef, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 
-const Navbar = () => {
+const Navbar = ({ onMenuClick }) => {
     const { user } = useSelector((state) => state.auth);
     const { theme, toggleTheme } = useTheme();
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
-    const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isProfileOpen, setIsProfileOpen] = useState(false);
     const profileRef = useRef(null);
-
-    // Default Categories (Mocked for now, or match DB)
-    // Default Categories
-    const defaults = [
-        { name: 'HTML', path: '/notes?category=HTML' },
-        { name: 'CSS', path: '/notes?category=CSS' },
-        { name: 'JavaScript', path: '/notes?category=JavaScript' },
-        { name: 'React', path: '/notes?category=React' },
-        { name: 'SQL', path: '/notes?category=SQL' },
-        { name: 'Python', path: '/notes?category=Python' },
-        { name: 'Java', path: '/notes?category=Java' },
-        { name: 'Node.js', path: '/notes?category=Node.js' },
-        { name: 'C++', path: '/notes?category=Cpp' },
-        { name: 'C#', path: '/notes?category=Csharp' },
-    ];
-
-    // Split for responsive/dropdown
-    const visibleCats = defaults.slice(0, 6);
-    const moreCats = defaults.slice(6);
-    const [isCatsOpen, setIsCatsOpen] = useState(false);
-    const catsRef = useRef(null);
-
-    // Click outside handler for cats
-    useEffect(() => {
-        const handleClickOutside = (event) => {
-            if (catsRef.current && !catsRef.current.contains(event.target)) {
-                setIsCatsOpen(false);
-            }
-        };
-        document.addEventListener("mousedown", handleClickOutside);
-        return () => document.removeEventListener("mousedown", handleClickOutside);
-    }, []);
 
     const handleLogout = () => {
         dispatch(logout());
@@ -64,7 +34,6 @@ const Navbar = () => {
         navigate('/login');
     };
 
-    // Click outside to close profile dropdown
     useEffect(() => {
         const handleClickOutside = (event) => {
             if (profileRef.current && !profileRef.current.contains(event.target)) {
@@ -76,130 +45,100 @@ const Navbar = () => {
     }, []);
 
     return (
-        <nav className="fixed top-0 w-full z-50 bg-background/80 backdrop-blur-md border-b border-border h-16">
-            <div className="max-w-7xl mx-auto px-4 h-full flex items-center justify-between">
+        <nav className="fixed top-0 w-full z-50 bg-secondary border-t-4 border-t-primary border-b border-b-border h-[50px] flex items-center transition-colors">
+            <div className="max-w-[1500px] mx-auto w-full px-4 flex items-center gap-2">
 
-                {/* Logo & Category Links (Desktop) */}
-                <div className="flex items-center gap-8">
-                    <div onClick={() => navigate('/')} className="flex items-center gap-2 cursor-pointer">
-                        <div className="p-1.5 bg-primary rounded-lg text-primary-foreground">
-                            <Code2 size={20} strokeWidth={2.5} />
-                        </div>
-                        <span className="text-xl font-bold tracking-tight">ScriptShelf</span>
-                    </div>
+                {/* Burger Menu for Mobile */}
+                <button
+                    onClick={onMenuClick}
+                    className="p-2 md:hidden text-muted-foreground hover:bg-muted/50 rounded transition-colors"
+                >
+                    <Menu size={20} />
+                </button>
 
-                    <div className="hidden md:flex items-center gap-1">
-                        {visibleCats.map((cat) => (
-                            <button
-                                key={cat.name}
-                                onClick={() => navigate(cat.path)}
-                                className="px-3 py-1.5 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted/50 rounded-md transition-colors"
-                            >
-                                {cat.name}
-                            </button>
-                        ))}
+                {/* Logo */}
+                <Link to="/" className="flex items-center gap-1 shrink-0 px-2 py-1 hover:bg-muted/50 rounded transition-colors">
+                    <Code2 size={24} className="text-primary" />
+                    <span className="text-[18px] font-normal tracking-tight hidden sm:inline text-foreground">
+                        script<span className="font-bold">shelf</span>
+                    </span>
+                </Link>
 
-                        {/* More Dropdown */}
-                        <div className="relative" ref={catsRef}>
-                            <button
-                                onClick={() => setIsCatsOpen(!isCatsOpen)}
-                                className="px-3 py-1.5 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted/50 rounded-md transition-colors flex items-center gap-1"
-                            >
-                                More <ChevronDown size={14} className={isCatsOpen ? 'rotate-180 transition-transform' : 'transition-transform'} />
-                            </button>
+                <Link to="/notes" className="hidden md:flex px-3 py-4 text-[13px] text-muted-foreground hover:bg-muted/50 transition-colors">
+                    Library
+                </Link>
 
-                            {isCatsOpen && (
-                                <div className="absolute left-0 top-full mt-2 w-48 bg-card border border-border rounded-xl shadow-xl py-1 animate-in fade-in slide-in-from-top-2 z-50">
-                                    {moreCats.map(cat => (
-                                        <button
-                                            key={cat.name}
-                                            onClick={() => { navigate(cat.path); setIsCatsOpen(false); }}
-                                            className="w-full text-left px-4 py-2 text-sm text-foreground hover:bg-muted transition-colors"
-                                        >
-                                            {cat.name}
-                                        </button>
-                                    ))}
-                                    <div className="h-px bg-border my-1"></div>
-                                    <button
-                                        onClick={() => { navigate('/categories'); setIsCatsOpen(false); }}
-                                        className="w-full text-left px-4 py-2 text-sm text-primary hover:bg-primary/10 transition-colors flex items-center gap-2 font-medium"
-                                    >
-                                        <Plus size={14} /> Add Category
-                                    </button>
-                                </div>
-                            )}
-                        </div>
+                {/* Search Bar - SO Style */}
+                <div className="flex-1 max-w-[700px] relative px-2 group cursor-pointer" onClick={() => window.dispatchEvent(new KeyboardEvent('keydown', { key: 'k', ctrlKey: true }))}>
+                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground" size={16} />
+                    <div className="w-full bg-background border border-border rounded-[3px] py-1.5 pl-9 pr-4 text-[13px] text-muted-foreground flex justify-between items-center transition-all group-hover:border-primary">
+                        <span>Search your library...</span>
+                        <kbd className="hidden sm:inline-block px-1.5 py-0.5 rounded-[3px] border border-border bg-secondary text-[10px] font-bold">Ctrl+K</kbd>
                     </div>
                 </div>
 
                 {/* Right Actions */}
-                <div className="flex items-center gap-4">
-                    {/* Theme Toggle */}
+                <div className="flex items-center gap-1 ml-auto">
                     <button
                         onClick={toggleTheme}
-                        className="p-2 text-muted-foreground hover:text-foreground hover:bg-muted rounded-full transition-colors"
+                        className="p-2 text-muted-foreground hover:bg-muted/50 rounded transition-colors"
+                        title="Toggle appearance"
                     >
-                        {theme === 'dark' ? <Moon size={20} /> : <Sun size={20} />}
+                        {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
                     </button>
 
-                    {/* Search Trigger (Mobile mostly, or global) */}
-                    <button className="p-2 text-muted-foreground hover:text-foreground hover:bg-muted rounded-full transition-colors">
-                        <Search size={20} />
-                    </button>
-
-                    {/* User Profile Dropdown */}
                     {user ? (
-                        <div className="relative" ref={profileRef}>
-                            <button
-                                onClick={() => setIsProfileOpen(!isProfileOpen)}
-                                className="flex items-center gap-2 hover:bg-muted/50 p-1.5 rounded-full transition-colors"
-                            >
-                                {user.avatar ? (
-                                    <img
-                                        src={user.avatar.startsWith('http') ? user.avatar : `/${user.avatar}`}
-                                        alt={user.username}
-                                        className="w-8 h-8 rounded-full object-cover shadow-sm ring-2 ring-background"
-                                    />
-                                ) : (
-                                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary to-purple-500 text-white flex items-center justify-center text-xs font-bold shadow-sm ring-2 ring-background">
-                                        {user.username.charAt(0).toUpperCase()}
-                                    </div>
-                                )}
-                                <ChevronDown size={14} className={`text-muted-foreground transition-transform ${isProfileOpen ? 'rotate-180' : ''}`} />
+                        <div className="flex items-center gap-1">
+                            <button className="p-2 text-muted-foreground hover:bg-muted/50 rounded transition-colors">
+                                <Inbox size={18} />
+                            </button>
+                            <button className="p-2 text-muted-foreground hover:bg-muted/50 rounded transition-colors">
+                                <Trophy size={18} />
                             </button>
 
-                            {isProfileOpen && (
-                                <div className="absolute right-0 top-full mt-2 w-56 bg-card border border-border rounded-xl shadow-xl py-2 animate-in fade-in slide-in-from-top-2">
-                                    <div className="px-4 py-2 border-b border-border mb-2">
-                                        <p className="text-sm font-semibold">{user.username}</p>
-                                        <p className="text-xs text-muted-foreground truncate">{user.email}</p>
+                            <div className="relative ml-2" ref={profileRef}>
+                                <button
+                                    onClick={() => setIsProfileOpen(!isProfileOpen)}
+                                    className="flex items-center gap-1 p-1 hover:bg-muted/50 rounded transition-colors"
+                                >
+                                    <div className="w-[26px] h-[26px] bg-primary rounded-[3px] flex items-center justify-center text-white text-[12px] font-bold overflow-hidden shadow-sm">
+                                        {user.avatar ? (
+                                            <img src={user.avatar} alt="Avatar" className="w-full h-full object-cover" />
+                                        ) : (
+                                            user.username.charAt(0).toUpperCase()
+                                        )}
                                     </div>
+                                    <ChevronDown size={12} className="text-muted-foreground" />
+                                </button>
 
-                                    <button onClick={() => { navigate('/profile'); setIsProfileOpen(false); }} className="w-full text-left px-4 py-2 text-sm text-foreground hover:bg-muted flex items-center gap-2">
-                                        <User size={16} /> My Profile
-                                    </button>
-                                    <button onClick={() => { navigate('/dashboard'); setIsProfileOpen(false); }} className="w-full text-left px-4 py-2 text-sm text-foreground hover:bg-muted flex items-center gap-2">
-                                        <Code2 size={16} /> Dashboard
-                                    </button>
-                                    <button onClick={() => { navigate('/notes'); setIsProfileOpen(false); }} className="w-full text-left px-4 py-2 text-sm text-foreground hover:bg-muted flex items-center gap-2">
-                                        <Code2 size={16} /> My Notes
-                                    </button>
-
-                                    <div className="h-px bg-border my-2"></div>
-
-                                    <button onClick={() => handleLogout()} className="w-full text-left px-4 py-2 text-sm text-destructive hover:bg-destructive/10 flex items-center gap-2">
-                                        <LogOut size={16} /> Logout
-                                    </button>
-                                </div>
-                            )}
+                                <AnimatePresence>
+                                    {isProfileOpen && (
+                                        <motion.div
+                                            initial={{ opacity: 0, y: 10 }}
+                                            animate={{ opacity: 1, y: 0 }}
+                                            exit={{ opacity: 0, y: 10 }}
+                                            className="absolute right-0 top-full mt-2 w-48 bg-card border border-border shadow-lg py-1 z-[100] text-[13px] rounded-[3px]"
+                                        >
+                                            <div className="px-4 py-2 border-b border-border mb-1">
+                                                <p className="font-bold text-foreground">{user.username}</p>
+                                                <p className="text-[11px] text-muted-foreground truncate">{user.email}</p>
+                                            </div>
+                                            <Link to="/profile" onClick={() => setIsProfileOpen(false)} className="block px-4 py-1.5 text-foreground hover:bg-muted/50">
+                                                Profile
+                                            </Link>
+                                            <button onClick={handleLogout} className="w-full text-left px-4 py-1.5 text-foreground hover:bg-muted/50">
+                                                Log out
+                                            </button>
+                                        </motion.div>
+                                    )}
+                                </AnimatePresence>
+                            </div>
                         </div>
                     ) : (
-                        <button
-                            onClick={() => navigate('/login')}
-                            className="btn-premium-primary px-6"
-                        >
-                            Login
-                        </button>
+                        <div className="flex items-center gap-2">
+                            <Link to="/login" className="px-3 py-1.5 text-[13px] text-primary hover:bg-primary/10 rounded transition-colors">Log in</Link>
+                            <Link to="/register" className="so-btn so-btn-primary px-3 py-1.5">Sign up</Link>
+                        </div>
                     )}
                 </div>
             </div>

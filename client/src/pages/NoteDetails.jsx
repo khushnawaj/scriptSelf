@@ -1,22 +1,28 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { getNotes, deleteNote } from '../features/notes/noteSlice';
 import ReactMarkdown from 'react-markdown';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import { vscDarkPlus, prism } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import remarkGfm from 'remark-gfm';
+import { useTheme } from '../context/ThemeContext';
 import {
     ArrowLeft,
     Edit,
     Trash2,
-    Calendar,
-    Tag,
-    Folder,
-    ExternalLink,
-    Files,
-    Link as LinkIcon,
-    PlayCircle
+    Share2,
+    ChevronUp,
+    ChevronDown,
+    Bookmark,
+    History,
+    MessageSquare,
+    Video,
+    Clock,
+    User,
+    Copy,
+    Check,
+    List
 } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import Spinner from '../components/Spinner';
@@ -25,11 +31,11 @@ const NoteDetails = () => {
     const { id } = useParams();
     const navigate = useNavigate();
     const dispatch = useDispatch();
+    const { theme } = useTheme();
 
     const { notes, isLoading } = useSelector((state) => state.notes);
-
-    // Find the specific note from the store
     const note = notes.find((n) => n._id === id);
+    const [copiedIndex, setCopiedIndex] = useState(null);
 
     useEffect(() => {
         if (!note) {
@@ -37,250 +43,194 @@ const NoteDetails = () => {
         }
     }, [id, note, dispatch]);
 
+    const handleCopy = (text, index) => {
+        navigator.clipboard.writeText(text);
+        setCopiedIndex(index);
+        toast.success('Code copied to clipboard');
+        setTimeout(() => setCopiedIndex(null), 2000);
+    };
+
     const handleDelete = async () => {
-        if (window.confirm('Delete this note permanently?')) {
+        if (window.confirm('Are you sure you want to delete this record?')) {
             await dispatch(deleteNote(id));
-            toast.success('Note deleted');
+            toast.success('Record deleted');
             navigate('/notes');
         }
     };
 
-    const copyToClipboard = (text) => {
-        if (!text) return;
-        navigator.clipboard.writeText(text);
-        toast.success('Copied to clipboard');
-    };
-
-
-
     if (isLoading || !note) {
-        return <Spinner fullPage message="Fetching note details..." />;
+        return <Spinner />;
     }
 
-    // Helper to extract Table of Contents from Markdown
-    const extractToC = (content) => {
-        const lines = content.split('\n');
-        return lines
-            .filter(line => line.startsWith('#'))
-            .map(line => {
-                const level = line.match(/^#+/)[0].length;
-                const text = line.replace(/^#+\s*/, '');
-                return { level, text };
-            });
-    };
-
-    const toc = extractToC(note.content);
-
     return (
-        <div className="max-w-6xl mx-auto flex flex-col lg:flex-row gap-8 pb-20 px-4">
-            {/* Sidebar for ToC (DX Enhancement) */}
-            <aside className="lg:w-64 hidden lg:block sticky top-24 h-fit max-h-[calc(100vh-120px)] overflow-y-auto">
-                <div className="p-4 bg-card/50 backdrop-blur border border-border rounded-xl">
-                    <h3 className="text-sm font-bold uppercase text-primary mb-4 flex items-center gap-2">
-                        <Files size={14} /> Contents
-                    </h3>
-                    <nav className="space-y-2">
-                        {toc.length > 0 ? toc.map((item, idx) => (
-                            <div
-                                key={idx}
-                                className={`text-sm text-muted-foreground hover:text-primary cursor-pointer transition-colors truncate ${item.level === 1 ? 'font-bold' : item.level === 2 ? 'pl-3 border-l' : 'pl-6 border-l font-light'}`}
-                            >
-                                {item.text}
-                            </div>
-                        )) : (
-                            <p className="text-xs italic text-muted-foreground">No headers found</p>
-                        )}
-                    </nav>
+        <div className="space-y-4 max-w-[1100px] animate-in fade-in duration-300">
+            {/* Header Section */}
+            <div className="border-b border-border pb-6 mb-6">
+                <div className="flex flex-col sm:flex-row justify-between items-start gap-4 mb-4">
+                    <h1 className="text-[32px] font-normal text-foreground leading-tight tracking-tight">
+                        {note.title}
+                    </h1>
+                    <div className="flex gap-2 shrink-0">
+                        <Link to={`/notes/edit/${id}`} className="so-btn border border-border hover:bg-muted/50 text-foreground transition-all">
+                            <Edit size={14} /> Edit
+                        </Link>
+                        <Link to="/notes/new" className="so-btn so-btn-primary py-2.5 px-3">
+                            Post new record
+                        </Link>
+                    </div>
                 </div>
-            </aside>
 
-            {/* Main Content */}
-            <div className="flex-1 space-y-6 animate-fade-in min-w-0">
-                {/* Header Actions */}
-                <div className="flex items-center justify-between">
-                    <button
-                        onClick={() => navigate(-1)}
-                        className="btn-premium-secondary px-4 py-2"
-                    >
-                        <ArrowLeft size={18} /> Back
+                <div className="flex flex-wrap gap-6 text-[13px] text-muted-foreground">
+                    <span className="flex items-center gap-1.5 border-r border-border pr-6 last:border-0">
+                        <span className="font-normal opacity-60">Recorded</span>
+                        <span className="text-foreground font-medium">{new Date(note.createdAt).toLocaleDateString()}</span>
+                    </span>
+                    <span className="flex items-center gap-1.5 border-r border-border pr-6 last:border-0">
+                        <span className="font-normal opacity-60">Status</span>
+                        <span className="text-primary font-bold uppercase tracking-widest text-[11px]">{note.isPublic ? 'PUBLIC' : 'VAULT'}</span>
+                    </span>
+                    <span className="flex items-center gap-1.5">
+                        <span className="font-normal opacity-60">Collection</span>
+                        <span className="text-link font-medium">{note.category?.name || 'GENERIC'}</span>
+                    </span>
+                </div>
+            </div>
+
+            <div className="flex flex-col lg:flex-row gap-8">
+                {/* Visual Metadata Column */}
+                <div className="flex lg:flex-col items-center gap-2 pt-1">
+                    <button className="p-3 border border-border rounded-full hover:bg-accent/50 transition-colors text-muted-foreground group">
+                        <ChevronUp size={28} className="group-hover:text-primary transition-colors" />
+                    </button>
+                    <span className="text-[24px] font-bold text-foreground">1</span>
+                    <button className="p-3 border border-border rounded-full hover:bg-accent/50 transition-colors text-muted-foreground group">
+                        <ChevronDown size={28} className="group-hover:text-primary transition-colors" />
                     </button>
 
-                    <div className="flex items-center gap-2">
-                        <Link
-                            to={`/notes/edit/${id}`}
-                            className="btn-premium-outline px-4 py-2"
-                        >
-                            <Edit size={16} /> Edit
-                        </Link>
-                        <button
-                            onClick={handleDelete}
-                            className="btn-premium-danger px-4 py-2"
-                        >
-                            <Trash2 size={16} /> Delete
+                    <div className="flex lg:flex-col gap-4 mt-6">
+                        <button className="p-2 text-muted-foreground/30 hover:text-primary transition-all scale-110">
+                            <Bookmark size={20} />
+                        </button>
+                        <button className="p-2 text-muted-foreground/30 hover:text-muted-foreground transition-all scale-110">
+                            <History size={20} />
                         </button>
                     </div>
                 </div>
 
-                {/* Hero Section */}
-                <div className="space-y-4">
-                    <h1 className="text-4xl font-extrabold tracking-tight text-foreground">{note.title}</h1>
+                {/* Main Content Area */}
+                <div className="flex-1 min-w-0">
+                    <article className="prose prose-zinc dark:prose-invert max-w-none prose-p:text-[16px] prose-p:leading-[1.7] text-foreground font-normal">
+                        <ReactMarkdown
+                            remarkPlugins={[remarkGfm]}
+                            components={{
+                                code({ node, inline, className, children, ...props }) {
+                                    const match = /language-(\w+)/.exec(className || '')
+                                    const codeString = String(children).replace(/\n$/, '');
+                                    const blockIndex = node ? node.position?.start.line : 0;
 
-                    <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
-                        <span className="flex items-center gap-1.5 bg-muted px-2.5 py-1 rounded-md">
-                            <Folder size={14} className="text-primary" />
-                            {note.category?.name || 'Uncategorized'}
-                        </span>
-                        <span className="flex items-center gap-1.5">
-                            <Calendar size={14} />
-                            {new Date(note.createdAt).toLocaleDateString(undefined, { dateStyle: 'medium' })}
-                        </span>
-                        {note.tags && note.tags.length > 0 && (
-                            <span className="flex items-center gap-1.5">
-                                <Tag size={14} />
-                                {note.tags.map(t => `#${t}`).join(', ')}
-                            </span>
-                        )}
+                                    return !inline && match ? (
+                                        <div className="relative group my-8">
+                                            {/* Code Block Header */}
+                                            <div className="flex items-center justify-between px-4 py-2 bg-[#f6f6f6] dark:bg-[#1d1d1d] border border-border border-b-0 rounded-t-[3px]">
+                                                <div className="flex items-center gap-2">
+                                                    <FileCode size={14} className="text-muted-foreground" />
+                                                    <span className="text-[11px] font-bold text-muted-foreground uppercase tracking-widest">{match[1]}</span>
+                                                </div>
+                                                <button
+                                                    onClick={() => handleCopy(codeString, blockIndex)}
+                                                    className="flex items-center gap-1.5 text-[11px] font-medium text-muted-foreground hover:text-primary transition-colors"
+                                                >
+                                                    {copiedIndex === blockIndex ? <Check size={12} className="text-primary" /> : <Copy size={12} />}
+                                                    {copiedIndex === blockIndex ? 'Copied!' : 'Copy'}
+                                                </button>
+                                            </div>
+                                            <SyntaxHighlighter
+                                                style={theme === 'dark' ? vscDarkPlus : prism}
+                                                language={match[1]}
+                                                PreTag="div"
+                                                className="!rounded-b-[3px] !rounded-t-0 !m-0 !bg-[#f6f6f6] dark:!bg-[#1d1d1d] !p-6 !border !border-border !text-[14px] !leading-relaxed"
+                                                {...props}
+                                            >
+                                                {codeString}
+                                            </SyntaxHighlighter>
+                                        </div>
+                                    ) : (
+                                        <code className="bg-accent/40 text-primary px-1.5 py-0.5 rounded-[3px] font-mono text-[14px] font-semibold" {...props}>
+                                            {children}
+                                        </code>
+                                    )
+                                }
+                            }}
+                        >
+                            {note.content}
+                        </ReactMarkdown>
+                    </article>
+
+                    {/* Tags */}
+                    <div className="flex flex-wrap gap-1.5 mt-10">
+                        {note.category && <span className="so-tag py-1 px-3 text-[13px]">{note.category.name}</span>}
+                        {note.tags?.map((tag, i) => (
+                            <span key={i} className="so-tag py-1 px-3 text-[13px] bg-muted/50 text-muted-foreground">#{tag}</span>
+                        ))}
                     </div>
-                </div>
 
-                <hr className="border-border" />
-
-                {/* Tutorial Video Section */}
-                {note.videoUrl && (
-                    <div className="space-y-4 animate-in fade-in duration-700">
-                        <div className="flex items-center gap-2 text-primary font-bold bg-primary/5 w-fit px-4 py-1.5 rounded-full border border-primary/10">
-                            <PlayCircle size={18} />
-                            <span>Tutorial Context</span>
+                    {/* Actions & Attribution */}
+                    <div className="flex flex-col sm:flex-row justify-between items-start mt-8 pt-6 gap-6 pb-16 border-t border-border/50">
+                        <div className="flex items-center gap-6 text-[13px] text-muted-foreground">
+                            <button className="hover:text-primary transition-colors flex items-center gap-1.5 border-none bg-transparent">
+                                <Share2 size={14} /> Share
+                            </button>
+                            <button className="hover:text-primary transition-colors flex items-center gap-1.5 border-none bg-transparent">
+                                <Bookmark size={14} /> Follow
+                            </button>
+                            <button onClick={handleDelete} className="hover:text-rose-500 transition-colors flex items-center gap-1.5 border-none bg-transparent">
+                                <Trash2 size={14} /> Delete
+                            </button>
                         </div>
-                        <div className="aspect-video bg-black rounded-2xl overflow-hidden shadow-2xl border border-border">
-                            {note.videoUrl.includes('youtube.com') || note.videoUrl.includes('youtu.be') ? (
+
+                        <div className="bg-accent/30 p-4 rounded-[3px] w-[220px] shrink-0 border border-transparent hover:border-primary/20 transition-all shadow-sm">
+                            <p className="text-[12px] text-muted-foreground mb-2">
+                                documented {new Date(note.createdAt).toLocaleDateString()}
+                            </p>
+                            <div className="flex items-center gap-3">
+                                <div className="w-10 h-10 bg-primary rounded-[3px] flex items-center justify-center text-white text-[16px] font-bold shadow-sm">
+                                    {note.user?.username?.charAt(0).toUpperCase() || 'U'}
+                                </div>
+                                <div className="text-[13px]">
+                                    <p className="text-link font-bold leading-tight">
+                                        {note.user?.username || 'System User'}
+                                    </p>
+                                    <div className="flex items-center gap-1.5 text-[11px] text-muted-foreground font-bold mt-0.5">
+                                        <span>4,281</span>
+                                        <div className="flex gap-1">
+                                            <span className="w-2 h-2 rounded-full bg-amber-400" />
+                                            <span className="w-2 h-2 rounded-full bg-zinc-300" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Tutorial Section if exists */}
+                    {note.videoUrl && (
+                        <div className="mt-8 pt-8 border-t border-border">
+                            <h3 className="text-[22px] font-normal mb-6 text-foreground flex items-center gap-3">
+                                <Video size={20} className="text-primary" /> Integrated Video Context
+                            </h3>
+                            <div className="aspect-video bg-black rounded-[3px] overflow-hidden border border-border shadow-2xl">
                                 <iframe
                                     width="100%"
                                     height="100%"
                                     src={`https://www.youtube.com/embed/${note.videoUrl.includes('watch?v=') ? note.videoUrl.split('watch?v=')[1].split('&')[0] : note.videoUrl.split('/').pop()}`}
-                                    title="Tutorial Video"
+                                    title="Tutorial"
                                     frameBorder="0"
-                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                                     allowFullScreen
-                                ></iframe>
-                            ) : note.videoUrl.includes('vimeo.com') ? (
-                                <iframe
-                                    src={`https://player.vimeo.com/video/${note.videoUrl.split('/').pop()}`}
-                                    width="100%"
-                                    height="100%"
-                                    frameBorder="0"
-                                    allow="autoplay; fullscreen; picture-in-picture"
-                                    allowFullScreen
-                                ></iframe>
-                            ) : (
-                                <div className="w-full h-full flex flex-col items-center justify-center text-muted-foreground p-8 text-center bg-muted/20 gap-4">
-                                    <PlayCircle size={48} className="opacity-20" />
-                                    <div>
-                                        <p className="font-bold text-foreground">External Tutorial Source</p>
-                                        <p className="text-sm">Video provider not directly supported for embedded playback.</p>
-                                    </div>
-                                    <a href={note.videoUrl} target="_blank" rel="noreferrer" className="text-primary hover:underline flex items-center gap-1 font-medium">
-                                        Watch on source site <ExternalLink size={14} />
-                                    </a>
-                                </div>
-                            )}
+                                />
+                            </div>
                         </div>
-                    </div>
-                )}
-
-                {/* Main Content Viewer (Markdown) */}
-                <div className="prose prose-slate dark:prose-invert prose-lg max-w-none">
-                    <ReactMarkdown
-                        remarkPlugins={[remarkGfm]}
-                        components={{
-                            code({ node, inline, className, children, ...props }) {
-                                const match = /language-(\w+)/.exec(className || '')
-                                const codeString = String(children).replace(/\n$/, '');
-
-                                return !inline && match ? (
-                                    <div className="relative group rounded-lg overflow-hidden my-6 border border-border">
-                                        <div className="flex items-center justify-between px-4 py-2 bg-muted/80 backdrop-blur border-b border-border">
-                                            <span className="text-xs font-mono text-muted-foreground">{match[1]}</span>
-                                            <button
-                                                onClick={() => copyToClipboard(codeString)}
-                                                className="text-muted-foreground hover:text-foreground p-1 rounded transition-colors"
-                                                title="Copy Code"
-                                            >
-                                                <Files size={14} />
-                                            </button>
-                                        </div>
-                                        <SyntaxHighlighter
-                                            style={vscDarkPlus}
-                                            language={match[1]}
-                                            PreTag="div"
-                                            customStyle={{
-                                                margin: 0,
-                                                borderRadius: 0,
-                                                fontSize: '1em',
-                                                fontWeight: '500',
-                                                fontFamily: 'JetBrains Mono, Fira Code, monospace'
-                                            }}
-                                            {...props}
-                                        >
-                                            {codeString}
-                                        </SyntaxHighlighter>
-                                    </div>
-                                ) : (
-                                    <code className="bg-muted px-1.5 py-0.5 rounded text-sm font-medium text-pink-500 font-mono" {...props}>
-                                        {children}
-                                    </code>
-                                )
-                            }
-                        }}
-                    >
-                        {note.content}
-                    </ReactMarkdown>
+                    )}
                 </div>
-
-
-
-                {/* Attachment Link */}
-                {note.attachmentUrl && (
-                    <div className="mt-8 p-4 bg-muted/50 border border-border rounded-xl flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                            <div className="p-2 bg-primary/10 rounded-lg text-primary">
-                                <ExternalLink size={24} />
-                            </div>
-                            <div>
-                                <h4 className="font-medium">Attached Resource</h4>
-                                <p className="text-sm text-muted-foreground truncate max-w-md">{note.attachmentUrl}</p>
-                            </div>
-                        </div>
-                        <a
-                            href={note.attachmentUrl}
-                            target="_blank"
-                            rel="noreferrer"
-                            className="px-4 py-2 bg-background border border-border rounded-lg hover:bg-accent transition-colors text-sm font-medium"
-                        >
-                            Open Link
-                        </a>
-                    </div>
-                )}
-
-                {/* Related Notes Section */}
-                {note.relatedNotes && note.relatedNotes.length > 0 && (
-                    <div className="mt-12 border-t border-border pt-8">
-                        <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
-                            <LinkIcon className="text-primary" /> Related Notes
-                        </h3>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                            {note.relatedNotes.map(related => (
-                                <Link
-                                    key={related._id || related}
-                                    to={`/notes/${related._id || related}`}
-                                    className="block p-4 rounded-lg border border-border bg-card/30 hover:bg-muted/50 hover:border-primary/50 transition-all group"
-                                >
-                                    <h4 className="font-medium group-hover:text-primary transition-colors truncate">{related.title || 'Linked Note'}</h4>
-                                </Link>
-                            ))}
-                        </div>
-                    </div>
-                )}
             </div>
         </div>
     );

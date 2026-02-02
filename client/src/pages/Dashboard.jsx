@@ -1,237 +1,136 @@
-import { useEffect, useState } from 'react';
-import {
-    Chart as ChartJS,
-    CategoryScale,
-    LinearScale,
-    BarElement,
-    PointElement,
-    LineElement,
-    Title,
-    Tooltip,
-    Legend,
-    Filler
-} from 'chart.js';
-import { Bar, Line } from 'react-chartjs-2';
-import Spinner from '../components/Spinner';
-import { FileText, Folder, Plus, TrendingUp, Pin, Clock, Tag, Globe, FolderOpen } from 'lucide-react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import clsx from 'clsx';
-import { getNotes, getNoteStats } from '../features/notes/noteSlice';
+import { getNotes } from '../features/notes/noteSlice';
 import { getCategories } from '../features/categories/categorySlice';
-
-ChartJS.register(
-    CategoryScale,
-    LinearScale,
-    BarElement,
-    PointElement,
-    LineElement,
-    Title,
-    Tooltip,
-    Legend,
-    Filler
-);
+import {
+    Activity,
+    FileText,
+    Folder,
+    Trophy,
+    Award,
+    Plus,
+    Clock
+} from 'lucide-react';
+import { Link } from 'react-router-dom';
+import Spinner from '../components/Spinner';
 
 const Dashboard = () => {
     const dispatch = useDispatch();
-    const navigate = useNavigate();
-
     const { user } = useSelector((state) => state.auth);
-    const { notes, stats, isLoading: notesLoading } = useSelector((state) => state.notes);
-    const { categories, isLoading: catsLoading } = useSelector((state) => state.categories);
-
-    const [barChartData, setBarChartData] = useState(null);
-    const [lineChartData, setLineChartData] = useState(null);
+    const { notes, isLoading: notesLoading } = useSelector((state) => state.notes);
+    const { categories } = useSelector((state) => state.categories);
 
     useEffect(() => {
         dispatch(getNotes());
         dispatch(getCategories());
-        dispatch(getNoteStats());
     }, [dispatch]);
 
-    useEffect(() => {
-        if (stats) {
-            // Process Category Stats for Bar Chart
-            const labels = stats.categoryStats.map(s => s._id || 'Uncategorized');
-            const data = stats.categoryStats.map(s => s.count);
+    if (notesLoading) return <Spinner />;
 
-            setBarChartData({
-                labels,
-                datasets: [{
-                    label: 'Notes',
-                    data,
-                    backgroundColor: 'rgba(0, 128, 128, 0.6)',
-                    borderColor: '#008080',
-                    borderWidth: 1,
-                    borderRadius: 5
-                }]
-            });
+    const recentNotes = [...notes].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)).slice(0, 5);
 
-            // Process Time Series for Multi-dataset Line Chart
-            // Group by type
-            const types = [...new Set(stats.timeSeries.map(item => item._id.type))];
-            const dates = [...new Set(stats.timeSeries.map(item => item._id.date))].sort();
-
-            const datasets = types.map((type, idx) => {
-                const colors = ['#008080', '#800000', '#f59e0b', '#3b82f6'];
-                const color = colors[idx % colors.length];
-
-                return {
-                    label: type.charAt(0).toUpperCase() + type.slice(1),
-                    data: dates.map(date => {
-                        const match = stats.timeSeries.find(item => item._id.date === date && item._id.type === type);
-                        return match ? match.count : 0;
-                    }),
-                    borderColor: color,
-                    backgroundColor: color + '20',
-                    fill: true,
-                    tension: 0.4,
-                    pointRadius: 4,
-                    pointHoverRadius: 6
-                };
-            });
-
-            setLineChartData({
-                labels: dates.map(d => new Date(d).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })),
-                datasets
-            });
-        }
-    }, [stats]);
-
-    if (notesLoading || catsLoading) return (
-        <div className="mt-10">
-            <Spinner message="Retrieving your notes..." />
-        </div>
-    );
-
-    const pinnedNotes = notes.filter(n => n.isPinned).slice(0, 3);
-    const recentNotes = notes.slice(0, 5);
+    // Filter private vs public notes for dynamic stats
+    const publicNotesCount = notes.filter(n => n.isPublic).length;
+    const privateNotesCount = notes.length - publicNotesCount;
 
     return (
-        <div className="space-y-8 pb-10">
-            {/* Header Section */}
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 bg-gradient-to-br from-card to-muted/30 p-8 rounded-3xl border border-border shadow-sm">
-                <div className="space-y-1">
-                    <h1 className="text-4xl font-black tracking-tight flex items-center gap-3">
-                        Welcome back, <span className="text-primary">{user?.username}</span>! 👋
-                    </h1>
-                    <p className="text-muted-foreground font-medium">You have {notes.length} saved scripts in your library.</p>
-                </div>
-                <Link
-                    to="/notes/new"
-                    className="btn-premium-primary self-start md:self-auto shadow-xl shadow-primary/20"
-                >
-                    <Plus size={20} /> Create New Script
+        <div className="space-y-8 animate-in fade-in duration-500">
+            <div className="flex justify-between items-center">
+                <h1 className="text-[27px] font-normal text-foreground">Moderator Dashboard</h1>
+                <Link to="/notes/new" className="so-btn so-btn-primary">
+                    <Plus size={14} className="mr-1" /> New Record
                 </Link>
             </div>
 
-            {/* Stats Overview */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
                 {[
-                    { label: 'Total Scripts', value: notes.length, icon: FileText, color: 'text-blue-500', bg: 'bg-blue-500/10' },
-                    { label: 'Categories', value: categories.length, icon: FolderOpen, color: 'text-purple-500', bg: 'bg-purple-500/10' },
-                    { label: 'Pinned Notes', value: notes.filter(n => n.isPinned).length, icon: Tag, color: 'text-orange-500', bg: 'bg-orange-500/10' },
-                    { label: 'Public Notes', value: notes.filter(n => n.isPublic).length, icon: Globe, color: 'text-green-500', bg: 'bg-green-500/10' },
-                ].map((stat, idx) => (
-                    <div key={idx} className="bg-card border border-border p-6 rounded-2xl hover:shadow-xl hover:shadow-primary/5 transition-all duration-300 group">
-                        <div className="flex items-center gap-4">
-                            <div className={clsx("p-3 rounded-xl transition-colors group-hover:scale-110 duration-300", stat.bg, stat.color)}>
-                                <stat.icon size={24} />
-                            </div>
-                            <div>
-                                <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground/70">{stat.label}</p>
-                                <h3 className="text-2xl font-black mt-1 group-hover:text-primary transition-colors">{stat.value}</h3>
-                            </div>
+                    { label: 'My Records', value: notes.length, icon: FileText, color: 'text-blue-600' },
+                    { label: 'Public Posts', value: publicNotesCount, icon: Award, color: 'text-[#808000]' },
+                    { label: 'Private Vault', value: privateNotesCount, icon: Trophy, color: 'text-amber-600' },
+                    { label: 'Total Tags', value: categories.length, icon: Folder, color: 'text-zinc-600' },
+                ].map((stat, i) => (
+                    <div key={i} className="border border-border p-6 rounded-[3px] bg-card hover:border-[#babfc4] transition-colors">
+                        <div className="flex items-center gap-3 mb-2 text-muted-foreground font-bold text-[11px] uppercase tracking-wider">
+                            <stat.icon size={14} className={stat.color} />
+                            <span>{stat.label}</span>
                         </div>
+                        <h4 className="text-[24px] font-semibold text-foreground">{stat.value}</h4>
                     </div>
                 ))}
             </div>
 
-            {/* Main Viz Grid */}
-            <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
-                {/* Line Chart (Multi-dataset) */}
-                <div className="xl:col-span-2 bg-card/40 backdrop-blur-xl border border-border p-6 rounded-3xl shadow-sm">
-                    <div className="flex items-center justify-between mb-6">
-                        <div className="flex items-center gap-2">
-                            <Clock size={18} className="text-primary" />
-                            <h3 className="text-lg font-bold">Activity Feed (Last 14 Days)</h3>
-                        </div>
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                {/* Activity Feed */}
+                <div className="lg:col-span-8 space-y-4">
+                    <div className="flex items-center justify-between border-b border-border pb-2">
+                        <h2 className="text-[19px] font-normal text-foreground">Recent Activity</h2>
+                        <Link to="/notes" className="text-[13px] text-link hover:underline">View all records</Link>
                     </div>
-                    {lineChartData ? (
-                        <div className="h-[350px]">
-                            <Line
-                                data={lineChartData}
-                                options={{
-                                    responsive: true,
-                                    maintainAspectRatio: false,
-                                    plugins: { legend: { position: 'top', labels: { usePointStyle: true, font: { weight: 'bold' } } } },
-                                    scales: {
-                                        y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.05)' } },
-                                        x: { grid: { display: false } }
-                                    }
-                                }}
-                            />
-                        </div>
-                    ) : <div className="h-[350px] flex items-center justify-center text-muted-foreground">Generating activity map...</div>}
-                </div>
 
-                {/* Distribution (Bar Chart) */}
-                <div className="bg-card/40 backdrop-blur-xl border border-border p-6 rounded-3xl shadow-sm">
-                    <h3 className="text-lg font-bold mb-6">Library Spread</h3>
-                    {barChartData ? (
-                        <div className="h-[350px]">
-                            <Bar
-                                data={barChartData}
-                                options={{
-                                    responsive: true,
-                                    maintainAspectRatio: false,
-                                    plugins: { legend: { display: false } },
-                                    scales: {
-                                        y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.05)' } },
-                                        x: { grid: { display: false } }
-                                    }
-                                }}
-                            />
-                        </div>
-                    ) : <div className="h-[350px] flex items-center justify-center text-muted-foreground">Calculating spread...</div>}
-                </div>
-            </div>
-
-            {/* Bottom Grid: Pinned & Recent */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                {/* Pinned Items */}
-                <section>
-                    <div className="flex items-center gap-2 mb-4">
-                        <Pin size={18} className="text-amber-500" />
-                        <h3 className="text-xl font-bold">Priority Items</h3>
-                    </div>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        {pinnedNotes.length > 0 ? pinnedNotes.map(n => (
-                            <Link to={`/notes/${n._id}`} key={n._id} className="bg-muted/30 border border-border p-4 rounded-2xl hover:bg-muted/50 transition-all group">
-                                <h4 className="font-bold text-foreground group-hover:text-primary transition-colors truncate">{n.title}</h4>
-                                <div className="flex items-center gap-2 mt-3">
-                                    <span className="text-[10px] uppercase font-black bg-primary/10 text-primary px-2 py-0.5 rounded-full">{n.category?.name}</span>
+                    <div className="border border-border rounded-[3px] bg-card divide-y divide-border overflow-hidden">
+                        {recentNotes.length > 0 ? recentNotes.map((note) => (
+                            <Link
+                                to={`/notes/${note._id}`}
+                                key={note._id}
+                                className="block p-4 hover:bg-muted/30 transition-colors group"
+                            >
+                                <div className="flex items-center justify-between gap-4">
+                                    <div className="flex-1 min-w-0">
+                                        <h4 className="text-[15px] font-normal text-link hover:text-link-hover truncate mb-1">
+                                            {note.title}
+                                        </h4>
+                                        <div className="flex items-center gap-3 text-[12px] text-muted-foreground">
+                                            <span className="font-bold text-[#808000]">{note.category?.name || 'GENERIC'}</span>
+                                            <span>•</span>
+                                            <span className="flex items-center gap-1"><Clock size={12} /> {new Date(note.createdAt).toLocaleDateString()}</span>
+                                        </div>
+                                    </div>
+                                    <div className="text-[11px] font-bold px-2 py-0.5 border border-[#808000]/30 text-[#808000] bg-[#eff1e1] dark:bg-[#3d3d2d] rounded-[3px]">
+                                        {note.isPublic ? 'PUBLIC' : 'VAULT'}
+                                    </div>
                                 </div>
                             </Link>
-                        )) : <p className="text-sm text-muted-foreground py-4">No pinned items found.</p>}
+                        )) : (
+                            <div className="p-8 text-center text-muted-foreground italic">
+                                No records found. Start documentation to see activity.
+                            </div>
+                        )}
                     </div>
-                </section>
+                </div>
 
-                {/* Recent Feed */}
-                <section>
-                    <div className="flex items-center gap-2 mb-4">
-                        <TrendingUp size={18} className="text-emerald-500" />
-                        <h3 className="text-xl font-bold">Recent Changes</h3>
+                {/* Right Sidebar Stats */}
+                <div className="lg:col-span-4 space-y-6">
+                    <div className="bg-[#fdf7e2] dark:bg-[#3d3d2d] border border-[#e6cf7e] dark:border-[#556b2f] p-6 rounded-[3px]">
+                        <h3 className="text-[15px] font-bold text-foreground mb-3 flex items-center gap-2">
+                            System Insights
+                        </h3>
+                        <p className="text-[13px] text-muted-foreground leading-relaxed">
+                            You currently have <span className="font-bold text-foreground">{notes.length}</span> active records across <span className="font-bold text-foreground">{categories.length}</span> tag categories.
+                            Efficiency score: <span className="text-[#808000] font-bold">OPTIMAL</span>.
+                        </p>
                     </div>
-                    <div className="space-y-3">
-                        {recentNotes.length > 0 ? recentNotes.map(n => (
-                            <Link to={`/notes/${n._id}`} key={n._id} className="flex items-center justify-between p-4 bg-muted/20 border border-border rounded-2xl hover:border-primary/50 transition-all">
-                                <span className="font-medium text-sm">{n.title}</span>
-                                <span className="text-[10px] text-muted-foreground">{new Date(n.createdAt).toLocaleDateString()}</span>
-                            </Link>
-                        )) : <p className="text-sm text-muted-foreground py-4">No recent activity.</p>}
+
+                    <div className="border border-border p-5 rounded-[3px] bg-card">
+                        <h3 className="text-[13px] font-bold text-foreground uppercase tracking-wider mb-4 border-b border-border pb-2">Category Spread</h3>
+                        <div className="space-y-3">
+                            {categories.slice(0, 5).map(cat => {
+                                const count = notes.filter(n => (n.category?._id || n.category) === cat._id).length;
+                                const percentage = notes.length > 0 ? (count / notes.length) * 100 : 0;
+                                return (
+                                    <div key={cat._id} className="space-y-1">
+                                        <div className="flex justify-between text-[11px] font-medium">
+                                            <span className="text-muted-foreground">{cat.name}</span>
+                                            <span className="text-foreground font-bold">{count}</span>
+                                        </div>
+                                        <div className="w-full bg-muted h-1 rounded-full overflow-hidden">
+                                            <div className="bg-[#808000] h-full" style={{ width: `${percentage}%` }}></div>
+                                        </div>
+                                    </div>
+                                );
+                            })}
+                        </div>
                     </div>
-                </section>
+                </div>
             </div>
         </div>
     );

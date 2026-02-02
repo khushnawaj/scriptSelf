@@ -1,74 +1,107 @@
 import { Link } from 'react-router-dom';
-import { ArrowRight, Code2, Database, ShieldCheck } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { useSelector } from 'react-redux';
+import {
+    Code2,
+    MessageSquare,
+    Layers,
+    Globe,
+    Cpu,
+    ShieldCheck,
+    Quote,
+    ArrowRight
+} from 'lucide-react';
 
 const Home = () => {
+    const { isAuthenticated } = useSelector((state) => state.auth);
+
     return (
-        <div className="min-h-screen bg-background text-foreground flex flex-col">
-            <header className="p-6 flex justify-between items-center max-w-7xl mx-auto w-full">
-                <div className="flex items-center gap-2">
-                    <Code2 className="text-primary h-8 w-8" />
-                    <span className="text-xl font-bold">ScriptShelf</span>
-                </div>
-                <div className="flex gap-4">
-                    <Link to="/login" className="px-4 py-2 hover:text-primary transition-colors">Login</Link>
-                    <Link to="/register" className="px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-white/90 transition-colors font-medium">Get Started</Link>
-                </div>
-            </header>
+        <div className="flex flex-col -m-6 min-h-screen">
+            {/* Hero Section - Dynamic & Theme Aware */}
+            <div className="bg-[#2d2d2d] dark:bg-[#1b1b1b] text-white py-24 px-6 text-center relative overflow-hidden transition-colors duration-500">
+                {/* Decorative Elements */}
+                <div className="absolute top-0 right-0 w-[50%] h-full bg-[#808000] opacity-10 blur-[120px] rounded-full translate-x-1/2" />
+                <div className="absolute bottom-0 left-0 w-[30%] h-full bg-[#808000] opacity-5 blur-[100px] rounded-full -translate-x-1/2" />
 
-            <main className="flex-1 flex flex-col items-center justify-center p-6 text-center">
-                <motion.h1
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-primary to-blue-400 bg-clip-text text-transparent"
-                >
-                    Your Code. Organized.
-                </motion.h1>
-                <motion.p
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.1 }}
-                    className="text-xl text-muted-foreground max-w-2xl mb-10"
-                >
-                    Store your snippets, documentation, and cheat sheets in one developer-centric platform.
-                </motion.p>
-
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.2 }}
-                    className="flex gap-4"
-                >
-                    <Link to="/register" className="px-8 py-3 bg-primary text-primary-foreground text-lg rounded-lg hover:bg-white/90 transition-colors flex items-center gap-2 font-bold">
-                        Start for Free <ArrowRight size={20} />
-                    </Link>
-                    <Link to="/login" className="px-8 py-3 bg-secondary text-secondary-foreground text-lg rounded-lg hover:bg-secondary/80 transition-colors font-medium">
-                        Live Demo
-                    </Link>
-                </motion.div>
-
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-20 max-w-5xl text-left">
-                    <div className="p-6 bg-card border border-border rounded-xl">
-                        <Code2 className="text-primary mb-4 h-10 w-10" />
-                        <h3 className="text-xl font-bold mb-2">Syntax Highlighting</h3>
-                        <p className="text-muted-foreground">Built-in support for all major languages to keep your snippets readable.</p>
+                <div className="relative z-10 max-w-4xl mx-auto">
+                    <div className="inline-flex items-center gap-2 px-3 py-1 bg-[#808000]/20 border border-[#808000]/30 rounded-full text-[#c5c58d] text-[12px] font-bold uppercase tracking-widest mb-6 animate-pulse">
+                        <Cpu size={14} /> The Future of Documentation
                     </div>
-                    <div className="p-6 bg-card border border-border rounded-xl">
-                        <Database className="text-primary mb-4 h-10 w-10" />
-                        <h3 className="text-xl font-bold mb-2">Categorized Storage</h3>
-                        <p className="text-muted-foreground">Organize by project, language, or topic with our flexible category system.</p>
-                    </div>
-                    <div className="p-6 bg-card border border-border rounded-xl">
-                        <ShieldCheck className="text-primary mb-4 h-10 w-10" />
-                        <h3 className="text-xl font-bold mb-2">Secure & Private</h3>
-                        <p className="text-muted-foreground">Your notes are private by default, secured with enterprise-grade encryption.</p>
+                    <h1 className="text-[48px] sm:text-[64px] font-bold leading-[1.1] mb-8 tracking-tight">
+                        Every <span className="text-[#808000]">logic</span> deserves <br className="hidden sm:block" />
+                        permanent storage.
+                    </h1>
+                    <p className="text-[19px] sm:text-[21px] text-zinc-300 mb-12 max-w-2xl mx-auto font-light leading-relaxed">
+                        ScriptShelf is a documentation-first platform for technical archetypes.
+                        Capture your logic once, retrieve it everywhere.
+                    </p>
+                    <div className="flex flex-col sm:flex-row justify-center gap-4">
+                        {isAuthenticated ? (
+                            <Link to="/dashboard" className="so-btn so-btn-primary py-4 px-10 text-[16px] font-bold shadow-xl shadow-[#808000]/20 transition-all hover:-translate-y-1">
+                                Go to System Console <ArrowRight size={18} className="ml-2" />
+                            </Link>
+                        ) : (
+                            <>
+                                <Link to="/register" className="so-btn so-btn-primary py-4 px-10 text-[16px] font-bold shadow-xl shadow-[#808000]/20 transition-all hover:-translate-y-1">
+                                    Initialize My Vault
+                                </Link>
+                                <Link to="/login" className="so-btn bg-white text-[#1b1b1b] hover:bg-zinc-100 py-4 px-10 text-[16px] font-bold transition-all hover:-translate-y-1">
+                                    Access Archive
+                                </Link>
+                            </>
+                        )}
                     </div>
                 </div>
-            </main>
+            </div>
 
-            <footer className="p-6 text-center text-muted-foreground border-t border-border">
-                &copy; 2026 ScriptShelf. Built for Developers.
-            </footer>
+            {/* Feature Blocks */}
+            <div className="max-w-7xl mx-auto py-24 px-6 grid grid-cols-1 md:grid-cols-3 gap-16">
+                <div className="group">
+                    <div className="w-14 h-14 bg-[#eff1e1] dark:bg-[#2d2d2d] text-[#808000] rounded-[3px] flex items-center justify-center mb-6 group-hover:bg-[#808000] group-hover:text-white transition-all transform group-hover:rotate-6 shadow-sm border border-border">
+                        <MessageSquare size={28} />
+                    </div>
+                    <h3 className="text-[21px] font-bold mb-4 text-foreground">Pattern Explanation</h3>
+                    <p className="text-[15px] text-muted-foreground leading-relaxed">
+                        Don't just paste code. Document the *rationale* behind every architectural decision. Our Markdown engine is optimized for developer context.
+                    </p>
+                </div>
+                <div className="group">
+                    <div className="w-14 h-14 bg-[#eff1e1] dark:bg-[#2d2d2d] text-[#808000] rounded-[3px] flex items-center justify-center mb-6 group-hover:bg-[#808000] group-hover:text-white transition-all transform group-hover:rotate-6 shadow-sm border border-border">
+                        <Layers size={28} />
+                    </div>
+                    <h3 className="text-[21px] font-bold mb-4 text-foreground">Tag Categorization</h3>
+                    <p className="text-[15px] text-muted-foreground leading-relaxed">
+                        Structure your knowledge into reusable patterns. Filter by tags to find implementation details for Auth, DB, or API layers in milliseconds.
+                    </p>
+                </div>
+                <div className="group">
+                    <div className="w-14 h-14 bg-[#eff1e1] dark:bg-[#2d2d2d] text-[#808000] rounded-[3px] flex items-center justify-center mb-6 group-hover:bg-[#808000] group-hover:text-white transition-all transform group-hover:rotate-6 shadow-sm border border-border">
+                        <ShieldCheck size={28} />
+                    </div>
+                    <h3 className="text-[21px] font-bold mb-4 text-foreground">Private Archival</h3>
+                    <p className="text-[15px] text-muted-foreground leading-relaxed">
+                        Secure your proprietary logic. Choose between public sharing for community reputation or private vaulting for your own technical legacy.
+                    </p>
+                </div>
+            </div>
+
+            {/* Content Divider */}
+            <div className="bg-muted/30 border-y border-border py-24">
+                <div className="max-w-5xl mx-auto px-6 flex flex-col items-center text-center space-y-8">
+                    <Globe size={48} className="text-[#808000]" />
+                    <h2 className="text-[38px] font-bold text-foreground max-w-3xl leading-tight">
+                        The ultimate repository for <br className="hidden sm:block" /> high-searchability technical logic.
+                    </h2>
+                    <p className="text-[18px] text-muted-foreground max-w-2xl font-light">
+                        Stop hunting through old commits and Slack history. ScriptShelf provides a clinical,
+                        high-speed environment for recalling your best work anytime, anywhere.
+                    </p>
+                    <div className="pt-6">
+                        <Link to="/register" className="text-[16px] font-bold text-[#0074cc] hover:text-[#0a95ff] flex items-center gap-2 transition-colors">
+                            Build your legacy today <ArrowRight size={18} />
+                        </Link>
+                    </div>
+                </div>
+            </div>
         </div>
     );
 };

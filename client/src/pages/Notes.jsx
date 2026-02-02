@@ -1,193 +1,139 @@
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { getNotes, deleteNote } from '../features/notes/noteSlice'; // Ensure deleteNote is exported
+import { getNotes } from '../features/notes/noteSlice';
 import { getCategories } from '../features/categories/categorySlice';
-import { Link, useSearchParams } from 'react-router-dom';
+import Spinner from '../components/Spinner';
 import {
     Search,
-    Plus,
-    FileText,
-    Code,
-    Trash2,
-    Edit,
     Filter,
-    ExternalLink,
-    PlayCircle
+    Plus,
+    MessageSquare,
+    Eye,
+    ThumbsUp,
+    Clock,
+    User,
+    ChevronDown
 } from 'lucide-react';
-import { toast } from 'react-hot-toast';
-import ReactMarkdown from 'react-markdown';
-import Spinner from '../components/Spinner';
+import { Link } from 'react-router-dom';
 
 const Notes = () => {
     const dispatch = useDispatch();
-
     const { notes, isLoading: notesLoading } = useSelector((state) => state.notes);
     const { categories, isLoading: catsLoading } = useSelector((state) => state.categories);
 
-    const [searchParams] = useSearchParams();
-    const categoryFilter = searchParams.get('category');
-
     const [searchTerm, setSearchTerm] = useState('');
-    const [selectedCategory, setSelectedCategory] = useState('');
-    const [selectedType, setSelectedType] = useState('');
-
-    useEffect(() => {
-        if (categoryFilter && categories.length > 0) {
-            const foundCat = categories.find(c => c.name.toLowerCase() === categoryFilter.toLowerCase());
-            if (foundCat) setSelectedCategory(foundCat._id);
-        }
-    }, [categoryFilter, categories]);
+    const [selectedCategory, setSelectedCategory] = useState('All');
+    const [sort, setSort] = useState('newest');
 
     useEffect(() => {
         dispatch(getNotes());
         dispatch(getCategories());
     }, [dispatch]);
 
-    const handleDelete = async (id) => {
-        if (window.confirm('Are you sure you want to delete this note?')) {
-            await dispatch(deleteNote(id));
-            toast.success('Note deleted');
-        }
-    };
-
-    // Filtering Logic
     const filteredNotes = notes.filter((note) => {
-        const matchesSearch =
-            note.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            note.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()));
-
-        const matchesCategory = selectedCategory ? note.category?._id === selectedCategory : true;
-        const matchesType = selectedType ? note.type === selectedType : true;
-
-        return matchesSearch && matchesCategory && matchesType;
+        const matchesSearch = note.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            note.content.toLowerCase().includes(searchTerm.toLowerCase());
+        const matchesCategory = selectedCategory === 'All' || note.category?.name === selectedCategory;
+        return matchesSearch && matchesCategory;
     });
 
-    if (notesLoading || catsLoading) return (
-        <div className="mt-10">
-            <Spinner message="Retrieving your notes..." />
-        </div>
-    );
+    if (notesLoading || catsLoading) return <Spinner />;
 
     return (
-        <div className="space-y-6">
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                <div>
-                    <h1 className="text-3xl font-bold">My Notes</h1>
-                    <p className="text-muted-foreground">Manage and organize your codebase.</p>
-                </div>
-                <Link
-                    to="/notes/new"
-                    className="btn-premium-primary"
-                >
-                    <Plus size={18} /> New Note
+        <div className="space-y-4 animate-in fade-in duration-300">
+            {/* Header Section */}
+            <div className="flex flex-col sm:flex-row justify-between items-start gap-4 mb-6">
+                <h1 className="text-[27px] font-normal text-foreground">Technical Library</h1>
+                <Link to="/notes/new" className="so-btn so-btn-primary py-2.5 px-3">
+                    Post new record
                 </Link>
             </div>
 
-            {/* Filters Bar */}
-            <div className="bg-card border border-border p-4 rounded-xl flex flex-col md:flex-row gap-4 items-center">
-                <div className="relative flex-1 w-full">
-                    <Search className="absolute left-3 top-3 text-muted-foreground" size={18} />
-                    <input
-                        type="text"
-                        placeholder="Search by title or tags..."
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                        className="w-full bg-muted border border-border rounded-lg pl-10 pr-4 py-2 outline-none focus:ring-2 focus:ring-primary/50"
-                    />
+            <div className="flex flex-col sm:flex-row justify-between items-center pb-3 border-b border-border gap-4">
+                <div className="text-[17px] font-normal text-foreground">
+                    {filteredNotes.length} active records
                 </div>
-
-                <div className="flex gap-2 w-full md:w-auto">
-                    <div className="relative">
-                        <select
-                            value={selectedCategory}
-                            onChange={(e) => setSelectedCategory(e.target.value)}
-                            className="bg-muted border border-border rounded-lg px-4 py-2 pl-10 appearance-none outline-none focus:ring-2 focus:ring-primary/50 w-full md:w-48 cursor-pointer"
+                <div className="flex border border-border rounded-[3px] overflow-hidden shadow-sm">
+                    {['Newest', 'Public', 'Private'].map((tab) => (
+                        <button
+                            key={tab}
+                            onClick={() => setSort(tab.toLowerCase())}
+                            className={`px-3 py-2 text-[12px] border-r border-border last:border-r-0 transition-colors ${sort === tab.toLowerCase()
+                                ? 'bg-muted text-foreground font-bold'
+                                : 'bg-card text-muted-foreground hover:bg-muted/50'
+                                }`}
                         >
-                            <option value="">All Categories</option>
-                            {categories.map(cat => (
-                                <option key={cat._id} value={cat._id}>{cat.name}</option>
-                            ))}
-                        </select>
-                        <Filter className="absolute left-3 top-2.5 text-muted-foreground pointer-events-none" size={16} />
-                    </div>
-
-                    <div className="relative">
-                        <select
-                            value={selectedType}
-                            onChange={(e) => setSelectedType(e.target.value)}
-                            className="bg-muted border border-border rounded-lg px-4 py-2 pl-10 appearance-none outline-none focus:ring-2 focus:ring-primary/50 w-full md:w-40 cursor-pointer"
-                        >
-                            <option value="">All Types</option>
-                            <option value="code">Code</option>
-                            <option value="doc">Document</option>
-                            <option value="pdf">PDF</option>
-                        </select>
-                        <Code className="absolute left-3 top-2.5 text-muted-foreground pointer-events-none" size={16} />
-                    </div>
+                            {tab}
+                        </button>
+                    ))}
                 </div>
             </div>
 
-            {/* Notes Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {filteredNotes.length > 0 ? filteredNotes.map((note) => (
-                    <div key={note._id} className="group bg-card border border-border p-6 rounded-2xl hover:shadow-2xl hover:shadow-primary/5 hover:border-primary/30 transition-all duration-300 relative flex flex-col h-full">
-                        <div className="flex justify-between items-start mb-4">
-                            <Link to={`/notes/${note._id}`} className="flex items-center gap-3 flex-1 min-w-0">
-                                <div className="p-2.5 bg-muted rounded-xl group-hover:bg-primary/10 transition-colors shrink-0">
-                                    {note.type === 'code' ? <Code className="text-primary" size={20} /> : <FileText className="text-primary" size={20} />}
-                                </div>
-                                <div className="flex flex-col min-w-0">
-                                    <h3 className="font-bold text-lg leading-tight group-hover:text-primary transition-colors flex items-center gap-2 truncate">
-                                        {note.title}
-                                        {note.videoUrl && <PlayCircle size={14} className="text-primary animate-pulse shrink-0" title="Tutorial Note" />}
-                                    </h3>
-                                    <span className="text-xs text-muted-foreground font-medium uppercase tracking-wider">
-                                        {note.category?.name || 'Uncategorized'}
-                                    </span>
-                                </div>
-                            </Link>
-                            <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
-                                <Link to={`/notes/edit/${note._id}`} className="p-1.5 hover:bg-muted rounded-lg text-muted-foreground hover:text-primary transition-colors">
-                                    <Edit size={16} />
-                                </Link>
-                                <button
-                                    onClick={() => handleDelete(note._id)}
-                                    className="p-1.5 hover:bg-destructive/10 rounded-lg text-muted-foreground hover:text-destructive transition-colors"
-                                >
-                                    <Trash2 size={16} />
-                                </button>
+            {/* Note List - Clinical SO Style */}
+            <div className="flex flex-col">
+                {filteredNotes.map((note) => (
+                    <div key={note._id} className="flex p-4 border-b border-border hover:bg-muted/10 transition-colors gap-4 group">
+                        {/* Stats Column */}
+                        <div className="flex flex-col items-end gap-3 w-16 shrink-0 pt-1 text-[13px]">
+                            <div className="flex flex-col items-center opacity-60">
+                                <span className="font-medium text-foreground">1</span>
+                                <span className="text-[11px] text-muted-foreground">point</span>
+                            </div>
+                            <div className={`flex flex-col items-center border p-1 rounded-[3px] min-w-[52px] ${note.isPublic ? 'border-[#808000] text-[#808000] bg-[#eff1e1] dark:bg-[#3d3d2d]' : 'border-border text-muted-foreground'
+                                }`}>
+                                <span className="font-bold">1</span>
+                                <span className="text-[10px] uppercase font-bold">{note.isPublic ? 'Public' : 'Vault'}</span>
+                            </div>
+                            <div className="flex items-center gap-1 text-muted-foreground/50">
+                                <span className="font-normal text-[11px]">Dynamic</span>
                             </div>
                         </div>
 
-                        <p className="text-muted-foreground text-sm line-clamp-3 leading-relaxed mb-4 flex-1">
-                            {note.content.substring(0, 150)}...
-                        </p>
-
-                        <div className="flex flex-wrap gap-2 mb-4">
-                            {note.tags && note.tags.slice(0, 3).map((tag, idx) => (
-                                <span key={idx} className="text-[10px] font-bold uppercase tracking-tighter bg-muted px-2 py-0.5 rounded text-muted-foreground hover:text-primary transition-colors">#{tag}</span>
-                            ))}
-                        </div>
-
-                        <div className="pt-4 border-t border-border flex justify-between items-center text-[11px] font-bold text-muted-foreground uppercase tracking-widest">
-                            <span>{new Date(note.createdAt).toLocaleDateString()}</span>
-                            <Link to={`/notes/${note._id}`} className="flex items-center gap-1 text-primary hover:gap-2 transition-all">
-                                View Note <ExternalLink size={12} />
+                        {/* Content Column */}
+                        <div className="flex-1 min-w-0">
+                            <Link
+                                to={`/notes/${note._id}`}
+                                className="text-[17px] font-normal text-link hover:text-link-hover
+ mb-1 line-clamp-2 leading-snug transition-colors"
+                            >
+                                {note.title}
                             </Link>
+                            <p className="text-[13px] text-muted-foreground line-clamp-2 mt-1 mb-4 font-normal">
+                                {note.content.replace(/[#*`]/g, '').substring(0, 200)}...
+                            </p>
+
+                            <div className="flex flex-wrap items-center justify-between gap-y-3">
+                                <div className="flex flex-wrap gap-1">
+                                    {note.category && <span className="so-tag">{note.category.name}</span>}
+                                    {note.tags?.slice(0, 3).map((tag, i) => (
+                                        <span key={i} className="so-tag">#{tag}</span>
+                                    ))}
+                                </div>
+
+                                <div className="flex items-center gap-2 ml-auto text-[12px] bg-muted/30 p-1.5 rounded-[3px] border border-transparent group-hover:border-border transition-colors">
+                                    <div className="w-5 h-5 bg-[#808000] rounded-[2px] flex items-center justify-center text-white text-[10px] font-bold">
+                                        {note.user?.username?.charAt(0).toUpperCase() || 'U'}
+                                    </div>
+                                    <span className="text-[#0074cc] hover:underline cursor-pointer font-medium">
+                                        {note.user?.username || 'User'}
+                                    </span>
+                                    <span className="text-muted-foreground hidden sm:inline">
+                                        recorded {new Date(note.createdAt).toLocaleDateString()}
+                                    </span>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                )) : (
-                    <div className="col-span-full py-20 text-center text-muted-foreground italic font-medium">
-                        No notes found matching your criteria.
+                ))}
+
+                {filteredNotes.length === 0 && (
+                    <div className="py-24 text-center">
+                        <MessageSquare size={48} className="mx-auto text-muted/30 mb-4" />
+                        <p className="text-muted-foreground text-lg">No archival entries match your current filters.</p>
+                        <Link to="/notes/new" className="text-[#0074cc] hover:underline mt-2 block font-medium">Create a new entry</Link>
                     </div>
                 )}
             </div>
-
-            {filteredNotes.length === 0 && (
-                <div className="text-center py-20 text-muted-foreground">
-                    No notes found. Try adjusting filters or create a new one.
-                </div>
-            )}
         </div>
     );
 };

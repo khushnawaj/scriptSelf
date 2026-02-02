@@ -18,13 +18,13 @@ import NoteEditor from './pages/NoteEditor';
 import NoteDetails from './pages/NoteDetails';
 import Categories from './pages/Categories';
 import Admin from './pages/Admin';
+import Spinner from './components/Spinner';
 
 // Private Route Component
 const PrivateRoute = ({ children }) => {
   const { user, isLoading } = useSelector((state) => state.auth);
 
-  // We need to allow initial loading state to pass or show spinner
-  if (isLoading) return <div className="h-screen flex items-center justify-center text-primary">Loading...</div>;
+  if (isLoading) return <Spinner fullPage message="Authenticating Session" />;
 
   return user ? children : <Navigate to="/login" />;
 };
@@ -32,8 +32,8 @@ const PrivateRoute = ({ children }) => {
 // Public Route Component (redirects if already logged in)
 const PublicRoute = ({ children }) => {
   const { user, isLoading } = useSelector((state) => state.auth);
-  if (isLoading) return null; // Avoid flicker
-  return user ? <Navigate to="/notes" /> : children;
+  if (isLoading) return <Spinner fullPage />;
+  return user ? <Navigate to="/dashboard" /> : children;
 }
 
 import CommandPalette from './components/CommandPalette';
@@ -49,12 +49,16 @@ function App() {
     <Router>
       <CommandPalette />
       <Toaster
-        position="top-right"
+        position="bottom-right"
         toastOptions={{
           style: {
-            background: '#1e293b',
-            color: '#fff',
-            border: '1px solid #334155'
+            background: 'var(--card)',
+            color: 'var(--foreground)',
+            border: '1px solid var(--border)',
+            fontSize: '13px',
+            fontWeight: '600',
+            borderRadius: '10px',
+            boxShadow: '0 4px 12px rgba(0,0,0,0.05)'
           }
         }}
       />

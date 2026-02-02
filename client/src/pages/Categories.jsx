@@ -1,166 +1,133 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { getCategories, createCategory } from '../features/categories/categorySlice';
-import { Plus, Folder, Search, Globe, Lock, Save } from 'lucide-react';
+import { getCategories, createCategory, deleteCategory } from '../features/categories/categorySlice';
+import { getNotes } from '../features/notes/noteSlice';
+import { Search, Plus, X, Folder, Trash2, Calendar, LayoutGrid } from 'lucide-react';
 import { toast } from 'react-hot-toast';
+import Spinner from '../components/Spinner';
 
 const Categories = () => {
     const dispatch = useDispatch();
     const { categories, isLoading } = useSelector((state) => state.categories);
-    const { user } = useSelector((state) => state.auth);
+    const { notes } = useSelector((state) => state.notes);
 
     const [searchTerm, setSearchTerm] = useState('');
     const [showModal, setShowModal] = useState(false);
-    const [newCatName, setNewCatName] = useState('');
-    const [newCatDesc, setNewCatDesc] = useState('');
-    const [isGlobal, setIsGlobal] = useState(false);
+    const [newCategory, setNewCategory] = useState({ name: '', description: '' });
 
     useEffect(() => {
         dispatch(getCategories());
+        dispatch(getNotes());
     }, [dispatch]);
-
-    const handleCreate = async (e) => {
-        e.preventDefault();
-        if (!newCatName.trim()) return;
-
-        const result = await dispatch(createCategory({
-            name: newCatName,
-            description: newCatDesc,
-            isGlobal: user.role === 'admin' ? isGlobal : false
-        }));
-
-        if (!result.error) {
-            toast.success('Category created');
-            setShowModal(false);
-            setNewCatName('');
-            setNewCatDesc('');
-            setIsGlobal(false);
-        } else {
-            toast.error(result.payload || 'Failed');
-        }
-    };
 
     const filteredCategories = categories.filter(cat =>
         cat.name.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
-    if (isLoading && categories.length === 0) return <div className="text-primary">Loading...</div>;
+    const handleCreate = async (e) => {
+        e.preventDefault();
+        if (!newCategory.name.trim()) return;
+        await dispatch(createCategory(newCategory));
+        setShowModal(false);
+        setNewCategory({ name: '', description: '' });
+        toast.success('Category added');
+    };
+
+    const handleDelete = async (id) => {
+        if (window.confirm('Delete this tag category?')) {
+            await dispatch(deleteCategory(id));
+            toast.success('Category removed');
+        }
+    };
+
+    if (isLoading) return <Spinner />;
 
     return (
-        <div className="space-y-6">
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                <div>
-                    <h1 className="text-3xl font-bold">Categories</h1>
-                    <p className="text-muted-foreground">Manage your documentation structure</p>
-                </div>
+        <div className="space-y-6 animate-in fade-in duration-300">
+            <div className="flex flex-col sm:flex-row justify-between items-start gap-4">
+                <h1 className="text-[27px] font-normal text-foreground">Tags</h1>
                 <button
                     onClick={() => setShowModal(true)}
-                    className="btn-premium-primary"
+                    className="so-btn so-btn-primary py-2.5 px-3"
                 >
-                    <Plus size={18} /> New Category
+                    Create new tag
                 </button>
             </div>
 
-            <div className="relative">
-                <Search className="absolute left-3 top-3 text-muted-foreground" size={18} />
+            <p className="text-[15px] font-normal text-muted-foreground max-w-2xl leading-relaxed">
+                A tag is a keyword or label that categorizes your record with other, similar records.
+                Using the right tags makes it easier for you to retrieve your technical patterns later.
+            </p>
+
+            <div className="relative max-w-sm">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" size={16} />
                 <input
                     type="text"
-                    placeholder="Search categories..."
+                    placeholder="Filter by tag name"
+                    className="w-full border border-border bg-background rounded-[3px] py-1.5 pl-9 pr-4 text-[13px] outline-none focus:border-primary focus:ring-4 focus:ring-accent transition-all"
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className="w-full bg-card border border-border rounded-lg pl-10 pr-4 py-2.5 outline-none focus:ring-2 focus:ring-primary/50"
                 />
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {filteredCategories.map((cat) => (
-                    <div key={cat._id} className="bg-card border border-border p-6 rounded-xl hover:border-primary/50 transition-colors group">
-                        <div className="flex justify-between items-start mb-4">
-                            <div className="p-3 bg-muted rounded-lg group-hover:bg-primary/10 transition-colors">
-                                <Folder className="text-primary" size={24} />
+            {/* Tags Grid - Stack Overflow Style */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 pt-4">
+                {filteredCategories.map((cat) => {
+                    const count = notes.filter(n => (n.category?._id || n.category) === cat._id).length;
+                    return (
+                        <div key={cat._id} className="border border-border p-4 rounded-[3px] flex flex-col justify-between hover:border-muted-foreground transition-colors bg-card">
+                            <div>
+                                <div className="flex justify-between items-start mb-2">
+                                    <span className="so-tag text-[12px]">{cat.name}</span>
+                                    <button
+                                        onClick={() => handleDelete(cat._id)}
+                                        className="text-muted-foreground hover:text-rose-500 p-1"
+                                    >
+                                        <Trash2 size={14} />
+                                    </button>
+                                </div>
+                                <p className="text-[12px] text-foreground/80 line-clamp-3 mb-4 leading-normal">
+                                    {cat.description || 'No description provided for this technical category.'}
+                                </p>
                             </div>
-                            {cat.isGlobal && (
-                                <div title="Global Category" className="text-blue-400">
-                                    <Globe size={18} />
-                                </div>
-                            )}
-                            {!cat.isGlobal && (
-                                <div title="Private Category" className="text-muted-foreground">
-                                    <Lock size={18} />
-                                </div>
-                            )}
+                            <div className="flex justify-between items-center text-[12px] text-muted-foreground">
+                                <span>{count} records</span>
+                                <span>added {new Date(cat.createdAt || Date.now()).toLocaleDateString()}</span>
+                            </div>
                         </div>
-                        <h3 className="text-xl font-bold mb-2">{cat.name}</h3>
-                        <p className="text-muted-foreground text-sm line-clamp-2 h-10">
-                            {cat.description || 'No description provided.'}
-                        </p>
-                        <div className="mt-4 pt-4 border-t border-border flex justify-between items-center text-sm text-muted-foreground">
-                            <span>{cat.notes ? cat.notes.length : 0} notes</span>
-                            <span>{new Date(cat.createdAt).toLocaleDateString()}</span>
-                        </div>
-                    </div>
-                ))}
+                    );
+                })}
             </div>
 
-            {filteredCategories.length === 0 && (
-                <div className="text-center py-20 text-muted-foreground">
-                    No categories found. Create your first one!
-                </div>
-            )}
-
-            {/* Modal - Basic implementation */}
+            {/* Modal for Creation */}
             {showModal && (
-                <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50 backdrop-blur-sm">
-                    <div className="bg-card border border-border p-6 rounded-xl w-full max-w-md shadow-2xl">
-                        <h2 className="text-2xl font-bold mb-4">Create Category</h2>
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
+                    <div className="bg-card border border-border w-full max-w-md rounded-[3px] shadow-2xl p-6">
+                        <div className="flex justify-between items-center mb-6">
+                            <h3 className="text-[19px] font-normal text-foreground">Create New Tag</h3>
+                            <button onClick={() => setShowModal(false)}><X size={20} className="text-muted-foreground" /></button>
+                        </div>
                         <form onSubmit={handleCreate} className="space-y-4">
                             <div>
-                                <label className="block text-sm font-medium mb-1">Name</label>
+                                <label className="block text-[13px] font-bold mb-1">Tag Name</label>
                                 <input
-                                    type="text"
-                                    value={newCatName}
-                                    onChange={(e) => setNewCatName(e.target.value)}
-                                    className="w-full bg-muted border border-border rounded-lg px-4 py-2 outline-none focus:ring-2 focus:ring-primary/50"
+                                    className="w-full border border-border bg-background rounded-[3px] py-1.5 px-3 text-[13px] outline-none focus:border-primary focus:ring-4 focus:ring-accent"
+                                    value={newCategory.name}
+                                    onChange={(e) => setNewCategory({ ...newCategory, name: e.target.value })}
                                     required
                                 />
                             </div>
                             <div>
-                                <label className="block text-sm font-medium mb-1">Description</label>
+                                <label className="block text-[13px] font-bold mb-1">Tag Description</label>
                                 <textarea
-                                    value={newCatDesc}
-                                    onChange={(e) => setNewCatDesc(e.target.value)}
-                                    className="w-full bg-muted border border-border rounded-lg px-4 py-2 outline-none focus:ring-2 focus:ring-primary/50"
-                                    rows="3"
+                                    className="w-full border border-border bg-background rounded-[3px] py-1.5 px-3 text-[13px] min-h-[100px] outline-none focus:border-primary focus:ring-4 focus:ring-accent"
+                                    value={newCategory.description}
+                                    onChange={(e) => setNewCategory({ ...newCategory, description: e.target.value })}
                                 />
                             </div>
-
-                            {user.role === 'admin' && (
-                                <div className="flex items-center gap-2">
-                                    <input
-                                        type="checkbox"
-                                        id="global"
-                                        checked={isGlobal}
-                                        onChange={(e) => setIsGlobal(e.target.checked)}
-                                        className="w-4 h-4 rounded border-border bg-muted"
-                                    />
-                                    <label htmlFor="global" className="text-sm">Global Category</label>
-                                </div>
-                            )}
-
-                            <div className="flex gap-3 justify-end mt-6">
-                                <button
-                                    type="button"
-                                    onClick={() => setShowModal(false)}
-                                    className="btn-premium-ghost"
-                                >
-                                    Cancel
-                                </button>
-                                <button
-                                    type="submit"
-                                    className="btn-premium-primary"
-                                >
-                                    <Save size={18} /> Create Category
-                                </button>
+                            <div className="flex gap-2 pt-2">
+                                <button type="submit" className="so-btn so-btn-primary flex-1">Create Tag</button>
+                                <button type="button" onClick={() => setShowModal(false)} className="so-btn bg-transparent hover:bg-muted/50 flex-1">Cancel</button>
                             </div>
                         </form>
                     </div>

@@ -27,6 +27,19 @@ export const createCategory = createAsyncThunk(
   }
 );
 
+// Delete Category
+export const deleteCategory = createAsyncThunk(
+  'categories/delete',
+  async (id, thunkAPI) => {
+    try {
+      await api.delete(`/categories/${id}`);
+      return id;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.response?.data?.error);
+    }
+  }
+);
+
 const initialState = {
   categories: [],
   isLoading: false,
@@ -54,6 +67,9 @@ const categorySlice = createSlice({
       })
       .addCase(createCategory.fulfilled, (state, action) => {
         state.categories.push(action.payload);
+      })
+      .addCase(deleteCategory.fulfilled, (state, action) => {
+        state.categories = state.categories.filter(cat => cat._id !== action.payload);
       });
   },
 });

@@ -38,9 +38,9 @@ export const login = createAsyncThunk(
   }
 );
 
-// Update Details
-export const updateUserDetails = createAsyncThunk(
-  'auth/updateDetails',
+// Update Profile
+export const updateProfile = createAsyncThunk(
+  'auth/updateProfile',
   async (userData, thunkAPI) => {
     try {
       // Check if userData is FormData
@@ -52,7 +52,7 @@ export const updateUserDetails = createAsyncThunk(
       toast.success('Profile updated successfully!');
       return res.data.data;
     } catch (error) {
-      const message = error.response?.data?.error || 'Failed to update user';
+      const message = error.response?.data?.error || 'Failed to update profile';
       toast.error(message);
       return thunkAPI.rejectWithValue(message);
     }
@@ -152,17 +152,17 @@ const authSlice = createSlice({
         state.isAuthenticated = false;
         state.user = null;
       })
-      // Update User Details
-      .addCase(updateUserDetails.pending, (state) => {
+      // Update Profile
+      .addCase(updateProfile.pending, (state) => {
         state.isLoading = true;
       })
-      .addCase(updateUserDetails.fulfilled, (state, action) => {
+      .addCase(updateProfile.fulfilled, (state, action) => {
         state.isLoading = false;
         state.user = action.payload;
-        state.isError = false; // Clear any previous error
-        state.message = ''; // Clear any previous message
+        state.isError = false;
+        state.message = '';
       })
-      .addCase(updateUserDetails.rejected, (state, action) => {
+      .addCase(updateProfile.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
         state.message = action.payload;
