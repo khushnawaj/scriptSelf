@@ -421,8 +421,9 @@ console.log("Hello");
                                                 <button
                                                     onClick={handleCreateCategory}
                                                     className="btn-premium-primary p-2 h-9 w-9"
+                                                    title="Save Category"
                                                 >
-                                                    <Plus size={16} />
+                                                    <Save size={16} />
                                                 </button>
                                             </div>
                                         )}

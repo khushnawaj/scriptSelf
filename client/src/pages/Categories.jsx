@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getCategories, createCategory } from '../features/categories/categorySlice';
-import { Plus, Folder, Search, Globe, Lock } from 'lucide-react';
+import { Plus, Folder, Search, Globe, Lock, Save } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 
 const Categories = () => {
@@ -159,7 +159,7 @@ const Categories = () => {
                                     type="submit"
                                     className="btn-premium-primary"
                                 >
-                                    Create Category
+                                    <Save size={18} /> Create Category
                                 </button>
                             </div>
                         </form>
