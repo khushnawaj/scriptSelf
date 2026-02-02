@@ -13,9 +13,10 @@ import {
 } from 'chart.js';
 import { Bar, Line } from 'react-chartjs-2';
 import Spinner from '../components/Spinner';
-import { FileText, Folder, Plus, TrendingUp, Pin, Clock } from 'lucide-react';
+import { FileText, Folder, Plus, TrendingUp, Pin, Clock, Tag, Globe, FolderOpen } from 'lucide-react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
+import clsx from 'clsx';
 import { getNotes, getNoteStats } from '../features/notes/noteSlice';
 import { getCategories } from '../features/categories/categorySlice';
 
@@ -35,6 +36,7 @@ const Dashboard = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
+    const { user } = useSelector((state) => state.auth);
     const { notes, stats, isLoading: notesLoading } = useSelector((state) => state.notes);
     const { categories, isLoading: catsLoading } = useSelector((state) => state.categories);
 
