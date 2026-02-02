@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { login, reset } from '../features/auth/authSlice';
-import { Lock, Mail, ArrowRight } from 'lucide-react';
+import { Lock, Mail, ArrowRight, Loader2 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { toast } from 'react-hot-toast';
 
@@ -93,7 +93,12 @@ const Login = () => {
                         disabled={isLoading}
                         className="btn-premium-primary w-full mt-2"
                     >
-                        {isLoading ? 'Signing In...' : (
+                        {isLoading ? (
+                            <span className="flex items-center gap-2">
+                                <Loader2 className="animate-spin" size={18} />
+                                Signing In...
+                            </span>
+                        ) : (
                             <>Sign In <ArrowRight size={18} /></>
                         )}
                     </button>

@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { register, reset } from '../features/auth/authSlice';
-import { Lock, Mail, User, ArrowRight } from 'lucide-react';
+import { Lock, Mail, User, ArrowRight, Loader2 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { toast } from 'react-hot-toast';
 
@@ -110,7 +110,12 @@ const Register = () => {
                         disabled={isLoading}
                         className="btn-premium-primary w-full mt-2"
                     >
-                        {isLoading ? 'Creating Account...' : (
+                        {isLoading ? (
+                            <span className="flex items-center gap-2">
+                                <Loader2 className="animate-spin" size={18} />
+                                Creating Account...
+                            </span>
+                        ) : (
                             <>Create Account <ArrowRight size={18} /></>
                         )}
                     </button>
