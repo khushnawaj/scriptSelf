@@ -60,26 +60,27 @@ const allowedOrigins = [
   'http://localhost:5173',
   'http://localhost:5174',
   'http://localhost:5175',
-].filter(Boolean);
-
-if (process.env.CLIENT_URL) {
-  // Normalize by removing trailing slash
-  const clientUrl = process.env.CLIENT_URL.replace(/\/$/, "");
-  allowedOrigins.push(clientUrl);
-  // Also push with trailing slash just in case
-  allowedOrigins.push(`${clientUrl}/`);
-}
+];
 
 app.use(cors({
   origin: function (origin, callback) {
-    // Allow requests with no origin (like mobile apps/Postman)
+    // 1. Allow requests with no origin (like mobile apps or Postman)
     if (!origin) return callback(null, true);
 
-    if (allowedOrigins.includes(origin)) {
+    // 2. Check if the origin is in our allowed list
+    const isAllowed = allowedOrigins.includes(origin);
+
+    // 3. Check if it's a Vercel subdomain for your project
+    const isVercel = origin.includes('vercel.app') && origin.includes('script-self');
+
+    // 4. Check against CLIENT_URL env var
+    const isClient = process.env.CLIENT_URL && (origin === process.env.CLIENT_URL.replace(/\/$/, ""));
+
+    if (isAllowed || isVercel || isClient) {
       callback(null, true);
     } else {
       console.log('Blocked by CORS:', origin);
-      callback(new Error('Not allowed by CORS'));
+      callback(null, false); // Return false instead of an error to avoid 500s
     }
   },
   credentials: true,
