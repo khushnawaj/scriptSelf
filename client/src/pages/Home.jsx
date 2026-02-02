@@ -96,7 +96,7 @@ const Home = () => {
                         high-speed environment for recalling your best work anytime, anywhere.
                     </p>
                     <div className="pt-6">
-                        <Link to="/register" className="text-[16px] font-bold text-[#0074cc] hover:text-[#0a95ff] flex items-center gap-2 transition-colors">
+                        <Link to="/register" className="text-[16px] font-bold text-link hover:text-link-hover flex items-center gap-2 transition-colors">
                             Build your legacy today <ArrowRight size={18} />
                         </Link>
                     </div>

@@ -72,8 +72,9 @@ const Navbar = ({ onMenuClick }) => {
                 <div className="flex-1 max-w-[700px] relative px-2 group cursor-pointer" onClick={() => window.dispatchEvent(new KeyboardEvent('keydown', { key: 'k', ctrlKey: true }))}>
                     <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground" size={16} />
                     <div className="w-full bg-background border border-border rounded-[3px] py-1.5 pl-9 pr-4 text-[13px] text-muted-foreground flex justify-between items-center transition-all group-hover:border-primary">
-                        <span>Search your library...</span>
-                        <kbd className="hidden sm:inline-block px-1.5 py-0.5 rounded-[3px] border border-border bg-secondary text-[10px] font-bold">Ctrl+K</kbd>
+                        <span className="hidden sm:inline">Search your library...</span>
+                        <span className="sm:hidden">Search...</span>
+                        <kbd className="hidden md:inline-block px-1.5 py-0.5 rounded-[3px] border border-border bg-secondary text-[10px] font-bold">Ctrl+K</kbd>
                     </div>
                 </div>
 
@@ -136,7 +137,7 @@ const Navbar = ({ onMenuClick }) => {
                         </div>
                     ) : (
                         <div className="flex items-center gap-2">
-                            <Link to="/login" className="px-3 py-1.5 text-[13px] text-primary hover:bg-primary/10 rounded transition-colors">Log in</Link>
+                            <Link to="/login" className="px-3 py-1.5 text-[13px] text-link hover:underline rounded transition-colors">Log in</Link>
                             <Link to="/register" className="so-btn so-btn-primary px-3 py-1.5">Sign up</Link>
                         </div>
                     )}

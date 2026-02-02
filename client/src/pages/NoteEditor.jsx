@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { createNote, getNotes, updateNote } from '../features/notes/noteSlice';
-import { getCategories } from '../features/categories/categorySlice';
+import { getCategories, createCategory } from '../features/categories/categorySlice';
 import {
     Plus,
     X,
@@ -23,13 +23,15 @@ import {
     Maximize2,
     Save,
     Trash2,
-    FileCode
+    FileCode,
+    FileUp
 } from 'lucide-react';
 import Editor from '@monaco-editor/react';
 import { useTheme } from '../context/ThemeContext';
 import { toast } from 'react-hot-toast';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const NoteEditor = () => {
     const { theme } = useTheme();
@@ -53,6 +55,9 @@ const NoteEditor = () => {
 
     const { title, content, type, categoryId, tags, isPublic, videoUrl } = formData;
     const [viewMode, setViewMode] = useState('edit'); // 'edit', 'preview', 'split'
+    const [showCategoryModal, setShowCategoryModal] = useState(false);
+    const [newCategoryName, setNewCategoryName] = useState('');
+    const [file, setFile] = useState(null);
 
     useEffect(() => {
         dispatch(getCategories());
@@ -123,6 +128,18 @@ const NoteEditor = () => {
         { icon: ImageIcon, label: 'Image', action: () => injectMarkdown('![alt text](', ')') },
     ];
 
+    const handleCreateCategory = async (e) => {
+        e.preventDefault();
+        if (!newCategoryName.trim()) return;
+        const res = await dispatch(createCategory({ name: newCategoryName }));
+        if (!res.error) {
+            toast.success('Category created');
+            setFormData(prev => ({ ...prev, categoryId: res.payload._id }));
+            setShowCategoryModal(false);
+            setNewCategoryName('');
+        }
+    };
+
     const onSubmit = (e) => {
         e.preventDefault();
         if (!title.trim()) return toast.error('Enter a title');
@@ -133,11 +150,14 @@ const NoteEditor = () => {
             noteData.append(key, formData[key]);
         });
         noteData.set('category', categoryId);
+        if (file) {
+            noteData.append('file', file);
+        }
 
         const action = id ? updateNote({ id, noteData }) : createNote(noteData);
         dispatch(action).then((res) => {
             if (!res.error) {
-                toast.success(id ? 'Record Synchronized' : 'Vault Entry Created');
+                toast.success(id ? 'Note Saved' : 'Note Created');
                 navigate('/notes');
             }
         });
@@ -147,6 +167,7 @@ const NoteEditor = () => {
 
     return (
         <div className="max-w-[1400px] mx-auto pb-20 animate-in fade-in duration-300">
+            {/* Header Section */}
             <div className="flex flex-col sm:flex-row justify-between items-center gap-4 mb-6 border-b border-border pb-4">
                 <div className="flex items-center gap-3">
                     <div className="p-2 bg-primary/10 rounded-[3px] text-primary">
@@ -154,9 +175,9 @@ const NoteEditor = () => {
                     </div>
                     <div>
                         <h1 className="text-[24px] font-bold text-foreground">
-                            {id ? 'Refine Record' : 'Create Vault Entry'}
+                            {id ? 'Edit Note' : 'Create New Note'}
                         </h1>
-                        <p className="text-[12px] text-muted-foreground uppercase tracking-widest font-bold">Workspace / Documentation</p>
+                        <p className="text-[12px] text-muted-foreground uppercase tracking-widest font-bold">Workspace / Library</p>
                     </div>
                 </div>
 
@@ -168,7 +189,7 @@ const NoteEditor = () => {
                         onClick={onSubmit}
                         className="so-btn so-btn-primary px-6 font-bold shadow-lg shadow-primary/10"
                     >
-                        <Save size={16} className="mr-2" /> {id ? 'Synchronize' : 'Initialize'}
+                        <Save size={16} className="mr-2" /> {id ? 'Save Changes' : 'Create Note'}
                     </button>
                 </div>
             </div>
@@ -227,10 +248,10 @@ const NoteEditor = () => {
                         </div>
 
                         {/* Editor Panes */}
-                        <div className={`flex ${viewMode === 'split' ? 'min-h-[500px]' : 'min-h-[500px]'}`}>
+                        <div className="flex h-[600px]">
                             {/* Write Pane */}
                             {(viewMode === 'edit' || viewMode === 'split') && (
-                                <div className={`flex-1 border-r border-border min-w-0 ${viewMode === 'split' ? 'w-1/2' : 'w-full'}`}>
+                                <div className={`flex-1 min-w-0 border-r border-border h-full ${viewMode === 'split' ? 'w-1/2' : 'w-full'}`}>
                                     <Editor
                                         height="100%"
                                         language="markdown"
@@ -254,7 +275,7 @@ const NoteEditor = () => {
 
                             {/* Preview Pane */}
                             {(viewMode === 'preview' || viewMode === 'split') && (
-                                <div className={`flex-1 overflow-y-auto bg-background p-8 prose prose-zinc dark:prose-invert max-w-none ${viewMode === 'split' ? 'w-1/2' : 'w-full'}`}>
+                                <div className={`flex-1 overflow-y-auto bg-background p-8 prose prose-zinc dark:prose-invert max-w-none h-full ${viewMode === 'split' ? 'w-1/2' : 'w-full'}`}>
                                     <ReactMarkdown remarkPlugins={[remarkGfm]}>
                                         {content || '*No content to preview yet. Start typing or use the toolbar.*'}
                                     </ReactMarkdown>
@@ -270,8 +291,8 @@ const NoteEditor = () => {
                                 <span>{content.length} Characters</span>
                             </div>
                             <div className="flex items-center gap-2">
-                                <div className="w-2 h-2 rounded-full bg-[#808000] animate-pulse" />
-                                <span>Synchronized</span>
+                                <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
+                                <span>Live Synchronized</span>
                             </div>
                         </div>
                     </div>
@@ -286,12 +307,21 @@ const NoteEditor = () => {
 
                         <div className="space-y-4">
                             <div className="space-y-1.5">
-                                <label className="text-[11px] font-bold text-muted-foreground uppercase">Tag Category</label>
+                                <div className="flex justify-between items-center">
+                                    <label className="text-[11px] font-bold text-muted-foreground uppercase">Tag Category</label>
+                                    <button
+                                        type="button"
+                                        onClick={() => setShowCategoryModal(true)}
+                                        className="text-[10px] text-primary hover:underline font-bold"
+                                    >
+                                        + New
+                                    </button>
+                                </div>
                                 <select
                                     name="categoryId"
                                     value={categoryId}
                                     onChange={onChange}
-                                    className="w-full border border-border bg-background rounded-[3px] py-2 px-3 text-[13px] outline-none focus:border-primary"
+                                    className="w-full border border-border bg-background rounded-[3px] py-2 px-3 text-[13px] text-foreground outline-none focus:border-primary"
                                 >
                                     <option value="">Select Category</option>
                                     {categories.map((cat) => (
@@ -307,8 +337,30 @@ const NoteEditor = () => {
                                     value={tags}
                                     onChange={onChange}
                                     placeholder="node architecture security"
-                                    className="w-full border border-border bg-background rounded-[3px] py-2 px-3 text-[13px] outline-none focus:border-primary"
+                                    className="w-full border border-border bg-background rounded-[3px] py-2 px-3 text-[13px] text-foreground outline-none focus:border-primary"
                                 />
+                            </div>
+
+                            <div className="space-y-1.5">
+                                <label className="text-[11px] font-bold text-muted-foreground uppercase">Research Resource (PDF)</label>
+                                <div className="border border-border border-dashed rounded-[3px] p-4 text-center hover:bg-muted/10 transition-colors cursor-pointer relative group">
+                                    <input
+                                        type="file"
+                                        accept="application/pdf"
+                                        onChange={(e) => setFile(e.target.files[0])}
+                                        className="absolute inset-0 opacity-0 cursor-pointer"
+                                    />
+                                    {file ? (
+                                        <div className="text-[12px] flex items-center justify-center gap-2 text-primary font-bold">
+                                            <FileCode size={14} /> {file.name}
+                                        </div>
+                                    ) : (
+                                        <div className="flex flex-col items-center gap-1">
+                                            <FileUp size={16} className="text-muted-foreground group-hover:text-primary transition-colors" />
+                                            <span className="text-[11px] text-muted-foreground">Attach technical papers</span>
+                                        </div>
+                                    )}
+                                </div>
                             </div>
 
                             <div className="pt-4 space-y-3">
@@ -344,6 +396,35 @@ const NoteEditor = () => {
                     </div>
                 </div>
             </div>
+
+            {/* Quick Category Modal */}
+            <AnimatePresence>
+                {showCategoryModal && (
+                    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.95 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            exit={{ opacity: 0, scale: 0.95 }}
+                            className="bg-card border border-border w-full max-w-sm rounded-[3px] shadow-2xl p-6"
+                        >
+                            <h3 className="text-[17px] font-bold text-foreground mb-4">Quick Create Category</h3>
+                            <form onSubmit={handleCreateCategory} className="space-y-4">
+                                <input
+                                    autoFocus
+                                    className="w-full border border-border bg-background rounded-[3px] py-2 px-3 text-[14px] text-foreground outline-none focus:border-primary"
+                                    placeholder="e.g. System Design"
+                                    value={newCategoryName}
+                                    onChange={(e) => setNewCategoryName(e.target.value)}
+                                />
+                                <div className="flex gap-2">
+                                    <button type="submit" className="so-btn so-btn-primary flex-1">Create</button>
+                                    <button type="button" onClick={() => setShowCategoryModal(false)} className="so-btn bg-transparent hover:bg-muted/50 flex-1">Cancel</button>
+                                </div>
+                            </form>
+                        </motion.div>
+                    </div>
+                )}
+            </AnimatePresence>
         </div>
     );
 };

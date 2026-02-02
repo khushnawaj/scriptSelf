@@ -168,6 +168,8 @@
   font-size: 12px;
   border-radius: 3px;
   display: inline-block;
+  text-transform: uppercase;
+  font-weight: bold;
   margin-right: 4px;
   margin-bottom: 4px;
   transition: background-color 0.1s ease;

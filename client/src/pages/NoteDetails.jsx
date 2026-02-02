@@ -22,7 +22,10 @@ import {
     User,
     Copy,
     Check,
-    List
+    List,
+    FileCode,
+    FileDown,
+    ExternalLink
 } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import Spinner from '../components/Spinner';
@@ -131,7 +134,7 @@ const NoteDetails = () => {
                                     return !inline && match ? (
                                         <div className="relative group my-8">
                                             {/* Code Block Header */}
-                                            <div className="flex items-center justify-between px-4 py-2 bg-[#f6f6f6] dark:bg-[#1d1d1d] border border-border border-b-0 rounded-t-[3px]">
+                                            <div className="flex items-center justify-between px-4 py-2 bg-muted/20 border border-border border-b-0 rounded-t-[3px]">
                                                 <div className="flex items-center gap-2">
                                                     <FileCode size={14} className="text-muted-foreground" />
                                                     <span className="text-[11px] font-bold text-muted-foreground uppercase tracking-widest">{match[1]}</span>
@@ -148,7 +151,7 @@ const NoteDetails = () => {
                                                 style={theme === 'dark' ? vscDarkPlus : prism}
                                                 language={match[1]}
                                                 PreTag="div"
-                                                className="!rounded-b-[3px] !rounded-t-0 !m-0 !bg-[#f6f6f6] dark:!bg-[#1d1d1d] !p-6 !border !border-border !text-[14px] !leading-relaxed"
+                                                className="!rounded-b-[3px] !rounded-t-0 !m-0 !bg-background !p-6 !border !border-border !text-[14px] !leading-relaxed"
                                                 {...props}
                                             >
                                                 {codeString}
@@ -177,13 +180,13 @@ const NoteDetails = () => {
                     {/* Actions & Attribution */}
                     <div className="flex flex-col sm:flex-row justify-between items-start mt-8 pt-6 gap-6 pb-16 border-t border-border/50">
                         <div className="flex items-center gap-6 text-[13px] text-muted-foreground">
-                            <button className="hover:text-primary transition-colors flex items-center gap-1.5 border-none bg-transparent">
+                            <button className="hover:text-primary transition-colors flex items-center gap-1.5 border-none bg-transparent cursor-pointer">
                                 <Share2 size={14} /> Share
                             </button>
-                            <button className="hover:text-primary transition-colors flex items-center gap-1.5 border-none bg-transparent">
+                            <button className="hover:text-primary transition-colors flex items-center gap-1.5 border-none bg-transparent cursor-pointer">
                                 <Bookmark size={14} /> Follow
                             </button>
-                            <button onClick={handleDelete} className="hover:text-rose-500 transition-colors flex items-center gap-1.5 border-none bg-transparent">
+                            <button onClick={handleDelete} className="hover:text-rose-500 transition-colors flex items-center gap-1.5 border-none bg-transparent cursor-pointer">
                                 <Trash2 size={14} /> Delete
                             </button>
                         </div>
@@ -211,6 +214,34 @@ const NoteDetails = () => {
                             </div>
                         </div>
                     </div>
+
+                    {/* Technical Resources Section */}
+                    {note.attachmentUrl && (
+                        <div className="mt-8 pt-6 border-t border-border">
+                            <h3 className="text-[19px] font-normal mb-4 text-foreground flex items-center gap-3">
+                                <FileCode size={20} className="text-primary" /> Technical Resources
+                            </h3>
+                            <div className="bg-muted/20 border border-border border-dashed rounded-[3px] p-6 flex flex-col items-center justify-center text-center group hover:bg-muted/30 transition-all">
+                                <div className="p-3 bg-secondary rounded-full mb-3 text-muted-foreground group-hover:text-primary transition-colors">
+                                    <FileDown size={32} />
+                                </div>
+                                <p className="text-[14px] font-bold text-foreground mb-1">
+                                    {note.attachment?.originalName || 'Download Documentation'}
+                                </p>
+                                <p className="text-[12px] text-muted-foreground mb-4">
+                                    Research paper or technical reference attached to this record.
+                                </p>
+                                <a
+                                    href={note.attachmentUrl.startsWith('http') ? note.attachmentUrl : `http://localhost:5000/${note.attachmentUrl}`}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="so-btn so-btn-primary px-6 flex items-center gap-2"
+                                >
+                                    <ExternalLink size={14} /> Open Document
+                                </a>
+                            </div>
+                        </div>
+                    )}
 
                     {/* Tutorial Section if exists */}
                     {note.videoUrl && (

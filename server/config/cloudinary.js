@@ -9,9 +9,16 @@ cloudinary.config({
 
 const storage = new CloudinaryStorage({
     cloudinary: cloudinary,
-    params: {
-        folder: 'ScriptShelf',
-        allowed_formats: ['jpg', 'png', 'jpeg', 'pdf', 'docx', 'txt'],
+    params: async (req, file) => {
+        let resource_type = 'auto';
+        if (file.mimetype === 'application/pdf') {
+            resource_type = 'raw';
+        }
+        return {
+            folder: 'ScriptShelf',
+            resource_type: resource_type,
+            allowed_formats: ['jpg', 'png', 'jpeg', 'pdf', 'docx', 'txt'],
+        };
     },
 });
 

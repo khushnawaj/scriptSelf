@@ -114,7 +114,7 @@ const Notes = () => {
                                     <div className="w-5 h-5 bg-[#808000] rounded-[2px] flex items-center justify-center text-white text-[10px] font-bold">
                                         {note.user?.username?.charAt(0).toUpperCase() || 'U'}
                                     </div>
-                                    <span className="text-[#0074cc] hover:underline cursor-pointer font-medium">
+                                    <span className="text-link hover:underline cursor-pointer font-medium">
                                         {note.user?.username || 'User'}
                                     </span>
                                     <span className="text-muted-foreground hidden sm:inline">
@@ -130,7 +130,7 @@ const Notes = () => {
                     <div className="py-24 text-center">
                         <MessageSquare size={48} className="mx-auto text-muted/30 mb-4" />
                         <p className="text-muted-foreground text-lg">No archival entries match your current filters.</p>
-                        <Link to="/notes/new" className="text-[#0074cc] hover:underline mt-2 block font-medium">Create a new entry</Link>
+                        <Link to="/notes/new" className="text-link hover:underline mt-2 block font-medium">Create a new entry</Link>
                     </div>
                 )}
             </div>
