@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@alexbruf/react-diff-viewer": "^3.1.5",
+    "@monaco-editor/react": "^4.7.0",
     "@reduxjs/toolkit": "^2.11.2",
     "axios": "^1.13.4",
     "chart.js": "^4.5.1",

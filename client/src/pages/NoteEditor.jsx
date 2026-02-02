@@ -7,11 +7,14 @@ import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-import { Save, ArrowLeft, Code, FileText, Link as LinkIcon, Hash, Eye, Edit2, LayoutTemplate, Globe, Plus, File, PlayCircle, Minimize2, Maximize2, X } from 'lucide-react';
+import { Save, ArrowLeft, Code, FileText, Link as LinkIcon, Hash, Eye, Edit2, LayoutTemplate, Globe, Plus, File, PlayCircle, Minimize2, Maximize2, X, Terminal } from 'lucide-react';
+import Editor from '@monaco-editor/react';
+import { useTheme } from '../context/ThemeContext';
 import { toast } from 'react-hot-toast';
 import clsx from 'clsx';
 
 const NoteEditor = () => {
+    const { theme } = useTheme();
     const { id } = useParams();
     const navigate = useNavigate();
     const dispatch = useDispatch();
@@ -35,6 +38,8 @@ const NoteEditor = () => {
 
     const [viewMode, setViewMode] = useState('edit'); // 'edit' | 'preview'
     const [isTutorialMode, setIsTutorialMode] = useState(false);
+    const [isPlaygroundMode, setIsPlaygroundMode] = useState(false);
+    const [playgroundDoc, setPlaygroundDoc] = useState('');
 
     const { title, content, codeSnippet, type, categoryId, tags, attachmentUrl, isPublic, isPinned, videoUrl } = formData;
 
@@ -102,6 +107,15 @@ const NoteEditor = () => {
         } else {
             setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
         }
+    };
+
+    const onMonacoChange = (value) => {
+        setFormData(prev => ({ ...prev, content: value || '' }));
+    };
+
+    const runCode = () => {
+        setPlaygroundDoc(content);
+        toast.success("Code updated in playground!");
     };
 
     const onSubmit = async (e) => {
@@ -210,6 +224,17 @@ console.log("Hello");
                     >
                         {isTutorialMode ? <Minimize2 size={14} /> : <PlayCircle size={14} />}
                         {isTutorialMode ? 'Focus Editor' : 'Tutorial Mode'}
+                    </button>
+                    <button
+                        onClick={() => setIsPlaygroundMode(!isPlaygroundMode)}
+                        className={clsx(
+                            isPlaygroundMode ? "btn-premium-primary" : "btn-premium-secondary",
+                            "py-1.5"
+                        )}
+                        title="Toggle Live Output Playground"
+                    >
+                        <Terminal size={14} />
+                        {isPlaygroundMode ? 'Close Playground' : 'Playground'}
                     </button>
                 </div>
             </div>
@@ -321,16 +346,27 @@ console.log("Hello");
                         {/* Editor / Preview */}
                         <div className="min-h-[500px] flex flex-col">
                             {viewMode === 'edit' ? (
-                                <textarea
-                                    name="content"
-                                    value={content}
-                                    onChange={onChange}
-                                    placeholder="Write your note here... Markdown is supported! &#10;# Heading &#10;**Bold** &#10;- List"
-                                    className="flex-1 w-full bg-transparent p-6 outline-none resize-none font-sans text-sm leading-relaxed"
-                                    required
-                                />
+                                <div className="flex-1 border-t border-border">
+                                    <Editor
+                                        height="600px"
+                                        language="javascript"
+                                        theme={theme === 'dark' ? 'vs-dark' : 'light'}
+                                        value={content}
+                                        onChange={onMonacoChange}
+                                        options={{
+                                            minimap: { enabled: false },
+                                            fontSize: 16,
+                                            lineNumbers: 'on',
+                                            roundedSelection: false,
+                                            scrollBeyondLastLine: false,
+                                            readOnly: false,
+                                            automaticLayout: true,
+                                            padding: { top: 20 }
+                                        }}
+                                    />
+                                </div>
                             ) : (
-                                <div className="p-6 prose prose-slate dark:prose-invert max-w-none prose-sm">
+                                <div className="p-6 prose prose-slate dark:prose-invert max-w-none">
                                     <ReactMarkdown
                                         remarkPlugins={[remarkGfm]}
                                         components={{
@@ -359,6 +395,33 @@ console.log("Hello");
                             )}
                         </div>
                     </div>
+
+                    {/* Live Playground Area */}
+                    {isPlaygroundMode && (
+                        <div className="bg-card border border-border rounded-xl shadow-xl overflow-hidden mt-6 animate-in slide-in-from-bottom-4 duration-500">
+                            <div className="p-4 bg-muted/50 border-b border-border flex justify-between items-center">
+                                <h3 className="flex items-center gap-2 font-bold text-sm">
+                                    <Terminal size={16} className="text-primary" /> LIVE OUTPUT PREVIEW
+                                </h3>
+                                <button
+                                    onClick={runCode}
+                                    className="btn-premium-primary py-1 px-4 text-xs"
+                                >
+                                    Run Code
+                                </button>
+                            </div>
+                            <div className="bg-white" style={{ height: '400px' }}>
+                                <iframe
+                                    srcDoc={playgroundDoc}
+                                    title="output"
+                                    sandbox="allow-scripts"
+                                    frameBorder="0"
+                                    width="100%"
+                                    height="100%"
+                                />
+                            </div>
+                        </div>
+                    )}
 
                     {/* Separate Code Snippet Field (Optional but kept for specific 'code' type notes) */}
                     {type === 'code' && viewMode === 'edit' && (
