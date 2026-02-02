@@ -213,7 +213,13 @@ const NoteDetails = () => {
                                             style={vscDarkPlus}
                                             language={match[1]}
                                             PreTag="div"
-                                            customStyle={{ margin: 0, borderRadius: 0, fontSize: '0.9em' }}
+                                            customStyle={{
+                                                margin: 0,
+                                                borderRadius: 0,
+                                                fontSize: '1em',
+                                                fontWeight: '500',
+                                                fontFamily: 'JetBrains Mono, Fira Code, monospace'
+                                            }}
                                             {...props}
                                         >
                                             {codeString}

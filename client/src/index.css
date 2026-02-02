@@ -107,8 +107,30 @@
   }
   
   html {
-     font-size: 14px;
+     font-size: 16px;
      scroll-behavior: smooth;
+  }
+
+  /* Prose Readability Overrides */
+  .prose {
+    max-width: 100%;
+    color: var(--foreground) !important;
+  }
+  
+  .prose p, .prose li {
+    line-height: 1.75;
+    word-spacing: 0.02em;
+  }
+
+  /* Ensure headings are prominent */
+  .prose h1, .prose h2, .prose h3, .prose h4 {
+    color: var(--foreground) !important;
+    font-weight: 800 !important;
+  }
+
+  /* Better contrast for secondary text in light mode */
+  :root .text-muted-foreground {
+    color: hsl(180 15% 30%); /* Darker than before */
   }
 
   body {
