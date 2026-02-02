@@ -7,7 +7,7 @@ import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-import { Save, ArrowLeft, Code, FileText, Link as LinkIcon, Hash, Eye, Edit2, LayoutTemplate, Globe, Plus, File, PlayCircle, Minimize2, Maximize2 } from 'lucide-react';
+import { Save, ArrowLeft, Code, FileText, Link as LinkIcon, Hash, Eye, Edit2, LayoutTemplate, Globe, Plus, File, PlayCircle, Minimize2, Maximize2, X } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import clsx from 'clsx';
 
@@ -407,24 +407,43 @@ console.log("Hello");
                                                 <option value="NEW_CATEGORY_OPTION" className="font-semibold text-primary">+ Create New Category</option>
                                             </select>
                                         ) : (
-                                            <div className="flex items-center gap-2">
+                                            <div className="flex items-center gap-1.5">
                                                 <input
                                                     type="text"
                                                     autoFocus
                                                     value={newCategoryName}
                                                     onChange={(e) => setNewCategoryName(e.target.value)}
-                                                    placeholder="New Category Name"
-                                                    className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-primary/50"
-                                                    onBlur={() => { if (!newCategoryName) setIsCreatingCategory(false); }}
-                                                    onKeyDown={(e) => { if (e.key === 'Enter') handleCreateCategory(); }}
+                                                    placeholder="Category name..."
+                                                    className="flex-1 bg-muted border border-border rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-primary/50"
+                                                    onKeyDown={(e) => {
+                                                        if (e.key === 'Enter') {
+                                                            e.preventDefault();
+                                                            handleCreateCategory();
+                                                        }
+                                                        if (e.key === 'Escape') setIsCreatingCategory(false);
+                                                    }}
                                                 />
-                                                <button
-                                                    onClick={handleCreateCategory}
-                                                    className="btn-premium-primary p-2 h-9 w-9"
-                                                    title="Save Category"
-                                                >
-                                                    <Save size={16} />
-                                                </button>
+                                                <div className="flex items-center gap-1 flex-shrink-0">
+                                                    <button
+                                                        type="button"
+                                                        onMouseDown={(e) => {
+                                                            e.preventDefault(); // Prevent onBlur of input
+                                                            handleCreateCategory();
+                                                        }}
+                                                        className="p-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors shadow-sm"
+                                                        title="Save Category"
+                                                    >
+                                                        <Save size={16} />
+                                                    </button>
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => setIsCreatingCategory(false)}
+                                                        className="p-2 bg-muted text-muted-foreground rounded-lg hover:bg-muted-foreground/10 transition-colors"
+                                                        title="Cancel"
+                                                    >
+                                                        <X size={16} />
+                                                    </button>
+                                                </div>
                                             </div>
                                         )}
                                     </div>
