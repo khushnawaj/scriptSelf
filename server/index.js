@@ -67,20 +67,25 @@ app.use(cors({
     // 1. Allow requests with no origin (like mobile apps or Postman)
     if (!origin) return callback(null, true);
 
-    // 2. Check if the origin is in our allowed list
-    const isAllowed = allowedOrigins.includes(origin);
+    // 2. Normalize and check origins
+    const normalizedOrigin = origin.replace(/\/$/, "");
 
-    // 3. Check if it's a Vercel subdomain for your project
-    const isVercel = origin.includes('vercel.app') && origin.includes('script-self');
+    const isAllowed = allowedOrigins.some(o => o === normalizedOrigin);
+
+    // 3. Robust Vercel check (regex for anything under vercel.app that includes script)
+    // Matches: script-self.vercel.app, script-self-two.vercel.app, scriptself.vercel.app, etc.
+    const isVercel = /\.vercel\.app$/.test(normalizedOrigin) &&
+      (normalizedOrigin.includes('script-self') || normalizedOrigin.includes('scriptself'));
 
     // 4. Check against CLIENT_URL env var
-    const isClient = process.env.CLIENT_URL && (origin === process.env.CLIENT_URL.replace(/\/$/, ""));
+    const clientUrl = process.env.CLIENT_URL ? process.env.CLIENT_URL.replace(/\/$/, "") : null;
+    const isClient = clientUrl && normalizedOrigin === clientUrl;
 
     if (isAllowed || isVercel || isClient) {
       callback(null, true);
     } else {
-      console.log('Blocked by CORS:', origin);
-      callback(null, false); // Return false instead of an error to avoid 500s
+      console.log(`[CORS] Rejected: ${origin} (isVercel: ${isVercel}, isClient: ${isClient}, clientUrl: ${clientUrl})`);
+      callback(new Error('Not allowed by CORS'));
     }
   },
   credentials: true,
