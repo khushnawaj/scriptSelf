@@ -60,9 +60,11 @@ const NoteEditor = () => {
     const { title, content, type, adrStatus, categoryId, tags, isPublic, videoUrl } = formData;
     const [viewMode, setViewMode] = useState('edit'); // 'edit', 'preview', 'split'
     const [showCategoryModal, setShowCategoryModal] = useState(false);
-    const [newCategoryName, setNewCategoryName] = useState('');
     const [file, setFile] = useState(null);
     const [hasDraft, setHasDraft] = useState(false);
+    const [isDirty, setIsDirty] = useState(false);
+    const [isSaving, setIsSaving] = useState(false);
+    const [lastSaved, setLastSaved] = useState(null);
 
     // --- Draft System Logic ---
     const draftKey = id ? `ss_draft_${id}` : 'ss_draft_new';
@@ -76,12 +78,20 @@ const NoteEditor = () => {
 
     useEffect(() => {
         const timer = setTimeout(() => {
-            if (content || title) {
+            if (isDirty && (content || title)) {
                 localStorage.setItem(draftKey, JSON.stringify(formData));
+                setLastSaved(new Date().toLocaleTimeString());
             }
         }, 2000);
-        return () => clearTimeout(timer);
-    }, [formData, draftKey]);
+
+        // Final save on unmount if dirty
+        return () => {
+            clearTimeout(timer);
+            if (isDirty && (content || title)) {
+                localStorage.setItem(draftKey, JSON.stringify(formData));
+            }
+        };
+    }, [formData, draftKey, isDirty]);
 
     const restoreDraft = () => {
         const savedDraft = localStorage.getItem(draftKey);
@@ -120,12 +130,19 @@ const NoteEditor = () => {
                     isPublic: noteToEdit.isPublic || false,
                     videoUrl: noteToEdit.videoUrl || '',
                 });
+                // After loading from DB, we consider the first state "initial"
+                // but any change after this will trigger a draft.
+                setTimeout(() => setIsInitialLoad(false), 500);
             }
+        } else if (!id) {
+            // New note: allow draft saving after a small delay to avoid blank drafts
+            setTimeout(() => setIsInitialLoad(false), 1000);
         }
     }, [id, notes]);
 
     const onChange = (e) => {
         const { name, value, type: inputType, checked } = e.target;
+        setIsDirty(true);
         setFormData(prev => ({
             ...prev,
             [name]: inputType === 'checkbox' ? checked : value
@@ -137,6 +154,7 @@ const NoteEditor = () => {
     };
 
     const onEditorChange = (value) => {
+        setIsDirty(true);
         setFormData(prev => ({ ...prev, content: value || '' }));
     };
 
@@ -210,14 +228,15 @@ const NoteEditor = () => {
         }
 
         const action = id ? updateNote({ id, noteData }) : createNote(noteData);
+        setIsSaving(true);
         dispatch(action).then((res) => {
-            if (!res.error) {
-                toast.success(id ? 'Note Saved' : 'Note Created');
-                localStorage.removeItem(draftKey); // Clear draft on success
+            setIsSaving(false);
+            if (res.meta.requestStatus === 'fulfilled') {
+                toast.success(id ? 'Record Synchronized' : 'Record Created');
+                localStorage.removeItem(draftKey);
                 navigate('/notes');
             } else {
-                // Show the actual error message from backend
-                const errorMsg = res.payload?.error || res.payload || 'Failed to save note';
+                const errorMsg = res.payload?.error || res.payload || 'Sync failed';
                 toast.error(errorMsg);
             }
         });
@@ -248,24 +267,24 @@ const NoteEditor = () => {
                                 initial={{ opacity: 0, scale: 0.9 }}
                                 animate={{ opacity: 1, scale: 1 }}
                                 exit={{ opacity: 0, scale: 0.9 }}
-                                className="hidden md:flex items-center gap-2 bg-amber-500/10 border border-amber-500/20 px-3 py-1.5 rounded-[3px]"
+                                className="flex items-center gap-3 bg-primary/10 border border-primary/20 px-4 py-2 rounded-[6px]"
                             >
-                                <span className="text-[11px] font-bold text-amber-500 uppercase tracking-widest">Unsaved changes found</span>
-                                <div className="flex gap-2 ml-2">
-                                    <button onClick={restoreDraft} className="text-[11px] font-bold text-amber-600 hover:text-amber-700 underline">Restore</button>
-                                    <button onClick={discardDraft} className="text-[11px] font-bold text-muted-foreground hover:text-foreground">Discard</button>
+                                <span className="text-[12px] font-bold text-primary uppercase tracking-wider">Unsaved Progress</span>
+                                <div className="flex gap-3">
+                                    <button onClick={restoreDraft} className="text-[12px] font-bold text-foreground hover:text-primary transition-colors">Restore</button>
+                                    <button onClick={discardDraft} className="text-[12px] font-bold text-muted-foreground hover:text-foreground">Discard</button>
                                 </div>
                             </motion.div>
                         )}
                     </AnimatePresence>
-                    <button type="button" onClick={() => navigate(-1)} className="p-2 text-muted-foreground hover:bg-muted/50 rounded-[3px] transition-colors">
-                        <Trash2 size={18} />
+                    <button type="button" onClick={() => navigate(-1)} className="p-2 text-muted-foreground hover:bg-muted/50 rounded-[6px] transition-colors">
+                        <Trash2 size={20} />
                     </button>
                     <button
                         onClick={onSubmit}
-                        className="so-btn so-btn-primary px-6 font-bold shadow-lg shadow-primary/10"
+                        className="so-btn so-btn-primary px-8 font-bold shadow-xl shadow-primary/20"
                     >
-                        <Save size={16} className="mr-2" /> {id ? 'Save Changes' : 'Create Note'}
+                        <Save size={18} className="mr-2" /> Sync Record
                     </button>
                 </div>
             </div>
@@ -408,16 +427,15 @@ const NoteEditor = () => {
                             )}
                         </div>
 
-                        {/* Status Bar */}
                         <div className="flex items-center justify-between px-4 py-1.5 bg-muted/20 border-t border-border text-[11px] text-muted-foreground font-mono uppercase">
                             <div className="flex gap-4">
                                 <span>Markdown Format</span>
                                 <span>{wordCount} Words</span>
-                                <span>{content.length} Characters</span>
+                                {lastSaved && <span className="text-primary/70">Internal Draft: {lastSaved}</span>}
                             </div>
                             <div className="flex items-center gap-2">
-                                <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
-                                <span>Live Synchronized</span>
+                                <div className={`w-2 h-2 rounded-full ${isDirty ? 'bg-amber-500 animate-pulse' : 'bg-primary'}`} />
+                                <span>{isDirty ? 'Unsaved Changes' : 'Synced to Cache'}</span>
                             </div>
                         </div>
                     </div>

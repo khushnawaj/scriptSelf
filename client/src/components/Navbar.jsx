@@ -59,16 +59,16 @@ const Navbar = ({ onMenuClick }) => {
 
                 {/* Logo */}
                 <Link to="/" className="flex items-center gap-2 shrink-0 group">
-                    <div className="p-2 bg-primary rounded-[8px] group-hover:rotate-12 transition-transform duration-300">
-                        <Code2 size={20} className="text-white" />
+                    <div className="p-1.5 bg-primary rounded-[6px] transition-transform duration-300">
+                        <Code2 size={18} className="text-white" />
                     </div>
-                    <span className="text-[20px] font-bold tracking-tight hidden sm:inline text-foreground">
+                    <span className="text-[18px] font-semibold tracking-tight hidden sm:inline text-foreground">
                         script<span className="text-primary">shelf.</span>
                     </span>
                 </Link>
 
                 <div className="hidden md:flex gap-1">
-                    <Link to="/notes" className="px-4 py-2 text-[14px] font-medium text-muted-foreground hover:text-foreground hover:bg-muted/50 rounded-[6px] transition-all">
+                    <Link to="/notes" className="px-3 py-2 text-[13px] font-medium text-muted-foreground hover:text-foreground hover:bg-muted/50 rounded-[6px] transition-all">
                         Library
                     </Link>
                 </div>

@@ -40,14 +40,14 @@ const Dashboard = () => {
     const patternsCount = notes.filter(n => n.type === 'pattern').length;
 
     return (
-        <div className="space-y-10 animate-in fade-in duration-700">
-            <div className="flex justify-between items-end">
+        <div className="space-y-8 animate-in fade-in duration-700">
+            <div className="flex justify-between items-end border-b border-border pb-6">
                 <div>
-                    <h1 className="text-[32px] font-bold text-foreground tracking-tight">Technical Pulse</h1>
-                    <p className="text-muted-foreground text-[14px]">Welcome back, {user?.username}. Here's what's happening in your knowledge base.</p>
+                    <h1 className="text-[24px] font-semibold text-foreground tracking-tight">Technical Pulse</h1>
+                    <p className="text-muted-foreground text-[13px] opacity-80">Welcome back, {user?.username}. Your knowledge base overview.</p>
                 </div>
-                <Link to="/notes/new" className="so-btn so-btn-primary h-12 px-8 flex items-center gap-2 shadow-xl hover:shadow-primary/20">
-                    <Plus size={18} /> New Record
+                <Link to="/notes/new" className="so-btn so-btn-primary h-10 px-6 flex items-center gap-2">
+                    <Plus size={16} /> New Record
                 </Link>
             </div>
 
@@ -58,14 +58,14 @@ const Dashboard = () => {
                     { label: 'Decision Records', value: adrCount, icon: Database, color: 'bg-rose-500/10 text-rose-500' },
                     { label: 'Public Posts', value: publicNotesCount, icon: Globe, color: 'bg-emerald-500/10 text-emerald-500' },
                 ].map((stat, i) => (
-                    <div key={i} className="group relative border border-border/50 p-8 rounded-[6px] bg-card hover:border-primary/50 transition-all duration-300 hover:shadow-2xl hover:shadow-primary/5">
-                        <div className="flex items-center justify-between mb-4">
-                            <div className={`p-3 rounded-[6px] ${stat.color}`}>
-                                <stat.icon size={20} />
+                    <div key={i} className="group relative border border-border/50 p-6 rounded-[6px] bg-card hover:border-primary/50 transition-all duration-300">
+                        <div className="flex items-center justify-between mb-3">
+                            <div className={`p-2 rounded-[6px] ${stat.color}`}>
+                                <stat.icon size={18} />
                             </div>
-                            <span className="text-muted-foreground font-bold text-[11px] uppercase tracking-[0.1em]">{stat.label}</span>
+                            <span className="text-muted-foreground font-bold text-[10px] uppercase tracking-[0.15em]">{stat.label}</span>
                         </div>
-                        <h4 className="text-[32px] font-bold text-foreground tabular-nums">{stat.value}</h4>
+                        <h4 className="text-[28px] font-semibold text-foreground tabular-nums">{stat.value}</h4>
                     </div>
                 ))}
             </div>
