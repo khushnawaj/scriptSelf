@@ -57,8 +57,8 @@ const Home = () => {
             </div>
 
             {/* Feature Blocks */}
-            <div className="max-w-7xl mx-auto py-24 px-6 grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-16">
-                <div className="group bg-card border border-border/50 p-8 rounded-[12px] hover:border-primary/50 transition-all duration-300 hover:shadow-lg flex flex-col items-center text-center">
+            <div className="max-w-7xl mx-auto py-24 px-6 grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12 lg:gap-16">
+                <div className="group bg-card border border-border/50 p-8 rounded-[12px] hover:border-primary/50 transition-all duration-300 hover:shadow-lg flex flex-col items-center text-center h-full">
                     <div className="w-14 h-14 bg-accent text-primary rounded-[8px] flex items-center justify-center mb-6 group-hover:bg-primary group-hover:text-white transition-all transform group-hover:rotate-6 shadow-sm">
                         <MessageSquare size={28} />
                     </div>
@@ -67,7 +67,7 @@ const Home = () => {
                         Don't just paste code. Document the *rationale* behind every architectural decision. Our Markdown engine is optimized for developer context.
                     </p>
                 </div>
-                <div className="group bg-card border border-border/50 p-8 rounded-[12px] hover:border-primary/50 transition-all duration-300 hover:shadow-lg flex flex-col items-center text-center">
+                <div className="group bg-card border border-border/50 p-8 rounded-[12px] hover:border-primary/50 transition-all duration-300 hover:shadow-lg flex flex-col items-center text-center h-full">
                     <div className="w-14 h-14 bg-accent text-primary rounded-[8px] flex items-center justify-center mb-6 group-hover:bg-primary group-hover:text-white transition-all transform group-hover:rotate-6 shadow-sm">
                         <Layers size={28} />
                     </div>
@@ -76,7 +76,7 @@ const Home = () => {
                         Structure your knowledge into reusable patterns. Filter by tags to find implementation details for Auth, DB, or API layers in milliseconds.
                     </p>
                 </div>
-                <div className="group bg-card border border-border/50 p-8 rounded-[12px] hover:border-primary/50 transition-all duration-300 hover:shadow-lg flex flex-col items-center text-center">
+                <div className="group bg-card border border-border/50 p-8 rounded-[12px] hover:border-primary/50 transition-all duration-300 hover:shadow-lg flex flex-col items-center text-center h-full">
                     <div className="w-14 h-14 bg-accent text-primary rounded-[8px] flex items-center justify-center mb-6 group-hover:bg-primary group-hover:text-white transition-all transform group-hover:rotate-6 shadow-sm">
                         <Globe size={28} />
                     </div>
