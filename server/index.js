@@ -52,6 +52,27 @@ app.get('/', (req, res) => {
 // Body parser
 app.use(express.json());
 
+// Cookie parser
+app.use(cookieParser());
+
+// Set static folder
+app.use(express.static(path.join(__dirname, 'public')));
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
+// Sanitize data
+app.use(mongoSanitize());
+
+// Set security headers
+app.use(helmet({
+  crossOriginResourcePolicy: false,
+}));
+
+// Prevent XSS attacks
+app.use(xss());
+
+// Prevent http param pollution
+app.use(hpp());
+
 // Mount routers
 app.use('/api/v1/auth', auth);
 app.use('/api/v1/users', users);
