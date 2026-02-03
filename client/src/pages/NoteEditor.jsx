@@ -305,7 +305,7 @@ const NoteEditor = () => {
                         <div className="h-px w-full bg-border absolute bottom-0 left-0" />
                     </div>
 
-                    <div className="border border-border rounded-[3px] overflow-hidden bg-card shadow-sm flex flex-col">
+                    <div className="glass-frost rounded-[3px] overflow-hidden shadow-sm flex flex-col">
                         <div className="flex flex-wrap items-center justify-between px-2 py-1 bg-muted/20 border-b border-border">
                             <div className="flex flex-wrap gap-1">
                                 {toolbarActions.map((item, i) => (
@@ -416,7 +416,7 @@ const NoteEditor = () => {
                 </div>
 
                 <div className="space-y-6">
-                    <div className="bg-card border border-border p-5 rounded-[3px] shadow-sm">
+                    <div className="glass-frost p-5 rounded-[3px] shadow-sm">
                         <h3 className="text-[13px] font-bold text-foreground mb-4 flex items-center gap-2 uppercase tracking-wider">
                             <Layout size={14} className="text-primary" /> Configuration
                         </h3>
@@ -553,7 +553,7 @@ const NoteEditor = () => {
                             initial={{ opacity: 0, scale: 0.95 }}
                             animate={{ opacity: 1, scale: 1 }}
                             exit={{ opacity: 0, scale: 0.95 }}
-                            className="bg-card border border-border w-full max-w-sm rounded-[3px] shadow-2xl p-6"
+                            className="glass-frost w-full max-w-sm rounded-[3px] shadow-2xl p-6"
                         >
                             <h3 className="text-[17px] font-bold text-foreground mb-4">Quick Create Category</h3>
                             <form onSubmit={handleCreateCategory} className="space-y-4">

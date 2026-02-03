@@ -120,6 +120,13 @@
   border-bottom: 1px solid var(--border);
 }
 
+.glass-frost {
+  background: var(--glass-bg);
+  backdrop-filter: blur(25px);
+  -webkit-backdrop-filter: blur(25px);
+  border: 1px solid var(--glass-border);
+}
+
 .so-btn {
   padding: 4px 12px;
   font-size: 13px;

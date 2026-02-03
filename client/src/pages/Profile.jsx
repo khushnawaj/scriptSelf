@@ -161,7 +161,7 @@ const Profile = () => {
                 {/* Side Stats & Links */}
                 <div className="lg:col-span-4 space-y-6">
                     <h3 className="text-[19px] font-normal text-foreground">My Stats</h3>
-                    <div className="border border-border p-6 rounded-[3px] bg-card grid grid-cols-2 gap-y-6 gap-x-4 shadow-sm">
+                    <div className="glass-frost p-6 rounded-[3px] grid grid-cols-2 gap-y-6 gap-x-4 shadow-sm">
                         <div className="space-y-1">
                             <p className="text-[21px] font-bold text-foreground">{userNotes}</p>
                             <p className="text-[11px] text-muted-foreground uppercase tracking-wider font-bold">Total Records</p>
@@ -212,7 +212,7 @@ const Profile = () => {
                 {/* Editor or Content */}
                 <div className="lg:col-span-8">
                     {isEditing ? (
-                        <div className="border border-border p-8 rounded-[3px] bg-card shadow-sm">
+                        <div className="glass-frost p-8 rounded-[3px] shadow-sm">
                             <h3 className="text-[19px] font-bold mb-8 pb-4 border-b border-border text-foreground">Edit Your Details</h3>
                             <form onSubmit={onSubmit} className="space-y-6">
                                 <div className="space-y-2">
@@ -311,7 +311,7 @@ const Profile = () => {
                                     <h3 className="text-[19px] font-normal text-foreground uppercase tracking-tight">Recent Work</h3>
                                     <Link to="/notes" className="text-[13px] text-link hover:underline">View all</Link>
                                 </div>
-                                <div className="border border-border rounded-[3px] bg-card divide-y divide-border overflow-hidden shadow-sm">
+                                <div className="glass-frost rounded-[3px] divide-y divide-border overflow-hidden shadow-sm">
                                     {notes.slice(0, 5).map(note => (
                                         <Link
                                             key={note._id}

@@ -134,7 +134,7 @@ const Admin = () => {
     return (
         <div className="space-y-8 animate-in fade-in duration-500">
             {/* Admin Header */}
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-card border border-border p-6 rounded-[3px] shadow-sm">
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 glass-frost p-6 rounded-[3px] shadow-sm">
                 <div className="flex items-center gap-4">
                     <div className="p-3 bg-primary/10 text-primary rounded-[3px]">
                         <Activity size={32} />
@@ -173,7 +173,7 @@ const Admin = () => {
             </div>
 
             {/* Main Management Area */}
-            <div className="bg-card border border-border rounded-[3px] shadow-sm overflow-hidden">
+            <div className="glass-frost rounded-[3px] shadow-sm overflow-hidden">
                 {/* Tabs - No Icons as requested */}
                 <div className="flex border-b border-border bg-muted/20">
                     {[
