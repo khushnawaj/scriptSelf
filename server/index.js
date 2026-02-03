@@ -25,17 +25,17 @@ const notes = require('./routes/noteRoutes');
 
 const app = express();
 
+// Request Logger
+app.use((req, res, next) => {
+  console.log(`[REQUEST] ${req.method} ${req.url} Origin: ${req.headers.origin}`);
+  next();
+});
+
 const cors = require('cors');
 
-// Standard Robust CORS Configuration
+// Permissive CORS for debugging
 const params = {
-  origin: [
-    'http://localhost:5173',
-    'http://localhost:5174',
-    'http://localhost:5175',
-    'https://script-self-two.vercel.app',
-    'https://script-self.vercel.app'
-  ],
+  origin: true, // Reflects the request origin
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'Origin']
