@@ -35,26 +35,10 @@ const allowedOrigins = [
 ];
 
 const corsOptions = {
-  origin: function (origin, callback) {
-    if (!origin) return callback(null, true);
-
-    const normalizedOrigin = origin.replace(/\/$/, "");
-    const isAllowed = allowedOrigins.some(o => o === normalizedOrigin);
-    const isVercel = /\.vercel\.app$/.test(normalizedOrigin) &&
-      (normalizedOrigin.includes('script-self') || normalizedOrigin.includes('scriptself'));
-    const clientUrl = process.env.CLIENT_URL ? process.env.CLIENT_URL.replace(/\/$/, "") : null;
-    const isClient = clientUrl && normalizedOrigin === clientUrl;
-
-    if (isAllowed || isVercel || isClient) {
-      callback(null, true);
-    } else {
-      console.log(`[CORS] Rejected: ${origin}`);
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
+  origin: allowedOrigins,
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'Origin']
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'Origin', 'Access-Control-Allow-Origin']
 };
 
 app.use(cors(corsOptions));
