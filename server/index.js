@@ -68,8 +68,14 @@ const server = app.listen(
 );
 
 // Handle unhandled promise rejections
+// Handle unhandled promise rejections
 process.on('unhandledRejection', (err, promise) => {
   console.log(`Error: ${err.message}`);
-  // Close server & exit process
-  server.close(() => process.exit(1));
+  // Do not close server on Render, keep it alive
+  // server.close(() => process.exit(1));
+});
+
+process.on('uncaughtException', (err) => {
+  console.log(`Uncaught Exception: ${err.message}`);
+  // Keep alive
 });
