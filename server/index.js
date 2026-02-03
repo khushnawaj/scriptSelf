@@ -60,37 +60,31 @@ const allowedOrigins = [
   'http://localhost:5173',
   'http://localhost:5174',
   'http://localhost:5175',
+  'https://script-self-two.vercel.app',
+  'https://script-self.vercel.app',
 ];
 
 app.use(cors({
   origin: function (origin, callback) {
-    // 1. Allow requests with no origin (like mobile apps or Postman)
     if (!origin) return callback(null, true);
 
-    // 2. Normalize and check origins
     const normalizedOrigin = origin.replace(/\/$/, "");
-
     const isAllowed = allowedOrigins.some(o => o === normalizedOrigin);
-
-    // 3. Robust Vercel check (regex for anything under vercel.app that includes script)
-    // Matches: script-self.vercel.app, script-self-two.vercel.app, scriptself.vercel.app, etc.
     const isVercel = /\.vercel\.app$/.test(normalizedOrigin) &&
       (normalizedOrigin.includes('script-self') || normalizedOrigin.includes('scriptself'));
-
-    // 4. Check against CLIENT_URL env var
     const clientUrl = process.env.CLIENT_URL ? process.env.CLIENT_URL.replace(/\/$/, "") : null;
     const isClient = clientUrl && normalizedOrigin === clientUrl;
 
     if (isAllowed || isVercel || isClient) {
       callback(null, true);
     } else {
-      console.log(`[CORS] Rejected: ${origin} (isVercel: ${isVercel}, isClient: ${isClient}, clientUrl: ${clientUrl})`);
+      console.log(`[CORS] Rejected: ${origin}`);
       callback(new Error('Not allowed by CORS'));
     }
   },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'Origin']
 }));
 
 // Mount routers

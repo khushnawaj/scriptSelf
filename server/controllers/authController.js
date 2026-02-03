@@ -85,33 +85,38 @@ exports.getMe = async (req, res, next) => {
 // @route     PUT /api/v1/auth/updatedetails
 // @access    Private
 exports.updateDetails = async (req, res, next) => {
-  const fieldsToUpdate = {
-    username: req.body.username,
-    email: req.body.email,
-    bio: req.body.bio,
-    // socialLinks can be JSON string if sent via FormData, parse it
-    socialLinks: req.body.socialLinks ? (typeof req.body.socialLinks === 'string' ? JSON.parse(req.body.socialLinks) : req.body.socialLinks) : undefined,
-    // Parse customLinks similarly
-    customLinks: req.body.customLinks ? (typeof req.body.customLinks === 'string' ? JSON.parse(req.body.customLinks) : req.body.customLinks) : undefined
-  };
+  try {
+    const fieldsToUpdate = {
+      username: req.body.username,
+      email: req.body.email,
+      bio: req.body.bio,
+      // socialLinks can be JSON string if sent via FormData, parse it
+      socialLinks: req.body.socialLinks ? (typeof req.body.socialLinks === 'string' ? JSON.parse(req.body.socialLinks) : req.body.socialLinks) : undefined,
+      // Parse customLinks similarly
+      customLinks: req.body.customLinks ? (typeof req.body.customLinks === 'string' ? JSON.parse(req.body.customLinks) : req.body.customLinks) : undefined
+    };
 
-  if (req.file) {
-    // Cloudinary storage provides the secure URL in req.file.path
-    fieldsToUpdate.avatar = req.file.path;
-  } else if (req.body.avatar) {
-    // Allow manual URL update if provided and no file
-    fieldsToUpdate.avatar = req.body.avatar;
+    if (req.file) {
+      // Cloudinary storage provides the secure URL in req.file.path
+      fieldsToUpdate.avatar = req.file.path;
+    } else if (req.body.avatar) {
+      // Allow manual URL update if provided and no file
+      fieldsToUpdate.avatar = req.body.avatar;
+    }
+
+    const user = await User.findByIdAndUpdate(req.user.id, fieldsToUpdate, {
+      new: true,
+      runValidators: true
+    });
+
+    res.status(200).json({
+      success: true,
+      data: user
+    });
+  } catch (err) {
+    console.error('Update Details Error:', err);
+    next(err);
   }
-
-  const user = await User.findByIdAndUpdate(req.user.id, fieldsToUpdate, {
-    new: true,
-    runValidators: true
-  });
-
-  res.status(200).json({
-    success: true,
-    data: user
-  });
 };
 
 // @desc      Log user out / clear cookie
