@@ -216,7 +216,9 @@ const NoteEditor = () => {
         noteData.append('adrStatus', adrStatus);
         noteData.append('videoUrl', videoUrl);
 
-        const tagsArray = tags.split(/[,\s]+/).filter(t => t.trim() !== '');
+        // Explicitly cast tags to string to avoid nested array corruption
+        const rawTagsString = String(tags || '');
+        const tagsArray = rawTagsString.split(/[,\s]+/).filter(t => t.trim() !== '');
         tagsArray.forEach(tag => {
             noteData.append('tags', tag);
         });

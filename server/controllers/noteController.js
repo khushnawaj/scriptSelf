@@ -127,7 +127,21 @@ exports.createNote = async (req, res, next) => {
       req.body.attachmentUrl = req.file.path;
     }
 
-    // Ensure title exists since it is required in the Model
+    // --- DATA SANITIZATION ---
+    // Ensure tags is a clean array of strings (flatten nested arrays if any)
+    if (req.body.tags) {
+      const rawTags = Array.isArray(req.body.tags) ? req.body.tags : [req.body.tags];
+      req.body.tags = rawTags
+        .filter(t => t && (typeof t === 'string' || typeof t === 'number'))
+        .map(t => String(t).trim())
+        .filter(t => t.length > 0);
+    }
+
+    // Ensure type is lowercase and trimmed
+    if (req.body.type) {
+      req.body.type = String(req.body.type).toLowerCase().trim();
+    }
+
     if (!req.body.title) req.body.title = "Untitled Note";
 
     const note = await Note.create(req.body);
@@ -184,6 +198,19 @@ exports.updateNote = async (req, res, next) => {
         mimeType: req.file.mimetype
       };
       req.body.attachmentUrl = req.file.path;
+    }
+
+    // --- DATA SANITIZATION ---
+    if (req.body.tags) {
+      const rawTags = Array.isArray(req.body.tags) ? req.body.tags : [req.body.tags];
+      req.body.tags = rawTags
+        .filter(t => t && (typeof t === 'string' || typeof t === 'number'))
+        .map(t => String(t).trim())
+        .filter(t => t.length > 0);
+    }
+
+    if (req.body.type) {
+      req.body.type = String(req.body.type).toLowerCase().trim();
     }
 
     note = await Note.findByIdAndUpdate(req.params.id, req.body, {

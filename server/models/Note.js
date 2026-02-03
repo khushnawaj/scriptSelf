@@ -47,7 +47,6 @@ const noteSchema = new mongoose.Schema({
     }],
     type: {
         type: String,
-        enum: ['code', 'pdf', 'doc', 'cheatsheet', 'adr', 'pattern', 'other'],
         default: 'doc',
         lowercase: true,
         trim: true
@@ -97,6 +96,21 @@ noteSchema.index({ title: 'text', tags: 'text', searchableText: 'text' });
 
 // Pre-save Middleware: Smart Tagging & Versioning
 noteSchema.pre('save', function (next) {
+    // --- DATA SANITIZATION ---
+    // Ensure tags is a clean array of strings (flatten nested arrays if any)
+    if (this.tags) {
+        const rawTags = Array.isArray(this.tags) ? this.tags : [this.tags];
+        this.tags = rawTags
+            .filter(t => t && (typeof t === 'string' || typeof t === 'number'))
+            .map(t => String(t).trim())
+            .filter(t => t.length > 0);
+    }
+
+    // Ensure type is lowercase and trimmed
+    if (this.type) {
+        this.type = String(this.type).toLowerCase().trim();
+    }
+
     // 1. Versioning
     if (this.isModified('content') || this.isModified('codeSnippet')) {
         // Only push if it's not a new document (otherwise history empty)
