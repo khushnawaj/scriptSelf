@@ -47,9 +47,19 @@ const noteSchema = new mongoose.Schema({
     }],
     type: {
         type: String,
-        enum: ['code', 'pdf', 'doc', 'cheatsheet', 'other'],
+        enum: ['code', 'pdf', 'doc', 'cheatsheet', 'adr', 'pattern', 'other'],
         default: 'doc'
     },
+    adrStatus: {
+        type: String,
+        enum: ['proposed', 'accepted', 'deprecated', 'superseded'],
+        default: 'proposed'
+    },
+    // For Bidirectional Linking
+    backlinks: [{
+        type: mongoose.Schema.ObjectId,
+        ref: 'Note'
+    }],
     tags: {
         type: [String],
         index: true // Indexed for faster search

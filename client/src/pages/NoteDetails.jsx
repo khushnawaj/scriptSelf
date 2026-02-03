@@ -8,7 +8,6 @@ import { vscDarkPlus, prism } from 'react-syntax-highlighter/dist/esm/styles/pri
 import remarkGfm from 'remark-gfm';
 import { useTheme } from '../context/ThemeContext';
 import {
-    ArrowLeft,
     Edit,
     Trash2,
     Share2,
@@ -16,19 +15,16 @@ import {
     ChevronDown,
     Bookmark,
     History,
-    MessageSquare,
     Video,
-    Clock,
-    User,
     Copy,
     Check,
-    List,
     FileCode,
     FileDown,
     ExternalLink
 } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import Spinner from '../components/Spinner';
+import Mermaid from '../components/Mermaid';
 
 const NoteDetails = () => {
     const { id } = useParams();
@@ -66,7 +62,7 @@ const NoteDetails = () => {
     }
 
     return (
-        <div className="space-y-4 max-w-[1100px] animate-in fade-in duration-300">
+        <div className="space-y-4 max-w-[1100px] mx-auto pb-20 animate-in fade-in duration-300">
             {/* Header Section */}
             <div className="border-b border-border pb-6 mb-6">
                 <div className="flex flex-col sm:flex-row justify-between items-start gap-4 mb-4">
@@ -92,6 +88,12 @@ const NoteDetails = () => {
                         <span className="font-normal opacity-60">Status</span>
                         <span className="text-primary font-bold uppercase tracking-widest text-[11px]">{note.isPublic ? 'PUBLIC' : 'VAULT'}</span>
                     </span>
+                    {note.type === 'adr' && (
+                        <span className="flex items-center gap-1.5 border-r border-border pr-6 last:border-0">
+                            <span className="font-normal opacity-60">Decision</span>
+                            <span className="bg-primary/20 text-primary font-bold uppercase tracking-widest text-[11px] px-2 py-0.5 rounded-[2px]">{note.adrStatus}</span>
+                        </span>
+                    )}
                     <span className="flex items-center gap-1.5">
                         <span className="font-normal opacity-60">Collection</span>
                         <span className="text-link font-medium">{note.category?.name || 'GENERIC'}</span>
@@ -131,6 +133,10 @@ const NoteDetails = () => {
                                     const codeString = String(children).replace(/\n$/, '');
                                     const blockIndex = node ? node.position?.start.line : 0;
 
+                                    if (match?.[1] === 'mermaid') {
+                                        return <Mermaid chart={codeString} />;
+                                    }
+
                                     return !inline && match ? (
                                         <div className="relative group my-8">
                                             {/* Code Block Header */}
@@ -162,12 +168,58 @@ const NoteDetails = () => {
                                             {children}
                                         </code>
                                     )
+                                },
+                                p({ children }) {
+                                    if (typeof children === 'string' && children.includes('[[')) {
+                                        const parts = children.split(/(\[\[.*?\]\])/g);
+                                        return (
+                                            <p>
+                                                {parts.map((part, i) => {
+                                                    if (part.startsWith('[[') && part.endsWith(']]')) {
+                                                        const title = part.slice(2, -2);
+                                                        return (
+                                                            <Link
+                                                                key={i}
+                                                                to={`/notes?search=${encodeURIComponent(title)}`}
+                                                                className="text-primary font-bold hover:underline decoration-2 underline-offset-4"
+                                                            >
+                                                                {title}
+                                                            </Link>
+                                                        );
+                                                    }
+                                                    return part;
+                                                })}
+                                            </p>
+                                        );
+                                    }
+                                    return <p>{children}</p>;
                                 }
                             }}
                         >
                             {note.content}
                         </ReactMarkdown>
                     </article>
+
+                    {/* Backlinks */}
+                    {note.backlinks && note.backlinks.length > 0 && (
+                        <div className="mt-12 pt-8 border-t border-border">
+                            <h3 className="text-[14px] font-bold text-muted-foreground uppercase tracking-[0.1em] mb-4 flex items-center gap-2">
+                                <ExternalLink size={14} /> Knowledge Backlinks
+                            </h3>
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                {note.backlinks.map((link) => (
+                                    <Link
+                                        key={link._id}
+                                        to={`/notes/${link._id}`}
+                                        className="p-3 border border-border rounded-[3px] bg-card hover:border-primary/50 transition-colors flex items-center gap-3 group"
+                                    >
+                                        <div className="w-1.5 h-1.5 rounded-full bg-primary/40 group-hover:bg-primary transition-colors" />
+                                        <span className="text-[14px] text-foreground truncate">{link.title}</span>
+                                    </Link>
+                                ))}
+                            </div>
+                        </div>
+                    )}
 
                     {/* Tags */}
                     <div className="flex flex-wrap gap-1.5 mt-10">
@@ -205,10 +257,6 @@ const NoteDetails = () => {
                                     </p>
                                     <div className="flex items-center gap-1.5 text-[11px] text-muted-foreground font-bold mt-0.5">
                                         <span>4,281</span>
-                                        <div className="flex gap-1">
-                                            <span className="w-2 h-2 rounded-full bg-amber-400" />
-                                            <span className="w-2 h-2 rounded-full bg-zinc-300" />
-                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -227,9 +275,6 @@ const NoteDetails = () => {
                                 </div>
                                 <p className="text-[14px] font-bold text-foreground mb-1">
                                     {note.attachment?.originalName || 'Download Documentation'}
-                                </p>
-                                <p className="text-[12px] text-muted-foreground mb-4">
-                                    Research paper or technical reference attached to this record.
                                 </p>
                                 <a
                                     href={note.attachmentUrl.startsWith('http') ? note.attachmentUrl : `http://localhost:5000/${note.attachmentUrl}`}

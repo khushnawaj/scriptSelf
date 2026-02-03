@@ -11,7 +11,9 @@ import {
     Plus,
     Clock,
     Globe,
-    Shield
+    Shield,
+    Database,
+    Zap
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import Spinner from '../components/Spinner';
@@ -34,6 +36,8 @@ const Dashboard = () => {
     // Filter private vs public notes for dynamic stats
     const publicNotesCount = notes.filter(n => n.isPublic).length;
     const privateNotesCount = notes.length - publicNotesCount;
+    const adrCount = notes.filter(n => n.type === 'adr').length;
+    const patternsCount = notes.filter(n => n.type === 'pattern').length;
 
     return (
         <div className="space-y-8 animate-in fade-in duration-500">
@@ -47,9 +51,9 @@ const Dashboard = () => {
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
                 {[
                     { label: 'My Records', value: notes.length, icon: FileText, color: 'text-indigo-600' },
+                    { label: 'Logic Patterns', value: patternsCount, icon: Zap, color: 'text-amber-600' },
+                    { label: 'Decision Records', value: adrCount, icon: Database, color: 'text-rose-600' },
                     { label: 'Public Posts', value: publicNotesCount, icon: Globe, color: 'text-emerald-600' },
-                    { label: 'Private Vault', value: privateNotesCount, icon: Shield, color: 'text-slate-600' },
-                    { label: 'Total Tags', value: categories.length, icon: Folder, color: 'text-amber-600' },
                 ].map((stat, i) => (
                     <div key={i} className="border border-border p-6 rounded-[3px] bg-card hover:border-primary/50 transition-colors">
                         <div className="flex items-center gap-3 mb-2 text-muted-foreground font-bold text-[11px] uppercase tracking-wider">
@@ -87,8 +91,15 @@ const Dashboard = () => {
                                             <span className="flex items-center gap-1"><Clock size={12} /> {new Date(note.createdAt).toLocaleDateString()}</span>
                                         </div>
                                     </div>
-                                    <div className="text-[11px] font-bold px-2 py-0.5 border border-primary/30 text-primary bg-primary/5 rounded-[3px]">
-                                        {note.isPublic ? 'PUBLIC' : 'VAULT'}
+                                    <div className="flex flex-col items-end gap-1.5">
+                                        <div className="text-[10px] font-bold px-2 py-0.5 border border-primary/30 text-primary bg-primary/5 rounded-[3px] uppercase">
+                                            {note.type || 'DOC'}
+                                        </div>
+                                        {note.type === 'adr' && (
+                                            <div className="text-[9px] font-bold text-muted-foreground uppercase">
+                                                Decision: {note.adrStatus || 'Proposed'}
+                                            </div>
+                                        )}
                                     </div>
                                 </div>
                             </Link>

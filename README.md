@@ -6,6 +6,13 @@
 
 ## 🚀 Key Features
 
+### 🧠 Strategic Knowledge Management (Senior Level)
+- **Architectural Decision Records (ADR)**: Document the "Why" behind system choices with specialized templates and status tracking (Proposed, Accepted, Deprecated).
+- **Visual Logic (Mermaid.js)**: Native rendering of flowcharts, sequence diagrams, and ER diagrams directly within documentation.
+- **Second Brain (Bidirectional Linking)**: Support for `[[Wiki-Style Links]]` with automatic backlink discovery. Notes grow into an interconnected knowledge web.
+- **Logic Patterns**: Dedicated classification for Best Practices and Anti-Patterns to serve as a living handbook for teams.
+- **Obsidian-Compatible Export**: Markdown bundles now include YAML frontmatter, ready for local sync or Obsidian integration.
+
 ### 🛠️ Developer Productivity
 - **Command Palette (CMD+K)**: A global, lightning-fast interface to search notes, navigate the app, and trigger actions.
 - **Smart Tagging**: Automatic keyword detection (React, Node, etc.) to organize your content without manual effort.
@@ -85,16 +92,11 @@ Built with ❤️ for the Developer Community.
    - `NODE_ENV`: `production`
    - `MONGO_URI`: Your MongoDB Atlas connection string.
    - `JWT_SECRET`: A long random string.
-   - `EMAIL_USER`: Your Gmail address.
-   - `EMAIL_PASS`: Your Gmail App Password.
-   - `CLOUDINARY_CLOUD_NAME`: Your Cloudinary Cloud Name.
-   - `CLOUDINARY_API_KEY`: Your Cloudinary API Key.
-   - `CLOUDINARY_API_SECRET`: Your Cloudinary API Secret.
-   - `CLIENT_URL`: The URL of your deployed frontend (e.g., `https://script-shelf.vercel.app`).
+   - `CLIENT_URL`: The URL of your deployed frontend.
 
 ### Frontend (Vercel)
 1. Connect your repository to Vercel.
 2. The **Framework Preset** should be `Vite`.
 3. Add the following **Environment Variable**:
-   - `VITE_API_URL`: The URL of your deployed backend (e.g., `https://scriptshelf-api.onrender.com/api/v1`).
+   - `VITE_API_URL`: The URL of your deployed backend.
 4. Vercel will automatically use the `vercel.json` provided in the `client` folder for routing.

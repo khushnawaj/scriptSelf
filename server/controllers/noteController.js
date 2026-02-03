@@ -61,6 +61,7 @@ exports.getNote = async (req, res, next) => {
     const note = await Note.findById(req.params.id)
       .populate({ path: 'category', select: 'name' })
       .populate({ path: 'relatedNotes', select: 'title' })
+      .populate({ path: 'backlinks', select: 'title' })
       .populate({ path: 'user', select: 'username avatar bio socialLinks' });
 
     if (!note) {
@@ -101,6 +102,11 @@ exports.createNote = async (req, res, next) => {
     if (!req.body.title) req.body.title = "Untitled Note";
 
     const note = await Note.create(req.body);
+
+    // Update bidirectional links
+    if (req.body.content) {
+      await updateBidirectionalLinks(note._id, req.body.content, req.user.id);
+    }
 
     res.status(201).json({
       success: true,
@@ -156,6 +162,11 @@ exports.updateNote = async (req, res, next) => {
       runValidators: true
     });
 
+    // Update bidirectional links
+    if (req.body.content) {
+      await updateBidirectionalLinks(note._id, req.body.content, req.user.id);
+    }
+
     res.status(200).json({
       success: true,
       data: note
@@ -190,6 +201,35 @@ exports.deleteNote = async (req, res, next) => {
   }
 };
 
+// Helper for Bidirectional Linking
+const updateBidirectionalLinks = async (noteId, content, userId) => {
+  try {
+    const linkRegex = /\[\[(.*?)\]\]/g;
+    const matches = [...content.matchAll(linkRegex)];
+    const linkedTitles = Array.from(new Set(matches.map(m => m[1])));
+
+    if (linkedTitles.length === 0) return;
+
+    const linkedNotes = await Note.find({
+      title: { $in: linkedTitles },
+      user: userId
+    });
+
+    const linkedIds = linkedNotes.map(n => n._id);
+
+    await Note.findByIdAndUpdate(noteId, {
+      $addToSet: { relatedNotes: { $each: linkedIds } }
+    });
+
+    await Note.updateMany(
+      { _id: { $in: linkedIds } },
+      { $addToSet: { backlinks: noteId } }
+    );
+  } catch (err) {
+    console.error('Link update failed:', err);
+  }
+};
+
 // @desc      Export notes as Markdown Bundle (ZIP)
 // @route     GET /api/v1/notes/export
 // @access    Private
@@ -216,14 +256,15 @@ exports.exportNotes = async (req, res, next) => {
       const safeTitle = note.title.replace(/[^a-z0-9]/gi, '_').toLowerCase();
       const filename = `${note.category?.name || 'Uncategorized'}/${safeTitle}.md`;
 
-      let fileContent = `# ${note.title}\n\n`;
-      fileContent += `**Category:** ${note.category?.name}\n`;
-      fileContent += `**Tags:** ${note.tags.join(', ')}\n`;
-      if (note.videoUrl) fileContent += `**Video Tutorial:** ${note.videoUrl}\n`;
-      fileContent += `\n## Content\n\n${note.content}\n\n`;
+      let fileContent = `---\ntitle: ${note.title}\ndate: ${note.createdAt}\ntags: [${note.tags.join(', ')}]\ntype: ${note.type}\ncategory: ${note.category?.name || 'General'}\n`;
+      if (note.adrStatus) fileContent += `adr_status: ${note.adrStatus}\n`;
+      fileContent += `---\n\n`;
+
+      fileContent += `# ${note.title}\n\n`;
+      fileContent += `${note.content}\n\n`;
 
       if (note.codeSnippet) {
-        fileContent += `## Code Snippet\n\n\`\`\`javascript\n${note.codeSnippet}\n\`\`\`\n`;
+        fileContent += `## Code Implementation\n\n\`\`\`javascript\n${note.codeSnippet}\n\`\`\`\n`;
       }
 
       archive.append(fileContent, { name: filename });

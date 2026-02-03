@@ -31,6 +31,9 @@ import { useTheme } from '../context/ThemeContext';
 import { toast } from 'react-hot-toast';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { vscDarkPlus, prism } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import Mermaid from '../components/Mermaid';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const NoteEditor = () => {
@@ -47,13 +50,14 @@ const NoteEditor = () => {
         title: '',
         content: '',
         type: 'doc',
+        adrStatus: 'proposed',
         categoryId: '',
         tags: '',
         isPublic: false,
         videoUrl: '',
     });
 
-    const { title, content, type, categoryId, tags, isPublic, videoUrl } = formData;
+    const { title, content, type, adrStatus, categoryId, tags, isPublic, videoUrl } = formData;
     const [viewMode, setViewMode] = useState('edit'); // 'edit', 'preview', 'split'
     const [showCategoryModal, setShowCategoryModal] = useState(false);
     const [newCategoryName, setNewCategoryName] = useState('');
@@ -74,6 +78,7 @@ const NoteEditor = () => {
                     title: noteToEdit.title,
                     content: noteToEdit.content,
                     type: noteToEdit.type || 'doc',
+                    adrStatus: noteToEdit.adrStatus || 'proposed',
                     categoryId: noteToEdit.category?._id || noteToEdit.category,
                     tags: noteToEdit.tags ? noteToEdit.tags.join(', ') : '',
                     isPublic: noteToEdit.isPublic || false,
@@ -126,6 +131,7 @@ const NoteEditor = () => {
         { icon: List, label: 'List', action: () => injectMarkdown('- ') },
         { icon: ListOrdered, label: 'Ordered List', action: () => injectMarkdown('1. ') },
         { icon: ImageIcon, label: 'Image', action: () => injectMarkdown('![alt text](', ')') },
+        { icon: LinkIcon, label: 'Wiki Link', action: () => injectMarkdown('[[', ']]') },
     ];
 
     const handleCreateCategory = async (e) => {
@@ -276,7 +282,56 @@ const NoteEditor = () => {
                             {/* Preview Pane */}
                             {(viewMode === 'preview' || viewMode === 'split') && (
                                 <div className={`flex-1 overflow-y-auto bg-background p-8 prose prose-zinc dark:prose-invert max-w-none h-full ${viewMode === 'split' ? 'w-1/2' : 'w-full'}`}>
-                                    <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                                    <ReactMarkdown
+                                        remarkPlugins={[remarkGfm]}
+                                        components={{
+                                            code({ node, inline, className, children, ...props }) {
+                                                const match = /language-(\w+)/.exec(className || '')
+                                                const codeString = String(children).replace(/\n$/, '');
+
+                                                if (match?.[1] === 'mermaid') {
+                                                    return <Mermaid chart={codeString} />;
+                                                }
+
+                                                return !inline && match ? (
+                                                    <SyntaxHighlighter
+                                                        style={theme === 'dark' ? vscDarkPlus : prism}
+                                                        language={match[1]}
+                                                        PreTag="div"
+                                                        className="!rounded-[3px] !bg-background !p-6 !border !border-border !text-[14px]"
+                                                        {...props}
+                                                    >
+                                                        {codeString}
+                                                    </SyntaxHighlighter>
+                                                ) : (
+                                                    <code className="bg-accent/40 text-primary px-1.5 py-0.5 rounded-[3px] font-mono text-[14px] font-semibold" {...props}>
+                                                        {children}
+                                                    </code>
+                                                )
+                                            },
+                                            p({ children }) {
+                                                if (typeof children === 'string' && children.includes('[[')) {
+                                                    const parts = children.split(/(\[\[.*?\]\])/g);
+                                                    return (
+                                                        <p>
+                                                            {parts.map((part, i) => {
+                                                                if (part.startsWith('[[') && part.endsWith(']]')) {
+                                                                    const title = part.slice(2, -2);
+                                                                    return (
+                                                                        <span key={i} className="text-primary font-bold decoration-2 underline-offset-4 cursor-default">
+                                                                            {title}
+                                                                        </span>
+                                                                    );
+                                                                }
+                                                                return part;
+                                                            })}
+                                                        </p>
+                                                    );
+                                                }
+                                                return <p>{children}</p>;
+                                            }
+                                        }}
+                                    >
                                         {content || '*No content to preview yet. Start typing or use the toolbar.*'}
                                     </ReactMarkdown>
                                 </div>
@@ -306,6 +361,39 @@ const NoteEditor = () => {
                         </h3>
 
                         <div className="space-y-4">
+                            <div className="space-y-1.5">
+                                <label className="text-[11px] font-bold text-muted-foreground uppercase">Note Classification</label>
+                                <select
+                                    name="type"
+                                    value={type}
+                                    onChange={onChange}
+                                    className="w-full border border-border bg-background rounded-[3px] py-1.5 px-3 text-[13px] text-foreground outline-none focus:border-primary"
+                                >
+                                    <option value="doc">Standard Doc</option>
+                                    <option value="adr">Arch Decision (ADR)</option>
+                                    <option value="pattern">Logic Pattern</option>
+                                    <option value="code">Code Snippet</option>
+                                    <option value="cheatsheet">Cheatsheet</option>
+                                </select>
+                            </div>
+
+                            {type === 'adr' && (
+                                <div className="space-y-1.5 animate-in slide-in-from-top-2 duration-300">
+                                    <label className="text-[11px] font-bold text-muted-foreground uppercase">ADR Status</label>
+                                    <select
+                                        name="adrStatus"
+                                        value={adrStatus}
+                                        onChange={onChange}
+                                        className="w-full border border-primary/30 bg-primary/5 rounded-[3px] py-1.5 px-3 text-[13px] text-primary font-bold outline-none"
+                                    >
+                                        <option value="proposed">Proposed</option>
+                                        <option value="accepted">Accepted</option>
+                                        <option value="deprecated">Deprecated</option>
+                                        <option value="superseded">Superseded</option>
+                                    </select>
+                                </div>
+                            )}
+
                             <div className="space-y-1.5">
                                 <div className="flex justify-between items-center">
                                     <label className="text-[11px] font-bold text-muted-foreground uppercase">Tag Category</label>
