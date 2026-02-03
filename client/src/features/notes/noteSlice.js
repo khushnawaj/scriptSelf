@@ -8,11 +8,7 @@ export const createNote = createAsyncThunk(
   async (noteData, thunkAPI) => {
     try {
       const isFormData = noteData instanceof FormData;
-      const res = await api.post('/notes', noteData, {
-        headers: isFormData ? {
-          'Content-Type': 'multipart/form-data',
-        } : {}
-      });
+      const res = await api.post('/notes', noteData);
       toast.success('Note created!');
       return res.data.data;
     } catch (error) {
@@ -29,11 +25,7 @@ export const updateNote = createAsyncThunk(
   async ({ id, noteData }, thunkAPI) => {
     try {
       const isFormData = noteData instanceof FormData;
-      const res = await api.put(`/notes/${id}`, noteData, {
-        headers: isFormData ? {
-          'Content-Type': 'multipart/form-data',
-        } : {}
-      });
+      const res = await api.put(`/notes/${id}`, noteData);
       toast.success('Note updated');
       return res.data.data;
     } catch (error) {

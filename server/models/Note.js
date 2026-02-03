@@ -48,7 +48,9 @@ const noteSchema = new mongoose.Schema({
     type: {
         type: String,
         enum: ['code', 'pdf', 'doc', 'cheatsheet', 'adr', 'pattern', 'other'],
-        default: 'doc'
+        default: 'doc',
+        lowercase: true,
+        trim: true
     },
     adrStatus: {
         type: String,
