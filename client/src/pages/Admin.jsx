@@ -362,16 +362,45 @@ const Admin = () => {
                                 initial={{ opacity: 0 }}
                                 animate={{ opacity: 1 }}
                                 exit={{ opacity: 0 }}
-                                className="p-12 text-center space-y-4"
+                                className="p-12 text-center space-y-8"
                             >
                                 <div className="mx-auto w-16 h-16 bg-muted rounded-full flex items-center justify-center text-muted-foreground">
                                     <Settings size={32} />
                                 </div>
-                                <div>
-                                    <h3 className="text-[19px] font-bold">System Config in Read-only Mode</h3>
-                                    <p className="text-muted-foreground text-[14px] max-w-sm mx-auto">
-                                        Advanced system parameters are currently managed via the server environment variables for security.
-                                    </p>
+                                <div className="max-w-md mx-auto space-y-6">
+                                    <div>
+                                        <h3 className="text-[19px] font-bold">Workspace Maintenance</h3>
+                                        <p className="text-muted-foreground text-[14px]">
+                                            Core system tools for data portability and synchronization.
+                                        </p>
+                                    </div>
+
+                                    <div className="grid grid-cols-1 gap-3">
+                                        <a
+                                            href={`${import.meta.env.VITE_API_URL || 'http://localhost:5000/api/v1'}/notes/export`}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="so-btn so-btn-primary w-full flex items-center justify-center gap-2 py-3"
+                                        >
+                                            <FileText size={16} /> Export entire vault as ZIP
+                                        </a>
+                                        <button
+                                            onClick={fetchData}
+                                            className="so-btn border border-border w-full flex items-center justify-center gap-2 py-3"
+                                        >
+                                            <Activity size={16} /> Force Sync Registry
+                                        </button>
+                                        <button disabled className="so-btn border border-border opacity-50 cursor-not-allowed">
+                                            Import from Obsidian (v1.2 coming soon)
+                                        </button>
+                                    </div>
+
+                                    <div className="p-4 bg-primary/5 border border-primary/20 rounded-[3px] text-left">
+                                        <p className="text-[11px] text-primary font-bold uppercase mb-1">Architecture Note</p>
+                                        <p className="text-[12px] text-muted-foreground">
+                                            The export contains clean Markdown files with YAML frontmatter, preserving your technical patterns across local editors.
+                                        </p>
+                                    </div>
                                 </div>
                             </motion.div>
                         )}

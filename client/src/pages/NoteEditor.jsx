@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { createNote, getNotes, updateNote } from '../features/notes/noteSlice';
 import { getCategories, createCategory } from '../features/categories/categorySlice';
@@ -24,7 +24,8 @@ import {
     Save,
     Trash2,
     FileCode,
-    FileUp
+    FileUp,
+    Code2
 } from 'lucide-react';
 import Editor from '@monaco-editor/react';
 import { useTheme } from '../context/ThemeContext';
@@ -60,6 +61,7 @@ const NoteEditor = () => {
     const { title, content, type, adrStatus, categoryId, tags, isPublic, videoUrl } = formData;
     const [viewMode, setViewMode] = useState('edit'); // 'edit', 'preview', 'split'
     const [showCategoryModal, setShowCategoryModal] = useState(false);
+    const [newCategoryName, setNewCategoryName] = useState('');
     const [file, setFile] = useState(null);
     const [hasDraft, setHasDraft] = useState(false);
     const [isDirty, setIsDirty] = useState(false);
@@ -84,7 +86,6 @@ const NoteEditor = () => {
             }
         }, 2000);
 
-        // Final save on unmount if dirty
         return () => {
             clearTimeout(timer);
             if (isDirty && (content || title)) {
@@ -99,6 +100,7 @@ const NoteEditor = () => {
             const parsed = JSON.parse(savedDraft);
             setFormData(parsed);
             setHasDraft(false);
+            setIsDirty(true);
             toast.success('Draft restored from local cache');
         }
     };
@@ -130,13 +132,12 @@ const NoteEditor = () => {
                     isPublic: noteToEdit.isPublic || false,
                     videoUrl: noteToEdit.videoUrl || '',
                 });
-                // After loading from DB, we consider the first state "initial"
-                // but any change after this will trigger a draft.
-                setTimeout(() => setIsInitialLoad(false), 500);
+                // Data just loaded, so not yet "dirty"
+                setTimeout(() => setIsDirty(false), 500);
             }
         } else if (!id) {
-            // New note: allow draft saving after a small delay to avoid blank drafts
-            setTimeout(() => setIsInitialLoad(false), 1000);
+            // New note: not yet dirty
+            setTimeout(() => setIsDirty(false), 500);
         }
     }, [id, notes]);
 
@@ -207,17 +208,14 @@ const NoteEditor = () => {
         if (!categoryId) return toast.error('Choose a category');
 
         const noteData = new FormData();
-
-        // Append individual fields manually for precision
         noteData.append('title', title.trim());
         noteData.append('content', content);
         noteData.append('type', type);
         noteData.append('category', categoryId);
-        noteData.append('isPublic', isPublic); // Form data converts this to string
+        noteData.append('isPublic', String(isPublic));
         noteData.append('adrStatus', adrStatus);
         noteData.append('videoUrl', videoUrl);
 
-        // Process tags into an array
         const tagsArray = tags.split(/[,\s]+/).filter(t => t.trim() !== '');
         tagsArray.forEach(tag => {
             noteData.append('tags', tag);
@@ -246,7 +244,6 @@ const NoteEditor = () => {
 
     return (
         <div className="max-w-[1400px] mx-auto pb-20 animate-in fade-in duration-300">
-            {/* Header Section */}
             <div className="flex flex-col sm:flex-row justify-between items-center gap-4 mb-6 border-b border-border pb-4">
                 <div className="flex items-center gap-3">
                     <div className="p-2 bg-primary/10 rounded-[3px] text-primary">
@@ -282,17 +279,18 @@ const NoteEditor = () => {
                     </button>
                     <button
                         onClick={onSubmit}
+                        disabled={isSaving}
                         className="so-btn so-btn-primary px-8 font-bold shadow-xl shadow-primary/20"
                     >
-                        <Save size={18} className="mr-2" /> Sync Record
+                        {isSaving ? 'Syncing...' : (
+                            <><Save size={18} className="mr-2" /> Sync Record</>
+                        )}
                     </button>
                 </div>
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-                {/* Main Content Area */}
                 <div className="lg:col-span-3 space-y-6">
-                    {/* Title Input */}
                     <div className="relative">
                         <input
                             name="title"
@@ -305,9 +303,7 @@ const NoteEditor = () => {
                         <div className="h-px w-full bg-border absolute bottom-0 left-0" />
                     </div>
 
-                    {/* Toolbar & Editor Section */}
                     <div className="border border-border rounded-[3px] overflow-hidden bg-card shadow-sm flex flex-col">
-                        {/* Toolbar */}
                         <div className="flex flex-wrap items-center justify-between px-2 py-1 bg-muted/20 border-b border-border">
                             <div className="flex flex-wrap gap-1">
                                 {toolbarActions.map((item, i) => (
@@ -342,9 +338,7 @@ const NoteEditor = () => {
                             </div>
                         </div>
 
-                        {/* Editor Panes */}
                         <div className="flex h-[600px]">
-                            {/* Write Pane */}
                             {(viewMode === 'edit' || viewMode === 'split') && (
                                 <div className={`flex-1 min-w-0 border-r border-border h-full ${viewMode === 'split' ? 'w-1/2' : 'w-full'}`}>
                                     <Editor
@@ -368,7 +362,6 @@ const NoteEditor = () => {
                                 </div>
                             )}
 
-                            {/* Preview Pane */}
                             {(viewMode === 'preview' || viewMode === 'split') && (
                                 <div className={`flex-1 overflow-y-auto bg-card p-10 prose prose-zinc dark:prose-invert max-w-none h-full shadow-inner ${viewMode === 'split' ? 'w-1/2 border-l border-border' : 'w-full'} text-foreground`}>
                                     <ReactMarkdown
@@ -397,27 +390,6 @@ const NoteEditor = () => {
                                                         {children}
                                                     </code>
                                                 )
-                                            },
-                                            p({ children }) {
-                                                if (typeof children === 'string' && children.includes('[[')) {
-                                                    const parts = children.split(/(\[\[.*?\]\])/g);
-                                                    return (
-                                                        <p>
-                                                            {parts.map((part, i) => {
-                                                                if (part.startsWith('[[') && part.endsWith(']]')) {
-                                                                    const title = part.slice(2, -2);
-                                                                    return (
-                                                                        <span key={i} className="text-primary font-bold decoration-2 underline-offset-4 cursor-default">
-                                                                            {title}
-                                                                        </span>
-                                                                    );
-                                                                }
-                                                                return part;
-                                                            })}
-                                                        </p>
-                                                    );
-                                                }
-                                                return <p>{children}</p>;
                                             }
                                         }}
                                     >
@@ -441,7 +413,6 @@ const NoteEditor = () => {
                     </div>
                 </div>
 
-                {/* Sidebar Config */}
                 <div className="space-y-6">
                     <div className="bg-card border border-border p-5 rounded-[3px] shadow-sm">
                         <h3 className="text-[13px] font-bold text-foreground mb-4 flex items-center gap-2 uppercase tracking-wider">
@@ -573,7 +544,6 @@ const NoteEditor = () => {
                 </div>
             </div>
 
-            {/* Quick Category Modal */}
             <AnimatePresence>
                 {showCategoryModal && (
                     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">

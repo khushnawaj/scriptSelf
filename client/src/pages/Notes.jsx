@@ -28,6 +28,13 @@ const Notes = () => {
     useEffect(() => {
         dispatch(getNotes());
         dispatch(getCategories());
+
+        // Handle search query from URL (Wiki-Links)
+        const params = new URLSearchParams(window.location.search);
+        const searchParam = params.get('search');
+        if (searchParam) {
+            setSearchTerm(decodeURIComponent(searchParam));
+        }
     }, [dispatch]);
 
     const filteredNotes = notes.filter((note) => {

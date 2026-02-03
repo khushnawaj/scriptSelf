@@ -170,16 +170,16 @@ const NoteDetails = () => {
                                     )
                                 },
                                 p({ children }) {
-                                    if (typeof children === 'string' && children.includes('[[')) {
-                                        const parts = children.split(/(\[\[.*?\]\])/g);
-                                        return (
-                                            <p>
-                                                {parts.map((part, i) => {
+                                    const processNodes = (nodes) => {
+                                        return nodes.map((node, i) => {
+                                            if (typeof node === 'string' && node.includes('[[')) {
+                                                const parts = node.split(/(\[\[.*?\]\])/g);
+                                                return parts.map((part, j) => {
                                                     if (part.startsWith('[[') && part.endsWith(']]')) {
                                                         const title = part.slice(2, -2);
                                                         return (
                                                             <Link
-                                                                key={i}
+                                                                key={`${i}-${j}`}
                                                                 to={`/notes?search=${encodeURIComponent(title)}`}
                                                                 className="text-primary font-bold hover:underline decoration-2 underline-offset-4"
                                                             >
@@ -188,11 +188,14 @@ const NoteDetails = () => {
                                                         );
                                                     }
                                                     return part;
-                                                })}
-                                            </p>
-                                        );
-                                    }
-                                    return <p>{children}</p>;
+                                                });
+                                            }
+                                            return node;
+                                        });
+                                    };
+
+                                    const content = Array.isArray(children) ? processNodes(children) : processNodes([children]);
+                                    return <p>{content}</p>;
                                 }
                             }}
                         >
