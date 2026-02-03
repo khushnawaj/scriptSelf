@@ -25,25 +25,40 @@ const categories = require('./routes/categoryRoutes');
 const notes = require('./routes/noteRoutes');
 
 const app = express();
-// Enable CORS immediately
-const allowedOrigins = [
-  'http://localhost:5173',
-  'http://localhost:5174',
-  'http://localhost:5175',
-  'https://script-self-two.vercel.app',
-  'https://script-self.vercel.app',
-];
+// Manual CORS Middleware
+app.use((req, res, next) => {
+  const origin = req.headers.origin;
 
-const corsOptions = {
-  origin: allowedOrigins,
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'Origin', 'Access-Control-Allow-Origin']
-};
+  // Define allowed origins
+  const allowedOrigins = [
+    'http://localhost:5173',
+    'http://localhost:5174',
+    'http://localhost:5175',
+    'https://script-self-two.vercel.app',
+    'https://script-self.vercel.app'
+  ];
 
-app.use(cors(corsOptions));
-// Enable pre-flight for all routes
-app.options('*', cors(corsOptions));
+  // Check if origin is allowed (Exact match or Vercel subdomain)
+  if (origin && (allowedOrigins.includes(origin) || origin.endsWith('.vercel.app'))) {
+    res.setHeader('Access-Control-Allow-Origin', origin);
+  }
+
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, Accept, Origin');
+  res.setHeader('Access-Control-Allow-Credentials', 'true');
+
+  // Handle preflight immediately
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+
+  next();
+});
+
+// Health check route
+app.get('/', (req, res) => {
+  res.send('API is running...');
+});
 
 // Body parser
 app.use(express.json());
