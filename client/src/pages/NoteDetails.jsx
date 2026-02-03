@@ -197,19 +197,65 @@ const NoteDetails = () => {
                                 },
                                 p({ children }) {
                                     const processNodes = (nodes) => {
-                                        return nodes.map((node, i) => {
-                                            if (typeof node === 'string' && node.includes('[[')) {
+                                        return nodes.flatMap((node, i) => {
+                                            if (typeof node === 'string') {
+                                                if (!node.includes('[[')) return node;
                                                 const parts = node.split(/(\[\[.*?\]\])/g);
                                                 return parts.map((part, j) => {
                                                     if (part.startsWith('[[') && part.endsWith(']]')) {
-                                                        const title = part.slice(2, -2);
+                                                        const inner = part.slice(2, -2);
+                                                        const [linkPath, linkLabel] = inner.split('|');
+                                                        const title = linkPath.trim();
+                                                        const label = (linkLabel || linkPath).trim();
+
+                                                        // System page routing
+                                                        let to = `/notes?search=${encodeURIComponent(title)}`;
+                                                        if (title.toLowerCase() === 'technical library') to = '/notes';
+                                                        if (title.toLowerCase() === 'system metrics') to = '/dashboard';
+
                                                         return (
                                                             <Link
                                                                 key={`${i}-${j}`}
-                                                                to={`/notes?search=${encodeURIComponent(title)}`}
+                                                                to={to}
                                                                 className="text-primary font-bold hover:underline decoration-2 underline-offset-4"
                                                             >
-                                                                {title}
+                                                                {label}
+                                                            </Link>
+                                                        );
+                                                    }
+                                                    return part;
+                                                });
+                                            }
+                                            // Recursively handle nodes if they have children (e.g. strong, em)
+                                            if (node?.props?.children) {
+                                                const newChildren = processNodes(Array.isArray(node.props.children) ? node.props.children : [node.props.children]);
+                                                return { ...node, props: { ...node.props, children: newChildren } };
+                                            }
+                                            return node;
+                                        });
+                                    };
+
+                                    const content = processNodes(Array.isArray(children) ? children : [children]);
+                                    return <p>{content}</p>;
+                                },
+                                li({ children }) {
+                                    // Process links in list items too
+                                    const processNodes = (nodes) => {
+                                        return nodes.flatMap((node, i) => {
+                                            if (typeof node === 'string') {
+                                                if (!node.includes('[[')) return node;
+                                                const parts = node.split(/(\[\[.*?\]\])/g);
+                                                return parts.map((part, j) => {
+                                                    if (part.startsWith('[[') && part.endsWith(']]')) {
+                                                        const inner = part.slice(2, -2);
+                                                        const [linkPath, linkLabel] = inner.split('|');
+                                                        return (
+                                                            <Link
+                                                                key={`${i}-${j}`}
+                                                                to={`/notes?search=${encodeURIComponent(linkPath.trim())}`}
+                                                                className="text-primary font-bold hover:underline"
+                                                            >
+                                                                {(linkLabel || linkPath).trim()}
                                                             </Link>
                                                         );
                                                     }
@@ -219,9 +265,7 @@ const NoteDetails = () => {
                                             return node;
                                         });
                                     };
-
-                                    const content = Array.isArray(children) ? processNodes(children) : processNodes([children]);
-                                    return <p>{content}</p>;
+                                    return <li>{processNodes(Array.isArray(children) ? children : [children])}</li>;
                                 }
                             }}
                         >

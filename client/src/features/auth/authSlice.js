@@ -43,12 +43,7 @@ export const updateProfile = createAsyncThunk(
   'auth/updateProfile',
   async (userData, thunkAPI) => {
     try {
-      // Check if userData is FormData
-      const isFormData = userData instanceof FormData;
-
-      const res = await api.put('/auth/updatedetails', userData, {
-        headers: isFormData ? { 'Content-Type': 'multipart/form-data' } : {}
-      });
+      const res = await api.put('/auth/updatedetails', userData);
       toast.success('Profile updated successfully!');
       return res.data.data;
     } catch (error) {
