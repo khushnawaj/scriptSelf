@@ -44,12 +44,12 @@ const Dashboard = () => {
 
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
                 {[
-                    { label: 'My Records', value: notes.length, icon: FileText, color: 'text-blue-600' },
-                    { label: 'Public Posts', value: publicNotesCount, icon: Award, color: 'text-[#808000]' },
-                    { label: 'Private Vault', value: privateNotesCount, icon: Trophy, color: 'text-amber-600' },
-                    { label: 'Total Tags', value: categories.length, icon: Folder, color: 'text-zinc-600' },
+                    { label: 'My Records', value: notes.length, icon: FileText, color: 'text-indigo-600' },
+                    { label: 'Public Posts', value: publicNotesCount, icon: Globe, color: 'text-emerald-600' },
+                    { label: 'Private Vault', value: privateNotesCount, icon: Shield, color: 'text-slate-600' },
+                    { label: 'Total Tags', value: categories.length, icon: Folder, color: 'text-amber-600' },
                 ].map((stat, i) => (
-                    <div key={i} className="border border-border p-6 rounded-[3px] bg-card hover:border-[#babfc4] transition-colors">
+                    <div key={i} className="border border-border p-6 rounded-[3px] bg-card hover:border-primary/50 transition-colors">
                         <div className="flex items-center gap-3 mb-2 text-muted-foreground font-bold text-[11px] uppercase tracking-wider">
                             <stat.icon size={14} className={stat.color} />
                             <span>{stat.label}</span>
@@ -80,12 +80,12 @@ const Dashboard = () => {
                                             {note.title}
                                         </h4>
                                         <div className="flex items-center gap-3 text-[12px] text-muted-foreground">
-                                            <span className="font-bold text-[#808000]">{note.category?.name || 'GENERIC'}</span>
+                                            <span className="font-bold text-primary">{note.category?.name || 'GENERIC'}</span>
                                             <span>•</span>
                                             <span className="flex items-center gap-1"><Clock size={12} /> {new Date(note.createdAt).toLocaleDateString()}</span>
                                         </div>
                                     </div>
-                                    <div className="text-[11px] font-bold px-2 py-0.5 border border-[#808000]/30 text-[#808000] bg-[#eff1e1] dark:bg-[#3d3d2d] rounded-[3px]">
+                                    <div className="text-[11px] font-bold px-2 py-0.5 border border-primary/30 text-primary bg-primary/5 rounded-[3px]">
                                         {note.isPublic ? 'PUBLIC' : 'VAULT'}
                                     </div>
                                 </div>
@@ -100,13 +100,12 @@ const Dashboard = () => {
 
                 {/* Right Sidebar Stats */}
                 <div className="lg:col-span-4 space-y-6">
-                    <div className="bg-[#fdf7e2] dark:bg-[#3d3d2d] border border-[#e6cf7e] dark:border-[#556b2f] p-6 rounded-[3px]">
+                    <div className="bg-accent/30 border border-primary/20 p-6 rounded-[3px]">
                         <h3 className="text-[15px] font-bold text-foreground mb-3 flex items-center gap-2">
                             System Insights
                         </h3>
                         <p className="text-[13px] text-muted-foreground leading-relaxed">
                             You currently have <span className="font-bold text-foreground">{notes.length}</span> active records across <span className="font-bold text-foreground">{categories.length}</span> tag categories.
-                            Efficiency score: <span className="text-[#808000] font-bold">OPTIMAL</span>.
                         </p>
                     </div>
 
@@ -123,7 +122,7 @@ const Dashboard = () => {
                                             <span className="text-foreground font-bold">{count}</span>
                                         </div>
                                         <div className="w-full bg-muted h-1 rounded-full overflow-hidden">
-                                            <div className="bg-[#808000] h-full" style={{ width: `${percentage}%` }}></div>
+                                            <div className="bg-primary h-full" style={{ width: `${percentage}%` }}></div>
                                         </div>
                                     </div>
                                 );

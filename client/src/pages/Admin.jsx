@@ -4,16 +4,16 @@ import {
     Users,
     Trash2,
     Shield,
-    ShieldAlert,
     Activity,
     FolderTree,
     Settings,
     Search,
-    UserPlus,
     Tag,
     Plus,
     X,
-    ShieldCheck
+    ShieldCheck,
+    FileText,
+    UserCog
 } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import { useSelector } from 'react-redux';
@@ -26,6 +26,7 @@ const Admin = () => {
     const [activeTab, setActiveTab] = useState('users');
     const [users, setUsers] = useState([]);
     const [categories, setCategories] = useState([]);
+    const [allNotes, setAllNotes] = useState([]);
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
     const [showCategoryModal, setShowCategoryModal] = useState(false);
@@ -43,12 +44,14 @@ const Admin = () => {
     const fetchData = async () => {
         setLoading(true);
         try {
-            const [usersRes, catsRes] = await Promise.all([
+            const [usersRes, catsRes, notesRes] = await Promise.all([
                 api.get('/users'),
-                api.get('/categories')
+                api.get('/categories'),
+                api.get('/notes/admin/all')
             ]);
             setUsers(usersRes.data.data);
             setCategories(catsRes.data.data);
+            setAllNotes(notesRes.data.data);
         } catch (error) {
             toast.error('Failed to load system data');
         } finally {
@@ -64,6 +67,17 @@ const Admin = () => {
             toast.success('User removed');
         } catch (error) {
             toast.error('Failed to remove user');
+        }
+    };
+
+    const handleToggleRole = async (uId, currentRole) => {
+        const newRole = currentRole === 'admin' ? 'user' : 'admin';
+        try {
+            await api.put(`/users/${uId}/role`, { role: newRole });
+            setUsers(users.map(u => u._id === uId ? { ...u, role: newRole } : u));
+            toast.success(`User role updated to ${newRole}`);
+        } catch (error) {
+            toast.error('Failed to update role');
         }
     };
 
@@ -90,6 +104,17 @@ const Admin = () => {
         }
     };
 
+    const handleDeleteNote = async (id) => {
+        if (!window.confirm('Admin: Delete this note from system?')) return;
+        try {
+            await api.delete(`/notes/${id}`);
+            setAllNotes(allNotes.filter(n => n._id !== id));
+            toast.success('Note removed by admin');
+        } catch (error) {
+            toast.error('Failed to delete note');
+        }
+    };
+
     const filteredUsers = users.filter(u =>
         u.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
         u.email.toLowerCase().includes(searchTerm.toLowerCase())
@@ -97,6 +122,11 @@ const Admin = () => {
 
     const filteredCategories = categories.filter(c =>
         c.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
+    const filteredNotes = allNotes.filter(n =>
+        n.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        n.user?.username.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
     if (loading) return <Spinner />;
@@ -107,13 +137,13 @@ const Admin = () => {
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-card border border-border p-6 rounded-[3px] shadow-sm">
                 <div className="flex items-center gap-4">
                     <div className="p-3 bg-primary/10 text-primary rounded-[3px]">
-                        <ShieldAlert size={32} />
+                        <Activity size={32} />
                     </div>
                     <div>
                         <h1 className="text-[27px] font-normal text-foreground">Admin Center</h1>
-                        <div className="flex items-center gap-2 text-[12px] text-muted-foreground uppercase tracking-wider font-bold">
-                            <ShieldCheck size={12} /> System Management Console
-                        </div>
+                        <p className="text-[12px] text-muted-foreground uppercase tracking-wider font-bold">
+                            System Management Console
+                        </p>
                     </div>
                 </div>
                 <div className="flex gap-4">
@@ -127,12 +157,12 @@ const Admin = () => {
             {/* Quick Stats */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                 {[
-                    { label: 'Total Users', value: users.length, icon: Users, color: 'text-blue-500' },
-                    { label: 'Total Categories', value: categories.length, icon: Tag, color: 'text-amber-500' },
-                    { label: 'Public Content', value: users.filter(u => u.role === 'admin').length, icon: Shield, color: 'text-emerald-500' },
-                    { label: 'System Status', value: 'Active', icon: Activity, color: 'text-rose-500' }
+                    { label: 'Total Users', value: users.length, icon: Users, color: 'text-indigo-500' },
+                    { label: 'Total Notes', value: allNotes.length, icon: FileText, color: 'text-emerald-500' },
+                    { label: 'Global Tags', value: categories.length, icon: Tag, color: 'text-amber-500' },
+                    { label: 'Admins', value: users.filter(u => u.role === 'admin').length, icon: Shield, color: 'text-rose-500' }
                 ].map((stat, i) => (
-                    <div key={i} className="bg-card border border-border p-4 rounded-[3px] shadow-sm">
+                    <div key={i} className="bg-card border border-border p-4 rounded-[3px] shadow-sm hover:border-primary/50 transition-colors">
                         <div className="flex justify-between items-start">
                             <stat.icon size={20} className={stat.color} />
                             <span className="text-[21px] font-bold text-foreground">{stat.value}</span>
@@ -144,22 +174,22 @@ const Admin = () => {
 
             {/* Main Management Area */}
             <div className="bg-card border border-border rounded-[3px] shadow-sm overflow-hidden">
-                {/* Tabs */}
+                {/* Tabs - No Icons as requested */}
                 <div className="flex border-b border-border bg-muted/20">
                     {[
-                        { id: 'users', label: 'User Management', icon: Users },
-                        { id: 'categories', label: 'Global Categories', icon: FolderTree },
-                        { id: 'settings', label: 'System Settings', icon: Settings }
+                        { id: 'users', label: 'User Management' },
+                        { id: 'notes', label: 'System Notes' },
+                        { id: 'categories', label: 'Global Categories' },
+                        { id: 'settings', label: 'Settings' }
                     ].map(tab => (
                         <button
                             key={tab.id}
                             onClick={() => setActiveTab(tab.id)}
-                            className={`flex items-center gap-2 px-6 py-4 text-[13px] font-bold transition-all border-b-2 ${activeTab === tab.id
+                            className={`px-6 py-4 text-[13px] font-bold transition-all border-b-2 ${activeTab === tab.id
                                 ? 'border-primary text-primary bg-background'
                                 : 'border-transparent text-muted-foreground hover:text-foreground hover:bg-muted/30'
                                 }`}
                         >
-                            <tab.icon size={16} />
                             {tab.label}
                         </button>
                     ))}
@@ -190,9 +220,9 @@ const Admin = () => {
                         {activeTab === 'users' && (
                             <motion.div
                                 key="users"
-                                initial={{ opacity: 0, x: -10 }}
-                                animate={{ opacity: 1, x: 0 }}
-                                exit={{ opacity: 0, x: 10 }}
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                exit={{ opacity: 0 }}
                                 className="overflow-x-auto"
                             >
                                 <table className="w-full text-left text-[13px]">
@@ -218,10 +248,13 @@ const Admin = () => {
                                                 </td>
                                                 <td className="px-6 py-4 text-muted-foreground">{u.email}</td>
                                                 <td className="px-6 py-4">
-                                                    <span className={`px-2 py-1 rounded-[3px] text-[10px] font-bold uppercase ${u.role === 'admin' ? 'bg-rose-500/10 text-rose-500' : 'bg-blue-500/10 text-blue-500'
-                                                        }`}>
-                                                        {u.role}
-                                                    </span>
+                                                    <button
+                                                        onClick={() => handleToggleRole(u._id, u.role)}
+                                                        className={`px-2 py-1 rounded-[3px] text-[10px] font-bold uppercase flex items-center gap-1 ${u.role === 'admin' ? 'bg-rose-500/10 text-rose-500' : 'bg-indigo-500/10 text-indigo-500'
+                                                            }`}
+                                                    >
+                                                        {u.role} <UserCog size={10} />
+                                                    </button>
                                                 </td>
                                                 <td className="px-6 py-4 text-muted-foreground">{new Date(u.createdAt).toLocaleDateString()}</td>
                                                 <td className="px-6 py-4 text-right">
@@ -242,12 +275,59 @@ const Admin = () => {
                             </motion.div>
                         )}
 
+                        {activeTab === 'notes' && (
+                            <motion.div
+                                key="notes"
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                exit={{ opacity: 0 }}
+                                className="overflow-x-auto"
+                            >
+                                <table className="w-full text-left text-[13px]">
+                                    <thead className="bg-muted/30 text-muted-foreground border-b border-border">
+                                        <tr>
+                                            <th className="px-6 py-3 font-bold uppercase tracking-wider">Title</th>
+                                            <th className="px-6 py-3 font-bold uppercase tracking-wider">Author</th>
+                                            <th className="px-6 py-3 font-bold uppercase tracking-wider">Category</th>
+                                            <th className="px-6 py-3 font-bold uppercase tracking-wider">Status</th>
+                                            <th className="px-6 py-3 font-bold uppercase tracking-wider text-right">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody className="divide-y divide-border">
+                                        {filteredNotes.map(n => (
+                                            <tr key={n._id} className="hover:bg-muted/20 transition-colors">
+                                                <td className="px-6 py-4 font-bold text-foreground">{n.title}</td>
+                                                <td className="px-6 py-4 text-muted-foreground">{n.user?.username || 'Redacted'}</td>
+                                                <td className="px-6 py-4">
+                                                    <span className="so-tag">{n.category?.name || 'Uncategorized'}</span>
+                                                </td>
+                                                <td className="px-6 py-4">
+                                                    <span className={`px-2 py-0.5 rounded-[3px] text-[10px] font-bold uppercase ${n.isPublic ? 'bg-emerald-500/10 text-emerald-500' : 'bg-slate-500/10 text-slate-500'}`}>
+                                                        {n.isPublic ? 'Public' : 'Private'}
+                                                    </span>
+                                                </td>
+                                                <td className="px-6 py-4 text-right">
+                                                    <button
+                                                        onClick={() => handleDeleteNote(n._id)}
+                                                        className="p-2 text-muted-foreground hover:text-rose-500 transition-colors"
+                                                        title="Delete Note"
+                                                    >
+                                                        <Trash2 size={16} />
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </motion.div>
+                        )}
+
                         {activeTab === 'categories' && (
                             <motion.div
                                 key="categories"
-                                initial={{ opacity: 0, x: -10 }}
-                                animate={{ opacity: 1, x: 0 }}
-                                exit={{ opacity: 0, x: 10 }}
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                exit={{ opacity: 0 }}
                                 className="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"
                             >
                                 {filteredCategories.map(cat => (
@@ -261,9 +341,6 @@ const Admin = () => {
                                                     title={cat.isGlobal ? 'Make Private' : 'Make Global'}
                                                 >
                                                     <Shield size={14} />
-                                                </button>
-                                                <button className="p-1 text-muted-foreground hover:text-rose-500 rounded hover:bg-muted">
-                                                    <Trash2 size={14} />
                                                 </button>
                                             </div>
                                         </div>
@@ -282,9 +359,9 @@ const Admin = () => {
                         {activeTab === 'settings' && (
                             <motion.div
                                 key="settings"
-                                initial={{ opacity: 0, x: -10 }}
-                                animate={{ opacity: 1, x: 0 }}
-                                exit={{ opacity: 0, x: 10 }}
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                exit={{ opacity: 0 }}
                                 className="p-12 text-center space-y-4"
                             >
                                 <div className="mx-auto w-16 h-16 bg-muted rounded-full flex items-center justify-center text-muted-foreground">
@@ -314,7 +391,7 @@ const Admin = () => {
                         >
                             <div className="flex justify-between items-center mb-6">
                                 <h3 className="text-[19px] font-bold text-foreground flex items-center gap-2">
-                                    <Tag size={20} className="text-primary" /> Create Global Category
+                                    Create Global Category
                                 </h3>
                                 <button onClick={() => setShowCategoryModal(false)}>
                                     <X size={20} className="text-muted-foreground hover:text-foreground" />
@@ -342,10 +419,10 @@ const Admin = () => {
                                 </div>
                                 <div className="p-3 bg-primary/5 border border-primary/20 rounded-[3px]">
                                     <p className="text-[11px] text-primary font-bold uppercase flex items-center gap-1">
-                                        <ShieldCheck size={12} /> Pro Tip
+                                        Pro Tip
                                     </p>
                                     <p className="text-[12px] text-muted-foreground mt-1">
-                                        Global categories are visible to **all users** on the platform. Use them for standard technologies or common frameworks.
+                                        Global categories are visible to **all users** on the platform.
                                     </p>
                                 </div>
                                 <div className="flex gap-2 pt-2">

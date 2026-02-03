@@ -91,13 +91,6 @@ const Navbar = ({ onMenuClick }) => {
 
                     {user ? (
                         <div className="flex items-center gap-1">
-                            <button className="p-2 text-muted-foreground hover:bg-muted/50 rounded transition-colors">
-                                <Inbox size={18} />
-                            </button>
-                            <button className="p-2 text-muted-foreground hover:bg-muted/50 rounded transition-colors">
-                                <Trophy size={18} />
-                            </button>
-
                             <div className="relative ml-2" ref={profileRef}>
                                 <button
                                     onClick={() => setIsProfileOpen(!isProfileOpen)}

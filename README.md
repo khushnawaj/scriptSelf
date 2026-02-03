@@ -33,7 +33,7 @@
 - **Frontend**: React, Redux Toolkit, Tailwind CSS, Lucide React, Chart.js.
 - **Backend**: Node.js, Express, MongoDB (Mongoose), PDF-Parse, Archiver.
 - **Authentication**: JWT (JSON Web Token) with secure cookie storage.
-- **Styling**: Premium Teal & Maroon custom design system with Glassmorphism effects.
+- **Styling**: Premium Vibrant Indigo & Violet design system with high-contrast accessibility.
 
 ---
 
@@ -63,8 +63,11 @@
 
 ---
 
-## 🛡️ Admin Features
-- Users with the `admin` role can manage the entire user base, delete accounts, and oversee platform content.
+## 🛡️ Enhanced Admin Features
+- **System-Wide Moderation**: Admins have visibility and control over all notes in the system, including private vaults, to ensure platform integrity.
+- **User Role Management**: Promote or demote users to/from admin roles directly from the management console.
+- **Advanced System Stats**: Real-time tracking of total users, system-wide notes, and global categories.
+- **Cleanup Tools**: Remove users and their associated records with one click.
 
 ---
 

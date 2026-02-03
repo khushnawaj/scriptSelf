@@ -235,3 +235,23 @@ exports.exportNotes = async (req, res, next) => {
     next(err);
   }
 };
+
+// @desc      Get all notes (Admin)
+// @route     GET /api/v1/notes/admin/all
+// @access    Private/Admin
+exports.adminGetNotes = async (req, res, next) => {
+  try {
+    const notes = await Note.find()
+      .populate({ path: 'category', select: 'name' })
+      .populate({ path: 'user', select: 'username email avatar' })
+      .sort('-createdAt');
+
+    res.status(200).json({
+      success: true,
+      count: notes.length,
+      data: notes
+    });
+  } catch (err) {
+    next(err);
+  }
+};

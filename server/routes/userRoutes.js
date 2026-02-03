@@ -2,7 +2,8 @@ const express = require('express');
 const {
     getUsers,
     getUser,
-    deleteUser
+    deleteUser,
+    updateUserRole
 } = require('../controllers/userController');
 
 const router = express.Router();
@@ -18,5 +19,8 @@ router.route('/')
 router.route('/:id')
     .get(getUser)
     .delete(deleteUser);
+
+router.route('/:id/role')
+    .put(updateUserRole);
 
 module.exports = router;

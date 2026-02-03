@@ -6,7 +6,8 @@ const {
   createNote,
   updateNote,
   deleteNote,
-  exportNotes
+  exportNotes,
+  adminGetNotes
 } = require('../controllers/noteController');
 
 const router = express.Router({ mergeParams: true });
@@ -28,6 +29,9 @@ router.get('/stats', protect, async (req, res, next) => {
 
 // Export Route (Must be before /:id to not collide)
 router.get('/export', protect, exportNotes);
+
+// Admin Route for all system notes
+router.get('/admin/all', protect, authorize('admin'), adminGetNotes);
 
 router
   .route('/')
