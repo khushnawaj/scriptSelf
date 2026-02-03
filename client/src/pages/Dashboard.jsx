@@ -40,27 +40,32 @@ const Dashboard = () => {
     const patternsCount = notes.filter(n => n.type === 'pattern').length;
 
     return (
-        <div className="space-y-8 animate-in fade-in duration-500">
-            <div className="flex justify-between items-center">
-                <h1 className="text-[27px] font-normal text-foreground">Moderator Dashboard</h1>
-                <Link to="/notes/new" className="so-btn so-btn-primary">
-                    <Plus size={14} className="mr-1" /> New Record
+        <div className="space-y-10 animate-in fade-in duration-700">
+            <div className="flex justify-between items-end">
+                <div>
+                    <h1 className="text-[32px] font-bold text-foreground tracking-tight">Technical Pulse</h1>
+                    <p className="text-muted-foreground text-[14px]">Welcome back, {user?.username}. Here's what's happening in your knowledge base.</p>
+                </div>
+                <Link to="/notes/new" className="so-btn so-btn-primary h-12 px-8 flex items-center gap-2 shadow-xl hover:shadow-primary/20">
+                    <Plus size={18} /> New Record
                 </Link>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
                 {[
-                    { label: 'My Records', value: notes.length, icon: FileText, color: 'text-indigo-600' },
-                    { label: 'Logic Patterns', value: patternsCount, icon: Zap, color: 'text-amber-600' },
-                    { label: 'Decision Records', value: adrCount, icon: Database, color: 'text-rose-600' },
-                    { label: 'Public Posts', value: publicNotesCount, icon: Globe, color: 'text-emerald-600' },
+                    { label: 'My Records', value: notes.length, icon: FileText, color: 'bg-indigo-500/10 text-indigo-500' },
+                    { label: 'Logic Patterns', value: patternsCount, icon: Zap, color: 'bg-amber-500/10 text-amber-500' },
+                    { label: 'Decision Records', value: adrCount, icon: Database, color: 'bg-rose-500/10 text-rose-500' },
+                    { label: 'Public Posts', value: publicNotesCount, icon: Globe, color: 'bg-emerald-500/10 text-emerald-500' },
                 ].map((stat, i) => (
-                    <div key={i} className="border border-border p-6 rounded-[3px] bg-card hover:border-primary/50 transition-colors">
-                        <div className="flex items-center gap-3 mb-2 text-muted-foreground font-bold text-[11px] uppercase tracking-wider">
-                            <stat.icon size={14} className={stat.color} />
-                            <span>{stat.label}</span>
+                    <div key={i} className="group relative border border-border/50 p-8 rounded-[6px] bg-card hover:border-primary/50 transition-all duration-300 hover:shadow-2xl hover:shadow-primary/5">
+                        <div className="flex items-center justify-between mb-4">
+                            <div className={`p-3 rounded-[6px] ${stat.color}`}>
+                                <stat.icon size={20} />
+                            </div>
+                            <span className="text-muted-foreground font-bold text-[11px] uppercase tracking-[0.1em]">{stat.label}</span>
                         </div>
-                        <h4 className="text-[24px] font-semibold text-foreground">{stat.value}</h4>
+                        <h4 className="text-[32px] font-bold text-foreground tabular-nums">{stat.value}</h4>
                     </div>
                 ))}
             </div>

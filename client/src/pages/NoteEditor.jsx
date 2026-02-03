@@ -62,6 +62,42 @@ const NoteEditor = () => {
     const [showCategoryModal, setShowCategoryModal] = useState(false);
     const [newCategoryName, setNewCategoryName] = useState('');
     const [file, setFile] = useState(null);
+    const [hasDraft, setHasDraft] = useState(false);
+
+    // --- Draft System Logic ---
+    const draftKey = id ? `ss_draft_${id}` : 'ss_draft_new';
+
+    useEffect(() => {
+        const savedDraft = localStorage.getItem(draftKey);
+        if (savedDraft) {
+            setHasDraft(true);
+        }
+    }, [draftKey]);
+
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            if (content || title) {
+                localStorage.setItem(draftKey, JSON.stringify(formData));
+            }
+        }, 2000);
+        return () => clearTimeout(timer);
+    }, [formData, draftKey]);
+
+    const restoreDraft = () => {
+        const savedDraft = localStorage.getItem(draftKey);
+        if (savedDraft) {
+            const parsed = JSON.parse(savedDraft);
+            setFormData(parsed);
+            setHasDraft(false);
+            toast.success('Draft restored from local cache');
+        }
+    };
+
+    const discardDraft = () => {
+        localStorage.removeItem(draftKey);
+        setHasDraft(false);
+        toast.success('Draft discarded');
+    };
 
     useEffect(() => {
         dispatch(getCategories());
@@ -177,6 +213,7 @@ const NoteEditor = () => {
         dispatch(action).then((res) => {
             if (!res.error) {
                 toast.success(id ? 'Note Saved' : 'Note Created');
+                localStorage.removeItem(draftKey); // Clear draft on success
                 navigate('/notes');
             } else {
                 // Show the actual error message from backend
@@ -204,7 +241,23 @@ const NoteEditor = () => {
                     </div>
                 </div>
 
-                <div className="flex gap-2">
+                <div className="flex items-center gap-3">
+                    <AnimatePresence>
+                        {hasDraft && (
+                            <motion.div
+                                initial={{ opacity: 0, scale: 0.9 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                exit={{ opacity: 0, scale: 0.9 }}
+                                className="hidden md:flex items-center gap-2 bg-amber-500/10 border border-amber-500/20 px-3 py-1.5 rounded-[3px]"
+                            >
+                                <span className="text-[11px] font-bold text-amber-500 uppercase tracking-widest">Unsaved changes found</span>
+                                <div className="flex gap-2 ml-2">
+                                    <button onClick={restoreDraft} className="text-[11px] font-bold text-amber-600 hover:text-amber-700 underline">Restore</button>
+                                    <button onClick={discardDraft} className="text-[11px] font-bold text-muted-foreground hover:text-foreground">Discard</button>
+                                </div>
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
                     <button type="button" onClick={() => navigate(-1)} className="p-2 text-muted-foreground hover:bg-muted/50 rounded-[3px] transition-colors">
                         <Trash2 size={18} />
                     </button>
@@ -298,7 +351,7 @@ const NoteEditor = () => {
 
                             {/* Preview Pane */}
                             {(viewMode === 'preview' || viewMode === 'split') && (
-                                <div className={`flex-1 overflow-y-auto bg-background p-8 prose prose-zinc dark:prose-invert max-w-none h-full ${viewMode === 'split' ? 'w-1/2' : 'w-full'}`}>
+                                <div className={`flex-1 overflow-y-auto bg-card p-10 prose prose-zinc dark:prose-invert max-w-none h-full shadow-inner ${viewMode === 'split' ? 'w-1/2 border-l border-border' : 'w-full'} text-foreground`}>
                                     <ReactMarkdown
                                         remarkPlugins={[remarkGfm]}
                                         components={{

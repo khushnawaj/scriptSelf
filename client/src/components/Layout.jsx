@@ -63,7 +63,7 @@ const Layout = () => {
     );
 
     return (
-        <div className="min-h-screen bg-background text-foreground flex flex-col transition-colors duration-200">
+        <div className="min-h-screen bg-background text-foreground flex flex-col transition-all duration-500">
             <Navbar onMenuClick={() => setIsSidebarOpen(true)} />
 
             {/* Mobile Sidebar Overlay */}
@@ -75,20 +75,20 @@ const Layout = () => {
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
                             onClick={() => setIsSidebarOpen(false)}
-                            className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[60] md:hidden"
+                            className="fixed inset-0 bg-black/60 backdrop-blur-md z-[60] md:hidden"
                         />
                         <motion.div
                             initial={{ x: '-100%' }}
                             animate={{ x: 0 }}
                             exit={{ x: '-100%' }}
                             transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-                            className="fixed inset-y-0 left-0 w-[240px] bg-card border-r border-border z-[70] md:hidden p-4 pt-4 shadow-2xl"
+                            className="fixed inset-y-0 left-0 w-[280px] bg-card border-r border-border z-[70] md:hidden p-6 pt-6 shadow-2xl"
                         >
-                            <div className="flex items-center justify-between mb-6 pb-4 border-b border-border">
-                                <span className="font-bold text-primary flex items-center gap-2">
-                                    <Zap size={18} /> ScriptShelf
+                            <div className="flex items-center justify-between mb-8 pb-4 border-b border-border">
+                                <span className="font-bold text-primary flex items-center gap-2 text-lg">
+                                    <Zap size={22} /> script<span className="text-foreground">shelf.</span>
                                 </span>
-                                <button onClick={() => setIsSidebarOpen(false)} className="p-1 hover:bg-muted/50 rounded transition-colors">
+                                <button onClick={() => setIsSidebarOpen(false)} className="p-2 hover:bg-muted/50 rounded-full transition-colors">
                                     <X size={20} className="text-muted-foreground" />
                                 </button>
                             </div>
@@ -98,58 +98,69 @@ const Layout = () => {
                 )}
             </AnimatePresence>
 
-            <div className="max-w-[1500px] mx-auto w-full flex-1 flex mt-[50px]">
+            <div className="max-w-[1600px] mx-auto w-full flex-1 flex mt-[64px]">
                 {/* Desktop Sidebar */}
-                <aside className="hidden md:block w-[170px] shrink-0 border-r border-border pt-6 sticky top-[50px] h-[calc(100vh-50px)] overflow-y-auto">
-                    <SidebarContent />
+                <aside className="hidden md:block w-[200px] shrink-0 border-r border-border/50 pt-8 sticky top-[64px] h-[calc(100vh-64px)] overflow-y-auto sidebar-glass">
+                    <div className="px-4">
+                        <SidebarContent />
+                    </div>
                 </aside>
 
                 {/* Main Content Area */}
-                <main className="flex-1 p-6 border-l border-border min-w-0 bg-background/50">
+                <main className="flex-1 p-8 border-l border-border/10 min-w-0 bg-background/30 backdrop-blur-3xl">
                     <Outlet />
                 </main>
 
-                {/* Right Sidebar */}
-                <aside className="hidden lg:block w-[300px] shrink-0 p-6 space-y-6">
+                {/* Right Sidebar - System Intelligence Wing */}
+                <aside className="hidden xl:block w-[340px] shrink-0 p-8 space-y-8 sticky top-[64px] h-[calc(100vh-64px)] overflow-y-auto border-l border-border/30">
                     {/* System Blog/News Card */}
-                    <div className="bg-accent/40 border border-primary/20 rounded-[3px] shadow-sm">
-                        <div className="px-3 py-2 bg-primary/10 border-b border-primary/20 text-[12px] font-bold text-foreground flex items-center gap-2 uppercase tracking-wide">
-                            <Terminal size={12} className="text-primary" /> System Broadcast
+                    <div className="glass-morphism rounded-[12px] overflow-hidden shadow-xl shadow-primary/5">
+                        <div className="px-5 py-3 bg-primary/5 border-b border-border/50 text-[11px] font-bold text-primary flex items-center gap-2 uppercase tracking-[0.2em]">
+                            <Terminal size={14} /> Intelligence Feed
                         </div>
-                        <div className="p-3 text-[12px] text-muted-foreground space-y-3">
+                        <div className="p-5 space-y-4">
                             <div className="group cursor-pointer">
-                                <p className="text-foreground font-medium group-hover:text-primary transition-colors">Markdown Mastery</p>
-                                <p className="text-[11px] opacity-70">Use Split View for real-time logic documentation.</p>
+                                <p className="text-[14px] text-foreground font-bold group-hover:text-primary transition-colors leading-tight mb-1">Advanced Knowledge Graph</p>
+                                <p className="text-[12px] text-muted-foreground leading-relaxed">Bidirectional links allow you to map logic like a neural network.</p>
                             </div>
                             <div className="group cursor-pointer">
-                                <p className="text-foreground font-medium group-hover:text-primary transition-colors">Vault Isolation</p>
-                                <p className="text-[11px] opacity-70">Unchecked 'Public Post' keeps data in your private vault.</p>
+                                <p className="text-[14px] text-foreground font-bold group-hover:text-primary transition-colors leading-tight mb-1">Pro Search Operators</p>
+                                <p className="text-[12px] text-muted-foreground leading-relaxed">Combine tags and specific ADR statuses for surgical search precision.</p>
                             </div>
                         </div>
                     </div>
 
                     {/* Stats/Metrics Preview */}
-                    <div className="border border-border rounded-[3px] overflow-hidden">
-                        <h4 className="px-3 py-2 bg-muted/30 text-[12px] font-bold text-foreground border-b border-border uppercase tracking-wide">Recent Context</h4>
-                        <div className="p-3 space-y-3">
-                            {notes?.slice(0, 3).map((note, i) => (
-                                <Link key={i} to={`/notes/${note._id}`} className="block group">
-                                    <p className="text-[13px] text-link group-hover:underline truncate">{note.title}</p>
-                                    <p className="text-[11px] text-muted-foreground mt-0.5">{new Date(note.createdAt).toLocaleDateString()}</p>
+                    <div className="space-y-4">
+                        <h4 className="text-[11px] font-bold text-muted-foreground uppercase tracking-[0.2em] px-1">Memory Stream</h4>
+                        <div className="space-y-2">
+                            {notes?.slice(0, 4).map((note, i) => (
+                                <Link key={i} to={`/notes/${note._id}`} className="flex flex-col gap-1 p-3 hover:bg-muted/50 rounded-[10px] border border-transparent hover:border-border transition-all group">
+                                    <p className="text-[13px] font-bold text-foreground group-hover:text-primary transition-colors truncate">{note.title}</p>
+                                    <div className="flex items-center gap-2">
+                                        <span className="text-[10px] bg-secondary px-1.5 py-0.5 rounded text-muted-foreground uppercase font-bold">{note.type || 'DOC'}</span>
+                                        <span className="text-[11px] text-muted-foreground/50">{new Date(note.createdAt).toLocaleDateString()}</span>
+                                    </div>
                                 </Link>
                             ))}
-                            <Link to="/notes" className="block text-[11px] text-link hover:underline mt-2">View full archive →</Link>
                         </div>
+                        <Link to="/notes" className="block text-[12px] font-bold text-primary hover:underline px-1 mt-2">Access Full Archive →</Link>
                     </div>
 
                     {/* Quick Help */}
-                    <div className="p-4 bg-muted/20 border border-dashed border-border rounded-[3px]">
-                        <h4 className="text-[13px] font-bold mb-2 flex items-center gap-2">
-                            <MessageSquare size={14} className="text-primary" /> Shortcut Tips
+                    <div className="p-5 bg-secondary/30 border border-border/50 rounded-[12px]">
+                        <h4 className="text-[13px] font-bold mb-3 flex items-center gap-2 text-foreground">
+                            <MessageSquare size={16} className="text-primary" /> Core Shortcuts
                         </h4>
-                        <ul className="text-[11px] text-muted-foreground space-y-1 ml-4 list-disc">
-                            <li>Press <kbd className="px-1 bg-card border border-border rounded">Ctrl+K</kbd> to search anywhere.</li>
-                            <li>Use <kbd className="px-1 bg-card border border-border rounded">Esc</kbd> to exit modals.</li>
+                        <ul className="text-[12px] text-muted-foreground space-y-3">
+                            <li className="flex items-center justify-between">
+                                <span>Global Search</span>
+                                <kbd className="px-2 py-0.5 bg-background border border-border rounded-[4px] text-[10px] font-bold shadow-sm">⌘K</kbd>
+                            </li>
+                            <li className="flex items-center justify-between">
+                                <span>Close Active UI</span>
+                                <kbd className="px-2 py-0.5 bg-background border border-border rounded-[4px] text-[10px] font-bold shadow-sm">ESC</kbd>
+                            </li>
                         </ul>
                     </div>
                 </aside>

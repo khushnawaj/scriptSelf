@@ -46,95 +46,104 @@ const Navbar = ({ onMenuClick }) => {
     }, []);
 
     return (
-        <nav className="fixed top-0 w-full z-50 bg-secondary border-t-4 border-t-primary border-b border-b-border h-[50px] flex items-center transition-colors">
-            <div className="max-w-[1500px] mx-auto w-full px-4 flex items-center gap-2">
+        <nav className="fixed top-0 w-full z-50 glass-morphism bg-background/70 border-b border-border h-[64px] flex items-center transition-all duration-300">
+            <div className="max-w-[1500px] mx-auto w-full px-6 flex items-center gap-6">
 
                 {/* Burger Menu for Mobile */}
                 <button
                     onClick={onMenuClick}
-                    className="p-2 md:hidden text-muted-foreground hover:bg-muted/50 rounded transition-colors"
+                    className="p-2 md:hidden text-foreground hover:bg-muted/50 rounded-[6px] transition-colors"
                 >
-                    <Menu size={20} />
+                    <Menu size={22} />
                 </button>
 
                 {/* Logo */}
-                <Link to="/" className="flex items-center gap-1 shrink-0 px-2 py-1 hover:bg-muted/50 rounded transition-colors">
-                    <Code2 size={24} className="text-primary" />
-                    <span className="text-[18px] font-normal tracking-tight hidden sm:inline text-foreground">
-                        script<span className="font-bold">shelf</span>
+                <Link to="/" className="flex items-center gap-2 shrink-0 group">
+                    <div className="p-2 bg-primary rounded-[8px] group-hover:rotate-12 transition-transform duration-300">
+                        <Code2 size={20} className="text-white" />
+                    </div>
+                    <span className="text-[20px] font-bold tracking-tight hidden sm:inline text-foreground">
+                        script<span className="text-primary">shelf.</span>
                     </span>
                 </Link>
 
-                <Link to="/notes" className="hidden md:flex px-3 py-4 text-[13px] text-muted-foreground hover:bg-muted/50 transition-colors">
-                    Library
-                </Link>
+                <div className="hidden md:flex gap-1">
+                    <Link to="/notes" className="px-4 py-2 text-[14px] font-medium text-muted-foreground hover:text-foreground hover:bg-muted/50 rounded-[6px] transition-all">
+                        Library
+                    </Link>
+                </div>
 
-                {/* Search Bar - SO Style */}
-                <div className="flex-1 max-w-[700px] relative px-2 group cursor-pointer" onClick={() => window.dispatchEvent(new KeyboardEvent('keydown', { key: 'k', ctrlKey: true }))}>
-                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground" size={16} />
-                    <div className="w-full bg-background border border-border rounded-[3px] py-1.5 pl-9 pr-4 text-[13px] text-muted-foreground flex justify-between items-center transition-all group-hover:border-primary">
-                        <span className="hidden sm:inline">Search your library...</span>
+                {/* Search Bar - Premium SO Style */}
+                <div className="flex-1 max-w-[600px] relative group cursor-pointer" onClick={() => window.dispatchEvent(new KeyboardEvent('keydown', { key: 'k', ctrlKey: true }))}>
+                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground group-hover:text-primary transition-colors" size={16} />
+                    <div className="w-full bg-secondary/50 border border-border/50 rounded-[8px] py-2.5 pl-11 pr-4 text-[14px] text-muted-foreground flex justify-between items-center transition-all group-hover:border-primary/50 group-hover:bg-background group-hover:shadow-lg group-hover:shadow-primary/5">
+                        <span className="hidden sm:inline">Search your intelligence...</span>
                         <span className="sm:hidden">Search...</span>
-                        <kbd className="hidden md:inline-block px-1.5 py-0.5 rounded-[3px] border border-border bg-secondary text-[10px] font-bold">Ctrl+K</kbd>
+                        <div className="hidden md:flex items-center gap-1 opacity-50">
+                            <kbd className="px-1.5 py-0.5 rounded-[4px] border border-border bg-background text-[10px] font-bold">⌘</kbd>
+                            <kbd className="px-1.5 py-0.5 rounded-[4px] border border-border bg-background text-[10px] font-bold">K</kbd>
+                        </div>
                     </div>
                 </div>
 
                 {/* Right Actions */}
-                <div className="flex items-center gap-1 ml-auto">
+                <div className="flex items-center gap-3 ml-auto">
                     <button
                         onClick={toggleTheme}
-                        className="p-2 text-muted-foreground hover:bg-muted/50 rounded transition-colors"
+                        className="p-2.5 text-muted-foreground hover:text-foreground hover:bg-muted/50 rounded-[8px] transition-all"
                         title="Toggle appearance"
                     >
-                        {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
+                        {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
                     </button>
 
                     {user ? (
-                        <div className="flex items-center gap-1">
-                            <div className="relative ml-2" ref={profileRef}>
+                        <div className="flex items-center gap-2">
+                            <div className="relative" ref={profileRef}>
                                 <button
                                     onClick={() => setIsProfileOpen(!isProfileOpen)}
-                                    className="flex items-center gap-1 p-1 hover:bg-muted/50 rounded transition-colors"
+                                    className="flex items-center gap-2 p-1 pl-2 hover:bg-muted/50 rounded-[10px] border border-transparent hover:border-border transition-all"
                                 >
-                                    <div className="w-[26px] h-[26px] bg-primary rounded-[3px] flex items-center justify-center text-white text-[12px] font-bold overflow-hidden shadow-sm">
+                                    <span className="text-[13px] font-bold text-foreground hidden lg:inline">{user.username}</span>
+                                    <div className="w-[32px] h-[32px] bg-primary rounded-[8px] flex items-center justify-center text-white text-[14px] font-bold overflow-hidden shadow-lg shadow-primary/20">
                                         {user.avatar ? (
                                             <img src={user.avatar} alt="Avatar" className="w-full h-full object-cover" />
                                         ) : (
                                             user.username.charAt(0).toUpperCase()
                                         )}
                                     </div>
-                                    <ChevronDown size={12} className="text-muted-foreground" />
+                                    <ChevronDown size={14} className="text-muted-foreground" />
                                 </button>
 
                                 <AnimatePresence>
                                     {isProfileOpen && (
                                         <motion.div
-                                            initial={{ opacity: 0, y: 10 }}
-                                            animate={{ opacity: 1, y: 0 }}
-                                            exit={{ opacity: 0, y: 10 }}
-                                            className="absolute right-0 top-full mt-2 w-48 bg-card border border-border shadow-lg py-1 z-[100] text-[13px] rounded-[3px]"
+                                            initial={{ opacity: 0, scale: 0.95, y: 10 }}
+                                            animate={{ opacity: 1, scale: 1, y: 0 }}
+                                            exit={{ opacity: 0, scale: 0.95, y: 10 }}
+                                            className="absolute right-0 top-full mt-3 w-64 glass-morphism shadow-2xl p-2 z-[100] text-[14px] rounded-[12px]"
                                         >
-                                            <div className="px-4 py-2 border-b border-border mb-1">
-                                                <div className="flex items-center gap-2">
+                                            <div className="p-4 border-b border-border/50 mb-2">
+                                                <div className="flex items-center justify-between mb-1">
                                                     <p className="font-bold text-foreground">{user.username}</p>
                                                     {user.role === 'admin' && (
-                                                        <span className="bg-primary/20 text-primary text-[9px] font-bold px-1.5 py-0.5 rounded-[2px] flex items-center gap-0.5">
+                                                        <span className="bg-primary/10 text-primary text-[10px] font-bold px-2 py-0.5 rounded-full border border-primary/20 flex items-center gap-1">
                                                             <ShieldCheck size={10} /> ADMIN
                                                         </span>
                                                     )}
                                                 </div>
-                                                <p className="text-[11px] text-muted-foreground truncate">{user.email}</p>
+                                                <p className="text-[12px] text-muted-foreground truncate">{user.email}</p>
                                             </div>
-                                            <Link to="/profile" onClick={() => setIsProfileOpen(false)} className="block px-4 py-1.5 text-foreground hover:bg-muted/50">
-                                                Profile
+                                            <Link to="/profile" onClick={() => setIsProfileOpen(false)} className="flex items-center gap-3 px-4 py-2.5 text-muted-foreground hover:text-foreground hover:bg-muted/50 rounded-[8px] transition-all">
+                                                <User size={16} /> Profile Settings
                                             </Link>
                                             {user.role === 'admin' && (
-                                                <Link to="/admin" onClick={() => setIsProfileOpen(false)} className="block px-4 py-1.5 text-foreground hover:bg-muted/50 border-t border-border mt-1">
-                                                    Admin Center
+                                                <Link to="/admin" onClick={() => setIsProfileOpen(false)} className="flex items-center gap-3 px-4 py-2.5 text-rose-500 hover:bg-rose-500/10 rounded-[8px] transition-all mt-1">
+                                                    <ShieldCheck size={16} /> Admin Console
                                                 </Link>
                                             )}
-                                            <button onClick={handleLogout} className="w-full text-left px-4 py-1.5 text-foreground hover:bg-muted/50">
-                                                Log out
+                                            <div className="h-px bg-border/50 my-2" />
+                                            <button onClick={handleLogout} className="w-full flex items-center gap-3 px-4 py-2.5 text-muted-foreground hover:text-foreground hover:bg-muted/50 rounded-[8px] transition-all">
+                                                <LogOut size={16} /> Sign out
                                             </button>
                                         </motion.div>
                                     )}
@@ -142,9 +151,9 @@ const Navbar = ({ onMenuClick }) => {
                             </div>
                         </div>
                     ) : (
-                        <div className="flex items-center gap-2">
-                            <Link to="/login" className="px-3 py-1.5 text-[13px] text-link hover:underline rounded transition-colors">Log in</Link>
-                            <Link to="/register" className="so-btn so-btn-primary px-3 py-1.5">Sign up</Link>
+                        <div className="flex items-center gap-4">
+                            <Link to="/login" className="text-[14px] font-bold text-foreground hover:text-primary transition-colors">Log in</Link>
+                            <Link to="/register" className="so-btn so-btn-primary px-5 py-2">Get Started</Link>
                         </div>
                     )}
                 </div>

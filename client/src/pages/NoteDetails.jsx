@@ -124,7 +124,7 @@ const NoteDetails = () => {
 
                 {/* Main Content Area */}
                 <div className="flex-1 min-w-0">
-                    <article className="prose prose-zinc dark:prose-invert max-w-none prose-p:text-[16px] prose-p:leading-[1.7] text-foreground font-normal">
+                    <article className="prose prose-zinc dark:prose-invert max-w-none prose-p:text-[17px] prose-p:leading-[1.8] text-foreground font-normal prose-headings:font-bold prose-headings:tracking-tight">
                         <ReactMarkdown
                             remarkPlugins={[remarkGfm]}
                             components={{
