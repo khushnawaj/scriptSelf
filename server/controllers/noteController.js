@@ -2,6 +2,35 @@ const Note = require('../models/Note');
 const fs = require('fs');
 const pdf = require('pdf-parse');
 
+// Helper for Bidirectional Linking
+const updateBidirectionalLinks = async (noteId, content, userId) => {
+  try {
+    const linkRegex = /\[\[(.*?)\]\]/g;
+    const matches = [...content.matchAll(linkRegex)];
+    const linkedTitles = Array.from(new Set(matches.map(m => m[1])));
+
+    if (linkedTitles.length === 0) return;
+
+    const linkedNotes = await Note.find({
+      title: { $in: linkedTitles },
+      user: userId
+    });
+
+    const linkedIds = linkedNotes.map(n => n._id);
+
+    await Note.findByIdAndUpdate(noteId, {
+      $addToSet: { relatedNotes: { $each: linkedIds } }
+    });
+
+    await Note.updateMany(
+      { _id: { $in: linkedIds } },
+      { $addToSet: { backlinks: noteId } }
+    );
+  } catch (err) {
+    console.error('Link update failed:', err);
+  }
+};
+
 // @desc      Get all notes
 // @route     GET /api/v1/notes
 // @access    Private
@@ -163,7 +192,7 @@ exports.updateNote = async (req, res, next) => {
     });
 
     // Update bidirectional links
-    if (req.body.content) {
+    if (note && req.body.content) {
       await updateBidirectionalLinks(note._id, req.body.content, req.user.id);
     }
 
@@ -198,35 +227,6 @@ exports.deleteNote = async (req, res, next) => {
     });
   } catch (err) {
     next(err);
-  }
-};
-
-// Helper for Bidirectional Linking
-const updateBidirectionalLinks = async (noteId, content, userId) => {
-  try {
-    const linkRegex = /\[\[(.*?)\]\]/g;
-    const matches = [...content.matchAll(linkRegex)];
-    const linkedTitles = Array.from(new Set(matches.map(m => m[1])));
-
-    if (linkedTitles.length === 0) return;
-
-    const linkedNotes = await Note.find({
-      title: { $in: linkedTitles },
-      user: userId
-    });
-
-    const linkedIds = linkedNotes.map(n => n._id);
-
-    await Note.findByIdAndUpdate(noteId, {
-      $addToSet: { relatedNotes: { $each: linkedIds } }
-    });
-
-    await Note.updateMany(
-      { _id: { $in: linkedIds } },
-      { $addToSet: { backlinks: noteId } }
-    );
-  } catch (err) {
-    console.error('Link update failed:', err);
   }
 };
 

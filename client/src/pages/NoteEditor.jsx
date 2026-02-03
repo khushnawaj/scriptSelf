@@ -148,14 +148,27 @@ const NoteEditor = () => {
 
     const onSubmit = (e) => {
         e.preventDefault();
+
         if (!title.trim()) return toast.error('Enter a title');
         if (!categoryId) return toast.error('Choose a category');
 
         const noteData = new FormData();
-        Object.keys(formData).forEach(key => {
-            noteData.append(key, formData[key]);
+
+        // Append individual fields manually for precision
+        noteData.append('title', title.trim());
+        noteData.append('content', content);
+        noteData.append('type', type);
+        noteData.append('category', categoryId);
+        noteData.append('isPublic', isPublic); // Form data converts this to string
+        noteData.append('adrStatus', adrStatus);
+        noteData.append('videoUrl', videoUrl);
+
+        // Process tags into an array
+        const tagsArray = tags.split(/[,\s]+/).filter(t => t.trim() !== '');
+        tagsArray.forEach(tag => {
+            noteData.append('tags', tag);
         });
-        noteData.set('category', categoryId);
+
         if (file) {
             noteData.append('file', file);
         }
@@ -165,6 +178,10 @@ const NoteEditor = () => {
             if (!res.error) {
                 toast.success(id ? 'Note Saved' : 'Note Created');
                 navigate('/notes');
+            } else {
+                // Show the actual error message from backend
+                const errorMsg = res.payload?.error || res.payload || 'Failed to save note';
+                toast.error(errorMsg);
             }
         });
     };
