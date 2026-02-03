@@ -31,13 +31,16 @@ const Dashboard = () => {
 
     if (notesLoading) return <Spinner />;
 
-    const recentNotes = [...notes].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)).slice(0, 5);
+    // STRICTLY Filter for current user only
+    const userNotes = notes.filter(n => (n.user?._id || n.user) === user?._id);
+
+    const recentNotes = [...userNotes].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)).slice(0, 5);
 
     // Filter private vs public notes for dynamic stats
-    const publicNotesCount = notes.filter(n => n.isPublic).length;
-    const privateNotesCount = notes.length - publicNotesCount;
-    const adrCount = notes.filter(n => n.type === 'adr').length;
-    const patternsCount = notes.filter(n => n.type === 'pattern').length;
+    const publicNotesCount = userNotes.filter(n => n.isPublic).length;
+    const privateNotesCount = userNotes.length - publicNotesCount;
+    const adrCount = userNotes.filter(n => n.type === 'adr').length;
+    const patternsCount = userNotes.filter(n => n.type === 'pattern').length;
 
     return (
         <div className="space-y-8 animate-in fade-in duration-700">
@@ -53,7 +56,7 @@ const Dashboard = () => {
 
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
                 {[
-                    { label: 'My Records', value: notes.length, icon: FileText, color: 'bg-indigo-500/10 text-indigo-500' },
+                    { label: 'My Records', value: userNotes.length, icon: FileText, color: 'bg-indigo-500/10 text-indigo-500' },
                     { label: 'Logic Patterns', value: patternsCount, icon: Zap, color: 'bg-amber-500/10 text-amber-500' },
                     { label: 'Decision Records', value: adrCount, icon: Database, color: 'bg-rose-500/10 text-rose-500' },
                     { label: 'Public Posts', value: publicNotesCount, icon: Globe, color: 'bg-emerald-500/10 text-emerald-500' },
@@ -123,7 +126,7 @@ const Dashboard = () => {
                             System Insights
                         </h3>
                         <p className="text-[13px] text-muted-foreground leading-relaxed">
-                            You currently have <span className="font-bold text-foreground">{notes.length}</span> active records across <span className="font-bold text-foreground">{categories.length}</span> tag categories.
+                            You currently have <span className="font-bold text-foreground">{userNotes.length}</span> active records across <span className="font-bold text-foreground">{categories.length}</span> tag categories.
                         </p>
                     </div>
 
@@ -131,7 +134,7 @@ const Dashboard = () => {
                         <h3 className="text-[13px] font-bold text-foreground uppercase tracking-wider mb-4 border-b border-border pb-2">Category Spread</h3>
                         <div className="space-y-3">
                             {categories.slice(0, 5).map(cat => {
-                                const count = notes.filter(n => (n.category?._id || n.category) === cat._id).length;
+                                const count = userNotes.filter(n => (n.category?._id || n.category) === cat._id).length;
                                 const percentage = notes.length > 0 ? (count / notes.length) * 100 : 0;
                                 return (
                                     <div key={cat._id} className="space-y-1">
