@@ -39,7 +39,6 @@ const noteSchema = new mongoose.Schema({
         type: String,
         select: false // Exclude from default query for performance
     },
-    // Version Control
     history: [{
         content: String,
         codeSnippet: String,
@@ -49,11 +48,24 @@ const noteSchema = new mongoose.Schema({
         type: String,
         default: 'doc',
         lowercase: true,
-        trim: true
+        trim: true,
+        validate: {
+            validator: function (v) {
+                const validTypes = ['code', 'pdf', 'doc', 'cheatsheet', 'adr', 'pattern', 'other'];
+                return !v || validTypes.includes(v.toLowerCase());
+            },
+            message: props => `${props.value} is not a recognized tech-record type.`
+        }
     },
     adrStatus: {
         type: String,
-        enum: ['proposed', 'accepted', 'deprecated', 'superseded'],
+        validate: {
+            validator: function (v) {
+                const validStatuses = ['proposed', 'accepted', 'deprecated', 'superseded'];
+                return !v || validStatuses.includes(v.toLowerCase());
+            },
+            message: props => `${props.value} is not a valid ADR status.`
+        },
         default: 'proposed'
     },
     // For Bidirectional Linking
@@ -97,7 +109,6 @@ noteSchema.index({ title: 'text', tags: 'text', searchableText: 'text' });
 // Pre-save Middleware: Smart Tagging & Versioning
 noteSchema.pre('save', function (next) {
     // --- DATA SANITIZATION ---
-    // Ensure tags is a clean array of strings (flatten nested arrays if any)
     if (this.tags) {
         const rawTags = Array.isArray(this.tags) ? this.tags : [this.tags];
         this.tags = rawTags
@@ -106,29 +117,16 @@ noteSchema.pre('save', function (next) {
             .filter(t => t.length > 0);
     }
 
-    // Ensure type is lowercase and trimmed
     if (this.type) {
         this.type = String(this.type).toLowerCase().trim();
     }
 
+    console.log(`[DB-SAVE] Type: ${this.type}, Title: ${this.title}`);
+
     // 1. Versioning
     if (this.isModified('content') || this.isModified('codeSnippet')) {
-        // Only push if it's not a new document (otherwise history empty)
         if (!this.isNew) {
-            // We can't access "previous" value easily in pre-save without querying, 
-            // BUT Mongoose 'this' still holds the document. 
-            // Actually, usually you'd need to fetch the original or rely on client sending it?
-            // Mongoose doesn't store the old value in 'this' after modification set.
-            // Wait, standard approach:
-            // If we use findByIdAndUpdate, we can't capture this easily in a document middleware.
-            // But the controller uses findByIdAndUpdate.
-            // To support "history", the controller should ideally use findById, modify, then save().
-            // OR we just assume the *current* state before this save was the history?
-            // No, 'this' is already the NEW state.
-
-            // ALTERNATIVE: Use post-init to store original? Too complex.
-            // BEST SIMPLE APPROACH: Controller logic is better for history or push "current" before update?
-            // actually, 'this' in pre('save') is the document to be saved.
+            // History logic can be added here if needed
         }
     }
 
@@ -152,7 +150,6 @@ noteSchema.pre('save', function (next) {
     next();
 });
 
-// Static method to get simple statistics (for dashboard)
 noteSchema.statics.getStats = async function () {
     const stats = await this.aggregate([
         {
@@ -163,7 +160,6 @@ noteSchema.statics.getStats = async function () {
         }
     ]);
 
-    // Advanced Analytics: Count by Type
     const typeStats = await this.aggregate([
         {
             $group: {
@@ -173,7 +169,6 @@ noteSchema.statics.getStats = async function () {
         }
     ]);
 
-    // Time-series: Notes per day (Last 14 days)
     const fourteenDaysAgo = new Date();
     fourteenDaysAgo.setDate(fourteenDaysAgo.getDate() - 14);
 
@@ -198,4 +193,4 @@ noteSchema.statics.getStats = async function () {
     return { categoryStats: stats, typeStats, timeSeries };
 };
 
-module.exports = mongoose.model('Note', noteSchema);
+module.exports = mongoose.models.Note || mongoose.model('Note', noteSchema);

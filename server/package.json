@@ -1,6 +1,6 @@
 {
   "name": "scriptshelf-api",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Backend API for ScriptShelf",
   "main": "index.js",
   "scripts": {
