@@ -18,6 +18,7 @@ import NoteEditor from './pages/NoteEditor';
 import NoteDetails from './pages/NoteDetails';
 import Categories from './pages/Categories';
 import Admin from './pages/Admin';
+import NotFound from './pages/NotFound';
 import Spinner from './components/Spinner';
 
 // Private Route Component
@@ -83,7 +84,7 @@ function App() {
         </Route>
 
         {/* Fallback */}
-        <Route path="*" element={<Navigate to="/" />} />
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </Router>
   );

@@ -9,7 +9,9 @@ import {
     Trophy,
     Award,
     Plus,
-    Clock
+    Clock,
+    Globe,
+    Shield
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import Spinner from '../components/Spinner';
