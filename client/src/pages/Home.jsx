@@ -47,6 +47,9 @@ const Home = () => {
                                 <Link to="/login" className="so-btn bg-white text-[#1b1b1b] hover:bg-zinc-100 py-4 px-10 text-[16px] font-bold transition-all hover:-translate-y-1">
                                     Access Archive
                                 </Link>
+                                <Link to="/guide" className="so-btn border border-zinc-700 text-zinc-400 hover:text-white hover:border-white py-4 px-10 text-[16px] font-bold transition-all hover:-translate-y-1">
+                                    Learn Protocol
+                                </Link>
                             </>
                         )}
                     </div>

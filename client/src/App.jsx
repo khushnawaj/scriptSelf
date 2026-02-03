@@ -18,6 +18,7 @@ import NoteEditor from './pages/NoteEditor';
 import NoteDetails from './pages/NoteDetails';
 import Categories from './pages/Categories';
 import Admin from './pages/Admin';
+import Guide from './pages/Guide';
 import NotFound from './pages/NotFound';
 import Spinner from './components/Spinner';
 
@@ -81,6 +82,7 @@ function App() {
           <Route path="/notes/edit/:id" element={<NoteEditor />} />
           <Route path="/categories" element={<Categories />} />
           <Route path="/admin" element={<Admin />} />
+          <Route path="/guide" element={<Guide />} />
         </Route>
 
         {/* Fallback */}

@@ -12,7 +12,8 @@ import {
     MessageSquare,
     Terminal,
     Zap,
-    X
+    X,
+    BookOpen
 } from 'lucide-react';
 import { useSelector } from 'react-redux';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -59,6 +60,7 @@ const Layout = () => {
             </div>
             <NavItem to="/profile" label="Profile" icon={Users} />
             <NavItem to="/notes/new" label="New Record" icon={Zap} />
+            <NavItem to="/guide" label="Learn" icon={BookOpen} />
         </div>
     );
 
