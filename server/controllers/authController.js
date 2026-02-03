@@ -84,16 +84,23 @@ exports.getMe = async (req, res, next) => {
 // @desc      Update user details
 // @route     PUT /api/v1/auth/updatedetails
 // @access    Private
+const safeParse = (str) => {
+  if (typeof str !== 'string') return str;
+  try {
+    return JSON.parse(str);
+  } catch (e) {
+    return str; // Return as is or undefined depending on logic
+  }
+};
+
 exports.updateDetails = async (req, res, next) => {
   try {
     const fieldsToUpdate = {
       username: req.body.username,
       email: req.body.email,
       bio: req.body.bio,
-      // socialLinks can be JSON string if sent via FormData, parse it
-      socialLinks: req.body.socialLinks ? (typeof req.body.socialLinks === 'string' ? JSON.parse(req.body.socialLinks) : req.body.socialLinks) : undefined,
-      // Parse customLinks similarly
-      customLinks: req.body.customLinks ? (typeof req.body.customLinks === 'string' ? JSON.parse(req.body.customLinks) : req.body.customLinks) : undefined
+      socialLinks: safeParse(req.body.socialLinks),
+      customLinks: safeParse(req.body.customLinks)
     };
 
     if (req.file) {
