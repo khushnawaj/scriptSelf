@@ -26,28 +26,28 @@ const Home = () => {
                     <div className="inline-flex items-center gap-2 px-3 py-1 bg-primary/20 border border-primary/30 rounded-full text-primary-foreground/80 text-[12px] font-bold uppercase tracking-widest mb-6 animate-pulse">
                         <Cpu size={14} /> The Future of Documentation
                     </div>
-                    <h1 className="text-[48px] sm:text-[64px] font-bold leading-[1.1] mb-8 tracking-tight">
+                    <h1 className="text-[36px] sm:text-[48px] md:text-[64px] font-bold leading-[1.1] mb-6 sm:mb-8 tracking-tight">
                         Every <span className="text-primary">logic</span> deserves <br className="hidden sm:block" />
                         permanent storage.
                     </h1>
-                    <p className="text-[19px] sm:text-[21px] text-zinc-300 mb-12 max-w-2xl mx-auto font-light leading-relaxed">
+                    <p className="text-[16px] sm:text-[19px] md:text-[21px] text-zinc-300 mb-8 sm:mb-12 max-w-2xl mx-auto font-light leading-relaxed px-4 sm:px-0">
                         ScriptShelf is a documentation-first platform for technical archetypes.
                         Capture your logic once, retrieve it everywhere.
                     </p>
-                    <div className="flex flex-col sm:flex-row justify-center gap-4">
+                    <div className="flex flex-col sm:flex-row justify-center gap-3 sm:gap-4 px-4 sm:px-0">
                         {isAuthenticated ? (
-                            <Link to="/dashboard" className="so-btn so-btn-primary py-4 px-10 text-[16px] font-bold shadow-xl shadow-primary/20 transition-all hover:-translate-y-1">
+                            <Link to="/dashboard" className="so-btn so-btn-primary w-full sm:w-auto py-3 sm:py-4 px-6 sm:px-10 text-[15px] sm:text-[16px] font-bold shadow-xl shadow-primary/20 transition-all hover:-translate-y-1">
                                 Go to System Console <ArrowRight size={18} className="ml-2" />
                             </Link>
                         ) : (
                             <>
-                                <Link to="/register" className="so-btn so-btn-primary py-4 px-10 text-[16px] font-bold shadow-xl shadow-primary/20 transition-all hover:-translate-y-1">
+                                <Link to="/register" className="so-btn so-btn-primary w-full sm:w-auto py-3 sm:py-4 px-6 sm:px-10 text-[15px] sm:text-[16px] font-bold shadow-xl shadow-primary/20 transition-all hover:-translate-y-1">
                                     Initialize My Vault
                                 </Link>
-                                <Link to="/login" className="so-btn bg-white text-[#1b1b1b] hover:bg-zinc-100 py-4 px-10 text-[16px] font-bold transition-all hover:-translate-y-1">
+                                <Link to="/login" className="so-btn bg-white text-[#1b1b1b] hover:bg-zinc-100 w-full sm:w-auto py-3 sm:py-4 px-6 sm:px-10 text-[15px] sm:text-[16px] font-bold transition-all hover:-translate-y-1">
                                     Access Archive
                                 </Link>
-                                <Link to="/guide" className="so-btn border border-zinc-700 text-zinc-400 hover:text-white hover:border-white py-4 px-10 text-[16px] font-bold transition-all hover:-translate-y-1">
+                                <Link to="/guide" className="so-btn border border-zinc-700 text-zinc-400 hover:text-white hover:border-white w-full sm:w-auto py-3 sm:py-4 px-6 sm:px-10 text-[15px] sm:text-[16px] font-bold transition-all hover:-translate-y-1">
                                     Learn Protocol
                                 </Link>
                             </>
@@ -57,9 +57,9 @@ const Home = () => {
             </div>
 
             {/* Feature Blocks */}
-            <div className="max-w-7xl mx-auto py-24 px-6 grid grid-cols-1 md:grid-cols-3 gap-16">
-                <div className="group">
-                    <div className="w-14 h-14 bg-accent text-primary rounded-[3px] flex items-center justify-center mb-6 group-hover:bg-primary group-hover:text-white transition-all transform group-hover:rotate-6 shadow-sm border border-border">
+            <div className="max-w-7xl mx-auto py-24 px-6 grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-16">
+                <div className="group bg-card border border-border/50 p-8 rounded-[12px] hover:border-primary/50 transition-all duration-300 hover:shadow-lg flex flex-col items-center text-center">
+                    <div className="w-14 h-14 bg-accent text-primary rounded-[8px] flex items-center justify-center mb-6 group-hover:bg-primary group-hover:text-white transition-all transform group-hover:rotate-6 shadow-sm">
                         <MessageSquare size={28} />
                     </div>
                     <h3 className="text-[21px] font-bold mb-4 text-foreground">Pattern Explanation</h3>
@@ -67,8 +67,8 @@ const Home = () => {
                         Don't just paste code. Document the *rationale* behind every architectural decision. Our Markdown engine is optimized for developer context.
                     </p>
                 </div>
-                <div className="group">
-                    <div className="w-14 h-14 bg-accent text-primary rounded-[3px] flex items-center justify-center mb-6 group-hover:bg-primary group-hover:text-white transition-all transform group-hover:rotate-6 shadow-sm border border-border">
+                <div className="group bg-card border border-border/50 p-8 rounded-[12px] hover:border-primary/50 transition-all duration-300 hover:shadow-lg flex flex-col items-center text-center">
+                    <div className="w-14 h-14 bg-accent text-primary rounded-[8px] flex items-center justify-center mb-6 group-hover:bg-primary group-hover:text-white transition-all transform group-hover:rotate-6 shadow-sm">
                         <Layers size={28} />
                     </div>
                     <h3 className="text-[21px] font-bold mb-4 text-foreground">Tag Categorization</h3>
@@ -76,8 +76,8 @@ const Home = () => {
                         Structure your knowledge into reusable patterns. Filter by tags to find implementation details for Auth, DB, or API layers in milliseconds.
                     </p>
                 </div>
-                <div className="group">
-                    <div className="w-14 h-14 bg-accent text-primary rounded-[3px] flex items-center justify-center mb-6 group-hover:bg-primary group-hover:text-white transition-all transform group-hover:rotate-6 shadow-sm border border-border">
+                <div className="group bg-card border border-border/50 p-8 rounded-[12px] hover:border-primary/50 transition-all duration-300 hover:shadow-lg flex flex-col items-center text-center">
+                    <div className="w-14 h-14 bg-accent text-primary rounded-[8px] flex items-center justify-center mb-6 group-hover:bg-primary group-hover:text-white transition-all transform group-hover:rotate-6 shadow-sm">
                         <Globe size={28} />
                     </div>
                     <h3 className="text-[21px] font-bold mb-4 text-foreground">Private Archival</h3>
