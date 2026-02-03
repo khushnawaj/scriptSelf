@@ -171,13 +171,17 @@
     --tw-prose-headings: var(--foreground);
     --tw-prose-links: var(--link);
     --tw-prose-code: var(--primary);
-    --tw-prose-bold: var(--primary);
     --tw-prose-pre-bg: var(--secondary);
     --tw-prose-pre-code: var(--foreground);
 }
 
-.prose strong {
+/* Color bold text only in light mode for visibility */
+.light .prose strong,
+[data-theme='light'] .prose strong {
     color: var(--primary);
+}
+
+.prose strong {
     font-weight: 700;
 }
 
