@@ -36,13 +36,46 @@ export const updateNote = createAsyncThunk(
   }
 );
 
-// Get User Notes
+// Get User Notes (Optional param for public)
 export const getNotes = createAsyncThunk(
   'notes/getAll',
+  async (params = {}, thunkAPI) => {
+    try {
+      const { public: isPublic, search } = params;
+      let url = '/notes';
+      if (isPublic) url += '?public=true';
+      if (search) url += (url.includes('?') ? '&' : '?') + `search=${encodeURIComponent(search)}`;
+
+      const res = await api.get(url);
+      return res.data.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.response?.data?.error);
+    }
+  }
+);
+
+// Get Unified Library (User + All Public)
+export const getAllNotes = createAsyncThunk(
+  'notes/getUnified',
   async (_, thunkAPI) => {
     try {
-      const res = await api.get('/notes');
-      return res.data.data;
+      const [userRes, publicRes] = await Promise.all([
+        api.get('/notes'),
+        api.get('/notes?public=true')
+      ]);
+
+      // Merge and deduplicate
+      const userNotes = userRes.data.data;
+      const publicNotes = publicRes.data.data;
+
+      const merged = [...userNotes];
+      publicNotes.forEach(pn => {
+        if (!merged.find(un => un._id === pn._id)) {
+          merged.push(pn);
+        }
+      });
+
+      return merged;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.response?.data?.error);
     }
@@ -161,6 +194,18 @@ const noteSlice = createSlice({
         state.notes.push(action.payload);
       })
       .addCase(cloneNote.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.message = action.payload;
+      })
+      .addCase(getAllNotes.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(getAllNotes.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.notes = action.payload;
+      })
+      .addCase(getAllNotes.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
         state.message = action.payload;

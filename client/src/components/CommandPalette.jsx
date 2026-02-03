@@ -39,7 +39,7 @@ export default function CommandPalette() {
                 return;
             }
             try {
-                const { data } = await api.get(`/notes?search=${query}`);
+                const { data } = await api.get(`/notes?search=${query}&public=true`);
                 setResults(data.data.slice(0, 5));
             } catch (err) {
                 console.error("Search error:", err);

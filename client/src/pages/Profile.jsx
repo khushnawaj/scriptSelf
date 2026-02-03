@@ -105,24 +105,57 @@ const Profile = () => {
 
     const onSubmit = (e) => {
         e.preventDefault();
-        // Simple word choice: "Saving details..."
-        dispatch(updateProfile(formData));
+
+        const updateData = new FormData();
+        updateData.append('username', formData.username);
+        updateData.append('email', formData.email);
+        updateData.append('bio', formData.bio);
+        updateData.append('socialLinks', JSON.stringify(formData.socialLinks));
+        updateData.append('customLinks', JSON.stringify(formData.customLinks));
+
+        if (formData.avatarFile) {
+            updateData.append('avatar', formData.avatarFile);
+        }
+
+        dispatch(updateProfile(updateData));
     };
 
     if (isLoading && !isEditing) return <Spinner />;
 
-    // Real dynamic stats
-    const userNotes = notes.length;
+    // ONLY filter current user's notes for profile stats
+    const currentUserNotes = notes.filter(n => (n.user?._id || n.user) === user?._id);
+    const userNotes = currentUserNotes.length;
 
     return (
         <div className="space-y-8 animate-in fade-in duration-500">
             {/* Header */}
             <div className="flex flex-col md:flex-row gap-6 items-start pb-8 border-b border-border">
-                <div className="w-[128px] h-[128px] bg-primary rounded-[3px] flex items-center justify-center text-white text-[64px] font-bold overflow-hidden shadow-md">
-                    {formData.avatar ? (
-                        <img src={formData.avatar} alt="Avatar" className="w-full h-full object-cover" />
-                    ) : (
-                        user?.username?.charAt(0).toUpperCase()
+                <div className="relative group">
+                    <div className="w-[128px] h-[128px] bg-primary rounded-[3px] flex items-center justify-center text-white text-[64px] font-bold overflow-hidden shadow-md">
+                        {formData.avatar ? (
+                            <img src={formData.avatar} alt="Avatar" className="w-full h-full object-cover" />
+                        ) : (
+                            user?.username?.charAt(0).toUpperCase()
+                        )}
+                    </div>
+                    {isEditing && (
+                        <label className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer rounded-[3px]">
+                            <Edit3 className="text-white" size={24} />
+                            <input
+                                type="file"
+                                className="hidden"
+                                accept="image/*"
+                                onChange={(e) => {
+                                    if (e.target.files[0]) {
+                                        setFormData(prev => ({
+                                            ...prev,
+                                            avatarFile: e.target.files[0],
+                                            avatar: URL.createObjectURL(e.target.files[0])
+                                        }));
+                                    }
+                                }}
+                            />
+                        </label>
                     )}
                 </div>
 
@@ -312,7 +345,7 @@ const Profile = () => {
                                     <Link to="/notes" className="text-[13px] text-link hover:underline">View all</Link>
                                 </div>
                                 <div className="glass-frost rounded-[3px] divide-y divide-border overflow-hidden shadow-sm">
-                                    {notes.slice(0, 5).map(note => (
+                                    {currentUserNotes.slice(0, 5).map(note => (
                                         <Link
                                             key={note._id}
                                             to={`/notes/${note._id}`}
@@ -327,7 +360,7 @@ const Profile = () => {
                                             <span className="text-[12px] text-muted-foreground shrink-0">{new Date(note.createdAt).toLocaleDateString()}</span>
                                         </Link>
                                     ))}
-                                    {notes.length === 0 && (
+                                    {currentUserNotes.length === 0 && (
                                         <div className="p-10 text-center text-muted-foreground italic">No work recorded yet.</div>
                                     )}
                                 </div>
@@ -336,10 +369,10 @@ const Profile = () => {
                             <section className="space-y-4 pt-4">
                                 <h3 className="text-[19px] font-normal text-foreground uppercase tracking-tight">Topics Explored</h3>
                                 <div className="flex flex-wrap gap-1">
-                                    {[...new Set(notes.map(n => n.category?.name).filter(Boolean))].map(name => (
+                                    {[...new Set(currentUserNotes.map(n => n.category?.name).filter(Boolean))].map(name => (
                                         <span key={name} className="so-tag">{name}</span>
                                     ))}
-                                    {notes.length === 0 && (
+                                    {currentUserNotes.length === 0 && (
                                         <p className="text-[13px] text-muted-foreground">No topics yet.</p>
                                     )}
                                 </div>

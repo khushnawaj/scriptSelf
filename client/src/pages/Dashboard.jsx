@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { getNotes } from '../features/notes/noteSlice';
+import { getNotes, getAllNotes } from '../features/notes/noteSlice';
 import { getCategories } from '../features/categories/categorySlice';
 import {
     Activity,
@@ -25,7 +25,7 @@ const Dashboard = () => {
     const { categories } = useSelector((state) => state.categories);
 
     useEffect(() => {
-        dispatch(getNotes());
+        dispatch(getAllNotes());
         dispatch(getCategories());
     }, [dispatch]);
 

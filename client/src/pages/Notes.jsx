@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { getNotes } from '../features/notes/noteSlice';
+import { getNotes, getAllNotes } from '../features/notes/noteSlice';
 import { getCategories } from '../features/categories/categorySlice';
 import Spinner from '../components/Spinner';
 import {
@@ -26,7 +26,7 @@ const Notes = () => {
     const [sort, setSort] = useState('newest');
 
     useEffect(() => {
-        dispatch(getNotes());
+        dispatch(getAllNotes());
         dispatch(getCategories());
 
         // Handle search query from URL (Wiki-Links)
@@ -41,7 +41,12 @@ const Notes = () => {
         const matchesSearch = note.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
             note.content.toLowerCase().includes(searchTerm.toLowerCase());
         const matchesCategory = selectedCategory === 'All' || note.category?.name === selectedCategory;
-        return matchesSearch && matchesCategory;
+
+        let matchesTab = true;
+        if (sort === 'public') matchesTab = note.isPublic;
+        if (sort === 'private') matchesTab = !note.isPublic;
+
+        return matchesSearch && matchesCategory && matchesTab;
     });
 
     if (notesLoading || catsLoading) return <Spinner />;
