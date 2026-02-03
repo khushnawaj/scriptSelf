@@ -9,6 +9,14 @@ router.post('/register', register);
 router.post('/login', login);
 router.get('/logout', logout);
 router.get('/me', protect, getMe);
-router.put('/updatedetails', protect, upload.single('avatar'), updateDetails);
+router.put('/updatedetails', protect, (req, res, next) => {
+    upload.single('avatar')(req, res, (err) => {
+        if (err) {
+            console.error('Upload Error:', err);
+            return res.status(400).json({ success: false, error: err.message || 'Image upload failed' });
+        }
+        next();
+    });
+}, updateDetails);
 
 module.exports = router;

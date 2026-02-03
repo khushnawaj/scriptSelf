@@ -25,37 +25,7 @@ const categories = require('./routes/categoryRoutes');
 const notes = require('./routes/noteRoutes');
 
 const app = express();
-
-// Body parser
-app.use(express.json());
-
-// Set static folder
-app.use(express.static(path.join(__dirname, 'public')));
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
-
-// Cookie parser
-app.use(cookieParser());
-
-// Dev logging middleware
-if (process.env.NODE_ENV === 'development') {
-  app.use(morgan('dev'));
-}
-
-// Sanitize data
-app.use(mongoSanitize());
-
-// Set security headers
-app.use(helmet({
-  crossOriginResourcePolicy: false,
-}));
-
-// Prevent XSS attacks
-app.use(xss());
-
-// Prevent http param pollution
-app.use(hpp());
-
-// Enable CORS
+// Enable CORS immediately
 const allowedOrigins = [
   'http://localhost:5173',
   'http://localhost:5174',
@@ -64,7 +34,7 @@ const allowedOrigins = [
   'https://script-self.vercel.app',
 ];
 
-app.use(cors({
+const corsOptions = {
   origin: function (origin, callback) {
     if (!origin) return callback(null, true);
 
@@ -85,7 +55,14 @@ app.use(cors({
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'Origin']
-}));
+};
+
+app.use(cors(corsOptions));
+// Enable pre-flight for all routes
+app.options('*', cors(corsOptions));
+
+// Body parser
+app.use(express.json());
 
 // Mount routers
 app.use('/api/v1/auth', auth);
