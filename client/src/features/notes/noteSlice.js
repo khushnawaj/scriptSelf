@@ -64,6 +64,22 @@ export const deleteNote = createAsyncThunk(
   }
 );
 
+// Clone Note (Fork)
+export const cloneNote = createAsyncThunk(
+  'notes/clone',
+  async (id, thunkAPI) => {
+    try {
+      const res = await api.post(`/notes/${id}/clone`);
+      toast.success('Record cloned to your private shelf!');
+      return res.data.data;
+    } catch (error) {
+      const message = error.response?.data?.error || 'Failed to clone record';
+      toast.error(message);
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
 // Get Stats
 export const getNoteStats = createAsyncThunk(
   'notes/getStats',
@@ -136,6 +152,18 @@ const noteSlice = createSlice({
       })
       .addCase(getNoteStats.fulfilled, (state, action) => {
         state.stats = action.payload;
+      })
+      .addCase(cloneNote.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(cloneNote.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.notes.push(action.payload);
+      })
+      .addCase(cloneNote.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.message = action.payload;
       });
   },
 });

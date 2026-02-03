@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { getNotes, deleteNote } from '../features/notes/noteSlice';
+import { getNotes, deleteNote, cloneNote } from '../features/notes/noteSlice';
 import ReactMarkdown from 'react-markdown';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus, prism } from 'react-syntax-highlighter/dist/esm/styles/prism';
@@ -33,8 +33,10 @@ const NoteDetails = () => {
     const { theme } = useTheme();
 
     const { notes, isLoading } = useSelector((state) => state.notes);
+    const { user } = useSelector((state) => state.auth);
     const note = notes.find((n) => n._id === id);
     const [copiedIndex, setCopiedIndex] = useState(null);
+    const [isCloning, setIsCloning] = useState(false);
 
     useEffect(() => {
         if (!note) {
@@ -47,6 +49,18 @@ const NoteDetails = () => {
         setCopiedIndex(index);
         toast.success('Code copied to clipboard');
         setTimeout(() => setCopiedIndex(null), 2000);
+    };
+
+    const handleClone = async () => {
+        setIsCloning(true);
+        try {
+            const res = await dispatch(cloneNote(id));
+            if (!res.error) {
+                navigate(`/notes/${res.payload._id}`);
+            }
+        } finally {
+            setIsCloning(false);
+        }
     };
 
     const handleDelete = async () => {
@@ -70,9 +84,21 @@ const NoteDetails = () => {
                         {note.title}
                     </h1>
                     <div className="flex gap-2 shrink-0">
-                        <Link to={`/notes/edit/${id}`} className="so-btn border border-border hover:bg-muted/50 text-foreground transition-all">
-                            <Edit size={14} /> Edit
-                        </Link>
+                        {user && note.user?._id === user._id ? (
+                            <Link to={`/notes/edit/${id}`} className="so-btn border border-border hover:bg-muted/50 text-foreground transition-all">
+                                <Edit size={14} /> Edit
+                            </Link>
+                        ) : (
+                            user && note.isPublic && (
+                                <button
+                                    onClick={handleClone}
+                                    disabled={isCloning}
+                                    className="so-btn border border-primary text-primary hover:bg-primary/5 transition-all font-bold"
+                                >
+                                    <Copy size={14} className="mr-1" /> {isCloning ? 'Cloning...' : 'Clone to My Shelf'}
+                                </button>
+                            )
+                        )}
                         <Link to="/notes/new" className="so-btn so-btn-primary py-2.5 px-3">
                             Post new record
                         </Link>
@@ -241,9 +267,11 @@ const NoteDetails = () => {
                             <button className="hover:text-primary transition-colors flex items-center gap-1.5 border-none bg-transparent cursor-pointer">
                                 <Bookmark size={14} /> Follow
                             </button>
-                            <button onClick={handleDelete} className="hover:text-rose-500 transition-colors flex items-center gap-1.5 border-none bg-transparent cursor-pointer">
-                                <Trash2 size={14} /> Delete
-                            </button>
+                            {user && (user.role === 'admin' || note.user?._id === user._id) && (
+                                <button onClick={handleDelete} className="hover:text-rose-500 transition-colors flex items-center gap-1.5 border-none bg-transparent cursor-pointer">
+                                    <Trash2 size={14} /> Delete
+                                </button>
+                            )}
                         </div>
 
                         <div className="bg-accent/30 p-4 rounded-[3px] w-[220px] shrink-0 border border-transparent hover:border-primary/20 transition-all shadow-sm">

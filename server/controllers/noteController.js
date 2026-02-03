@@ -82,6 +82,46 @@ exports.getNotes = async (req, res, next) => {
   }
 };
 
+// @desc      Clone a note to user's library
+// @route     POST /api/v1/notes/:id/clone
+// @access    Private
+exports.cloneNote = async (req, res, next) => {
+  try {
+    const originalNote = await Note.findById(req.params.id);
+
+    if (!originalNote) {
+      return res.status(404).json({ success: false, error: 'Note not found' });
+    }
+
+    // Protection: Only clone if public, or you own it, or you are admin
+    if (!originalNote.isPublic && originalNote.user.toString() !== req.user.id && req.user.role !== 'admin') {
+      return res.status(403).json({ success: false, error: 'Unauthorized to clone this private record' });
+    }
+
+    const clonedNote = await Note.create({
+      title: `${originalNote.title} (Clone)`,
+      content: originalNote.content,
+      type: originalNote.type,
+      codeSnippet: originalNote.codeSnippet,
+      tags: originalNote.tags,
+      category: originalNote.category,
+      user: req.user.id,
+      isPublic: false, // Clones are private by default
+      videoUrl: originalNote.videoUrl,
+      attachment: originalNote.attachment,
+      attachmentUrl: originalNote.attachmentUrl,
+      adrStatus: originalNote.adrStatus
+    });
+
+    res.status(201).json({
+      success: true,
+      data: clonedNote
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
 // @desc      Get single note
 // @route     GET /api/v1/notes/:id
 // @access    Private / Public (if public)
