@@ -68,7 +68,7 @@ const userSchema = new mongoose.Schema({
             hex: { streak: { type: Number, default: 0 }, lastPlayed: { type: Date } },
             breach: { streak: { type: Number, default: 0 }, lastPlayed: { type: Date } },
             escape: { streak: { type: Number, default: 0 }, lastPlayed: { type: Date } },
-            refactor: { streak: { type: Number, default: 0 }, lastPlayed: { type: Date } },
+
             hunter: { streak: { type: Number, default: 0 }, lastPlayed: { type: Date } }
         }
     },

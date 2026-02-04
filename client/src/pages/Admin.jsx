@@ -13,7 +13,10 @@ import {
     X,
     ShieldCheck,
     FileText,
-    UserCog
+    UserCog,
+    Gamepad2,
+    Trophy,
+    Flame
 } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import { useSelector } from 'react-redux';
@@ -180,6 +183,7 @@ const Admin = () => {
                         { id: 'users', label: 'User Management' },
                         { id: 'notes', label: 'System Notes' },
                         { id: 'categories', label: 'Global Categories' },
+                        { id: 'arcade', label: 'Arcade Analytics' },
                         { id: 'settings', label: 'Settings' }
                     ].map(tab => (
                         <button
@@ -353,6 +357,96 @@ const Admin = () => {
                                         </div>
                                     </div>
                                 ))}
+                            </motion.div>
+                        )}
+
+                        {activeTab === 'arcade' && (
+                            <motion.div
+                                key="arcade"
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                exit={{ opacity: 0 }}
+                                className="p-6 space-y-8"
+                            >
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                    <div className="bg-slate-900 border border-border p-6 rounded-[3px] shadow-sm">
+                                        <div className="flex justify-between items-start mb-4">
+                                            <Trophy size={24} className="text-primary" />
+                                            <span className="text-[24px] font-bold text-foreground">
+                                                {users.reduce((acc, current) => acc + (current.arcade?.points || 0), 0).toLocaleString()}
+                                            </span>
+                                        </div>
+                                        <p className="text-[11px] text-muted-foreground uppercase tracking-widest font-black">Global XP Pool</p>
+                                    </div>
+                                    <div className="bg-slate-900 border border-border p-6 rounded-[3px] shadow-sm">
+                                        <div className="flex justify-between items-start mb-4">
+                                            <Flame size={24} className="text-orange-500" />
+                                            <span className="text-[24px] font-bold text-foreground">
+                                                {Math.max(...users.map(u => u.arcade?.streak || 0), 0)}
+                                            </span>
+                                        </div>
+                                        <p className="text-[11px] text-muted-foreground uppercase tracking-widest font-black">Record Daily Streak</p>
+                                    </div>
+                                    <div className="bg-slate-900 border border-border p-6 rounded-[3px] shadow-sm">
+                                        <div className="flex justify-between items-start mb-4">
+                                            <Gamepad2 size={24} className="text-emerald-500" />
+                                            <span className="text-[24px] font-bold text-foreground">
+                                                {users.filter(u => u.arcade?.points > 0).length}
+                                            </span>
+                                        </div>
+                                        <p className="text-[11px] text-muted-foreground uppercase tracking-widest font-black">Active Players</p>
+                                    </div>
+                                </div>
+
+                                <div className="space-y-4">
+                                    <h3 className="text-[19px] font-bold text-foreground flex items-center gap-2">
+                                        Global Player Registry
+                                    </h3>
+                                    <div className="overflow-x-auto border border-border rounded-[3px]">
+                                        <table className="w-full text-left text-[13px]">
+                                            <thead className="bg-muted/30 text-muted-foreground border-b border-border">
+                                                <tr>
+                                                    <th className="px-6 py-3 font-bold uppercase tracking-wider">Agent</th>
+                                                    <th className="px-6 py-3 font-bold uppercase tracking-wider">Total XP</th>
+                                                    <th className="px-6 py-3 font-bold uppercase tracking-wider">Streak</th>
+                                                    <th className="px-6 py-3 font-bold uppercase tracking-wider">Last Deploy</th>
+                                                    <th className="px-6 py-3 font-bold uppercase tracking-wider">Efficiency</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody className="divide-y divide-border">
+                                                {[...users]
+                                                    .sort((a, b) => (b.arcade?.points || 0) - (a.arcade?.points || 0))
+                                                    .map((u, i) => (
+                                                        <tr key={u._id} className="hover:bg-muted/20 transition-colors">
+                                                            <td className="px-6 py-4">
+                                                                <div className="flex items-center gap-3">
+                                                                    <span className="text-[11px] font-bold text-primary/50 w-4">#{i + 1}</span>
+                                                                    <span className="font-bold text-foreground">{u.username}</span>
+                                                                </div>
+                                                            </td>
+                                                            <td className="px-6 py-4 font-bold text-primary">{u.arcade?.points || 0}</td>
+                                                            <td className="px-6 py-4">
+                                                                <div className="flex items-center gap-1.5 text-orange-500 font-bold">
+                                                                    <Flame size={12} fill="currentColor" /> {u.arcade?.streak || 0}
+                                                                </div>
+                                                            </td>
+                                                            <td className="px-6 py-4 text-muted-foreground">
+                                                                {u.arcade?.lastPlayed ? new Date(u.arcade.lastPlayed).toLocaleDateString() : 'Never'}
+                                                            </td>
+                                                            <td className="px-6 py-4">
+                                                                <div className="w-16 h-1.5 bg-muted rounded-full overflow-hidden">
+                                                                    <div
+                                                                        className="h-full bg-primary"
+                                                                        style={{ width: `${Math.min(100, (u.arcade?.points || 0) / 100)}%` }}
+                                                                    />
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                                    ))}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
                             </motion.div>
                         )}
 

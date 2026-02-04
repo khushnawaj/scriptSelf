@@ -41,7 +41,9 @@
 - **Syntax Sprint**: Practice typing accuracy with real code snippets (React hooks, Redux logic, etc.). Real-time WPM tracking and error highlighting.
 - **Memory Matrix**: Test your short-term memory by matching tech stack components (Server, Database, CPU, etc.).
 - **Hex Hunter**: For the CSS wizards—guess the hex code relative to the color shown. Features specific game streaks and multipliers.
+- **Stack Overflow Escape**: Navigate the call stack maze—solve logic gates to unlock terminal doors before memory usage peaks.
 - **Firewall Breach**: A cyberpunk breakout-style reflex game to clear "security nodes".
+- **Bug Hunter v2.5**: A high-intensity debugger simulation. Fix logic errors and syntax flaws under pressure. Features power-ups (Shields, Time Dilation) and a live system monitor.
 - **Streak & Badge System**: Earn ranked badges (**Script Kiddie** to **Architect**) by maintaining daily streaks. Tracks both global consistency and game-specific mastery.
 
 ---
