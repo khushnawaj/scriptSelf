@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import axios from 'axios';
+import { toast } from 'react-hot-toast';
+import api from '../utils/api';
 import {
     Github,
     Linkedin,
@@ -15,19 +16,52 @@ import {
     Trophy,
     Flame
 } from 'lucide-react';
+import { useDispatch, useSelector } from 'react-redux';
+import { followUser, unfollowUser } from '../features/auth/authSlice';
 import ContributionGraph from '../components/profile/ContributionGraph';
 import Spinner from '../components/Spinner';
+import UserListModal from '../components/UserListModal';
 
 const PublicProfile = () => {
+    const dispatch = useDispatch();
+    const { user: currentUser } = useSelector((state) => state.auth);
     const { username } = useParams();
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [modalData, setModalData] = useState({ isOpen: false, type: '', title: '' });
+
+    const isFollowing = currentUser?.following?.includes(data?.profile?._id);
+
+    const handleFollow = async () => {
+        if (!currentUser) {
+            return toast.error("Please login to follow users");
+        }
+        if (isFollowing) {
+            await dispatch(unfollowUser(data.profile._id));
+            setData(prev => ({
+                ...prev,
+                profile: {
+                    ...prev.profile,
+                    followers: prev.profile.followers.filter(id => id !== currentUser._id)
+                }
+            }));
+        } else {
+            await dispatch(followUser(data.profile._id));
+            setData(prev => ({
+                ...prev,
+                profile: {
+                    ...prev.profile,
+                    followers: [...prev.profile.followers, currentUser._id]
+                }
+            }));
+        }
+    };
 
     useEffect(() => {
         const fetchProfile = async () => {
             try {
-                const res = await axios.get(`/api/v1/users/profile/${username}`);
+                const res = await api.get(`/users/profile/${username}`);
                 setData(res.data.data);
                 setLoading(false);
             } catch (err) {
@@ -45,6 +79,8 @@ const PublicProfile = () => {
             <Link to="/" className="text-primary hover:underline">Return to ScriptShelf</Link>
         </div>
     );
+
+    if (!data) return null;
 
     const { profile, recentNotes } = data;
 
@@ -101,17 +137,56 @@ const PublicProfile = () => {
                 <div className="lg:col-span-4 space-y-10">
                     <div className="space-y-4">
                         <h3 className="text-[13px] font-bold uppercase tracking-widest text-muted-foreground">Performance Identity</h3>
-                        <div className="bg-card border border-border p-6 rounded-[3px] grid grid-cols-2 gap-y-8 gap-x-4 shadow-sm">
-                            <div className="space-y-1">
-                                <p className="text-[24px] font-bold text-foreground">{profile.arcade?.points || 0}</p>
-                                <p className="text-[10px] text-muted-foreground uppercase font-black flex items-center gap-1"><Trophy size={12} className="text-primary" /> Global XP</p>
+                        <div className="bg-card border border-border p-6 rounded-[3px] space-y-6 shadow-sm">
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className="space-y-1">
+                                    <p className="text-[24px] font-bold text-foreground">{profile.arcade?.points || 0}</p>
+                                    <p className="text-[10px] text-muted-foreground uppercase font-black flex items-center gap-1"><Trophy size={12} className="text-primary" /> Global XP</p>
+                                </div>
+                                <div className="space-y-1 border-l border-border pl-6">
+                                    <p className="text-[24px] font-bold text-orange-500">{profile.arcade?.streak || 0}</p>
+                                    <p className="text-[10px] text-muted-foreground uppercase font-black flex items-center gap-1"><Flame size={12} fill="currentColor" /> Peak Streak</p>
+                                </div>
                             </div>
-                            <div className="space-y-1 border-l border-border pl-6">
-                                <p className="text-[24px] font-bold text-orange-500">{profile.arcade?.streak || 0}</p>
-                                <p className="text-[10px] text-muted-foreground uppercase font-black flex items-center gap-1"><Flame size={12} fill="currentColor" /> Peak Streak</p>
+
+                            <div className="pt-6 border-t border-border grid grid-cols-2 gap-4">
+                                <button
+                                    onClick={() => setModalData({ isOpen: true, type: 'followers', title: 'Network_Followers' })}
+                                    className="space-y-1 text-left hover:bg-muted/30 p-2 rounded-[3px] transition-colors"
+                                >
+                                    <p className="text-[18px] font-bold text-foreground">{profile.followers?.length || 0}</p>
+                                    <p className="text-[10px] text-muted-foreground uppercase tracking-widest font-black">Followers</p>
+                                </button>
+                                <button
+                                    onClick={() => setModalData({ isOpen: true, type: 'following', title: 'Network_Following' })}
+                                    className="space-y-1 text-left border-l border-border pl-6 hover:bg-muted/30 p-2 rounded-[3px] transition-colors"
+                                >
+                                    <p className="text-[18px] font-bold text-foreground">{profile.following?.length || 0}</p>
+                                    <p className="text-[10px] text-muted-foreground uppercase tracking-widest font-black">Following</p>
+                                </button>
                             </div>
+
+                            {currentUser && currentUser.username !== profile.username && (
+                                <button
+                                    onClick={handleFollow}
+                                    className={`w-full py-2.5 rounded-[3px] text-[12px] font-bold uppercase tracking-widest transition-all ${isFollowing
+                                        ? 'border border-border text-muted-foreground hover:text-rose-500 hover:border-rose-500 hover:bg-rose-500/5'
+                                        : 'bg-primary text-white shadow-lg shadow-primary/20 hover:scale-[1.02]'
+                                        }`}
+                                >
+                                    {isFollowing ? 'Retract_Follow' : 'Establish_Link'}
+                                </button>
+                            )}
                         </div>
-                        <div className="flex items-center gap-2 text-[12px] text-muted-foreground mt-4 px-1 italic">
+
+                        <UserListModal
+                            isOpen={modalData.isOpen}
+                            onClose={() => setModalData({ ...modalData, isOpen: false })}
+                            userId={profile?._id}
+                            type={modalData.type}
+                            title={modalData.title}
+                        />
+                        <div className="flex items-center gap-2 text-[12px] text-muted-foreground mt-4 px-1 italic opacity-60">
                             <Calendar size={14} /> Joined {new Date(profile.createdAt).toLocaleDateString(undefined, { month: 'long', year: 'numeric' })}
                         </div>
                     </div>

@@ -21,6 +21,7 @@ import {
 import { Link } from 'react-router-dom';
 import Spinner from '../components/Spinner';
 import ContributionGraph from '../components/profile/ContributionGraph';
+import UserListModal from '../components/UserListModal';
 
 const Profile = () => {
     const dispatch = useDispatch();
@@ -43,6 +44,7 @@ const Profile = () => {
     });
 
     const [isEditing, setIsEditing] = useState(false);
+    const [modalData, setModalData] = useState({ isOpen: false, type: '', title: '' });
 
     useEffect(() => {
         if (user) {
@@ -212,8 +214,33 @@ const Profile = () => {
                                 </p>
                                 <p className="text-[11px] text-muted-foreground uppercase tracking-wider font-bold">Rank</p>
                             </div>
+
+                            <div className="pt-4 border-t border-border/50 col-span-2 grid grid-cols-2 gap-4">
+                                <button
+                                    onClick={() => setModalData({ isOpen: true, type: 'followers', title: 'Network_Followers' })}
+                                    className="space-y-1 text-left hover:bg-muted/30 p-2 rounded-[3px] transition-colors"
+                                >
+                                    <p className="text-[18px] font-bold text-foreground">{user?.followers?.length || 0}</p>
+                                    <p className="text-[10px] text-muted-foreground uppercase tracking-widest font-bold">Followers</p>
+                                </button>
+                                <button
+                                    onClick={() => setModalData({ isOpen: true, type: 'following', title: 'Network_Following' })}
+                                    className="space-y-1 text-left border-l border-border pl-4 hover:bg-muted/30 p-2 rounded-[3px] transition-colors"
+                                >
+                                    <p className="text-[18px] font-bold text-foreground">{user?.following?.length || 0}</p>
+                                    <p className="text-[10px] text-muted-foreground uppercase tracking-widest font-bold">Following</p>
+                                </button>
+                            </div>
                         </div>
                     </div>
+
+                    <UserListModal
+                        isOpen={modalData.isOpen}
+                        onClose={() => setModalData({ ...modalData, isOpen: false })}
+                        userId={user?._id}
+                        type={modalData.type}
+                        title={modalData.title}
+                    />
 
                     <div className="space-y-4">
                         <h3 className="text-[19px] font-normal text-foreground">Badges</h3>

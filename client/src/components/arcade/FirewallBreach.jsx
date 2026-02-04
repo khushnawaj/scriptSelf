@@ -9,16 +9,17 @@ const FirewallBreach = ({ dispatch }) => {
     const [lives, setLives] = useState(3);
 
     // Game Constants
-    const PADDLE_WIDTH = 100;
-    const PADDLE_HEIGHT = 12;
-    const BALL_RADIUS = 6;
+    // Game Constants
+    const PADDLE_WIDTH = 90;
+    const PADDLE_HEIGHT = 10;
+    const BALL_RADIUS = 5;
     const BRICK_ROW_COUNT = 5;
-    const BRICK_COLUMN_COUNT = 9; // Fits nicely in ~600px
+    const BRICK_COLUMN_COUNT = 8;
 
     // Game State Refs (for animation loop)
     const stateRef = useRef({
         paddleX: 250,
-        ball: { x: 300, y: 400, dx: 4, dy: -4 },
+        ball: { x: 300, y: 350, dx: 3.5, dy: -3.5 },
         bricks: [],
         particles: [],
         isPlaying: false,
@@ -28,21 +29,27 @@ const FirewallBreach = ({ dispatch }) => {
     const initGame = () => {
         const bricks = [];
         const colors = ['#ef4444', '#f97316', '#eab308', '#22c55e', '#3b82f6'];
+        const brickPadding = 8;
+        const brickWidth = 65;
+        const brickHeight = 18;
+        const offsetLeft = (600 - (brickWidth * BRICK_COLUMN_COUNT + brickPadding * (BRICK_COLUMN_COUNT - 1))) / 2;
 
         for (let c = 0; c < BRICK_COLUMN_COUNT; c++) {
             for (let r = 0; r < BRICK_ROW_COUNT; r++) {
                 bricks.push({
-                    x: (c * (60 + 10)) + 35, // 60 width, 10 padding
-                    y: (r * (20 + 10)) + 30, // 20 height
+                    x: (c * (brickWidth + brickPadding)) + offsetLeft,
+                    y: (r * (brickHeight + brickPadding)) + 30,
                     status: 1,
-                    color: colors[r]
+                    color: colors[r],
+                    width: brickWidth,
+                    height: brickHeight
                 });
             }
         }
 
         stateRef.current = {
             paddleX: 250,
-            ball: { x: 300, y: 400, dx: 4, dy: -4 },
+            ball: { x: 300, y: 350, dx: 4, dy: -4 },
             bricks,
             particles: [],
             isPlaying: true,
@@ -52,6 +59,8 @@ const FirewallBreach = ({ dispatch }) => {
         setLives(3);
         setGameState('playing');
     };
+
+    // ... (logic for canvas drawing stays same, just using b.width/b.height)
 
     useEffect(() => {
         const canvas = canvasRef.current;
@@ -73,7 +82,7 @@ const FirewallBreach = ({ dispatch }) => {
         const drawPaddle = (x) => {
             ctx.beginPath();
             ctx.rect(x, canvas.height - PADDLE_HEIGHT - 10, PADDLE_WIDTH, PADDLE_HEIGHT);
-            ctx.fillStyle = '#8b5cf6'; // Violet
+            ctx.fillStyle = '#8b5cf6';
             ctx.fill();
             ctx.shadowColor = '#8b5cf6';
             ctx.shadowBlur = 15;
@@ -85,13 +94,10 @@ const FirewallBreach = ({ dispatch }) => {
             bricks.forEach(brick => {
                 if (brick.status === 1) {
                     ctx.beginPath();
-                    ctx.rect(brick.x, brick.y, 60, 20);
+                    ctx.rect(brick.x, brick.y, brick.width, brick.height);
                     ctx.fillStyle = brick.color;
                     ctx.fill();
                     ctx.closePath();
-                    // Shine effect
-                    ctx.fillStyle = 'rgba(255,255,255,0.1)';
-                    ctx.fillRect(brick.x, brick.y, 60, 10);
                 }
             });
         };
@@ -120,7 +126,7 @@ const FirewallBreach = ({ dispatch }) => {
                     x, y,
                     vx: (Math.random() - 0.5) * 4,
                     vy: (Math.random() - 0.5) * 4,
-                    size: Math.random() * 3 + 1,
+                    size: Math.random() * 2 + 1,
                     color,
                     life: 1
                 });
@@ -129,24 +135,15 @@ const FirewallBreach = ({ dispatch }) => {
 
         const render = () => {
             if (gameState !== 'playing') return;
-
-            // Clear
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-
             const { ball, bricks, particles, paddleX } = stateRef.current;
 
-            // Move Ball
             ball.x += ball.dx;
             ball.y += ball.dy;
 
-            // Wall Collision
-            if (ball.x + ball.dx > canvas.width - BALL_RADIUS || ball.x + ball.dx < BALL_RADIUS) {
-                ball.dx = -ball.dx;
-            }
-            if (ball.y + ball.dy < BALL_RADIUS) {
-                ball.dy = -ball.dy;
-            } else if (ball.y + ball.dy > canvas.height - BALL_RADIUS) {
-                // Ball Lost
+            if (ball.x + ball.dx > canvas.width - BALL_RADIUS || ball.x + ball.dx < BALL_RADIUS) ball.dx = -ball.dx;
+            if (ball.y + ball.dy < BALL_RADIUS) ball.dy = -ball.dy;
+            else if (ball.y + ball.dy > canvas.height - BALL_RADIUS) {
                 if (lives > 1) {
                     setLives(prev => prev - 1);
                     stateRef.current.ball = { x: canvas.width / 2, y: canvas.height - 30, dx: 4, dy: -4 };
@@ -156,43 +153,26 @@ const FirewallBreach = ({ dispatch }) => {
                 }
             }
 
-            // Paddle Collision
             const paddleY = canvas.height - PADDLE_HEIGHT - 10;
-            if (
-                ball.y + BALL_RADIUS > paddleY &&
-                ball.y - BALL_RADIUS < paddleY + PADDLE_HEIGHT &&
-                ball.x > paddleX &&
-                ball.x < paddleX + PADDLE_WIDTH
-            ) {
-                // Determine collision point for angle control
+            if (ball.y + BALL_RADIUS > paddleY && ball.y - BALL_RADIUS < paddleY + PADDLE_HEIGHT && ball.x > paddleX && ball.x < paddleX + PADDLE_WIDTH) {
                 let collidePoint = ball.x - (paddleX + PADDLE_WIDTH / 2);
                 collidePoint = collidePoint / (PADDLE_WIDTH / 2);
-
-                let angle = collidePoint * (Math.PI / 3); // 60 degrees max
-
-                // Speed up slightly on paddle hit
-                const speed = Math.sqrt(ball.dx * ball.dx + ball.dy * ball.dy) * 1.02;
-
+                let angle = collidePoint * (Math.PI / 3);
+                const speed = Math.sqrt(ball.dx * ball.dx + ball.dy * ball.dy) * 1.01;
                 ball.dx = speed * Math.sin(angle);
                 ball.dy = -speed * Math.cos(angle);
             }
 
-            // Brick Collision
             let activeBricks = 0;
             bricks.forEach(b => {
                 if (b.status === 1) {
                     activeBricks++;
-                    if (
-                        ball.x > b.x &&
-                        ball.x < b.x + 60 &&
-                        ball.y > b.y &&
-                        ball.y < b.y + 20
-                    ) {
+                    if (ball.x > b.x && ball.x < b.x + b.width && ball.y > b.y && ball.y < b.y + b.height) {
                         ball.dy = -ball.dy;
                         b.status = 0;
                         stateRef.current.score += 20;
                         setScore(stateRef.current.score);
-                        createExplosion(b.x + 30, b.y + 10, b.color);
+                        createExplosion(b.x + b.width / 2, b.y + b.height / 2, b.color);
                     }
                 }
             });
@@ -200,99 +180,96 @@ const FirewallBreach = ({ dispatch }) => {
             if (activeBricks === 0) {
                 setGameState('won');
                 stateRef.current.isPlaying = false;
-                dispatch(updateArcadeStats({ points: stateRef.current.score + 100, gameId: 'breach' })); // Win bonus
+                dispatch(updateArcadeStats({ points: stateRef.current.score + 100, gameId: 'breach' }));
             }
 
-            // Draw
             drawBricks(bricks);
             drawPaddle(paddleX);
             drawBall(ball);
             drawParticles(particles);
 
-            if (stateRef.current.isPlaying) {
-                animationFrameId = requestAnimationFrame(render);
-            }
+            if (stateRef.current.isPlaying) animationFrameId = requestAnimationFrame(render);
         };
 
-        if (gameState === 'playing') {
-            render();
-        }
-
+        if (gameState === 'playing') render();
         return () => cancelAnimationFrame(animationFrameId);
     }, [gameState, lives, dispatch]);
 
     const handleMouseMove = (e) => {
         if (!canvasRef.current || gameState !== 'playing') return;
         const rect = canvasRef.current.getBoundingClientRect();
-        const relativeX = e.clientX - rect.left;
-
+        const relativeX = (e.clientX || (e.touches && e.touches[0].clientX)) - rect.left;
         let newPaddleX = relativeX - PADDLE_WIDTH / 2;
-        // Clamp
         if (newPaddleX < 0) newPaddleX = 0;
-        if (newPaddleX > canvasRef.current.width - PADDLE_WIDTH) {
-            newPaddleX = canvasRef.current.width - PADDLE_WIDTH;
-        }
-
+        if (newPaddleX > canvasRef.current.width - PADDLE_WIDTH) newPaddleX = canvasRef.current.width - PADDLE_WIDTH;
         stateRef.current.paddleX = newPaddleX;
     };
 
     return (
-        <div className="max-w-[700px] mx-auto">
+        <div className="w-full max-w-2xl mx-auto space-y-6 px-4 flex flex-col items-center animate-in fade-in duration-700">
             {/* Mission Brief */}
-            <div className="bg-violet-500/5 border border-violet-500/20 p-4 rounded-[12px] mb-8 text-center animate-in slide-in-from-top-4">
-                <h4 className="text-[14px] font-bold text-violet-500 mb-2 flex items-center justify-center gap-2">
-                    <Zap size={16} /> Mission Brief: Firewall Breach
+            <div className="w-full bg-violet-500/5 border border-violet-500/20 p-4 rounded-xl animate-in slide-in-from-top-4 shadow-sm text-center">
+                <h4 className="text-[11px] font-black text-violet-500 mb-1 flex items-center justify-center gap-2 uppercase tracking-widest">
+                    <Zap size={14} /> Firewall_Breach
                 </h4>
-                <p className="text-[12px] text-muted-foreground">
-                    Penetrate the system security layers. Deflect the data packet to destroy nodes.
+                <p className="text-[10px] text-muted-foreground leading-relaxed font-medium opacity-80">
+                    Deflect data packets to penetrate security.
                 </p>
             </div>
 
-            <div className="flex justify-between items-center mb-4 px-4">
-                <span className="font-bold text-foreground text-[20px]">Score: {score}</span>
-                <div className="flex gap-1">
-                    {[...Array(lives)].map((_, i) => <div key={i} className="w-3 h-3 rounded-full bg-rose-500 shadow-[0_0_8px_rgba(244,63,94,0.6)]" />)}
+            {/* Stats */}
+            <div className="w-full flex justify-between items-center bg-card border border-border/50 p-3 rounded-xl shadow-sm">
+                <div className="flex flex-col items-start min-w-[80px]">
+                    <span className="text-[8px] font-black text-muted-foreground uppercase tracking-widest opacity-50">SYNC_SCORE</span>
+                    <span className="text-xl font-black text-foreground tabular-nums">{score}</span>
+                </div>
+                <div className="flex gap-1.5 min-w-[60px] justify-end">
+                    {[0, 1, 2].map(i => (
+                        <div key={i} className={`w-3.5 h-3.5 rounded-full transition-all duration-300 ${i < lives ? 'bg-rose-500 shadow-[0_0_10px_rgba(244,63,94,0.5)]' : 'bg-slate-800'}`} />
+                    ))}
                 </div>
             </div>
 
-            <div className="relative bg-slate-950 rounded-[12px] border border-border shadow-2xl overflow-hidden cursor-none flex justify-center">
-                {/* Menu Overlay */}
-                {gameState !== 'playing' && (
-                    <div className="absolute inset-0 bg-black/60 backdrop-blur-sm flex flex-col items-center justify-center z-20">
-                        {gameState === 'menu' && (
-                            <button onClick={initGame} className="so-btn so-btn-primary px-8 py-3 text-[16px] animate-pulse">
-                                INITIALIZE BREACH
-                            </button>
-                        )}
-                        {gameState === 'lost' && (
-                            <div className="text-center animate-in zoom-in">
-                                <h2 className="text-[32px] font-bold text-rose-500 mb-2">CONNECTION TERMINATED</h2>
-                                <p className="text-muted-foreground mb-6">Final Score: {score}</p>
-                                <button onClick={initGame} className="so-btn so-btn-secondary px-8 py-3">Retry Handshake</button>
-                            </div>
-                        )}
-                        {gameState === 'won' && (
-                            <div className="text-center animate-in zoom-in">
-                                <h2 className="text-[32px] font-bold text-emerald-500 mb-2">ACCESS GRANTED</h2>
-                                <p className="text-muted-foreground mb-6">Root access established.</p>
-                                <button onClick={initGame} className="so-btn so-btn-primary px-8 py-3">Re-run Simulation</button>
-                            </div>
-                        )}
-                    </div>
-                )}
+            <div className="relative bg-slate-950 p-4 sm:p-6 rounded-[2rem] border border-white/5 shadow-2xl transition-all duration-500 w-full flex justify-center">
+                <div className="relative overflow-hidden rounded-xl border border-white/5 bg-black/40">
+                    {gameState !== 'playing' && (
+                        <div className="absolute inset-0 bg-black/80 backdrop-blur-md flex flex-col items-center justify-center z-20 p-6">
+                            {gameState === 'menu' && (
+                                <button onClick={initGame} className="px-10 py-4 bg-primary text-white font-black uppercase tracking-widest rounded-xl hover:scale-105 transition-all shadow-lg text-xs">
+                                    INITIALIZE_BREACH
+                                </button>
+                            )}
+                            {gameState === 'lost' && (
+                                <div className="text-center animate-in zoom-in">
+                                    <h2 className="text-2xl font-black text-rose-500 mb-2 uppercase tracking-tighter">CONNECTION_TERMINATED</h2>
+                                    <p className="text-[10px] text-muted-foreground mb-6 uppercase tracking-widest font-bold font-mono">CORE_XP: {score}</p>
+                                    <button onClick={initGame} className="px-8 py-3 bg-secondary text-white font-black uppercase tracking-widest rounded-xl text-[10px]">Retry_Handshake</button>
+                                </div>
+                            )}
+                            {gameState === 'won' && (
+                                <div className="text-center animate-in zoom-in">
+                                    <h2 className="text-2xl font-black text-emerald-500 mb-2 uppercase tracking-tighter">ACCESS_GRANTED</h2>
+                                    <p className="text-[10px] text-muted-foreground mb-6 uppercase tracking-widest font-bold">Root_Link_Stable</p>
+                                    <button onClick={initGame} className="px-8 py-3 bg-primary text-white font-black uppercase tracking-widest rounded-xl text-[10px]">Re-run_Simulation</button>
+                                </div>
+                            )}
+                        </div>
+                    )}
 
-                <canvas
-                    ref={canvasRef}
-                    width={680}
-                    height={500}
-                    onMouseMove={handleMouseMove}
-                    className="touch-none bg-slate-950"
-                    style={{ maxWidth: '100%' }}
-                />
+                    <canvas
+                        ref={canvasRef}
+                        width={600}
+                        height={450}
+                        onMouseMove={handleMouseMove}
+                        onTouchMove={handleMouseMove}
+                        className="touch-none cursor-crosshair"
+                        style={{ maxWidth: '100%', height: 'auto' }}
+                    />
+                </div>
             </div>
 
-            <div className="text-center mt-6 text-[12px] text-muted-foreground">
-                Mouse/Touch to Move Paddle
+            <div className="text-center text-[8px] text-muted-foreground uppercase tracking-[0.3em] font-black opacity-30 mt-2">
+                Mouse / Touch Controls Enabled
             </div>
         </div>
     );

@@ -1,230 +1,297 @@
-import { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { Gamepad2, Flame, Trophy, Brain, Zap, Hash, Lock, Ghost, Bug } from 'lucide-react';
+import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import {
+    Gamepad2,
+    Flame,
+    Trophy,
+    Brain,
+    Zap,
+    Hash,
+    Lock,
+    Ghost,
+    Bug,
+    ArrowRight
+} from "lucide-react";
 
-// Game Components
-import MemoryGame from '../components/arcade/MemoryGame';
-import TypingGame from '../components/arcade/TypingGame';
-import HexHunter from '../components/arcade/HexHunter';
-import FirewallBreach from '../components/arcade/FirewallBreach';
-import StackOverflowEscape from '../components/arcade/StackOverflowEscape';
-
-import BugHunter from '../components/arcade/BugHunter';
+/* =========================
+   Game Components
+========================= */
+import MemoryGame from "../components/arcade/MemoryGame";
+import TypingGame from "../components/arcade/TypingGame";
+import HexHunter from "../components/arcade/HexHunter";
+import FirewallBreach from "../components/arcade/FirewallBreach";
+import StackOverflowEscape from "../components/arcade/StackOverflowEscape";
+import BugHunter from "../components/arcade/BugHunter";
 
 const Arcade = () => {
     const dispatch = useDispatch();
     const { user } = useSelector((state) => state.auth);
-    const [activeGame, setActiveGame] = useState(null); // 'memory' | 'typing' | ...
 
-    // Stats logic
+    const [activeGame, setActiveGame] = useState(null);
+
+    /* =========================
+       Stats
+    ========================= */
     const globalStreak = user?.arcade?.streak || 0;
     const points = user?.arcade?.points || 0;
 
-    // Get current streak based on active game
     const currentStreak = activeGame
-        ? (user?.arcade?.games?.[activeGame]?.streak || 0)
+        ? user?.arcade?.games?.[activeGame]?.streak || 0
         : globalStreak;
 
-    const streakLabel = activeGame ? `${activeGame.charAt(0).toUpperCase() + activeGame.slice(1)} Streak` : "Daily Streak";
-
-    // Badges Configuration
+    /* =========================
+       Badges
+    ========================= */
     const BADGES = [
-        { days: 1, label: "Hello World", color: "text-emerald-500", bg: "bg-emerald-500/10", border: "border-emerald-500/20" },
-        { days: 3, label: "Script Kiddie", color: "text-yellow-500", bg: "bg-yellow-500/10", border: "border-yellow-500/20" },
-        { days: 7, label: "Code Ninja", color: "text-violet-500", bg: "bg-violet-500/10", border: "border-violet-500/20" },
-        { days: 30, label: "Full Stack", color: "text-rose-500", bg: "bg-rose-500/10", border: "border-rose-500/20" },
-        { days: 60, label: "Architect", color: "text-cyan-500", bg: "bg-cyan-500/10", border: "border-cyan-500/20" },
+        { days: 1, label: "Hello World", desc: "First step into the matrix" },
+        { days: 3, label: "Script Kiddie", desc: "Starting to understand the flow" },
+        { days: 7, label: "Code Ninja", desc: "Stealthy and efficient" },
+        { days: 30, label: "Full Stack", desc: "Master of all layers" },
+        { days: 60, label: "Architect", desc: "System design expert" },
     ];
 
+    /* =====================================================
+       UI
+    ===================================================== */
     return (
-        <div className="max-w-[1200px] mx-auto pb-20 animate-in fade-in duration-500">
-            {/* Header / Stats Bar */}
-            <div className="flex flex-col xl:flex-row items-start xl:items-center justify-between gap-6 mb-12 bg-gradient-to-r from-violet-600/10 to-indigo-600/10 border border-primary/20 p-6 rounded-[12px]">
-                <div>
-                    <h1 className="text-[32px] font-bold text-foreground flex items-center gap-3">
-                        <Gamepad2 size={32} className="text-primary" /> DevArcade
-                    </h1>
-                    <p className="text-muted-foreground mt-1">Refine your cognitive stack. Maintain the streak.</p>
-                </div>
+        <div className="w-full px-4 sm:px-6 lg:px-10 pb-16 animate-in fade-in duration-500">
 
-                <div className="flex flex-col md:flex-row gap-6 w-full xl:w-auto">
-                    {/* Badges Logic */}
-                    <div className="flex items-center gap-2 overflow-x-auto pb-2 md:pb-0 mask-gradient px-1">
+            {/* =====================================================
+         HEADER (GRID BASED)
+      ===================================================== */}
+            <div className="mb-6 relative group">
+                {/* Ambient Glow */}
+                <div className="absolute -inset-1 bg-gradient-to-r from-primary/10 via-violet-500/10 to-primary/10 rounded-[1.5rem] blur-xl opacity-30 group-hover:opacity-60 transition duration-1000"></div>
+
+                <div
+                    className="
+                        relative bg-card/40 backdrop-blur-2xl border border-white/5 rounded-[1.2rem] p-4 sm:p-5
+                        grid gap-4
+                        grid-cols-1
+                        lg:grid-cols-[1fr_2.5fr_1.2fr]
+                        items-center
+                        shadow-xl shadow-black/10
+                    "
+                >
+                    {/* ================= BRAND ================= */}
+                    <div className="space-y-0.5">
+                        <div className="flex items-center gap-2.5">
+                            <div className="bg-primary/20 p-1.5 rounded-lg">
+                                <Gamepad2 size={24} className="text-primary animate-pulse" />
+                            </div>
+                            <h1 className="text-xl sm:text-2xl font-black tracking-tighter uppercase whitespace-nowrap">
+                                DevArcade
+                            </h1>
+                        </div>
+                        <p className="text-[9px] uppercase tracking-[0.2em] font-black text-muted-foreground opacity-40 pl-0.5">
+                            Status: <span className="text-emerald-500/80">Online</span>
+                        </p>
+                    </div>
+
+                    {/* ================= BADGES ================= */}
+                    <div className="flex flex-wrap items-center justify-center lg:justify-start gap-1.5 lg:gap-2">
                         {BADGES.map((badge, i) => {
-                            const isUnlocked = currentStreak >= badge.days;
+                            const unlocked = currentStreak >= badge.days;
+
                             return (
                                 <div
                                     key={i}
-                                    title={isUnlocked ? `Unlocked: ${badge.label}` : `Streak ${badge.days} days to unlock`}
-                                    className={`flex items-center gap-3 px-4 py-2 rounded-full border text-[12px] font-bold whitespace-nowrap transition-all uppercase tracking-wide
-                                        ${isUnlocked
-                                            ? `${badge.bg} ${badge.border} ${badge.color} shadow-[0_0_15px_rgba(0,0,0,0.1)]`
-                                            : "bg-muted/30 border-dashed border-muted-foreground/30 text-muted-foreground/40"
+                                    className={`
+                                        flex items-center justify-center gap-1.5
+                                        px-3 py-1.5 rounded-xl border text-[9px] font-black uppercase tracking-widest
+                                        transition-all duration-300
+                                        ${unlocked
+                                            ? "bg-primary/10 border-primary/20 text-primary shadow-[0_0_10px_rgba(var(--primary),0.05)]"
+                                            : "bg-white/[0.01] border-white/5 text-muted-foreground/20 grayscale"
                                         }
                                     `}
                                 >
-                                    {isUnlocked ? (
-                                        <>
-                                            <span>{badge.label}</span>
-                                            <span className="text-[10px] opacity-70 bg-background/50 px-1.5 rounded">{badge.days}D</span>
-                                        </>
-                                    ) : (
-                                        <span className="flex items-center gap-1.5"><Lock size={10} /> Locked</span>
-                                    )}
+                                    {unlocked ? <Zap size={10} className="fill-current" /> : <Lock size={10} className="opacity-20" />}
+                                    <span className="hidden sm:inline">{badge.label}</span>
+                                    <span className="sm:hidden">{badge.days}D</span>
                                 </div>
                             );
                         })}
                     </div>
 
-                    <div className="flex gap-4 shrink-0">
-                        <div className="flex flex-col items-center bg-background border border-border p-4 rounded-[8px] min-w-[100px]">
-                            <div className="text-orange-500 font-bold text-[24px] flex items-center gap-1">
-                                <Flame size={20} className="fill-orange-500" /> {currentStreak}
-                            </div>
-                            <span className="text-[11px] uppercase tracking-widest text-muted-foreground font-bold">{streakLabel}</span>
-                        </div>
-                        <div className="flex flex-col items-center bg-background border border-border p-4 rounded-[8px] min-w-[100px]">
-                            <div className="text-primary font-bold text-[24px] flex items-center gap-1">
-                                <Trophy size={20} /> {points}
-                            </div>
-                            <span className="text-[11px] uppercase tracking-widest text-muted-foreground font-bold">XP Score</span>
-                        </div>
+                    {/* ================= STATS ================= */}
+                    <div className="grid grid-cols-2 gap-2 h-full">
+                        <StatBox
+                            icon={<Flame size={14} className="fill-current" />}
+                            label="Streak"
+                            value={currentStreak}
+                            color="text-orange-500"
+                            bg="bg-orange-500/10"
+                            border="border-orange-500/10"
+                        />
+
+                        <StatBox
+                            icon={<Trophy size={14} />}
+                            label="XP"
+                            value={points > 99999 ? `${Math.floor(points / 1000)}k` : points}
+                            color="text-primary"
+                            bg="bg-primary/10"
+                            border="border-primary/10"
+                        />
                     </div>
                 </div>
             </div>
 
+            {/* =====================================================
+         GAME GRID
+      ===================================================== */}
             {!activeGame ? (
-                // Game Selection Menu
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <button
-                        onClick={() => setActiveGame('memory')}
-                        className="group relative h-[240px] bg-card border border-border hover:border-primary/50 rounded-[12px] p-6 text-left transition-all hover:shadow-[0_0_30px_rgba(var(--primary),0.2)] overflow-hidden"
-                    >
-                        <div className="absolute top-0 right-0 p-32 bg-primary/5 rounded-full blur-[60px] group-hover:bg-primary/10 transition-colors" />
-                        <div className="relative z-10 flex flex-col h-full justify-between">
-                            <div className="w-12 h-12 bg-primary/10 rounded-[8px] flex items-center justify-center text-primary mb-4 group-hover:scale-110 transition-transform">
-                                <Brain size={24} />
-                            </div>
-                            <div>
-                                <h3 className="text-[20px] font-bold text-foreground mb-1 group-hover:text-primary transition-colors">Memory Matrix</h3>
-                                <p className="text-[13px] text-muted-foreground leading-relaxed">
-                                    Match tech stack icons to clear the grid. Train your visual memory.
-                                </p>
-                            </div>
-                        </div>
-                    </button>
-
-                    <button
-                        onClick={() => setActiveGame('typing')}
-                        className="group relative h-[240px] bg-card border border-border hover:border-emerald-500/50 rounded-[12px] p-6 text-left transition-all hover:shadow-[0_0_30px_rgba(16,185,129,0.2)] overflow-hidden"
-                    >
-                        <div className="absolute top-0 right-0 p-32 bg-emerald-500/5 rounded-full blur-[60px] group-hover:bg-emerald-500/10 transition-colors" />
-                        <div className="relative z-10 flex flex-col h-full justify-between">
-                            <div className="w-12 h-12 bg-emerald-500/10 rounded-[8px] flex items-center justify-center text-emerald-500 mb-4 group-hover:scale-110 transition-transform">
-                                <Hash size={24} />
-                            </div>
-                            <div>
-                                <h3 className="text-[20px] font-bold text-foreground mb-1 group-hover:text-emerald-500 transition-colors">Syntax Sprint</h3>
-                                <p className="text-[13px] text-muted-foreground leading-relaxed">
-                                    Type algorithms against the clock. Boost your coding WPM.
-                                </p>
-                            </div>
-                        </div>
-                    </button>
-
-                    <button
-                        onClick={() => setActiveGame('hex')}
-                        className="group relative h-[240px] bg-card border border-border hover:border-pink-500/50 rounded-[12px] p-6 text-left transition-all hover:shadow-[0_0_30px_rgba(236,72,153,0.2)] overflow-hidden"
-                    >
-                        <div className="absolute top-0 right-0 p-32 bg-pink-500/5 rounded-full blur-[60px] group-hover:bg-pink-500/10 transition-colors" />
-                        <div className="relative z-10 flex flex-col h-full justify-between">
-                            <div className="w-12 h-12 bg-pink-500/10 rounded-[8px] flex items-center justify-center text-pink-500 mb-4 group-hover:scale-110 transition-transform">
-                                <span className="font-bold text-[18px]">#</span>
-                            </div>
-                            <div>
-                                <h3 className="text-[20px] font-bold text-foreground mb-1 group-hover:text-pink-500 transition-colors">Hex Hunter</h3>
-                                <p className="text-[13px] text-muted-foreground leading-relaxed">
-                                    Can you identify the color from its hex code? For the frontend masters.
-                                </p>
-                            </div>
-                        </div>
-                    </button>
-
-                    <button
-                        onClick={() => setActiveGame('breach')}
-                        className="group relative h-[240px] bg-card border border-border hover:border-violet-500/50 rounded-[12px] p-6 text-left transition-all hover:shadow-[0_0_30px_rgba(139,92,246,0.2)] overflow-hidden"
-                    >
-                        <div className="absolute top-0 right-0 p-32 bg-violet-500/5 rounded-full blur-[60px] group-hover:bg-violet-500/10 transition-colors" />
-                        <div className="relative z-10 flex flex-col h-full justify-between">
-                            <div className="w-12 h-12 bg-violet-500/10 rounded-[8px] flex items-center justify-center text-violet-500 mb-4 group-hover:scale-110 transition-transform">
-                                <Zap size={24} />
-                            </div>
-                            <div>
-                                <h3 className="text-[20px] font-bold text-foreground mb-1 group-hover:text-violet-500 transition-colors">Firewall Breach</h3>
-                                <p className="text-[13px] text-muted-foreground leading-relaxed">
-                                    System Defense: Penetrate security layers. Deflect data packets. Root access.
-                                </p>
-                            </div>
-                        </div>
-                    </button>
-
-                    <button
-                        onClick={() => setActiveGame('escape')}
-                        className="group relative h-[240px] bg-card border border-border hover:border-cyan-500/50 rounded-[12px] p-6 text-left transition-all hover:shadow-[0_0_30px_rgba(6,182,212,0.2)] overflow-hidden"
-                    >
-                        <div className="absolute top-0 right-0 p-32 bg-cyan-500/5 rounded-full blur-[60px] group-hover:bg-cyan-500/10 transition-colors" />
-                        <div className="relative z-10 flex flex-col h-full justify-between">
-                            <div className="w-12 h-12 bg-cyan-500/10 rounded-[8px] flex items-center justify-center text-cyan-500 mb-4 group-hover:scale-110 transition-transform">
-                                <Ghost size={24} />
-                            </div>
-                            <div>
-                                <h3 className="text-[20px] font-bold text-foreground mb-1 group-hover:text-cyan-500 transition-colors">Stack Overflow Escape</h3>
-                                <p className="text-[13px] text-muted-foreground leading-relaxed">
-                                    Trapped in recursion? Solve logic puzzles to unlock doors before memory leaks.
-                                </p>
-                            </div>
-                        </div>
-                    </button>
-
-
-
-                    <button
-                        onClick={() => setActiveGame('hunter')}
-                        className="group relative h-[240px] bg-card border border-border hover:border-lime-500/50 rounded-[12px] p-6 text-left transition-all hover:shadow-[0_0_30px_rgba(132,204,22,0.2)] overflow-hidden"
-                    >
-                        <div className="absolute top-0 right-0 p-32 bg-lime-500/5 rounded-full blur-[60px] group-hover:bg-lime-500/10 transition-colors" />
-                        <div className="relative z-10 flex flex-col h-full justify-between">
-                            <div className="w-12 h-12 bg-lime-500/10 rounded-[8px] flex items-center justify-center text-lime-500 mb-4 group-hover:scale-110 transition-transform">
-                                <Bug size={24} />
-                            </div>
-                            <div>
-                                <h3 className="text-[20px] font-bold text-foreground mb-1 group-hover:text-lime-500 transition-colors">Bug Hunter</h3>
-                                <p className="text-[13px] text-muted-foreground leading-relaxed">
-                                    Errors are crawling everywhere. Squash bugs, defuse NullPointers, and survive.
-                                </p>
-                            </div>
-                        </div>
-                    </button>
+                <div
+                    className="
+                        grid gap-3
+                        grid-cols-1
+                        sm:grid-cols-2
+                        xl:grid-cols-3
+                    "
+                >
+                    <GameCard title="Memory Matrix" desc="Neural Link" icon={<Brain size={28} />} onClick={() => setActiveGame("memory")} color="primary" />
+                    <GameCard title="Syntax Sprint" desc="Handshake" icon={<Hash size={28} />} onClick={() => setActiveGame("typing")} color="emerald" />
+                    <GameCard title="Hex Hunter" desc="Vision" icon={<span className="text-2xl font-black">#</span>} onClick={() => setActiveGame("hex")} color="pink" />
+                    <GameCard title="Firewall Breach" desc="Infiltration" icon={<Zap size={28} />} onClick={() => setActiveGame("breach")} color="violet" />
+                    <GameCard title="Stack Escape" desc="Recursion" icon={<Ghost size={28} />} onClick={() => setActiveGame("escape")} color="cyan" />
+                    <GameCard title="Bug Hunter" desc="Debug" icon={<Bug size={28} />} onClick={() => setActiveGame("hunter")} color="lime" />
                 </div>
             ) : (
-                // Active Game Container
-                <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-                    <button
-                        onClick={() => setActiveGame(null)}
-                        className="mb-6 text-[13px] font-bold text-muted-foreground hover:text-foreground flex items-center gap-2"
-                    >
-                        ← Back to Arcade
-                    </button>
+                /* =====================================================
+                   ACTIVE GAME VIEW
+                ===================================================== */
+                <div className="min-h-[75vh] flex flex-col animate-in slide-in-from-bottom-8 duration-700">
+                    <div className="flex justify-between items-center mb-8">
+                        <button
+                            onClick={() => setActiveGame(null)}
+                            className="group flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground hover:text-foreground transition-all"
+                        >
+                            <span className="group-hover:-translate-x-1 transition-transform">←</span> Back_To_System_Arcade
+                        </button>
+                    </div>
 
-                    {activeGame === 'memory' && <MemoryGame dispatch={dispatch} />}
-                    {activeGame === 'typing' && <TypingGame dispatch={dispatch} />}
-                    {activeGame === 'hex' && <HexHunter dispatch={dispatch} />}
-                    {activeGame === 'breach' && <FirewallBreach dispatch={dispatch} />}
-                    {activeGame === 'escape' && <StackOverflowEscape dispatch={dispatch} />}
-                    {activeGame === 'hunter' && <BugHunter dispatch={dispatch} />}
+                    <div className="flex-1 flex flex-col transition-all duration-500">
+                        {activeGame === "memory" && <MemoryGame dispatch={dispatch} />}
+                        {activeGame === "typing" && <TypingGame dispatch={dispatch} />}
+                        {activeGame === "hex" && <HexHunter dispatch={dispatch} />}
+                        {activeGame === "breach" && <FirewallBreach dispatch={dispatch} />}
+                        {activeGame === "escape" && <StackOverflowEscape dispatch={dispatch} />}
+                        {activeGame === "hunter" && <BugHunter dispatch={dispatch} />}
+                    </div>
                 </div>
             )}
         </div>
+    );
+};
+
+/* =====================================================
+   Reusable Components
+===================================================== */
+
+const StatBox = ({ icon, label, value, color, bg, border }) => (
+    <div
+        className={`
+            ${bg} ${border} border rounded-[1.5rem] p-4 text-center
+            flex flex-col items-center justify-center transition-all hover:scale-[1.02]
+            group/stat relative overflow-hidden
+        `}
+    >
+        <div className={`absolute -bottom-2 -right-2 opacity-5 ${color} scale-[2]`}>{icon}</div>
+        <div className={`${color} mb-1 transition-transform group-hover/stat:scale-110 duration-500`}>{icon}</div>
+        <p className="text-[9px] font-black uppercase tracking-widest text-muted-foreground opacity-60">{label}</p>
+        <p className="text-2xl font-black font-mono tracking-tighter">{value}</p>
+    </div>
+);
+
+const GameCard = ({ title, desc, icon, onClick, color = "primary" }) => {
+    const colorClasses = {
+        primary: "group-hover:border-primary/50 group-hover:shadow-primary/20",
+        emerald: "group-hover:border-emerald-500/50 group-hover:shadow-emerald-500/20",
+        pink: "group-hover:border-pink-500/50 group-hover:shadow-pink-500/20",
+        violet: "group-hover:border-violet-500/50 group-hover:shadow-violet-500/20",
+        cyan: "group-hover:border-cyan-500/50 group-hover:shadow-cyan-500/20",
+        lime: "group-hover:border-lime-500/50 group-hover:shadow-lime-500/20",
+    }[color];
+
+    const iconColors = {
+        primary: "text-primary",
+        emerald: "text-emerald-500",
+        pink: "text-pink-500",
+        violet: "text-violet-500",
+        cyan: "text-cyan-500",
+        lime: "text-lime-500",
+    }[color];
+
+    const glowColors = {
+        primary: "bg-primary/20",
+        emerald: "bg-emerald-500/20",
+        pink: "bg-pink-500/20",
+        violet: "bg-violet-500/20",
+        cyan: "bg-cyan-500/20",
+        lime: "bg-lime-500/20",
+    }[color];
+
+    const techLexicon = {
+        "Memory Matrix": "Pattern_Recognition",
+        "Syntax Sprint": "Elite_Typing_Test",
+        "Hex Hunter": "UI_Color_Accuracy",
+        "Firewall Breach": "Defense_Simulation",
+        "Stack Escape": "Algorithm_Navigation",
+        "Bug Hunter": "Full_System_Audit"
+    };
+
+    return (
+        <button
+            onClick={onClick}
+            className={`
+                group relative bg-card/50 dark:bg-card/60 backdrop-blur-xl border border-border dark:border-white/5 rounded-[1.2rem]
+                p-8 text-left transition-all duration-500
+                hover:-translate-y-2 active:scale-[0.98]
+                flex flex-col justify-between overflow-hidden min-h-[220px] shadow-sm hover:shadow-2xl hover:shadow-primary/5
+                ${colorClasses}
+            `}
+        >
+            {/* Background Grid Pattern */}
+            <div className="absolute inset-0 opacity-[0.04] dark:opacity-[0.02] group-hover:opacity-[0.08] dark:group-hover:opacity-[0.05] transition-opacity duration-700"
+                style={{ backgroundImage: `radial-gradient(circle at 2px 2px, currentColor 1px, transparent 0)`, backgroundSize: '20px 20px' }} />
+
+            {/* Interactive Glow */}
+            <div className={`absolute -top-24 -right-24 w-48 h-48 rounded-full blur-[60px] transition-all duration-700 group-hover:scale-150 opacity-[0.08] dark:opacity-20 group-hover:opacity-20 dark:group-hover:opacity-40 ${glowColors}`} />
+
+            <div className="relative z-10 flex justify-between items-start">
+                <div className={`p-3.5 bg-background/50 dark:bg-white/5 rounded-2xl border border-border dark:border-white/5 shadow-sm transition-transform duration-700 group-hover:scale-110 group-hover:rotate-3 ${iconColors}`}>
+                    {icon}
+                </div>
+                <div className="flex flex-col items-end gap-1">
+                    <span className="text-[8px] font-black uppercase tracking-[0.2em] text-muted-foreground/80 dark:text-muted-foreground/60">SIGNAL_LINK</span>
+                    <div className="flex gap-0.5">
+                        {[1, 2, 3, 4].map(i => (
+                            <div key={i} className={`w-1 h-3 rounded-full ${i <= 3 ? iconColors + ' opacity-90' : 'bg-muted dark:bg-white/10'}`} />
+                        ))}
+                    </div>
+                </div>
+            </div>
+
+            <div className="relative z-10 space-y-4">
+                <div>
+                    <h3 className="text-xl font-black tracking-tight leading-none mb-2 text-foreground group-hover:text-primary transition-colors">{title}</h3>
+                    <div className="flex items-center gap-2">
+                        <div className={`w-1.5 h-1.5 rounded-full animate-pulse ${iconColors}`} />
+                        <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/80 dark:text-muted-foreground">{techLexicon[title] || desc}</p>
+                    </div>
+                </div>
+
+                <div className="flex items-center justify-between pt-4 border-t border-border dark:border-white/5">
+                    <div className="flex flex-col">
+                        <span className="text-[8px] font-black uppercase tracking-widest text-muted-foreground/80 dark:text-muted-foreground/60">CORE_POWER</span>
+                        <span className="text-[10px] font-mono font-bold text-foreground opacity-90">{(Math.random() * 80 + 20).toFixed(0)}% OPTIMIZED</span>
+                    </div>
+                    <div className={`flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] translate-x-4 opacity-0 group-hover:translate-x-0 group-hover:opacity-100 transition-all duration-500 ${iconColors}`}>
+                        START_SESSION <ArrowRight size={12} strokeWidth={3} />
+                    </div>
+                </div>
+            </div>
+        </button>
     );
 };
 

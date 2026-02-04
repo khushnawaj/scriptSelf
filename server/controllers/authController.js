@@ -17,17 +17,13 @@ exports.register = async (req, res, next) => {
       password
     });
 
-    // Send welcome email
-    try {
-      await sendEmail({
-        email: user.email,
-        subject: 'Welcome to ScriptShelf!',
-        message: `Hi ${user.username}, welcome to ScriptShelf - Your personal code snippet and tutorial note-taking companion.`,
-        html: `<h1>Welcome to ScriptShelf!</h1><p>Hi ${user.username},</p><p>We're excited to have you on board. Start organizing your code snippets and tutorial notes today!</p>`
-      });
-    } catch (err) {
-      console.error('Email could not be sent');
-    }
+    // Send welcome email in background to avoid blocking response (SMTP can be slow)
+    sendEmail({
+      email: user.email,
+      subject: 'Welcome to ScriptShelf!',
+      message: `Hi ${user.username}, welcome to ScriptShelf - Your personal code snippet and tutorial note-taking companion.`,
+      html: `<h1>Welcome to ScriptShelf!</h1><p>Hi ${user.username},</p><p>We're excited to have you on board. Start organizing your code snippets and tutorial notes today!</p>`
+    }).catch(err => console.error('Background welcome email failed:', err.message));
 
     sendTokenResponse(user, 200, res);
   } catch (err) {
@@ -72,41 +68,7 @@ exports.login = async (req, res, next) => {
 // @access    Private
 exports.getMe = async (req, res, next) => {
   try {
-    let user = await User.findById(req.user.id);
-
-    // Smart Sync: Merge existing logs with note-based activity
-    if (user) {
-      const userNotes = await Note.find({ user: user._id });
-      if (userNotes.length > 0) {
-        // Create a map of existing logs
-        const logsMap = {};
-        user.activityLogs.forEach(log => {
-          logsMap[log.date] = log.count;
-        });
-
-        // Add note activities to the map
-        userNotes.forEach(note => {
-          const date = note.createdAt.toISOString().split('T')[0];
-          // We only add if it's not already accounted for by a higher count or if it's missing
-          // But usually, we want to ensure every note creation is a hit
-          // For backfill, we'll just ensure at least 1 hit per note date
-          if (!logsMap[date] || logsMap[date] < 1) {
-            logsMap[date] = (logsMap[date] || 0) + 1;
-          }
-        });
-
-        // Update user logs if map changed
-        const newLogs = Object.keys(logsMap).map(date => ({
-          date,
-          count: logsMap[date]
-        }));
-
-        if (newLogs.length !== user.activityLogs.length) {
-          user.activityLogs = newLogs;
-          await user.save();
-        }
-      }
-    }
+    const user = await User.findById(req.user.id);
 
     res.status(200).json({
       success: true,

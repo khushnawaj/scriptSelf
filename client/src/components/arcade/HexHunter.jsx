@@ -84,83 +84,83 @@ const HexHunter = ({ dispatch }) => {
 
     if (gameState === 'gameOver') {
         return (
-            <div className="max-w-[400px] mx-auto text-center p-8 glass-frost rounded-[12px] animate-in zoom-in duration-300 border border-pink-500/20">
-                <Trophy size={48} className="mx-auto text-pink-500 mb-4 drop-shadow-[0_0_15px_rgba(236,72,153,0.5)]" />
-                <h2 className="text-[24px] font-bold mb-2">Calibration Complete</h2>
-                <p className="text-muted-foreground mb-6">Final Efficiency Score: {score}</p>
-                <div className="grid grid-cols-2 gap-4 mb-6">
-                    <div className="bg-background/50 p-3 rounded-[8px]">
-                        <div className="text-[10px] text-muted-foreground uppercase">Rounds</div>
-                        <div className="font-bold">10/10</div>
+            <div className="max-w-[340px] mx-auto text-center p-6 glass-frost rounded-2xl animate-in zoom-in duration-300 border border-pink-500/20">
+                <Trophy size={40} className="mx-auto text-pink-500 mb-3 drop-shadow-[0_0_12px_rgba(236,72,153,0.4)]" />
+                <h2 className="text-[20px] font-black tracking-tighter mb-1 uppercase">Calibration Finalized</h2>
+                <p className="text-[11px] text-muted-foreground mb-4 font-bold opacity-60">Neural Sensors: Stable</p>
+                <div className="grid grid-cols-2 gap-3 mb-6">
+                    <div className="bg-background/40 p-2.5 rounded-xl border border-white/5">
+                        <div className="text-[8px] text-muted-foreground uppercase font-black tracking-widest mb-0.5">Efficiency</div>
+                        <div className="font-black text-lg tabular-nums">{score}</div>
                     </div>
-                    <div className="bg-background/50 p-3 rounded-[8px]">
-                        <div className="text-[10px] text-muted-foreground uppercase">Best Streak</div>
-                        <div className="font-bold text-primary">--</div>{/* Could track best streak if needed */}
+                    <div className="bg-background/40 p-2.5 rounded-xl border border-white/5">
+                        <div className="text-[8px] text-muted-foreground uppercase font-black tracking-widest mb-0.5">Uptime</div>
+                        <div className="font-black text-lg">10/10</div>
                     </div>
                 </div>
-                <button onClick={restartGame} className="so-btn so-btn-primary w-full py-3">Recalibrate Sensors</button>
+                <button onClick={restartGame} className="w-full py-3 bg-pink-500 hover:bg-pink-600 text-white font-black uppercase tracking-widest text-[11px] rounded-xl shadow-lg transition-all active:scale-95">Recalibrate_Sensors</button>
             </div>
         );
     }
 
     return (
-        <div className="max-w-[500px] mx-auto text-center">
+        <div className="w-full max-w-2xl mx-auto space-y-6 px-4 flex flex-col items-center animate-in fade-in duration-700">
             {/* Mission Brief */}
-            <div className="bg-pink-500/5 border border-pink-500/20 p-4 rounded-[8px] mb-8 animate-in slide-in-from-top-4">
-                <h4 className="text-[14px] font-bold text-pink-500 mb-2 flex items-center justify-center gap-2">
-                    <Hash size={16} /> Mission Brief: Color Decompiler
+            <div className="w-full bg-pink-500/5 border border-pink-500/20 p-4 rounded-xl animate-in slide-in-from-top-4 shadow-sm text-center">
+                <h4 className="text-[11px] font-black text-pink-500 mb-1 flex items-center justify-center gap-2 uppercase tracking-widest">
+                    <Hash size={14} /> Color_Decompiler
                 </h4>
-                <p className="text-[12px] text-muted-foreground">
-                    Identify the raw hexadecimal signal for the displayed visual output. <br />
-                    <span className="text-foreground font-bold">Streak Bonus:</span> Consecutive hits grant multipliers.
+                <p className="text-[10px] text-muted-foreground leading-relaxed font-medium opacity-80">
+                    Identify raw hex signals. Streak bonus active.
                 </p>
             </div>
 
-            <div className="flex justify-between items-center mb-6 px-4 bg-muted/20 p-3 rounded-full backdrop-blur-sm">
-                <span className="font-bold text-muted-foreground text-[13px]">Round {round}/10</span>
-                <span className="font-bold text-foreground text-[16px]">{score} XP</span>
-                <div className="flex items-center gap-1">
-                    <Flame size={14} className={streak > 1 ? "fill-orange-500 text-orange-500 animate-pulse" : "text-muted-foreground"} />
-                    <span className={`font-mono text-[14px] ${streak > 1 ? "text-orange-500 font-bold" : "text-muted-foreground"}`}>x{streak}</span>
+            <div className="w-full flex justify-between items-center bg-card border border-border/50 p-3 rounded-xl shadow-sm">
+                <span className="font-black text-muted-foreground text-[10px] uppercase tracking-widest opacity-60">CYCLE {round}_10</span>
+                <span className="font-black text-foreground text-[14px] tracking-tight">{score} XP</span>
+                <div className="flex items-center gap-1.5 min-w-[40px] justify-end">
+                    <Flame size={12} className={streak > 1 ? "fill-orange-500 text-orange-500 animate-pulse" : "text-slate-800 opacity-20"} />
+                    <span className={`font-mono text-[12px] font-black ${streak > 1 ? "text-orange-500" : "text-slate-800 opacity-20"}`}>x{streak}</span>
                 </div>
             </div>
 
-            {/* Target Color Blob */}
-            <div className="relative group">
-                <div
-                    className="w-40 h-40 mx-auto rounded-full shadow-[0_10px_40px_rgba(0,0,0,0.3)] mb-10 border-[6px] border-background transition-all duration-300 transform group-hover:scale-105"
-                    style={{
-                        backgroundColor: targetColor,
-                        boxShadow: `0 0 40px ${targetColor}40`
-                    }}
-                />
-            </div>
+            <div className="relative bg-slate-950 p-6 rounded-[2rem] border border-white/5 shadow-2xl transition-all duration-500 w-full flex flex-col items-center">
+                {/* Target Color Blob */}
+                <div className="relative group mb-8">
+                    <div
+                        className="w-40 h-40 mx-auto rounded-full shadow-2xl border-[6px] border-background transition-all duration-500 transform group-hover:scale-105"
+                        style={{
+                            backgroundColor: targetColor,
+                            boxShadow: `0 0 40px ${targetColor}40`
+                        }}
+                    />
+                </div>
 
-            <div className="grid grid-cols-1 gap-3 max-w-[300px] mx-auto">
-                {options.map((hex, idx) => {
-                    let btnClass = "py-4 bg-card border border-border hover:border-pink-500/50 hover:bg-pink-500/5 rounded-[12px] font-mono text-[18px] transition-all font-medium relative overflow-hidden";
+                <div className="grid grid-cols-1 gap-2.5 w-full max-w-[280px] mx-auto">
+                    {options.map((hex, idx) => {
+                        let btnClass = "py-3.5 bg-card/60 backdrop-blur-md border border-white/5 hover:border-pink-500/50 hover:bg-pink-500/5 rounded-xl font-mono text-[16px] transition-all font-black tracking-widest relative overflow-hidden active:scale-95";
 
-                    if (feedback?.idx === idx) {
-                        if (feedback.type === 'correct') btnClass = "py-4 bg-emerald-500 text-white border-emerald-600 shadow-[0_0_15px_rgba(16,185,129,0.5)] scale-105";
-                        if (feedback.type === 'wrong') btnClass = "py-4 bg-rose-500 text-white border-rose-600 shadow-[0_0_15px_rgba(244,63,94,0.5)] animate-shake";
-                    } else if (feedback && hex === targetColor) {
-                        // Reveal correct one if user picked wrong
-                        btnClass = "py-4 bg-emerald-500/20 text-emerald-500 border-emerald-500/50 opacity-100";
-                    } else if (feedback) {
-                        btnClass = "py-4 bg-muted/50 text-muted-foreground border-transparent opacity-50 cursor-not-allowed";
-                    }
+                        if (feedback?.idx === idx) {
+                            if (feedback.type === 'correct') btnClass = "py-3.5 bg-emerald-500 text-white border-emerald-400 shadow-[0_0_12px_rgba(16,185,129,0.4)] scale-105 z-10";
+                            if (feedback.type === 'wrong') btnClass = "py-3.5 bg-rose-500 text-white border-rose-400 shadow-[0_0_12px_rgba(244,63,94,0.4)] animate-shake z-10";
+                        } else if (feedback && hex === targetColor) {
+                            btnClass = "py-3.5 bg-emerald-500/10 text-emerald-400 border-emerald-500/30 opacity-100";
+                        } else if (feedback) {
+                            btnClass = "py-3.5 bg-muted/20 text-muted-foreground/30 border-transparent opacity-30 cursor-not-allowed";
+                        }
 
-                    return (
-                        <button
-                            key={idx}
-                            onClick={() => handleGuess(hex, idx)}
-                            disabled={!!feedback}
-                            className={btnClass}
-                        >
-                            {hex}
-                        </button>
-                    );
-                })}
+                        return (
+                            <button
+                                key={idx}
+                                onClick={() => handleGuess(hex, idx)}
+                                disabled={!!feedback}
+                                className={btnClass}
+                            >
+                                {hex}
+                            </button>
+                        );
+                    })}
+                </div>
             </div>
         </div>
     );

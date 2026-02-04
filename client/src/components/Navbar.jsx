@@ -21,6 +21,7 @@ import {
 } from 'lucide-react';
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import NotificationBell from './NotificationBell';
 
 const Navbar = ({ onMenuClick }) => {
     const { user } = useSelector((state) => state.auth);
@@ -100,6 +101,8 @@ const Navbar = ({ onMenuClick }) => {
                     >
                         {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
                     </button>
+
+                    {user && <NotificationBell />}
 
                     {user ? (
                         <div className="flex items-center gap-2">

@@ -22,6 +22,7 @@ const auth = require('./routes/authRoutes');
 const users = require('./routes/userRoutes');
 const categories = require('./routes/categoryRoutes');
 const notes = require('./routes/noteRoutes');
+const notifications = require('./routes/notificationRoutes');
 
 const app = express();
 
@@ -78,6 +79,7 @@ app.use('/api/v1/auth', auth);
 app.use('/api/v1/users', users);
 app.use('/api/v1/categories', categories);
 app.use('/api/v1/notes', notes);
+app.use('/api/v1/notifications', notifications);
 
 app.use(errorHandler);
 

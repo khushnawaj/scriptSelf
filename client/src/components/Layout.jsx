@@ -104,7 +104,7 @@ const Layout = () => {
                 )}
             </AnimatePresence>
 
-            <div className="max-w-[1600px] mx-auto w-full flex-1 flex mt-[64px]">
+            <div className="max-w-[1800px] mx-auto w-full flex-1 flex mt-[64px]">
                 {/* Desktop Sidebar */}
                 <aside className="hidden md:block w-[200px] shrink-0 border-r border-border/50 pt-8 sticky top-[64px] h-[calc(100vh-64px)] overflow-y-auto sidebar-glass">
                     <div className="px-4">
@@ -113,7 +113,7 @@ const Layout = () => {
                 </aside>
 
                 {/* Main Content Area */}
-                <main className="flex-1 p-8 border-l border-border/10 min-w-0 bg-background/30 backdrop-blur-3xl">
+                <main className="flex-1 p-4 sm:p-8 border-l border-border/10 min-w-0 bg-background/30 backdrop-blur-3xl">
                     <Outlet />
                 </main>
 

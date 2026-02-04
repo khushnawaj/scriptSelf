@@ -467,135 +467,129 @@ const BugHunter = ({ dispatch }) => {
     };
 
     return (
-        <div className="max-w-[1000px] mx-auto min-h-[650px] relative bg-[#020617] rounded-2xl overflow-hidden border border-cyan-500/30 shadow-[0_0_60px_rgba(6,182,212,0.1)] font-mono selection:bg-cyan-500/40">
+        <div className="w-full h-[600px] lg:h-[82vh] min-h-[550px] relative bg-[#020617] rounded-3xl overflow-hidden border border-cyan-500/30 shadow-[0_0_80px_rgba(6,182,212,0.15)] font-mono selection:bg-cyan-500/40 flex flex-col transition-all duration-500">
             {/* VINTAGE CRT EFFECTS */}
             <div className="absolute inset-0 pointer-events-none z-50 opacity-[0.03] scanlines" />
             <div className="absolute inset-0 pointer-events-none z-50 vignette" />
 
             {/* HUD HEADER */}
-            <div className="relative z-10 bg-slate-900/90 backdrop-blur-xl border-b border-cyan-500/20 p-5 flex justify-between items-center overflow-hidden">
-                <div className="flex items-center gap-6">
-                    <div className="flex flex-col">
-                        <span className="text-[10px] text-cyan-500 uppercase tracking-[0.2em] font-black">USER_SCORE</span>
-                        <div className="flex items-baseline gap-2">
-                            <span className="text-3xl font-black text-white tabular-nums tracking-tighter drop-shadow-[0_0_12px_rgba(6,182,212,0.6)]">{score.toLocaleString()}</span>
-                            <span className="text-xs text-cyan-500/50">XP</span>
-                        </div>
-                    </div>
-
-                    <div className="h-10 w-[1px] bg-white/10" />
-
-                    <div className="flex flex-col">
-                        <span className="text-[10px] text-yellow-500 uppercase tracking-[0.2em] font-black">COMBO_LINK</span>
-                        <div className="flex items-center gap-2">
-                            <div className={`text-xl font-bold ${streak > 0 ? 'text-yellow-400' : 'text-slate-600'}`}>
-                                {streak}x
+            <div className="relative z-10 bg-slate-900/95 backdrop-blur-2xl border-b border-cyan-500/20 shrink-0">
+                <div className="max-w-[1400px] mx-auto p-3 sm:p-5 flex flex-col sm:flex-row justify-between items-center gap-4 sm:gap-6">
+                    <div className="flex items-center justify-between w-full sm:w-auto gap-4 lg:gap-8">
+                        <div className="flex flex-col">
+                            <span className="text-[7px] text-cyan-500 uppercase tracking-[0.3em] font-black opacity-60 text-center sm:text-left">XP</span>
+                            <div className="flex items-baseline gap-1">
+                                <span className="text-xl sm:text-3xl font-black text-white tabular-nums tracking-tighter drop-shadow-[0_0_10px_rgba(6,182,212,0.6)]">{score.toLocaleString()}</span>
+                                <span className="text-[8px] text-cyan-500 font-bold opacity-30 uppercase">nodes</span>
                             </div>
-                            {streak >= 5 && <Zap size={16} className="text-yellow-400 animate-bounce fill-yellow-400" />}
                         </div>
-                    </div>
-                </div>
 
-                <div className="flex items-center gap-8">
-                    {/* SYSTEMS STATUS */}
-                    <div className="flex flex-col items-end">
-                        <span className="text-[10px] text-rose-500 uppercase tracking-[0.2em] font-black mb-1">CORE_INTEGRITY</span>
-                        <div className="flex gap-1">
-                            {[0, 1, 2, 3].map(i => (
-                                <div
-                                    key={i}
-                                    className={`h-4 w-6 rounded-sm border transition-all duration-500 ${health > i * 25 ? 'bg-rose-500 border-rose-400 shadow-[0_0_8px_#f43f5e]' : 'bg-slate-800 border-slate-700'}`}
-                                />
-                            ))}
-                        </div>
-                    </div>
+                        <div className="h-8 w-[1px] bg-white/5 hidden sm:block" />
 
-                    {/* TIMER CHIP */}
-                    <div className={`relative px-6 py-2 rounded-lg border-2 flex items-center gap-3 transition-colors ${timeLeft < 10 ? 'border-rose-500/50 bg-rose-500/10 text-rose-500 shadow-[0_0_20px_rgba(244,63,94,0.3)]' : 'border-cyan-500/50 bg-cyan-500/10 text-cyan-400 shadow-[0_0_20px_rgba(6,182,212,0.2)]'}`}>
-                        <Clock size={20} className={timeLeft < 10 ? 'animate-pulse' : ''} />
-                        <span className="text-2xl font-black tabular-nums">{timeLeft}s</span>
-                        {powerUps.slowMotion > 0 && (
-                            <div className="absolute -top-3 -right-3 bg-emerald-500 text-[10px] px-2 py-0.5 rounded-full text-white font-bold animate-pulse">
-                                SLOW_{powerUps.slowMotion}
+                        <div className="flex flex-col">
+                            <span className="text-[7px] text-yellow-500 uppercase tracking-[0.3em] font-black opacity-60 text-center sm:text-left">COMBO</span>
+                            <div className="flex items-center gap-1.5">
+                                <div className={`text-lg sm:text-2xl font-black ${streak > 0 ? 'text-yellow-400 drop-shadow-[0_0_10px_rgba(250,204,21,0.5)]' : 'text-slate-700'}`}>
+                                    {streak}x
+                                </div>
+                                {streak >= 5 && <Zap size={14} className="text-yellow-400 animate-pulse fill-yellow-400" />}
                             </div>
-                        )}
+                        </div>
+                    </div>
+
+                    <div className="flex items-center justify-between w-full sm:w-auto gap-4 lg:gap-10">
+                        {/* SYSTEMS STATUS */}
+                        <div className="flex flex-col items-start sm:items-end">
+                            <span className="text-[7px] text-rose-500 uppercase tracking-[0.3em] font-black opacity-60 mb-1 text-center sm:text-right">INTEGRITY</span>
+                            <div className="flex gap-1 pt-0.5">
+                                {[0, 1, 2, 3].map(i => (
+                                    <div
+                                        key={i}
+                                        className={`h-2 w-4 sm:h-3 sm:w-6 rounded-[1px] border transition-all duration-700 ${health > i * 25 ? 'bg-rose-500 border-rose-400 shadow-[0_0_8px_#f43f5e]' : 'bg-slate-900 border-slate-800'}`}
+                                    />
+                                ))}
+                            </div>
+                        </div>
+
+                        {/* TIMER CHIP */}
+                        <div className={`relative px-4 py-1.5 sm:py-2 min-w-[80px] sm:min-w-[100px] rounded-lg border flex items-center justify-center gap-2 transition-all duration-300 ${timeLeft < 10 ? 'border-rose-500 bg-rose-500/10 text-rose-500 shadow-[0_0_20px_rgba(244,63,94,0.4)] scale-105' : 'border-cyan-500/30 bg-cyan-500/5 text-cyan-400'}`}>
+                            <Clock size={16} className={timeLeft < 10 ? 'animate-pulse' : ''} />
+                            <span className="text-xl sm:text-2xl font-black tabular-nums tracking-tighter">{timeLeft}</span>
+                        </div>
                     </div>
                 </div>
             </div>
 
             {/* MAIN INTERFACE */}
-            <div id="game-container" className="relative z-10 grid grid-cols-1 lg:grid-cols-4 h-[550px]">
+            <div id="game-container" className="relative z-10 grid grid-cols-1 lg:grid-cols-4 flex-1 overflow-hidden">
 
                 {/* LEFT: CONSOLE / STATUS */}
-                <div className="hidden lg:flex flex-col border-r border-white/5 bg-slate-950/50 p-4 font-mono text-[11px] overflow-hidden">
-                    <div className="mb-4 flex items-center justify-between opacity-50">
-                        <span className="flex items-center gap-2"><Cpu size={12} /> SYSTEM_MONITOR</span>
+                <div className="hidden lg:flex flex-col border-r border-white/5 bg-slate-950/50 p-4 font-mono text-[10px] overflow-hidden">
+                    <div className="mb-3 flex items-center justify-between opacity-40">
+                        <span className="flex items-center gap-2 tracking-widest"><Cpu size={10} /> SYS_MON</span>
                         <span className="animate-pulse">● LIVE</span>
                     </div>
 
-                    <div className="flex-1 space-y-2 overflow-hidden italic text-slate-400">
+                    <div className="flex-1 space-y-1.5 overflow-hidden italic text-slate-500">
                         {consoleLogs.map((log, i) => (
-                            <div key={i} className={`flex gap-2 ${log.includes('PASSED') ? 'text-emerald-400' : log.includes('ERROR') ? 'text-rose-400' : ''}`}>
-                                <span className="opacity-30">[{new Date().toLocaleTimeString([], { hour12: false })}]</span>
-                                <span>{log}</span>
+                            <div key={i} className={`flex gap-2 ${log.includes('PASSED') ? 'text-emerald-500' : log.includes('ERROR') ? 'text-rose-400' : ''}`}>
+                                <span className="opacity-20">[{new Date().toLocaleTimeString([], { hour12: false, second: '2-digit' })}]</span>
+                                <span className="truncate">{log}</span>
                             </div>
                         ))}
                     </div>
 
-                    <div className="mt-4 pt-4 border-t border-white/5 space-y-3">
-                        <div className="flex justify-between items-center text-[10px] uppercase tracking-wider text-slate-500">
-                            <span>Powerups</span>
-                        </div>
+                    <div className="mt-2 pt-2 border-t border-white/5 space-y-2">
                         <div className="flex gap-2">
-                            <div className={`p-2 rounded border ${powerUps.shield ? 'border-cyan-500 bg-cyan-500/10 text-cyan-400' : 'border-slate-800 bg-slate-900/50 text-slate-700'}`}>
-                                <Shield size={16} fill={powerUps.shield ? "currentColor" : "none"} />
+                            <div className={`p-1.5 rounded border ${powerUps.shield ? 'border-cyan-500 bg-cyan-500/10 text-cyan-400' : 'border-slate-800 bg-slate-900/50 text-slate-700'}`}>
+                                <Shield size={14} fill={powerUps.shield ? "currentColor" : "none"} />
                             </div>
-                            <div className={`p-2 rounded border ${powerUps.slowMotion > 0 ? 'border-emerald-500 bg-emerald-500/10 text-emerald-400' : 'border-slate-800 bg-slate-900/50 text-slate-700'}`}>
-                                <Activity size={16} />
+                            <div className={`p-1.5 rounded border ${powerUps.slowMotion > 0 ? 'border-emerald-500 bg-emerald-500/10 text-emerald-400' : 'border-slate-800 bg-slate-900/50 text-slate-700'}`}>
+                                <Activity size={14} />
                             </div>
                         </div>
                     </div>
                 </div>
 
                 {/* CENTER: PRIMARY WORKSTATION */}
-                <div className="lg:col-span-3 p-6 flex flex-col items-center justify-center relative">
+                <div className="lg:col-span-3 p-4 sm:p-6 flex flex-col items-center justify-center relative overflow-y-auto no-scrollbar">
 
                     {gameState === 'menu' && (
-                        <div className="text-center space-y-10 animate-in fade-in zoom-in duration-500">
-                            <div className="space-y-4">
-                                <h1 className="text-6xl font-black tracking-tighter text-white drop-shadow-[0_0_20px_rgba(255,255,255,0.3)]">
+                        <div className="text-center space-y-6 sm:space-y-10 animate-in fade-in zoom-in duration-500 w-full max-w-lg">
+                            <div className="space-y-2">
+                                <h1 className="text-4xl sm:text-6xl font-black tracking-tighter text-white drop-shadow-[0_0_15px_rgba(255,255,255,0.2)]">
                                     BUG<span className="text-cyan-500">_HUNTER</span>
                                 </h1>
-                                <p className="text-slate-400 text-sm tracking-widest uppercase">Global_Debugging_Interface_v2.4.0</p>
+                                <p className="text-slate-500 text-[9px] tracking-[0.4em] uppercase font-black">Global_Debug_Interface_v2.4</p>
                             </div>
 
-                            <div className="flex flex-col gap-3 max-w-sm mx-auto">
+                            <div className="flex flex-col gap-2 w-full">
                                 {Object.keys(DIFFICULTIES).map(diff => (
                                     <button
                                         key={diff}
                                         onClick={() => startGame(diff)}
-                                        className="group relative px-8 py-5 bg-slate-900/50 border border-slate-700 rounded-xl hover:border-cyan-500 hover:bg-cyan-500/10 transition-all text-left flex items-center justify-between"
+                                        className="group relative px-6 py-3.5 bg-slate-900/30 border border-slate-800 rounded-xl hover:border-cyan-500 hover:bg-cyan-500/10 transition-all text-left flex items-center justify-between"
                                     >
                                         <div className="flex flex-col">
-                                            <span className="text-[10px] text-slate-500 font-bold tracking-[0.2em]">{DIFFICULTIES[diff].label}</span>
-                                            <span className="text-lg font-black text-slate-200 group-hover:text-cyan-400 uppercase tracking-wide">{diff}</span>
+                                            <span className="text-[8px] text-slate-500 font-black tracking-[0.2em]">{DIFFICULTIES[diff].label}</span>
+                                            <span className="text-sm sm:text-base font-black text-slate-300 group-hover:text-cyan-400 uppercase tracking-wide">{diff}</span>
                                         </div>
-                                        <div className="flex items-center gap-2">
-                                            <span className="text-xs text-cyan-500/50 select-none">x{DIFFICULTIES[diff].scoreMultiplier} XP</span>
-                                            <ChevronRight className="text-slate-700 group-hover:text-cyan-500 transition-colors" size={20} />
+                                        <div className="flex items-center gap-3">
+                                            <span className="text-[10px] text-cyan-500/40 font-black tracking-widest uppercase italic">x{DIFFICULTIES[diff].scoreMultiplier} XP</span>
+                                            <ChevronRight className="text-slate-700 group-hover:text-cyan-500 transition-colors" size={16} />
                                         </div>
                                     </button>
                                 ))}
                             </div>
 
                             {leaderboard.length > 0 && (
-                                <div className="mt-8 pt-6 border-t border-white/5 max-w-xs mx-auto text-left">
-                                    <span className="text-[10px] text-slate-600 font-black tracking-[0.3em] uppercase mb-3 block text-center">LOCAL_TOP_AGENTS</span>
-                                    <div className="space-y-2">
+                                <div className="mt-4 pt-4 border-t border-white/5 w-full text-left">
+                                    <span className="text-[8px] text-slate-600 font-black tracking-[0.3em] uppercase mb-2 block text-center">LOCAL_TOP_AGENTS</span>
+                                    <div className="grid grid-cols-2 gap-x-6 gap-y-1.5">
                                         {leaderboard.map((entry, i) => (
-                                            <div key={i} className="flex justify-between items-center text-[11px]">
-                                                <span className="text-slate-500">{i + 1}. {entry.difficulty}</span>
-                                                <span className="text-cyan-500 font-bold">{entry.score} XP</span>
+                                            <div key={i} className="flex justify-between items-center text-[9px]">
+                                                <span className="text-slate-500 uppercase">{i + 1}. {entry.difficulty}</span>
+                                                <span className="text-cyan-500 font-bold">{entry.score}</span>
                                             </div>
                                         ))}
                                     </div>
@@ -605,30 +599,29 @@ const BugHunter = ({ dispatch }) => {
                     )}
 
                     {gameState === 'playing' && activeSnippet && (
-                        <div className="w-full max-w-2xl space-y-8 animate-in slide-in-from-bottom-8 duration-500">
+                        <div className="w-full max-w-4xl space-y-6 animate-in slide-in-from-bottom-6 duration-500">
                             {/* CODE DECK */}
                             <div className="relative group">
-                                <div className="absolute -inset-0.5 bg-gradient-to-r from-cyan-500 to-indigo-500 rounded-2xl blur opacity-20 group-hover:opacity-40 transition duration-1000"></div>
-                                <div className="relative bg-[#0a0f1e] border border-white/10 rounded-2xl overflow-hidden shadow-2xl">
+                                <div className="absolute -inset-0.5 bg-gradient-to-r from-cyan-500 to-indigo-500 rounded-xl blur opacity-10 group-hover:opacity-20 transition duration-1000"></div>
+                                <div className="relative bg-[#070b18] border border-white/5 rounded-xl overflow-hidden shadow-2xl">
                                     {/* TERMINAL HEADER */}
-                                    <div className="bg-slate-900/80 px-5 py-3 flex items-center gap-3 border-b border-white/5">
-                                        <div className="flex gap-1.5">
-                                            <div className="w-2 h-2 rounded-full bg-rose-500/50" />
-                                            <div className="w-2 h-2 rounded-full bg-yellow-500/50" />
-                                            <div className="w-2 h-2 rounded-full bg-emerald-500/50" />
+                                    <div className="bg-slate-900/60 px-4 py-2 flex items-center gap-3 border-b border-white/5">
+                                        <div className="flex gap-1">
+                                            <div className="w-1.5 h-1.5 rounded-full bg-rose-500/40" />
+                                            <div className="w-1.5 h-1.5 rounded-full bg-yellow-500/40" />
+                                            <div className="w-1.5 h-1.5 rounded-full bg-emerald-500/40" />
                                         </div>
-                                        <span className="text-xs text-slate-500 font-bold tracking-widest lowercase">./{activeSnippet.type.replace(' ', '_').toLowerCase()}.sh</span>
+                                        <span className="text-[10px] text-slate-500 font-black tracking-widest lowercase opacity-60">dev_source.js</span>
                                         <div className="ml-auto flex items-center gap-2">
-                                            <Database size={12} className="text-cyan-500" />
-                                            <span className="text-[10px] text-cyan-500/70 font-black">MEM_ACCESS</span>
+                                            <span className="text-[8px] text-cyan-500/60 font-black uppercase tracking-widest">LIVE_PROBE</span>
                                         </div>
                                     </div>
 
                                     {/* CORE SOURCE */}
-                                    <div className="p-8 font-mono text-[13px] leading-relaxed relative min-h-[200px]">
+                                    <div className="p-4 sm:p-6 font-mono text-[11px] sm:text-[12px] leading-relaxed relative min-h-[150px] max-h-[300px] overflow-y-auto no-scrollbar">
                                         {feedback && (
-                                            <div className={`absolute inset-0 flex items-center justify-center z-20 backdrop-blur-md transition-all duration-300 ${feedback.type === 'success' ? 'bg-emerald-500/10' : feedback.type === 'shield' ? 'bg-cyan-500/10' : 'bg-rose-500/10'} animate-in fade-in`}>
-                                                <div className={`text-5xl font-black italic tracking-tighter uppercase transform -rotate-3 drop-shadow-2xl ${feedback.type === 'success' ? 'text-emerald-400' : feedback.type === 'shield' ? 'text-cyan-400' : 'text-rose-500'}`}>
+                                            <div className={`absolute inset-0 flex items-center justify-center z-20 backdrop-blur-sm transition-all duration-300 ${feedback.type === 'success' ? 'bg-emerald-500/10' : feedback.type === 'shield' ? 'bg-cyan-500/10' : 'bg-rose-500/10'} animate-in fade-in`}>
+                                                <div className={`text-3xl sm:text-5xl font-black italic tracking-tighter uppercase transform -rotate-3 drop-shadow-2xl ${feedback.type === 'success' ? 'text-emerald-400' : feedback.type === 'shield' ? 'text-cyan-400' : 'text-rose-500'}`}>
                                                     {feedback.message}
                                                 </div>
                                             </div>
@@ -636,8 +629,8 @@ const BugHunter = ({ dispatch }) => {
 
                                         <pre className="text-slate-400">
                                             {activeSnippet.code.split('\n').map((line, i) => (
-                                                <div key={i} className={`flex transition-all duration-500 ${i + 1 === activeSnippet.bugLine ? 'bg-rose-500/5 text-rose-300 drop-shadow-[0_0_8px_rgba(244,63,94,0.3)]' : ''}`}>
-                                                    <span className="w-10 text-slate-700 select-none mr-6 text-right font-bold italic">{String(i + 1).padStart(2, '0')}</span>
+                                                <div key={activeSnippet.key + i} className={`flex transition-all duration-500 ${i + 1 === activeSnippet.bugLine ? 'bg-rose-500/5 text-rose-300' : ''}`}>
+                                                    <span className="w-8 text-slate-800 select-none mr-4 text-right font-bold italic opacity-40">{String(i + 1).padStart(2, '0')}</span>
                                                     <code className="whitespace-pre-wrap">{line}</code>
                                                 </div>
                                             ))}
@@ -647,20 +640,19 @@ const BugHunter = ({ dispatch }) => {
                             </div>
 
                             {/* HOTKEYS / ACTIONS */}
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                                 {activeSnippet.options.map((option, idx) => (
                                     <button
                                         key={activeSnippet.key + idx}
                                         onClick={() => handleAnswer(idx)}
                                         disabled={!!feedback}
-                                        className="relative group flex flex-col p-4 bg-slate-900/60 border border-slate-800 rounded-xl hover:border-cyan-500 hover:bg-cyan-500/5 transition-all text-left animate-in fade-in slide-in-from-bottom-2"
+                                        className="relative group flex flex-col p-3 bg-slate-900/40 border border-slate-800 rounded-lg hover:border-cyan-500 hover:bg-cyan-500/5 transition-all text-left animate-in fade-in slide-in-from-bottom-2"
                                         style={{ animationDelay: `${idx * 100}ms` }}
                                     >
-                                        <div className="flex items-center gap-2 mb-2">
-                                            <span className="text-[9px] font-black text-slate-600 bg-slate-800 px-1.5 py-0.5 rounded group-hover:bg-cyan-500 group-hover:text-black transition-colors">FIX_0{idx + 1}</span>
-                                            <Play size={10} className="text-cyan-500 opacity-0 group-hover:opacity-100 transition-opacity" />
+                                        <div className="flex items-center gap-2 mb-1.5">
+                                            <span className="text-[7px] font-black text-slate-500 bg-slate-800/50 px-1 py-0.5 rounded group-hover:bg-cyan-500 group-hover:text-black transition-colors uppercase">PROBE_{idx + 1}</span>
                                         </div>
-                                        <code className="text-xs text-slate-300 group-hover:text-white leading-relaxed">{option}</code>
+                                        <code className="text-[10px] text-slate-400 group-hover:text-white leading-tight">{option}</code>
                                     </button>
                                 ))}
                             </div>
@@ -668,53 +660,48 @@ const BugHunter = ({ dispatch }) => {
                     )}
 
                     {gameState === 'game_over' && (
-                        <div className="text-center animate-in scale-in duration-500 py-10">
-                            <div className="relative inline-block mb-10">
-                                <div className="absolute inset-0 bg-cyan-500/30 blur-[60px] animate-pulse"></div>
-                                <div className="relative bg-slate-950 p-8 rounded-full border-2 border-cyan-500/50 shadow-[0_0_40px_rgba(6,182,212,0.4)]">
-                                    <Trophy size={60} className="text-cyan-400 drop-shadow-[0_0_15px_rgba(6,182,212,0.8)]" />
+                        <div className="text-center animate-in scale-in duration-500 py-6 w-full max-w-sm">
+                            <div className="relative inline-block mb-6">
+                                <div className="absolute inset-0 bg-cyan-500/20 blur-[40px] animate-pulse"></div>
+                                <div className="relative bg-slate-950 p-6 rounded-full border border-cyan-500/30 shadow-2xl">
+                                    <Trophy size={40} className="text-cyan-400" />
                                 </div>
                             </div>
 
-                            <div className="space-y-2 mb-10">
-                                <h2 className="text-sm text-slate-500 font-bold tracking-[0.4em] uppercase">Session_Terminated</h2>
-                                <h1 className="text-7xl font-black text-white tracking-widest tabular-nums drop-shadow-2xl">
+                            <div className="space-y-1 mb-8">
+                                <h2 className="text-[9px] text-slate-600 font-black tracking-[0.4em] uppercase">Session_End</h2>
+                                <h1 className="text-5xl sm:text-6xl font-black text-white tracking-tighter tabular-nums drop-shadow-2xl">
                                     {score}
                                 </h1>
                             </div>
 
-                            <div className="grid grid-cols-2 gap-4 max-w-sm mx-auto mb-12">
-                                <div className="bg-slate-900/40 p-5 rounded-xl border border-white/5 backdrop-blur-sm">
-                                    <span className="text-[10px] text-slate-500 font-black tracking-widest uppercase mb-1 block">PROTOCOL</span>
-                                    <div className="text-xl font-black text-cyan-400 uppercase tracking-wide">{difficulty}</div>
+                            <div className="grid grid-cols-2 gap-3 mb-8">
+                                <div className="bg-slate-900/40 p-3 rounded-xl border border-white/5">
+                                    <span className="text-[7px] text-slate-600 font-black tracking-widest uppercase block mb-1">DIFF</span>
+                                    <div className="text-xs font-black text-cyan-400 uppercase">{difficulty}</div>
                                 </div>
-                                <div className="bg-slate-900/40 p-5 rounded-xl border border-white/5 backdrop-blur-sm">
-                                    <span className="text-[10px] text-slate-500 font-black tracking-widest uppercase mb-1 block">BEST_COMBO</span>
-                                    <div className="text-xl font-black text-yellow-500 tabular-nums">MAX_LINK</div>
+                                <div className="bg-slate-900/40 p-3 rounded-xl border border-white/5">
+                                    <span className="text-[7px] text-slate-600 font-black tracking-widest uppercase block mb-1">STREAK</span>
+                                    <div className="text-xs font-black text-yellow-500">{streak}</div>
                                 </div>
                             </div>
 
-                            <div className="flex gap-4 justify-center">
-                                <button
-                                    onClick={() => setGameState('menu')}
-                                    className="bg-white hover:bg-cyan-400 text-black font-black py-4 px-10 rounded-xl transition-all hover:scale-105 shadow-[0_4px_20px_rgba(255,255,255,0.2)]"
-                                >
-                                    REINITIALIZE
-                                </button>
-                            </div>
+                            <button
+                                onClick={() => setGameState('menu')}
+                                className="w-full bg-white hover:bg-cyan-400 text-black font-black py-3.5 rounded-xl transition-all active:scale-95 uppercase text-xs tracking-[0.2em]"
+                            >
+                                REINITIALIZE
+                            </button>
                         </div>
                     )}
                 </div>
             </div>
 
             {/* DECORATIVE FOOTER */}
-            <div className="h-2 bg-gradient-to-r from-transparent via-cyan-500/40 to-transparent" />
-            <div className="bg-slate-950 px-6 py-2 flex justify-between items-center text-[9px] text-slate-700 font-black tracking-widest uppercase">
-                <span>SYSTEM_STATUS: NOMINAL</span>
-                <span className="flex items-center gap-4">
-                    <span>DPI_LOCK: ENABLED</span>
-                    <span className="text-cyan-900">ARCADE_STATION_NX4</span>
-                </span>
+            <div className="h-1 bg-gradient-to-r from-transparent via-cyan-500/20 to-transparent" />
+            <div className="bg-slate-950 px-4 py-1.5 flex justify-between items-center text-[7px] text-slate-800 font-black tracking-[0.3em] uppercase opacity-50">
+                <span>SYS_NOMINAL</span>
+                <span>ARCADE_STATION_NX4</span>
             </div>
 
             {/* CSS ANIMATIONS & CRT EFFECTS */}
@@ -725,20 +712,14 @@ const BugHunter = ({ dispatch }) => {
                         rgba(0, 0, 0, 0.25) 50%
                     ), linear-gradient(
                         90deg,
-                        rgba(255, 0, 0, 0.06),
-                        rgba(0, 255, 0, 0.02),
-                        rgba(0, 0, 255, 0.06)
+                        rgba(255, 0, 0, 0.05),
+                        rgba(0, 255, 0, 0.01),
+                        rgba(0, 0, 255, 0.05)
                     );
                     background-size: 100% 2px, 3px 100%;
                 }
                 .vignette {
-                    background: radial-gradient(circle, transparent 50%, rgba(0,0,0,0.8) 150%);
-                }
-                .grid-bg {
-                    background-image: 
-                        linear-gradient(rgba(6, 182, 212, 0.1) 1px, transparent 1px),
-                        linear-gradient(90deg, rgba(6, 182, 212, 0.1) 1px, transparent 1px);
-                    background-size: 40px 40px;
+                    background: radial-gradient(circle, transparent 60%, rgba(0,0,0,0.8) 180%);
                 }
                 @keyframes shake {
                     0%, 100% { transform: translateX(0); }
@@ -750,6 +731,7 @@ const BugHunter = ({ dispatch }) => {
                 }
             `}</style>
         </div>
+
     );
 };
 

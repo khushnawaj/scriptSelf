@@ -107,55 +107,56 @@ const TypingGame = ({ dispatch }) => {
     };
 
     return (
-        <div className="max-w-[700px] mx-auto space-y-8 p-8 glass-frost rounded-[16px] border border-emerald-500/20 shadow-2xl relative overflow-hidden">
-            {/* Decor */}
-            <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/5 blur-[50px] rounded-full pointer-events-none" />
+        <div className="w-full max-w-2xl mx-auto space-y-6 px-4 flex flex-col items-center animate-in fade-in duration-700">
+            {/* Mission Brief */}
+            <div className="w-full bg-emerald-500/5 border border-emerald-500/20 p-4 rounded-xl animate-in slide-in-from-top-4 shadow-sm text-center">
+                <h4 className="text-[12px] font-black text-emerald-500 mb-1 flex items-center justify-center gap-2 uppercase tracking-widest">
+                    <Zap size={16} /> Syntax Sprint
+                </h4>
+                <p className="text-[10px] text-muted-foreground leading-relaxed font-medium opacity-80">
+                    Type accurately. Speed is the only metric.
+                </p>
+            </div>
 
-            {/* Header Stats */}
-            <div className="flex justify-between items-end border-b border-white/5 pb-4">
-                <div>
-                    <h4 className="text-[14px] font-bold text-emerald-500 flex items-center gap-2 mb-1">
-                        <Zap size={16} /> Syntax Sprint
-                    </h4>
-                    <p className="text-[12px] text-muted-foreground">Type accurately. Speed is key.</p>
+            {/* Stats */}
+            <div className="w-full flex justify-between items-center bg-card border border-border/50 p-3 rounded-xl shadow-sm">
+                <div className="flex flex-col items-start min-w-[60px]">
+                    <span className="text-[8px] font-black opacity-40 uppercase tracking-widest">WPM</span>
+                    <span className="text-lg font-black text-white tabular-nums">{wpm}</span>
                 </div>
-                <div className="flex gap-4 text-sm font-mono">
-                    <div className="text-center">
-                        <div className="text-muted-foreground text-[10px] uppercase tracking-wider">WPM</div>
-                        <div className="text-xl font-bold text-foreground">{wpm}</div>
-                    </div>
-                    <div className="text-center">
-                        <div className="text-muted-foreground text-[10px] uppercase tracking-wider">Completed</div>
-                        <div className="text-xl font-bold text-primary">{completed}</div>
-                    </div>
-                    <div className="text-center">
-                        <div className="text-muted-foreground text-[10px] uppercase tracking-wider">Score</div>
-                        <div className="text-xl font-bold text-amber-500">{score}</div>
-                    </div>
+                <div className="flex flex-col items-center min-w-[60px]">
+                    <span className="text-[8px] font-black opacity-40 uppercase tracking-widest">DONE</span>
+                    <span className="text-lg font-black text-primary">{completed}</span>
+                </div>
+                <div className="flex flex-col items-end min-w-[60px]">
+                    <span className="text-[8px] font-black opacity-40 uppercase tracking-widest">XP</span>
+                    <span className="text-lg font-black text-amber-500">{score}</span>
                 </div>
             </div>
 
-            {/* Code Display */}
-            <div
-                className="relative bg-slate-950/80 backdrop-blur-md p-8 rounded-[12px] font-mono text-[20px] leading-relaxed shadow-inner border border-white/5 min-h-[140px] flex items-center cursor-text"
-                onClick={() => inputRef.current?.focus()}
-            >
-                <div>{renderText()}</div>
-            </div>
+            {/* Code Display Area */}
+            <div className="relative bg-slate-950 p-4 sm:p-6 rounded-[2rem] border border-white/5 shadow-2xl transition-all duration-500 w-full flex flex-col items-center">
+                <div
+                    className="relative w-full bg-black/40 backdrop-blur-md p-6 sm:p-10 rounded-xl font-mono text-[18px] sm:text-[22px] shadow-inner border border-white/5 min-h-[140px] flex items-center cursor-text transition-all overflow-hidden"
+                    onClick={() => inputRef.current?.focus()}
+                >
+                    <div className="w-full break-all whitespace-pre-wrap leading-relaxed">{renderText()}</div>
+                </div>
 
-            {/* Hidden Input */}
-            <input
-                ref={inputRef}
-                autoFocus
-                type="text"
-                value={input}
-                onChange={handleChange}
-                className="absolute opacity-0 top-0 left-0 w-full h-full cursor-default"
-                autoComplete="off"
-            />
+                {/* Hidden Input */}
+                <input
+                    ref={inputRef}
+                    autoFocus
+                    type="text"
+                    value={input}
+                    onChange={handleChange}
+                    className="absolute opacity-0 top-0 left-0 w-full h-full cursor-default"
+                    autoComplete="off"
+                />
 
-            <div className="text-center text-[11px] text-muted-foreground uppercase tracking-widest animate-pulse">
-                {startTime ? 'Recording Keystrokes...' : 'Start typing to begin'}
+                <div className="mt-4 text-[8px] text-muted-foreground uppercase tracking-[0.4em] font-black animate-pulse opacity-30 text-center">
+                    {startTime ? 'SYSTEM_RECORDING_SEQUENCE' : 'Awaiting input to initiate handshake'}
+                </div>
             </div>
         </div>
     );

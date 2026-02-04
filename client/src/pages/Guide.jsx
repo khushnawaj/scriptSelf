@@ -10,7 +10,10 @@ import {
     Search,
     Command,
     Workflow,
-    Binary
+    Binary,
+    Bell,
+    UserPlus,
+    Bug
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
@@ -145,57 +148,64 @@ const Guide = () => {
                     </div>
                 </div>
 
-                {/* Community & Contribution */}
+                {/* Community & Tactical Alerts */}
                 <div className="flex flex-col md:flex-row items-center gap-16 mt-20 pt-16 border-t border-border/50">
                     <div className="flex-1 space-y-6">
                         <div className="flex items-center gap-3 text-primary font-bold uppercase tracking-widest text-[13px]">
                             <Hash size={18} /> Social Knowledge Graph
                         </div>
-                        <h2 className="text-[32px] font-bold leading-tight">Interconnected Learning</h2>
+                        <h2 className="text-[32px] font-bold leading-tight">Tactical Networking</h2>
                         <p className="text-muted-foreground leading-relaxed">
-                            ScriptShelf is not a silo. It is a living network of developers.
+                            ScriptShelf is a living ecosystem. Stay synchronized with the community through advanced signal protocols.
                         </p>
 
                         <div className="space-y-6">
                             <div className="flex gap-4">
                                 <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary shrink-0">
-                                    <BookOpen size={20} />
+                                    <Bell size={20} />
                                 </div>
                                 <div>
-                                    <h4 className="font-bold text-foreground">Follow Contributors</h4>
+                                    <h4 className="font-bold text-foreground">Real-time Signal Bell</h4>
                                     <p className="text-[14px] text-muted-foreground mt-1">
-                                        Found a developer with excellent logic? Follow them to get updates when they document new patterns or decisions.
+                                        The tactical bell in your navbar pulses when new signals are detected. Get notified instantly when someone follows you or interacts with your logic.
                                     </p>
                                 </div>
                             </div>
 
                             <div className="flex gap-4">
                                 <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary shrink-0">
-                                    <Share2 size={20} />
+                                    <UserPlus size={20} />
                                 </div>
                                 <div>
-                                    <h4 className="font-bold text-foreground">Community Discussion</h4>
+                                    <h4 className="font-bold text-foreground">Interactive Network Graphs</h4>
                                     <p className="text-[14px] text-muted-foreground mt-1">
-                                        Engage in technical debates directly under records. You can now **Edit** and **Delete** your own contributions to keep discussions precise.
+                                        Exploration is core to learning. Click any **Follower** or **Following** count on a profile to open a detailed network list and discover new contributors.
                                     </p>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div className="flex-1 bg-accent/20 p-8 border border-border rounded-[12px] font-mono text-[13px] shadow-2xl">
+                    <div className="flex-1 bg-accent/20 p-8 border border-border rounded-[12px] font-mono text-[13px] shadow-2xl relative overflow-hidden">
+                        <div className="absolute top-0 right-0 p-2 opacity-20">
+                            <Bell size={48} className="text-primary animate-pulse" />
+                        </div>
                         <div className="flex gap-2 mb-4">
                             <div className="w-3 h-3 rounded-full bg-rose-500" />
                             <div className="w-3 h-3 rounded-full bg-amber-500" />
                             <div className="w-3 h-3 rounded-full bg-emerald-500" />
                         </div>
                         <div className="space-y-4">
-                            <div className="flex items-center justify-between border-b border-border/50 pb-2">
-                                <span className="text-primary font-bold">@SeniorDev</span>
-                                <span className="bg-primary/20 text-primary text-[10px] px-2 py-0.5 rounded font-bold">FOLLOWING</span>
+                            <div className="bg-primary/10 border border-primary/20 p-4 rounded-[4px]">
+                                <p className="text-[11px] text-primary font-bold mb-1 uppercase tracking-tighter">New_Signal_Detected</p>
+                                <p className="text-foreground text-[12px]">@SeniorDev started following your architecture archives.</p>
+                                <p className="text-[10px] text-muted-foreground mt-2">LINK_ESTABLISHED // 2m ago</p>
                             </div>
-                            <p className="text-muted-foreground italic">"This implementation of the Factory Pattern is clean, but have you considered the memory overhead for large datasets?"</p>
-                            <div className="flex gap-2 text-[10px] text-muted-foreground/50 uppercase tracking-wider">
-                                <span>Edit</span> • <span>Delete</span>
+                            <div className="flex items-center justify-between pt-2 border-t border-border/50">
+                                <div className="flex gap-4">
+                                    <span className="text-[11px] font-bold text-foreground hover:text-primary cursor-pointer transition-colors">1.2k Followers</span>
+                                    <span className="text-[11px] font-bold text-foreground hover:text-primary cursor-pointer transition-colors">450 Following</span>
+                                </div>
+                                <span className="bg-primary/20 text-primary text-[10px] px-2 py-0.5 rounded font-bold">VERIFIED</span>
                             </div>
                         </div>
                     </div>
@@ -251,45 +261,41 @@ const Guide = () => {
                         A built-in gamification suite to keep your developer skills sharp. Earn XP, maintain streaks, and unlock tiered rank badges.
                     </p>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                        <div className="bg-card border border-border p-6 rounded-[12px] space-y-4">
-                            <div className="w-10 h-10 rounded-[8px] bg-emerald-500/10 flex items-center justify-center text-emerald-500 font-bold">TS</div>
-                            <h4 className="font-bold">Syntax Sprint</h4>
-                            <p className="text-[13px] text-muted-foreground">Type real code snippets against the clock. Focus on accuracy and WPM.</p>
-                        </div>
-                        <div className="bg-card border border-border p-6 rounded-[12px] space-y-4">
-                            <div className="w-10 h-10 rounded-[8px] bg-primary/10 flex items-center justify-center text-primary font-bold">
-                                <Database size={20} />
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        {[
+                            { title: "Syntax Sprint", icon: "TS", desc: "Elite_Typing_Test", color: "text-emerald-500", bg: "bg-emerald-500/10" },
+                            { title: "Memory Matrix", icon: <Database size={20} />, desc: "Pattern_Recognition", color: "text-primary", bg: "bg-primary/10" },
+                            { title: "Hex Hunter", icon: "#", desc: "UI_Color_Accuracy", color: "text-amber-500", bg: "bg-amber-500/10" },
+                            { title: "Firewall Breach", icon: <Shield size={20} />, desc: "Defense_Simulation", color: "text-violet-500", bg: "bg-violet-500/10" },
+                            { title: "Bug Hunter v2.5", icon: <Bug size={20} />, desc: "Full_System_Audit", color: "text-rose-500", bg: "bg-rose-500/10" },
+                            { title: "Stack Escape", icon: <Binary size={20} />, desc: "Algorithm_Navigation", color: "text-cyan-500", bg: "bg-cyan-500/10" },
+                        ].map((game, i) => (
+                            <div key={i} className="group bg-card/60 border border-border hover:border-primary/50 p-6 rounded-[0.8rem] space-y-4 transition-all hover:-translate-y-1 hover:shadow-xl dark:shadow-primary/5 relative overflow-hidden shadow-sm">
+                                <div className="absolute top-0 right-0 w-24 h-24 bg-primary/5 blur-2xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity" />
+                                <div className="flex justify-between items-start relative z-10">
+                                    <div className={`w-12 h-12 rounded-[10px] ${game.bg} flex items-center justify-center ${game.color} font-black text-xl border border-white/5`}>
+                                        {game.icon}
+                                    </div>
+                                    <div className="flex flex-col items-end gap-1">
+                                        <span className="text-[7px] font-black text-muted-foreground/50 uppercase tracking-widest">SIGNAL_LINK</span>
+                                        <div className="flex gap-0.5">
+                                            {[1, 2, 3].map(bit => <div key={bit} className={`w-0.5 h-2 rounded-full ${game.color} opacity-60`} />)}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="relative z-10">
+                                    <h4 className="font-extrabold text-foreground group-hover:text-primary transition-colors">{game.title}</h4>
+                                    <p className="text-[10px] font-mono font-bold text-muted-foreground mt-1 uppercase tracking-tighter">{game.desc}</p>
+                                </div>
+                                <div className="pt-4 border-t border-border flex justify-between items-center group-hover:border-primary/20 transition-colors">
+                                    <div className="flex flex-col">
+                                        <span className="text-[7px] font-black text-muted-foreground/40 uppercase tracking-widest">CORE_POWER</span>
+                                        <span className="text-[9px] font-mono font-bold text-foreground/60">98% OPTIMIZED</span>
+                                    </div>
+                                    <ArrowRight size={14} className={`${game.color} opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all`} />
+                                </div>
                             </div>
-                            <h4 className="font-bold">Memory Matrix</h4>
-                            <p className="text-[13px] text-muted-foreground">Match tech stack icons (Server, Database, CPU) to clear the grid.</p>
-                        </div>
-                        <div className="bg-card border border-border p-6 rounded-[12px] space-y-4">
-                            <div className="w-10 h-10 rounded-[8px] bg-amber-500/10 flex items-center justify-center text-amber-500 font-bold">#</div>
-                            <h4 className="font-bold">Hex Hunter</h4>
-                            <p className="text-[13px] text-muted-foreground">Identify the Hex color code for the displayed visual. Essential for UI devs.</p>
-                        </div>
-                        <div className="bg-card border border-border p-6 rounded-[12px] space-y-4">
-                            <div className="w-10 h-10 rounded-[8px] bg-violet-500/10 flex items-center justify-center text-violet-500 font-bold">
-                                <Shield size={20} />
-                            </div>
-                            <h4 className="font-bold">Firewall Breach</h4>
-                            <p className="text-[13px] text-muted-foreground">A reflex-based defense game. Deflect packets to destroy security nodes.</p>
-                        </div>
-                        <div className="bg-card border border-border p-6 rounded-[12px] space-y-4">
-                            <div className="w-10 h-10 rounded-[8px] bg-rose-500/10 flex items-center justify-center text-rose-500 font-bold">
-                                <Zap size={20} />
-                            </div>
-                            <h4 className="font-bold">Bug Hunter v2.5</h4>
-                            <p className="text-[13px] text-muted-foreground">High-intensity debugger simulation. Fix logic flaws and syntax leaks under pressure.</p>
-                        </div>
-                        <div className="bg-card border border-border p-6 rounded-[12px] space-y-4">
-                            <div className="w-10 h-10 rounded-[8px] bg-cyan-500/10 flex items-center justify-center text-cyan-500 font-bold">
-                                <Binary size={20} />
-                            </div>
-                            <h4 className="font-bold">Stack Escape</h4>
-                            <p className="text-[13px] text-muted-foreground">Navigate the call stack maze. Solve logic gates before memory exhaustion.</p>
-                        </div>
+                        ))}
                     </div>
                 </div>
             </div>

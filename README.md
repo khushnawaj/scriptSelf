@@ -29,22 +29,23 @@
 - **Dynamic Dashboard**: Visualize your note distribution by category and type.
 - **Time-Series Insights**: Track your productivity with a 14-day history of note creation (powered by Chart.js).
 
-### 👤 Profile & Community (New)
-- **Social Graph**: Follow other developers to curate your feed and discover new engineering patterns.
-- **Interactive Discussions**: Contribute to notes with comments. Edit or delete your own contributions to maintain discussion quality.
-- **Custom Links**: Add unlimited social (GitHub, LinkedIn, LeetCode) and personal links to your profile.
-- **Dynamic Avatars**: Upload custom profile pictures or let the system generate stylish initials.
+### 👤 Profile & Community (Core Networking)
+- **Real-time Signal Alerts**: A dedicated tactical notification bell in the navbar that pulses for new follows and interactions.
+- **Interactive Social Graph**: Click on any follower or following count to browse user networks through high-fidelity modals.
+- **Follow System**: Subscribe to other developers to stay updated on their architectural decision records and logic captures.
+- **Interactive Discussions**: Contribute to notes with threaded comments. Edit or delete your own contributions to maintain precise technical discourse.
+- **Custom Identity**: Add GitHub, LinkedIn, and personal links. Custom avatars and bio support included.
 
-### 🕹️ DevArcade (New)
-*Gamify your growth with a suite of developer-centric mini-games designed to keep your skills sharp.*
+### 🕹️ DevArcade (Premium Cognitive Training)
+*Gamify your growth with a high-fidelity suite of developer mini-games.*
 
-- **Syntax Sprint**: Practice typing accuracy with real code snippets (React hooks, Redux logic, etc.). Real-time WPM tracking and error highlighting.
-- **Memory Matrix**: Test your short-term memory by matching tech stack components (Server, Database, CPU, etc.).
-- **Hex Hunter**: For the CSS wizards—guess the hex code relative to the color shown. Features specific game streaks and multipliers.
-- **Stack Overflow Escape**: Navigate the call stack maze—solve logic gates to unlock terminal doors before memory usage peaks.
-- **Firewall Breach**: A cyberpunk breakout-style reflex game to clear "security nodes".
-- **Bug Hunter v2.5**: A high-intensity debugger simulation. Fix logic errors and syntax flaws under pressure. Features power-ups (Shields, Time Dilation) and a live system monitor.
-- **Streak & Badge System**: Earn ranked badges (**Script Kiddie** to **Architect**) by maintaining daily streaks. Tracks both global consistency and game-specific mastery.
+- **Professional Tactical UI**: All games now feature enhanced "Cyber-Tactical" cards with real-time metrics like `CORE_POWER`, `SIGNAL_LINK`, and dynamic optimization stats.
+- **Syntax Sprint**: Practice typing accuracy with real patterns. Features real-time error detection and WPM tracking.
+- **Memory Matrix**: Neural recognition training by matching tech stack vectors (Server, DB, CPU).
+- **Hex Hunter**: Pixel-perfect color accuracy test.
+- **Stack Overflow Escape & Firewall Breach**: Advanced algorithm and reflex challenges with tiered difficulty.
+- **Bug Hunter v2.5**: Premium multi-stage debugger simulation with system monitoring and power-ups.
+- **Ranked Badge System**: maintain daily streaks to promote from **Script Kiddie** to **Elite Architect**.
 
 ---
 

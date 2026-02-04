@@ -7,7 +7,9 @@ const {
     followUser,
     unfollowUser,
     updateArcadeStats,
-    getPublicUser
+    getPublicUser,
+    getFollowers,
+    getFollowing
 } = require('../controllers/userController');
 
 const router = express.Router({ mergeParams: true });
@@ -16,6 +18,8 @@ const { protect, authorize } = require('../middleware/authMiddleware');
 
 // Public profile access (No auth required)
 router.get('/profile/:username', getPublicUser);
+router.get('/:id/followers', getFollowers);
+router.get('/:id/following', getFollowing);
 
 router.use(protect);
 
