@@ -3,10 +3,11 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Keyboard, Command, Zap } from 'lucide-react';
+import { useTheme } from '../context/ThemeContext';
 
 const ShortcutManager = () => {
     const navigate = useNavigate();
-    const location = useLocation();
+    const { toggleTheme, theme } = useTheme();
     const [showHelp, setShowHelp] = useState(false);
 
     useEffect(() => {
@@ -62,15 +63,8 @@ const ShortcutManager = () => {
                         break;
                     case 't':
                         e.preventDefault();
-                        const isDark = document.documentElement.classList.contains('dark');
-                        if (isDark) {
-                            document.documentElement.classList.remove('dark');
-                            localStorage.setItem('theme', 'light');
-                        } else {
-                            document.documentElement.classList.add('dark');
-                            localStorage.setItem('theme', 'dark');
-                        }
-                        toast.success(`Theme switched to ${isDark ? 'Light' : 'Dark'} Mode`);
+                        toggleTheme();
+                        toast.success(`Theme switched to ${theme === 'dark' ? 'Light' : 'Dark'} Mode`);
                         break;
                     default:
                         break;
@@ -78,11 +72,8 @@ const ShortcutManager = () => {
             }
 
             // Global Help Shortcut (?)
-            if (e.key === '?' && !e.shiftKey) {
-                // e.shiftKey is false for physical '?' key on most layouts, 
-                // but usually shift + / = ?. Let's just catch e.key === '?'
-            }
             if (e.key === '?' || (e.key === '/' && e.shiftKey)) {
+                e.preventDefault();
                 setShowHelp(prev => !prev);
             }
 
@@ -93,7 +84,7 @@ const ShortcutManager = () => {
 
         window.addEventListener('keydown', handleKeyDown);
         return () => window.removeEventListener('keydown', handleKeyDown);
-    }, [navigate]);
+    }, [navigate, toggleTheme, theme]);
 
     const shortcuts = [
         { key: 'Alt + D', desc: 'Navigate to Dashboard' },
