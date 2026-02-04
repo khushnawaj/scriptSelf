@@ -15,7 +15,9 @@ import {
     UserPlus,
     Bug,
     Keyboard,
-    Monitor
+    Monitor,
+    Activity,
+    Terminal
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
@@ -53,6 +55,9 @@ const Guide = () => {
                     <h3 className="text-[19px] font-bold mb-3">2. Archive</h3>
                     <p className="text-[14px] text-muted-foreground leading-relaxed">
                         Categorize logic by stacks (React, Backend, DevOps) and add syntax tags. Choose between **Public Sharing** or **Private Vaulting**.
+                    </p>
+                    <p className="text-[11px] text-primary/70 font-bold mt-4 uppercase tracking-tighter">
+                        Pro-Tip: Stack labels fuel your Dashboard's "Knowledge Distribution" chart.
                     </p>
                 </div>
                 <div className="glass-frost p-8 rounded-[3px] border-t-4 border-t-primary">
@@ -145,6 +150,137 @@ const Guide = () => {
                                 <div className="h-4 w-full bg-muted/20 rounded" />
                                 <div className="h-4 w-full bg-muted/20 rounded" />
                                 <div className="h-4 w-2/3 bg-muted/20 rounded" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Performance Identity */}
+                <div className="mt-20 pt-16 border-t border-border/50">
+                    <div className="flex flex-col md:flex-row items-center gap-16">
+                        <div className="flex-1 space-y-6">
+                            <div className="flex items-center gap-3 text-primary font-bold uppercase tracking-widest text-[13px]">
+                                <Share2 size={18} /> Global Performance Identity
+                            </div>
+                            <h2 className="text-[32px] font-bold leading-tight">Your Professional Signal</h2>
+                            <p className="text-muted-foreground leading-relaxed">
+                                ScriptShelf isn't just a database; it's your resume in high-resolution. Customize your profile to project a senior technical identity.
+                            </p>
+                            <div className="space-y-4">
+                                <div className="flex gap-4 p-4 bg-muted/20 border border-border rounded-[4px]">
+                                    <div className="w-10 h-10 rounded bg-primary/10 flex items-center justify-center text-primary shrink-0">
+                                        <Code2 size={20} />
+                                    </div>
+                                    <div>
+                                        <h4 className="font-bold">Third-Party Sync</h4>
+                                        <p className="text-[13px] text-muted-foreground">Link your GitHub, LinkedIn, and personal domains. Transform your shelf into a portfolio.</p>
+                                    </div>
+                                </div>
+                                <div className="flex gap-4 p-4 bg-muted/20 border border-border rounded-[4px]">
+                                    <div className="w-10 h-10 rounded bg-primary/10 flex items-center justify-center text-primary shrink-0">
+                                        <Activity size={20} />
+                                    </div>
+                                    <div>
+                                        <h4 className="font-bold">Neural Activity Graph</h4>
+                                        <p className="text-[13px] text-muted-foreground">Every note, implementation, and follow is tracked in your contribution heat-map.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="flex-1 space-y-4">
+                            <div className="glass-frost p-8 rounded-[12px] border-none shadow-2xl relative overflow-hidden">
+                                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary/50 to-transparent" />
+                                <div className="flex items-center gap-4 mb-6">
+                                    <div className="w-16 h-16 rounded-full bg-muted animate-pulse" />
+                                    <div className="space-y-2">
+                                        <div className="h-4 w-32 bg-foreground rounded" />
+                                        <div className="h-3 w-48 bg-muted-foreground/30 rounded" />
+                                    </div>
+                                </div>
+                                <div className="grid grid-cols-7 gap-1">
+                                    {[...Array(28)].map((_, i) => (
+                                        <div key={i} className={`aspect-square rounded-[2px] ${i % 3 === 0 ? 'bg-primary' : 'bg-muted/30'} opacity-${(i % 5) * 20}`} />
+                                    ))}
+                                </div>
+                                <p className="text-[10px] text-center mt-4 text-muted-foreground uppercase tracking-widest font-black">System_Activity_Pulse: Stable</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Markdown Mastery */}
+                <div className="mt-20 pt-16 border-t border-border/50">
+                    <div className="flex flex-col md:flex-row-reverse items-center gap-16">
+                        <div className="flex-1 space-y-6">
+                            <div className="flex items-center gap-3 text-primary font-bold uppercase tracking-widest text-[13px]">
+                                <Terminal size={18} /> Markdown Mastery
+                            </div>
+                            <h2 className="text-[32px] font-bold leading-tight">Clinical Documentation</h2>
+                            <p className="text-muted-foreground leading-relaxed">
+                                Our editor isn't just a text box—it's a developer-first IDE for logic. We support full **GFM (GitHub Flavored Markdown)** and specialized technical extensions.
+                            </p>
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-4">
+                                <div className="space-y-2">
+                                    <h4 className="font-bold text-foreground flex items-center gap-2">
+                                        <div className="w-1.5 h-1.5 rounded-full bg-primary" /> Syntax Highlighting
+                                    </h4>
+                                    <p className="text-[13px] text-muted-foreground">Full support for JS, Python, Go, and 50+ languages with theme-aware colors.</p>
+                                </div>
+                                <div className="space-y-2">
+                                    <h4 className="font-bold text-foreground flex items-center gap-2">
+                                        <div className="w-1.5 h-1.5 rounded-full bg-primary" /> Task Archives
+                                    </h4>
+                                    <p className="text-[13px] text-muted-foreground">Track implementation checklists with interactive `- [ ]` syntax.</p>
+                                </div>
+                                <div className="space-y-2">
+                                    <h4 className="font-bold text-foreground flex items-center gap-2">
+                                        <div className="w-1.5 h-1.5 rounded-full bg-primary" /> Auto-Formatting
+                                    </h4>
+                                    <p className="text-[13px] text-muted-foreground">Intelligent indentation and list continuation for faster drafting.</p>
+                                </div>
+                                <div className="space-y-2">
+                                    <h4 className="font-bold text-foreground flex items-center gap-2">
+                                        <div className="w-1.5 h-1.5 rounded-full bg-primary" /> Media Embeds
+                                    </h4>
+                                    <p className="text-[13px] text-muted-foreground">Drag and drop screenshots or embed full technical diagrams.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="flex-1 bg-card border border-border rounded-[12px] p-1 shadow-2xl overflow-hidden group">
+                            <div className="bg-muted/30 p-4 border-b border-border flex items-center gap-2">
+                                <div className="flex gap-1.5">
+                                    <div className="w-2 h-2 rounded-full bg-border" />
+                                    <div className="w-2 h-2 rounded-full bg-border" />
+                                    <div className="w-2 h-2 rounded-full bg-border" />
+                                </div>
+                                <span className="text-[10px] uppercase tracking-widest font-black opacity-40">Editor_Protocol.md</span>
+                            </div>
+                            <div className="p-8 font-mono text-[13px] space-y-4">
+                                <div className="flex gap-3">
+                                    <span className="text-primary opacity-50 italic">1</span>
+                                    <span className="text-foreground"># Technical_Implementation</span>
+                                </div>
+                                <div className="flex gap-3">
+                                    <span className="text-primary opacity-50 italic">2</span>
+                                    <span className="text-muted-foreground">- [x] Setup Redux Store</span>
+                                </div>
+                                <div className="flex gap-3">
+                                    <span className="text-primary opacity-50 italic">3</span>
+                                    <span className="text-muted-foreground">- [ ] Integrate API</span>
+                                </div>
+                                <div className="flex gap-3">
+                                    <span className="text-primary opacity-50 italic">4</span>
+                                    <span className="text-primary">```javascript</span>
+                                </div>
+                                <div className="flex gap-3">
+                                    <span className="text-primary opacity-50 italic">5</span>
+                                    <span className="text-primary">const</span>
+                                    <span className="text-foreground"> signal = (id) =&gt; &#123; ... &#125;;</span>
+                                </div>
+                                <div className="flex gap-3">
+                                    <span className="text-primary opacity-50 italic">6</span>
+                                    <span className="text-primary">```</span>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -250,6 +386,67 @@ const Guide = () => {
                         <p className="text-[14px] text-muted-foreground leading-relaxed">
                             Press <kbd className="bg-muted px-1.5 py-0.5 rounded border border-border text-[11px] font-bold">Ctrl+K</kbd> anywhere to trigger the Command Palette. Instantly jump to any tag, category, or implementation.
                         </p>
+                    </div>
+                </div>
+
+                {/* Pro Architecture Lifecycle */}
+                <div className="mt-20 pt-16 border-t border-border/50">
+                    <div className="flex flex-col md:flex-row gap-16">
+                        <div className="flex-1 space-y-8">
+                            <div className="flex items-center gap-3 text-primary font-bold uppercase tracking-widest text-[13px]">
+                                <Activity size={18} /> Pro-Level Architecture
+                            </div>
+                            <h2 className="text-[32px] font-bold leading-tight">Implementation Lifecycle</h2>
+                            <p className="text-muted-foreground leading-relaxed">
+                                ScriptShelf uses a professional status engine to track the evolution of your logic. Every ADR progresses through three critical states:
+                            </p>
+
+                            <div className="space-y-4">
+                                <div className="p-5 border border-border rounded-[4px] bg-muted/5">
+                                    <div className="flex items-center gap-3 mb-2">
+                                        <span className="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]" />
+                                        <span className="text-[12px] font-black uppercase tracking-widest text-emerald-500">Proposed</span>
+                                    </div>
+                                    <p className="text-[13px] text-muted-foreground">New architectural patterns or experiments currently under evaluation. Use this for early-stage logic.</p>
+                                </div>
+                                <div className="p-5 border border-border rounded-[4px] bg-muted/5">
+                                    <div className="flex items-center gap-3 mb-2">
+                                        <span className="w-2 h-2 rounded-full bg-primary shadow-[0_0_8px_rgba(var(--primary-rgb),0.5)]" />
+                                        <span className="text-[12px] font-black uppercase tracking-widest text-primary">Accepted</span>
+                                    </div>
+                                    <p className="text-[13px] text-muted-foreground">Logic that has been validated in production. These represent the "Source of Truth" for your stack.</p>
+                                </div>
+                                <div className="p-5 border border-border rounded-[4px] bg-muted/5">
+                                    <div className="flex items-center gap-3 mb-2">
+                                        <span className="w-2 h-2 rounded-full bg-rose-500 shadow-[0_0_8px_rgba(244,63,94,0.5)]" />
+                                        <span className="text-[12px] font-black uppercase tracking-widest text-rose-500">Superceded</span>
+                                    </div>
+                                    <p className="text-[13px] text-muted-foreground">Legacy logic replaced by newer patterns. Vital for historical context and avoiding past mistakes.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="flex-1 space-y-6">
+                            <div className="p-8 glass-frost bg-primary/5 rounded-[12px] border-none">
+                                <h4 className="font-bold text-[18px] mb-4">Neural Graph Optimization</h4>
+                                <p className="text-[14px] text-muted-foreground mb-6">
+                                    For maximum retrieval efficiency, we recommend a **High-Density Tagging** strategy:
+                                </p>
+                                <ul className="space-y-4 text-[13px]">
+                                    <li className="flex gap-3">
+                                        <div className="w-6 h-6 rounded bg-primary/20 flex items-center justify-center text-primary shrink-0 text-[10px] font-bold">01</div>
+                                        <span>**Stack Categorization**: Always place logic in a root stack (e.g., *Frontend*) for broad filtering.</span>
+                                    </li>
+                                    <li className="flex gap-3">
+                                        <div className="w-6 h-6 rounded bg-primary/20 flex items-center justify-center text-primary shrink-0 text-[10px] font-bold">02</div>
+                                        <span>**Atomic Syntax Tags**: Use granular tags like *#useMemo* or *#Recursive* for surgical searches.</span>
+                                    </li>
+                                    <li className="flex gap-3">
+                                        <div className="w-6 h-6 rounded bg-primary/20 flex items-center justify-center text-primary shrink-0 text-[10px] font-bold">03</div>
+                                        <span>**Cross-Linking**: Never let a note stand alone. Use [[Wiki-Links]] to connect dependencies.</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
