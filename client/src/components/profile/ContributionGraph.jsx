@@ -1,15 +1,17 @@
 import { useMemo } from 'react';
 
 const ContributionGraph = ({ logs = [], createdAt }) => {
-    // Generate last 365 days
+    // Generate last 365 days aligned to weeks
     const dailyData = useMemo(() => {
         const days = [];
-        const today = new Date();
+        const todayUTC = new Date();
+
         for (let i = 364; i >= 0; i--) {
-            const d = new Date();
-            d.setDate(today.getDate() - i);
+            const d = new Date(todayUTC);
+            d.setUTCDate(todayUTC.getUTCDate() - i);
             const dateStr = d.toISOString().split('T')[0];
-            const log = logs.find(l => l.date === dateStr);
+
+            const log = logs?.find(l => l.date === dateStr);
             days.push({
                 date: dateStr,
                 count: log ? log.count : 0
@@ -56,7 +58,7 @@ const ContributionGraph = ({ logs = [], createdAt }) => {
                             <div
                                 key={di}
                                 title={`${day.date}: ${day.count} activities`}
-                                className={`w-[11px] h-[11px] rounded-[1px] transition-colors duration-500 hover:scale-125 hover:z-10 cursor-pointer ${getColor(day.count)}`}
+                                className={`w-[11px] h-[11px] rounded-[1px] transition-all hover:scale-125 hover:z-10 cursor-pointer ${getColor(day.count)}`}
                             />
                         ))}
                     </div>

@@ -226,6 +226,34 @@ exports.getPublicUser = async (req, res, next) => {
             .sort('-createdAt')
             .limit(10);
 
+        // Smart Sync Checklist
+        if (user) {
+            const userNotes = await Note.find({ user: user._id });
+            if (userNotes.length > 0) {
+                const logsMap = {};
+                user.activityLogs.forEach(log => {
+                    logsMap[log.date] = log.count;
+                });
+
+                userNotes.forEach(note => {
+                    const date = note.createdAt.toISOString().split('T')[0];
+                    if (!logsMap[date] || logsMap[date] < 1) {
+                        logsMap[date] = (logsMap[date] || 0) + 1;
+                    }
+                });
+
+                const newLogs = Object.keys(logsMap).map(date => ({
+                    date,
+                    count: logsMap[date]
+                }));
+
+                if (newLogs.length !== user.activityLogs.length) {
+                    user.activityLogs = newLogs;
+                    await user.save();
+                }
+            }
+        }
+
         res.status(200).json({
             success: true,
             data: {

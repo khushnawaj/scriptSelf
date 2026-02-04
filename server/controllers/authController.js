@@ -1,5 +1,6 @@
 const crypto = require('crypto');
 const User = require('../models/User');
+const Note = require('../models/Note');
 const sendEmail = require('../services/emailService');
 
 // @desc      Register user
@@ -71,7 +72,41 @@ exports.login = async (req, res, next) => {
 // @access    Private
 exports.getMe = async (req, res, next) => {
   try {
-    const user = await User.findById(req.user.id);
+    let user = await User.findById(req.user.id);
+
+    // Smart Sync: Merge existing logs with note-based activity
+    if (user) {
+      const userNotes = await Note.find({ user: user._id });
+      if (userNotes.length > 0) {
+        // Create a map of existing logs
+        const logsMap = {};
+        user.activityLogs.forEach(log => {
+          logsMap[log.date] = log.count;
+        });
+
+        // Add note activities to the map
+        userNotes.forEach(note => {
+          const date = note.createdAt.toISOString().split('T')[0];
+          // We only add if it's not already accounted for by a higher count or if it's missing
+          // But usually, we want to ensure every note creation is a hit
+          // For backfill, we'll just ensure at least 1 hit per note date
+          if (!logsMap[date] || logsMap[date] < 1) {
+            logsMap[date] = (logsMap[date] || 0) + 1;
+          }
+        });
+
+        // Update user logs if map changed
+        const newLogs = Object.keys(logsMap).map(date => ({
+          date,
+          count: logsMap[date]
+        }));
+
+        if (newLogs.length !== user.activityLogs.length) {
+          user.activityLogs = newLogs;
+          await user.save();
+        }
+      }
+    }
 
     res.status(200).json({
       success: true,
