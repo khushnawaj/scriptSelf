@@ -108,20 +108,6 @@ const Navbar = ({ onMenuClick }) => {
                                     onClick={() => setIsProfileOpen(!isProfileOpen)}
                                     className="flex items-center gap-2 p-1 pl-2 hover:bg-muted/50 rounded-[10px] border border-transparent hover:border-border transition-all"
                                 >
-                                    {(user?.arcade?.streak > 0 || user?.arcade?.points > 0) && (
-                                        <div className="flex items-center gap-2 mr-1">
-                                            {user.arcade.streak > 0 && (
-                                                <div className="flex items-center gap-0.5 text-orange-500 font-bold text-[12px] bg-orange-500/10 px-1.5 py-0.5 rounded-full">
-                                                    <Flame size={12} fill="currentColor" /> {user.arcade.streak}
-                                                </div>
-                                            )}
-                                            {user.arcade.points > 0 && (
-                                                <div className="flex items-center gap-0.5 text-primary font-bold text-[12px] bg-primary/10 px-1.5 py-0.5 rounded-full">
-                                                    <Trophy size={12} /> {user.arcade.points.toLocaleString()}
-                                                </div>
-                                            )}
-                                        </div>
-                                    )}
                                     <span className="text-[13px] font-bold text-foreground hidden lg:inline">{user.username}</span>
                                     <div className="w-[32px] h-[32px] bg-primary rounded-[8px] flex items-center justify-center text-white text-[14px] font-bold overflow-hidden shadow-lg shadow-primary/20">
                                         {user.avatar ? (

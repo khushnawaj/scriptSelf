@@ -57,7 +57,7 @@ const Home = () => {
             </div>
 
             {/* Feature Blocks */}
-            <div className="max-w-7xl mx-auto py-24 px-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-12 lg:gap-16">
+            <div className="max-w-7xl mx-auto py-24 px-6 grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12 lg:gap-16">
                 <div className="group bg-card border border-border/50 p-8 rounded-[12px] hover:border-primary/50 transition-all duration-300 hover:shadow-lg flex flex-col items-center text-center h-full">
                     <div className="w-14 h-14 bg-accent text-primary rounded-[8px] flex items-center justify-center mb-6 group-hover:bg-primary group-hover:text-white transition-all transform group-hover:rotate-6 shadow-sm">
                         <MessageSquare size={28} />
@@ -83,15 +83,6 @@ const Home = () => {
                     <h3 className="text-[21px] font-bold mb-4 text-foreground">Private Archival</h3>
                     <p className="text-[15px] text-muted-foreground leading-relaxed">
                         Secure your proprietary logic. Choose between public sharing for community reputation or private vaulting for your own technical legacy.
-                    </p>
-                </div>
-                <div className="group bg-card border border-border/50 p-8 rounded-[12px] hover:border-primary/50 transition-all duration-300 hover:shadow-lg flex flex-col items-center text-center h-full md:col-span-3 lg:col-span-1">
-                    <div className="w-14 h-14 bg-accent text-primary rounded-[8px] flex items-center justify-center mb-6 group-hover:bg-primary group-hover:text-white transition-all transform group-hover:rotate-6 shadow-sm">
-                        <Cpu size={28} />
-                    </div>
-                    <h3 className="text-[21px] font-bold mb-4 text-foreground">Cognitive Training</h3>
-                    <p className="text-[15px] text-muted-foreground leading-relaxed">
-                        Sharpen your developer instincts with **DevArcade**. Match patterns, debug leaks in real-time, and solve stack mazes to earn ranked mastery badges.
                     </p>
                 </div>
             </div>

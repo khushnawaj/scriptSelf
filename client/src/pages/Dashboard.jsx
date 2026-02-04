@@ -125,31 +125,8 @@ const Dashboard = () => {
                 <div className="lg:col-span-4 space-y-6">
                     <div className="bg-accent/30 border border-primary/20 p-6 rounded-[3px]">
                         <h3 className="text-[15px] font-bold text-foreground mb-3 flex items-center gap-2">
-                            Arcade Performance
+                            System Insights
                         </h3>
-                        <div className="space-y-4">
-                            <div className="flex justify-between items-center">
-                                <span className="text-[12px] text-muted-foreground">Total XP</span>
-                                <span className="text-[14px] font-bold text-primary flex items-center gap-1">
-                                    <Trophy size={14} /> {user?.arcade?.points || 0}
-                                </span>
-                            </div>
-                            <div className="flex justify-between items-center">
-                                <span className="text-[12px] text-muted-foreground">Active Streak</span>
-                                <span className="text-[14px] font-bold text-orange-500 flex items-center gap-1">
-                                    <Flame size={14} fill="currentColor" /> {user?.arcade?.streak || 0}
-                                </span>
-                            </div>
-                            <div className="pt-2">
-                                <Link to="/arcade" className="so-btn so-btn-primary w-full py-2 text-[12px] flex items-center justify-center gap-2">
-                                    <Gamepad2 size={14} /> Enter Arcade
-                                </Link>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="border border-border p-5 rounded-[3px] bg-card">
-                        <h3 className="text-[13px] font-bold text-foreground uppercase tracking-wider mb-4 border-b border-border pb-2">System Insights</h3>
                         <p className="text-[13px] text-muted-foreground leading-relaxed">
                             You currently have <span className="font-bold text-foreground">{userNotes.length}</span> active records across <span className="font-bold text-foreground">{categories.length}</span> tag categories.
                         </p>
