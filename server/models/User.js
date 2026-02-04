@@ -28,23 +28,31 @@ const userSchema = new mongoose.Schema({
     },
     resetPasswordToken: String,
     resetPasswordExpire: Date,
-    avatar: { // URL to uploaded file
-        type: String
+    avatar: {
+        type: String,
+        default: ''
+    },
+    bio: {
+        type: String,
+        maxlength: [200, 'Bio cannot be more than 200 characters'],
+        default: 'Technical logic enthusiast.'
+    },
+    website: {
+        type: String,
+        match: [
+            /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/,
+            'Please use a valid URL with HTTP or HTTPS'
+        ]
+    },
+    socialLinks: {
+        github: String,
+        twitter: String,
+        linkedin: String
     },
     role: {
         type: String,
         enum: ['user', 'admin'],
         default: 'user'
-    },
-    bio: {
-        type: String,
-        maxlength: 500
-    },
-    socialLinks: {
-        github: { type: String },
-        linkedin: { type: String },
-        website: { type: String },
-        leetcode: { type: String }
     },
     customLinks: [{
         label: { type: String, required: true },
@@ -68,10 +76,13 @@ const userSchema = new mongoose.Schema({
             hex: { streak: { type: Number, default: 0 }, lastPlayed: { type: Date } },
             breach: { streak: { type: Number, default: 0 }, lastPlayed: { type: Date } },
             escape: { streak: { type: Number, default: 0 }, lastPlayed: { type: Date } },
-
             hunter: { streak: { type: Number, default: 0 }, lastPlayed: { type: Date } }
         }
     },
+    activityLogs: [{
+        date: { type: String, required: true }, // YYYY-MM-DD
+        count: { type: Number, default: 0 }
+    }],
     createdAt: {
         type: Date,
         default: Date.now

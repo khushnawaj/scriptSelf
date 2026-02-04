@@ -1,5 +1,6 @@
 const Note = require('../models/Note');
 const fs = require('fs');
+const logUserActivity = require('../utils/activityLogger');
 
 // Helper for Bidirectional Linking
 const updateBidirectionalLinks = async (noteId, content, userId) => {
@@ -116,6 +117,9 @@ exports.cloneNote = async (req, res, next) => {
       success: true,
       data: clonedNote
     });
+
+    // Log activity
+    await logUserActivity(req.user.id);
   } catch (err) {
     next(err);
   }
@@ -195,6 +199,9 @@ exports.createNote = async (req, res, next) => {
       success: true,
       data: note
     });
+
+    // Log activity
+    await logUserActivity(req.user.id);
   } catch (err) {
     next(err);
   }

@@ -1,4 +1,6 @@
 const User = require('../models/User');
+const Note = require('../models/Note');
+const logUserActivity = require('../utils/activityLogger');
 
 // @desc      Get all users
 // @route     GET /api/v1/users
@@ -136,6 +138,9 @@ exports.updateArcadeStats = async (req, res, next) => {
 
         await user.save();
 
+        // Log activity for heatmap
+        await logUserActivity(user._id);
+
         res.status(200).json({
             success: true,
             data: user.arcade
@@ -198,6 +203,36 @@ exports.unfollowUser = async (req, res, next) => {
         } else {
             return res.status(400).json({ success: false, error: "You dont follow this user" });
         }
+    } catch (err) {
+        next(err);
+    }
+};
+
+// @desc      Get public user profile
+// @route     GET /api/v1/users/profile/:username
+// @access    Public
+exports.getPublicUser = async (req, res, next) => {
+    try {
+        const user = await User.findOne({ username: req.params.username })
+            .select('username avatar bio socialLinks customLinks followers following arcade activityLogs createdAt');
+
+        if (!user) {
+            return res.status(404).json({ success: false, error: 'User not found' });
+        }
+
+        // Fetch public notes for this user
+        const publicNotes = await Note.find({ user: user._id, isPublic: true })
+            .populate('category', 'name')
+            .sort('-createdAt')
+            .limit(10);
+
+        res.status(200).json({
+            success: true,
+            data: {
+                profile: user,
+                recentNotes: publicNotes
+            }
+        });
     } catch (err) {
         next(err);
     }

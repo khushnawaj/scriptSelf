@@ -24,6 +24,7 @@ import {
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import Spinner from '../components/Spinner';
+import ContributionGraph from '../components/profile/ContributionGraph';
 
 const Profile = () => {
     const dispatch = useDispatch();
@@ -58,8 +59,8 @@ const Profile = () => {
                     github: user.socialLinks?.github || '',
                     linkedin: user.socialLinks?.linkedin || '',
                     twitter: user.socialLinks?.twitter || '',
-                    website: user.socialLinks?.website || '',
-                    leetcode: user.socialLinks?.leetcode || ''
+                    website: user.website || '',
+                    linkedin: user.socialLinks?.linkedin || ''
                 },
                 customLinks: user.customLinks || []
             });
@@ -164,26 +165,32 @@ const Profile = () => {
                 <div className="flex-1 space-y-4">
                     <div className="flex flex-col sm:flex-row justify-between items-start gap-4">
                         <div>
-                            <h1 className="text-[34px] font-normal text-foreground leading-tight flex items-center gap-3">
+                            <h1 className="text-[28px] font-bold text-foreground flex items-center gap-3">
                                 {user?.username}
-                                {user?.role === 'admin' && (
-                                    <span className="bg-primary/10 text-primary text-[11px] font-bold px-2 py-1 rounded-[3px] flex items-center gap-1 border border-primary/20">
-                                        <ShieldCheck size={14} /> ADMIN SYSTEM ACCESS
-                                    </span>
-                                )}
+                                {user?.role === 'admin' && <ShieldCheck size={20} className="text-primary" />}
                             </h1>
-                            <div className="flex flex-wrap gap-4 text-[13px] text-muted-foreground mt-2">
-                                <span className="flex items-center gap-1"><Calendar size={14} /> Registered {new Date(user?.createdAt).toLocaleDateString()}</span>
-                                <span className="flex items-center gap-1"><History size={14} /> Active User</span>
-                                <span className="flex items-center gap-1"><Mail size={14} /> {user?.email}</span>
-                            </div>
+                            <p className="text-muted-foreground flex items-center gap-2 text-[14px]">
+                                <Mail size={14} /> {user?.email}
+                            </p>
                         </div>
-                        <button
-                            onClick={() => setIsEditing(!isEditing)}
-                            className="so-btn border border-border hover:bg-muted/50 text-foreground px-4 py-2 transition-colors"
-                        >
-                            <Edit3 size={14} className="mr-1" /> {isEditing ? 'Cancel' : 'Edit profile'}
-                        </button>
+                        <div className="flex gap-3">
+                            <button
+                                onClick={() => {
+                                    const url = `${window.location.origin}/u/${user?.username}`;
+                                    navigator.clipboard.writeText(url);
+                                    toast.success('Public link copied!');
+                                }}
+                                className="so-btn border border-border text-muted-foreground hover:text-foreground px-4 py-2 flex items-center gap-2"
+                            >
+                                <ExternalLink size={16} /> Share Profile
+                            </button>
+                            <button
+                                onClick={() => setIsEditing(!isEditing)}
+                                className="so-btn so-btn-primary px-6 py-2 flex items-center gap-2"
+                            >
+                                <Edit3 size={16} /> {isEditing ? 'Cancel' : 'Edit Profile'}
+                            </button>
+                        </div>
                     </div>
 
                     <p className="text-[15px] text-foreground max-w-2xl leading-relaxed">
@@ -220,6 +227,10 @@ const Profile = () => {
                             <p className="text-[11px] text-muted-foreground uppercase tracking-wider font-bold">Rank</p>
                         </div>
                     </div>
+
+                    <section className="bg-card border border-border/50 p-6 rounded-[3px] space-y-6">
+                        <ContributionGraph logs={user?.activityLogs} createdAt={user?.createdAt} />
+                    </section>
 
                     <section className="space-y-4">
                         <div className="flex items-center justify-between">

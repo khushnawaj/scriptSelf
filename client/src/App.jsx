@@ -15,6 +15,7 @@ import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
 import Dashboard from './pages/Dashboard';
 import Profile from './pages/Profile';
+import PublicProfile from './pages/PublicProfile';
 import Notes from './pages/Notes';
 import NoteEditor from './pages/NoteEditor';
 import NoteDetails from './pages/NoteDetails';
@@ -96,6 +97,8 @@ function App() {
           <Route path="/guide" element={<Guide />} />
           <Route path="/arcade" element={<Arcade />} />
         </Route>
+
+        <Route path="/u/:username" element={<PublicProfile />} />
 
         {/* Fallback */}
         <Route path="*" element={<NotFound />} />
