@@ -16,9 +16,11 @@ import {
     ExternalLink,
     Plus,
     Trash2,
-    Code2,
     Terminal,
-    ShieldCheck
+    ShieldCheck,
+    Gamepad2,
+    Flame,
+    Trophy
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import Spinner from '../components/Spinner';
@@ -194,16 +196,62 @@ const Profile = () => {
                 {/* Side Stats & Links */}
                 <div className="lg:col-span-4 space-y-6">
                     <h3 className="text-[19px] font-normal text-foreground">My Stats</h3>
-                    <div className="glass-frost p-6 rounded-[3px] grid grid-cols-2 gap-y-6 gap-x-4 shadow-sm">
+                    <div className="glass-frost p-6 rounded-[3px] grid grid-cols-2 gap-y-6 gap-x-4 shadow-sm border border-border/50">
                         <div className="space-y-1">
                             <p className="text-[21px] font-bold text-foreground">{userNotes}</p>
-                            <p className="text-[11px] text-muted-foreground uppercase tracking-wider font-bold">Total Records</p>
+                            <p className="text-[11px] text-muted-foreground uppercase tracking-wider font-bold">Total Scripts</p>
                         </div>
                         <div className="space-y-1">
-                            <p className="text-[21px] font-bold text-foreground">1</p>
-                            <p className="text-[11px] text-muted-foreground uppercase tracking-wider font-bold">Public Streak</p>
+                            <p className="text-[21px] font-bold text-primary flex items-center gap-1">
+                                <Trophy size={16} /> {user?.arcade?.points || 0}
+                            </p>
+                            <p className="text-[11px] text-muted-foreground uppercase tracking-wider font-bold">Arcade XP</p>
+                        </div>
+                        <div className="space-y-1">
+                            <p className="text-[21px] font-bold text-orange-500 flex items-center gap-1">
+                                <Flame size={16} className="fill-orange-500" /> {user?.arcade?.streak || 0}
+                            </p>
+                            <p className="text-[11px] text-muted-foreground uppercase tracking-wider font-bold">Active Streak</p>
+                        </div>
+                        <div className="space-y-1">
+                            <p className="text-[21px] font-bold text-foreground">
+                                {user?.role === 'admin' ? 'Elite' : 'Member'}
+                            </p>
+                            <p className="text-[11px] text-muted-foreground uppercase tracking-wider font-bold">Rank</p>
                         </div>
                     </div>
+
+                    <section className="space-y-4">
+                        <div className="flex items-center justify-between">
+                            <h3 className="text-[19px] font-normal text-foreground">Mastery Badges</h3>
+                            <Link to="/arcade" className="text-[11px] text-link hover:underline font-bold">TRAIN NOW</Link>
+                        </div>
+                        <div className="flex flex-wrap gap-2">
+                            {[
+                                { days: 1, label: "Hello World", color: "emerald" },
+                                { days: 3, label: "Script Kiddie", color: "yellow" },
+                                { days: 7, label: "Code Ninja", color: "violet" },
+                                { days: 30, label: "Full Stack", color: "rose" },
+                                { days: 60, label: "Architect", color: "cyan" },
+                            ].map((badge, i) => {
+                                const isUnlocked = (user?.arcade?.streak || 0) >= badge.days;
+                                return (
+                                    <div
+                                        key={i}
+                                        title={isUnlocked ? `Unlocked: ${badge.label}` : `Requires ${badge.days} day streak`}
+                                        className={`px-3 py-1.5 rounded-[4px] border text-[11px] font-bold transition-all
+                                            ${isUnlocked
+                                                ? `bg-${badge.color}-500/10 border-${badge.color}-500/30 text-${badge.color}-500`
+                                                : "bg-muted/10 border-dashed border-muted-foreground/20 text-muted-foreground/30 saturate-0"
+                                            }
+                                        `}
+                                    >
+                                        {badge.label}
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    </section>
 
                     <section className="space-y-3">
                         <h3 className="text-[19px] font-normal text-foreground">Web Links</h3>
