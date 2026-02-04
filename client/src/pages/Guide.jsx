@@ -265,7 +265,7 @@ const Guide = () => {
                             <p className="text-[13px] text-muted-foreground">Match tech stack icons (Server, Database, CPU) to clear the grid.</p>
                         </div>
                         <div className="bg-card border border-border p-6 rounded-[12px] space-y-4">
-                            <div className="w-10 h-10 rounded-[8px] bg-pink-500/10 flex items-center justify-center text-pink-500 font-bold">#</div>
+                            <div className="w-10 h-10 rounded-[8px] bg-amber-500/10 flex items-center justify-center text-amber-500 font-bold">#</div>
                             <h4 className="font-bold">Hex Hunter</h4>
                             <p className="text-[13px] text-muted-foreground">Identify the Hex color code for the displayed visual. Essential for UI devs.</p>
                         </div>
@@ -275,6 +275,20 @@ const Guide = () => {
                             </div>
                             <h4 className="font-bold">Firewall Breach</h4>
                             <p className="text-[13px] text-muted-foreground">A reflex-based defense game. Deflect packets to destroy security nodes.</p>
+                        </div>
+                        <div className="bg-card border border-border p-6 rounded-[12px] space-y-4">
+                            <div className="w-10 h-10 rounded-[8px] bg-rose-500/10 flex items-center justify-center text-rose-500 font-bold">
+                                <Zap size={20} />
+                            </div>
+                            <h4 className="font-bold">Bug Hunter v2.5</h4>
+                            <p className="text-[13px] text-muted-foreground">High-intensity debugger simulation. Fix logic flaws and syntax leaks under pressure.</p>
+                        </div>
+                        <div className="bg-card border border-border p-6 rounded-[12px] space-y-4">
+                            <div className="w-10 h-10 rounded-[8px] bg-cyan-500/10 flex items-center justify-center text-cyan-500 font-bold">
+                                <Binary size={20} />
+                            </div>
+                            <h4 className="font-bold">Stack Escape</h4>
+                            <p className="text-[13px] text-muted-foreground">Navigate the call stack maze. Solve logic gates before memory exhaustion.</p>
                         </div>
                     </div>
                 </div>
