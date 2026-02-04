@@ -164,8 +164,16 @@ const Layout = () => {
                                 <kbd className="px-2 py-0.5 bg-background border border-border rounded-[4px] text-[10px] font-bold shadow-sm">⌘K</kbd>
                             </li>
                             <li className="flex items-center justify-between">
-                                <span>Close Active UI</span>
-                                <kbd className="px-2 py-0.5 bg-background border border-border rounded-[4px] text-[10px] font-bold shadow-sm">ESC</kbd>
+                                <span>Quick Help</span>
+                                <kbd className="px-2 py-0.5 bg-background border border-border rounded-[4px] text-[10px] font-bold shadow-sm">?</kbd>
+                            </li>
+                            <li className="flex items-center justify-between">
+                                <span>Theme Toggle</span>
+                                <kbd className="px-2 py-0.5 bg-background border border-border rounded-[4px] text-[10px] font-bold shadow-sm">ALT+T</kbd>
+                            </li>
+                            <li className="flex items-center justify-between">
+                                <span>New Record</span>
+                                <kbd className="px-2 py-0.5 bg-background border border-border rounded-[4px] text-[10px] font-bold shadow-sm">ALT+N</kbd>
                             </li>
                         </ul>
                     </div>

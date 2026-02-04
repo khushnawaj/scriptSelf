@@ -221,3 +221,13 @@
 main {
     background-color: var(--background);
 }
+
+/* Zen Mode (Distraction-Free) */
+body.zen-mode aside {
+    display: none !important;
+}
+body.zen-mode main {
+    border-left: none !important;
+    max-width: 900px !important;
+    margin: 0 auto !important;
+}

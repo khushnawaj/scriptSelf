@@ -44,6 +44,7 @@ const PublicRoute = ({ children }) => {
 
 import AdminRoute from './components/AdminRoute';
 import CommandPalette from './components/CommandPalette';
+import ShortcutManager from './components/ShortcutManager';
 
 function App() {
   const dispatch = useDispatch();
@@ -55,6 +56,7 @@ function App() {
   return (
     <Router>
       <CommandPalette />
+      <ShortcutManager />
       <Toaster
         position="bottom-right"
         toastOptions={{
