@@ -13,7 +13,8 @@ import {
     Terminal,
     Zap,
     X,
-    BookOpen
+    BookOpen,
+    Gamepad2
 } from 'lucide-react';
 import { useSelector } from 'react-redux';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -60,6 +61,7 @@ const Layout = () => {
             </div>
             <NavItem to="/profile" label="Profile" icon={Users} />
             <NavItem to="/notes/new" label="New Record" icon={Zap} />
+            <NavItem to="/arcade" label="Arcade" icon={Gamepad2} />
             <NavItem to="/guide" label="Learn" icon={BookOpen} />
         </div>
     );
@@ -73,18 +75,20 @@ const Layout = () => {
                 {isSidebarOpen && (
                     <>
                         <motion.div
+                            key="overlay"
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
                             onClick={() => setIsSidebarOpen(false)}
-                            className="fixed inset-0 bg-black/60 backdrop-blur-md z-[60] md:hidden"
+                            className="fixed inset-0 bg-black/60 backdrop-blur-md z-[100] md:hidden"
                         />
                         <motion.div
+                            key="sidebar"
                             initial={{ x: '-100%' }}
                             animate={{ x: 0 }}
                             exit={{ x: '-100%' }}
                             transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-                            className="fixed inset-y-0 left-0 w-[280px] bg-card border-r border-border z-[70] md:hidden p-6 pt-6 shadow-2xl"
+                            className="fixed inset-y-0 left-0 w-[280px] bg-card border-r border-border z-[110] md:hidden p-6 pt-6 shadow-2xl"
                         >
                             <div className="flex items-center justify-between mb-8 pb-4 border-b border-border">
                                 <span className="font-bold text-primary flex items-center gap-2 text-lg">

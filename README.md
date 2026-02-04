@@ -29,9 +29,20 @@
 - **Dynamic Dashboard**: Visualize your note distribution by category and type.
 - **Time-Series Insights**: Track your productivity with a 14-day history of note creation (powered by Chart.js).
 
-### 👤 Profile & Social
+### 👤 Profile & Community (New)
+- **Social Graph**: Follow other developers to curate your feed and discover new engineering patterns.
+- **Interactive Discussions**: Contribute to notes with comments. Edit or delete your own contributions to maintain discussion quality.
 - **Custom Links**: Add unlimited social (GitHub, LinkedIn, LeetCode) and personal links to your profile.
 - **Dynamic Avatars**: Upload custom profile pictures or let the system generate stylish initials.
+
+### 🕹️ DevArcade (New)
+*Gamify your growth with a suite of developer-centric mini-games designed to keep your skills sharp.*
+
+- **Syntax Sprint**: Practice typing accuracy with real code snippets (React hooks, Redux logic, etc.). Real-time WPM tracking and error highlighting.
+- **Memory Matrix**: Test your short-term memory by matching tech stack components (Server, Database, CPU, etc.).
+- **Hex Hunter**: For the CSS wizards—guess the hex code relative to the color shown. Features specific game streaks and multipliers.
+- **Firewall Breach**: A cyberpunk breakout-style reflex game to clear "security nodes".
+- **Streak & Badge System**: Earn ranked badges (**Script Kiddie** to **Architect**) by maintaining daily streaks. Tracks both global consistency and game-specific mastery.
 
 ---
 

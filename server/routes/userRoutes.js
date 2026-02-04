@@ -3,24 +3,32 @@ const {
     getUsers,
     getUser,
     deleteUser,
-    updateUserRole
+    updateUserRole,
+    followUser,
+    unfollowUser,
+    updateArcadeStats
 } = require('../controllers/userController');
 
-const router = express.Router();
+const router = express.Router({ mergeParams: true });
 
 const { protect, authorize } = require('../middleware/authMiddleware');
 
 router.use(protect);
-router.use(authorize('admin')); // All routes restricted to admin
 
+// Public User Routes (Protected)
+router.put('/arcade', updateArcadeStats);
+router.post('/:id/follow', followUser);
+router.delete('/:id/follow', unfollowUser);
+
+// Admin Routes
 router.route('/')
-    .get(getUsers);
+    .get(authorize('admin'), getUsers);
 
 router.route('/:id')
-    .get(getUser)
-    .delete(deleteUser);
+    .get(authorize('admin'), getUser)
+    .delete(authorize('admin'), deleteUser);
 
 router.route('/:id/role')
-    .put(updateUserRole);
+    .put(authorize('admin'), updateUserRole);
 
 module.exports = router;

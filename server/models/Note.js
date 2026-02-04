@@ -44,6 +44,22 @@ const noteSchema = new mongoose.Schema({
         codeSnippet: String,
         updatedAt: { type: Date, default: Date.now }
     }],
+    comments: [{
+        user: {
+            type: mongoose.Schema.ObjectId,
+            ref: 'User',
+            required: true
+        },
+        text: {
+            type: String,
+            required: true,
+            trim: true
+        },
+        createdAt: {
+            type: Date,
+            default: Date.now
+        }
+    }],
     type: {
         type: String,
         default: 'doc',

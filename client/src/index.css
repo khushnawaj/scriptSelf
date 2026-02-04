@@ -37,7 +37,7 @@
   --card: #ffffff;
   --card-foreground: #1a1a1a;
   
-  --primary: #808000; /* Olive */
+  --primary: #6b6b00; /* Darker Olive for better contrast on white */
   --primary-foreground: #ffffff;
   
   --secondary: #f6f8fa;
@@ -47,17 +47,17 @@
   --muted-foreground: #57606a;
   
   --accent: #eff1e1; /* Light Olive */
-  --accent-foreground: #556b2f; /* Dark Olive */
+  --accent-foreground: #4a5d29; /* Darker Olive Text */
   
   --destructive: #cf222e;
   --destructive-foreground: #ffffff;
   
   --border: #d0d7de;
   --input: #ffffff;
-  --ring: #808000;
+  --ring: #6b6b00;
   
-  --link: #556b2f;
-  --link-hover: #808000;
+  --link: #4a5d29;
+  --link-hover: #6b6b00;
 
   --glass-bg: rgba(255, 255, 255, 0.8);
   --glass-border: rgba(0, 0, 0, 0.1);
@@ -90,8 +90,8 @@
   --input: #0d1117;
   --ring: #808000;
   
-  --link: #a4a61d;
-  --link-hover: #808000;
+  --link: #d2d426; /* Brighter Olive for dark mode */
+  --link-hover: #e6e845;
 
   --glass-bg: rgba(13, 17, 23, 0.8);
   --glass-border: rgba(240, 246, 252, 0.1);

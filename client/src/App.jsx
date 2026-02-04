@@ -11,6 +11,8 @@ import Layout from './components/Layout';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Register from './pages/Register';
+import ForgotPassword from './pages/ForgotPassword';
+import ResetPassword from './pages/ResetPassword';
 import Dashboard from './pages/Dashboard';
 import Profile from './pages/Profile';
 import Notes from './pages/Notes';
@@ -20,6 +22,7 @@ import Categories from './pages/Categories';
 import Admin from './pages/Admin';
 import Guide from './pages/Guide';
 import NotFound from './pages/NotFound';
+import Arcade from './pages/Arcade';
 import Spinner from './components/Spinner';
 
 // Private Route Component
@@ -38,6 +41,7 @@ const PublicRoute = ({ children }) => {
   return user ? <Navigate to="/dashboard" /> : children;
 }
 
+import AdminRoute from './components/AdminRoute';
 import CommandPalette from './components/CommandPalette';
 
 function App() {
@@ -68,6 +72,8 @@ function App() {
         <Route path="/" element={<PublicRoute><Home /></PublicRoute>} />
         <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
         <Route path="/register" element={<PublicRoute><Register /></PublicRoute>} />
+        <Route path="/forgot-password" element={<PublicRoute><ForgotPassword /></PublicRoute>} />
+        <Route path="/reset-password/:resetToken" element={<PublicRoute><ResetPassword /></PublicRoute>} />
 
         <Route element={
           <PrivateRoute>
@@ -81,8 +87,14 @@ function App() {
           <Route path="/notes/:id" element={<NoteDetails />} />
           <Route path="/notes/edit/:id" element={<NoteEditor />} />
           <Route path="/categories" element={<Categories />} />
-          <Route path="/admin" element={<Admin />} />
+
+          <Route element={<AdminRoute />}>
+            <Route path="/admin" element={<Admin />} />
+            <Route path="/admin" element={<Admin />} />
+          </Route>
+
           <Route path="/guide" element={<Guide />} />
+          <Route path="/arcade" element={<Arcade />} />
         </Route>
 
         {/* Fallback */}

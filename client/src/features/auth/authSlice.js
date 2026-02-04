@@ -71,6 +71,82 @@ export const logout = createAsyncThunk(
   }
 );
 
+
+
+// Follow User
+export const followUser = createAsyncThunk(
+  'auth/followUser',
+  async (userId, thunkAPI) => {
+    try {
+      await api.post(`/users/${userId}/follow`);
+      toast.success('Following user');
+      return userId;
+    } catch (error) {
+      toast.error(error.response?.data?.error || 'Failed to follow user');
+      return thunkAPI.rejectWithValue(error.response?.data?.error);
+    }
+  }
+);
+
+// Unfollow User
+export const unfollowUser = createAsyncThunk(
+  'auth/unfollowUser',
+  async (userId, thunkAPI) => {
+    try {
+      await api.delete(`/users/${userId}/follow`);
+      toast.success('Unfollowed user');
+      return userId;
+    } catch (error) {
+      toast.error(error.response?.data?.error || 'Failed to unfollow user');
+      return thunkAPI.rejectWithValue(error.response?.data?.error);
+    }
+  }
+);
+
+// Forgot Password
+export const forgotPassword = createAsyncThunk(
+  'auth/forgotPassword',
+  async (email, thunkAPI) => {
+    try {
+      const res = await api.post('/auth/forgotpassword', { email });
+      toast.success(res.data.data);
+      return res.data.data;
+    } catch (error) {
+      const message = error.response?.data?.error || 'Something went wrong';
+      toast.error(message);
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
+// Reset Password
+export const resetPassword = createAsyncThunk(
+  'auth/resetPassword',
+  async ({ resetToken, password }, thunkAPI) => {
+    try {
+      const res = await api.put(`/auth/resetpassword/${resetToken}`, { password });
+      return res.data;
+    } catch (error) {
+      const message = error.response?.data?.error || 'Reset failed';
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
+// Update Arcade Stats
+export const updateArcadeStats = createAsyncThunk(
+  'auth/updateArcadeStats',
+  async (payload, thunkAPI) => {
+    try {
+      const data = typeof payload === 'number' ? { points: payload } : payload;
+      const res = await api.put('/users/arcade', data);
+      return res.data.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.response?.data?.error);
+    }
+  }
+);
+
 export const loadUser = createAsyncThunk(
   'auth/loadUser',
   async (_, thunkAPI) => {
@@ -162,11 +238,56 @@ const authSlice = createSlice({
         state.isError = false;
         state.message = '';
       })
+
       .addCase(updateProfile.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
         state.message = action.payload;
+      })
+      .addCase(followUser.fulfilled, (state, action) => {
+        if (state.user) {
+          state.user.following.push(action.payload);
+        }
+      })
+      .addCase(unfollowUser.fulfilled, (state, action) => {
+        if (state.user) {
+          state.user.following = state.user.following.filter(id => id !== action.payload);
+        }
       });
+
+    // Forgot & Reset Password local states can be handled by component or here.
+    // We mainly care about resetPassword succeeding to stop loading.
+    builder
+      .addCase(forgotPassword.pending, (state) => {
+        state.isLoading = true;
+        state.isError = false;
+      })
+      .addCase(forgotPassword.fulfilled, (state) => {
+        state.isLoading = false;
+      })
+      .addCase(forgotPassword.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.message = action.payload;
+      })
+      .addCase(resetPassword.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(resetPassword.fulfilled, (state) => {
+        state.isLoading = false;
+        state.isError = false;
+      })
+      .addCase(resetPassword.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.message = action.payload;
+      })
+      .addCase(updateArcadeStats.fulfilled, (state, action) => {
+        if (state.user) {
+          state.user.arcade = action.payload;
+        }
+      });
+
   },
 });
 

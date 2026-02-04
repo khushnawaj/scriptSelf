@@ -15,7 +15,8 @@ import {
     Trophy,
     ShieldCheck,
     HelpCircle,
-    Menu
+    Menu,
+    Gamepad2
 } from 'lucide-react';
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -70,6 +71,9 @@ const Navbar = ({ onMenuClick }) => {
                 <div className="hidden md:flex gap-1">
                     <Link to="/notes" className="px-3 py-2 text-[13px] font-medium text-muted-foreground hover:text-foreground hover:bg-muted/50 rounded-[6px] transition-all">
                         Library
+                    </Link>
+                    <Link to="/arcade" className="px-3 py-2 text-[13px] font-medium text-muted-foreground hover:text-foreground hover:bg-muted/50 rounded-[6px] transition-all flex items-center gap-2">
+                        <Gamepad2 size={16} className="text-primary hidden group-hover:block" /> Arcade
                     </Link>
                 </div>
 

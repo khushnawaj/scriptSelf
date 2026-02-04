@@ -113,6 +113,51 @@ export const cloneNote = createAsyncThunk(
   }
 );
 
+// Add Comment
+export const addComment = createAsyncThunk(
+  'notes/addComment',
+  async ({ id, text }, thunkAPI) => {
+    try {
+      const res = await api.post(`/notes/${id}/comments`, { text });
+      toast.success('Response posted');
+      return { id, comments: res.data.data };
+    } catch (error) {
+      toast.error('Failed to post comment');
+      return thunkAPI.rejectWithValue(error.response?.data?.error);
+    }
+  }
+);
+
+// Delete Comment
+export const deleteComment = createAsyncThunk(
+  'notes/deleteComment',
+  async ({ noteId, commentId }, thunkAPI) => {
+    try {
+      const res = await api.delete(`/notes/${noteId}/comments/${commentId}`);
+      toast.success('Comment deleted');
+      return { id: noteId, comments: res.data.data };
+    } catch (error) {
+      toast.error('Failed to delete comment');
+      return thunkAPI.rejectWithValue(error.response?.data?.error);
+    }
+  }
+);
+
+// Update Comment
+export const updateComment = createAsyncThunk(
+  'notes/updateComment',
+  async ({ noteId, commentId, text }, thunkAPI) => {
+    try {
+      const res = await api.put(`/notes/${noteId}/comments/${commentId}`, { text });
+      toast.success('Comment updated');
+      return { id: noteId, comments: res.data.data };
+    } catch (error) {
+      toast.error('Failed to update comment');
+      return thunkAPI.rejectWithValue(error.response?.data?.error);
+    }
+  }
+);
+
 // Get Stats
 export const getNoteStats = createAsyncThunk(
   'notes/getStats',
@@ -197,6 +242,27 @@ const noteSlice = createSlice({
         state.isLoading = false;
         state.isError = true;
         state.message = action.payload;
+      })
+      .addCase(addComment.fulfilled, (state, action) => {
+        const { id, comments } = action.payload;
+        const noteIndex = state.notes.findIndex((n) => n._id === id);
+        if (noteIndex !== -1) {
+          state.notes[noteIndex].comments = comments;
+        }
+      })
+      .addCase(deleteComment.fulfilled, (state, action) => {
+        const { id, comments } = action.payload;
+        const noteIndex = state.notes.findIndex((n) => n._id === id);
+        if (noteIndex !== -1) {
+          state.notes[noteIndex].comments = comments;
+        }
+      })
+      .addCase(updateComment.fulfilled, (state, action) => {
+        const { id, comments } = action.payload;
+        const noteIndex = state.notes.findIndex((n) => n._id === id);
+        if (noteIndex !== -1) {
+          state.notes[noteIndex].comments = comments;
+        }
       })
       .addCase(getAllNotes.pending, (state) => {
         state.isLoading = true;

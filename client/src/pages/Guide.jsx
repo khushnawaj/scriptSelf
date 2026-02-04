@@ -145,8 +145,64 @@ const Guide = () => {
                     </div>
                 </div>
 
+                {/* Community & Contribution */}
+                <div className="flex flex-col md:flex-row items-center gap-16 mt-20 pt-16 border-t border-border/50">
+                    <div className="flex-1 space-y-6">
+                        <div className="flex items-center gap-3 text-primary font-bold uppercase tracking-widest text-[13px]">
+                            <Hash size={18} /> Social Knowledge Graph
+                        </div>
+                        <h2 className="text-[32px] font-bold leading-tight">Interconnected Learning</h2>
+                        <p className="text-muted-foreground leading-relaxed">
+                            ScriptShelf is not a silo. It is a living network of developers.
+                        </p>
+
+                        <div className="space-y-6">
+                            <div className="flex gap-4">
+                                <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary shrink-0">
+                                    <BookOpen size={20} />
+                                </div>
+                                <div>
+                                    <h4 className="font-bold text-foreground">Follow Contributors</h4>
+                                    <p className="text-[14px] text-muted-foreground mt-1">
+                                        Found a developer with excellent logic? Follow them to get updates when they document new patterns or decisions.
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div className="flex gap-4">
+                                <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary shrink-0">
+                                    <Share2 size={20} />
+                                </div>
+                                <div>
+                                    <h4 className="font-bold text-foreground">Community Discussion</h4>
+                                    <p className="text-[14px] text-muted-foreground mt-1">
+                                        Engage in technical debates directly under records. You can now **Edit** and **Delete** your own contributions to keep discussions precise.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="flex-1 bg-accent/20 p-8 border border-border rounded-[12px] font-mono text-[13px] shadow-2xl">
+                        <div className="flex gap-2 mb-4">
+                            <div className="w-3 h-3 rounded-full bg-rose-500" />
+                            <div className="w-3 h-3 rounded-full bg-amber-500" />
+                            <div className="w-3 h-3 rounded-full bg-emerald-500" />
+                        </div>
+                        <div className="space-y-4">
+                            <div className="flex items-center justify-between border-b border-border/50 pb-2">
+                                <span className="text-primary font-bold">@SeniorDev</span>
+                                <span className="bg-primary/20 text-primary text-[10px] px-2 py-0.5 rounded font-bold">FOLLOWING</span>
+                            </div>
+                            <p className="text-muted-foreground italic">"This implementation of the Factory Pattern is clean, but have you considered the memory overhead for large datasets?"</p>
+                            <div className="flex gap-2 text-[10px] text-muted-foreground/50 uppercase tracking-wider">
+                                <span>Edit</span> • <span>Delete</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 {/* Technical Features */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-12 pt-12">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-12 pt-20">
                     <div className="space-y-4">
                         <div className="flex items-center gap-3">
                             <Binary size={20} className="text-primary" />
@@ -182,6 +238,44 @@ const Guide = () => {
                         <p className="text-[14px] text-muted-foreground leading-relaxed">
                             Press <kbd className="bg-muted px-1.5 py-0.5 rounded border border-border text-[11px] font-bold">Ctrl+K</kbd> anywhere to trigger the Command Palette. Instantly jump to any tag, category, or implementation.
                         </p>
+                    </div>
+                </div>
+
+                {/* DevArcade Section */}
+                <div className="mt-20 pt-16 border-t border-border/50">
+                    <div className="flex items-center gap-3 text-primary font-bold uppercase tracking-widest text-[13px] mb-8">
+                        <Zap size={18} /> Cognitive Training
+                    </div>
+                    <h2 className="text-[32px] font-bold leading-tight mb-8">DevArcade: Refine Your Stack</h2>
+                    <p className="text-muted-foreground leading-relaxed mb-10 max-w-2xl">
+                        A built-in gamification suite to keep your developer skills sharp. Earn XP, maintain streaks, and unlock tiered rank badges.
+                    </p>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                        <div className="bg-card border border-border p-6 rounded-[12px] space-y-4">
+                            <div className="w-10 h-10 rounded-[8px] bg-emerald-500/10 flex items-center justify-center text-emerald-500 font-bold">TS</div>
+                            <h4 className="font-bold">Syntax Sprint</h4>
+                            <p className="text-[13px] text-muted-foreground">Type real code snippets against the clock. Focus on accuracy and WPM.</p>
+                        </div>
+                        <div className="bg-card border border-border p-6 rounded-[12px] space-y-4">
+                            <div className="w-10 h-10 rounded-[8px] bg-primary/10 flex items-center justify-center text-primary font-bold">
+                                <Database size={20} />
+                            </div>
+                            <h4 className="font-bold">Memory Matrix</h4>
+                            <p className="text-[13px] text-muted-foreground">Match tech stack icons (Server, Database, CPU) to clear the grid.</p>
+                        </div>
+                        <div className="bg-card border border-border p-6 rounded-[12px] space-y-4">
+                            <div className="w-10 h-10 rounded-[8px] bg-pink-500/10 flex items-center justify-center text-pink-500 font-bold">#</div>
+                            <h4 className="font-bold">Hex Hunter</h4>
+                            <p className="text-[13px] text-muted-foreground">Identify the Hex color code for the displayed visual. Essential for UI devs.</p>
+                        </div>
+                        <div className="bg-card border border-border p-6 rounded-[12px] space-y-4">
+                            <div className="w-10 h-10 rounded-[8px] bg-violet-500/10 flex items-center justify-center text-violet-500 font-bold">
+                                <Shield size={20} />
+                            </div>
+                            <h4 className="font-bold">Firewall Breach</h4>
+                            <p className="text-[13px] text-muted-foreground">A reflex-based defense game. Deflect packets to destroy security nodes.</p>
+                        </div>
                     </div>
                 </div>
             </div>

@@ -1,6 +1,5 @@
 const Note = require('../models/Note');
 const fs = require('fs');
-const pdf = require('pdf-parse');
 
 // Helper for Bidirectional Linking
 const updateBidirectionalLinks = async (noteId, content, userId) => {
@@ -131,7 +130,8 @@ exports.getNote = async (req, res, next) => {
       .populate({ path: 'category', select: 'name' })
       .populate({ path: 'relatedNotes', select: 'title' })
       .populate({ path: 'backlinks', select: 'title' })
-      .populate({ path: 'user', select: 'username avatar bio socialLinks' });
+      .populate({ path: 'user', select: 'username avatar bio socialLinks' })
+      .populate({ path: 'comments.user', select: 'username avatar' });
 
     if (!note) {
       return res.status(404).json({ success: false, error: `No note found with id ${req.params.id}` });
@@ -341,6 +341,123 @@ exports.exportNotes = async (req, res, next) => {
 
     await archive.finalize();
 
+  } catch (err) {
+    next(err);
+  }
+};
+
+// @desc      Add comment to note
+// @route     POST /api/v1/notes/:id/comments
+// @access    Private
+exports.addComment = async (req, res, next) => {
+  try {
+    const note = await Note.findById(req.params.id);
+
+    if (!note) {
+      return res.status(404).json({ success: false, error: 'Note not found' });
+    }
+
+    if (!note.isPublic && note.user.toString() !== req.user.id) {
+      return res.status(403).json({ success: false, error: 'Private note' });
+    }
+
+    const comment = {
+      user: req.user.id,
+      text: req.body.text
+    };
+
+    note.comments.unshift(comment);
+
+    await note.save();
+
+    // Populate user to return immediate visual feedback
+    const populatedNote = await Note.findById(req.params.id)
+      .populate({ path: 'comments.user', select: 'username avatar' });
+
+    res.status(201).json({
+      success: true,
+      data: populatedNote.comments
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+// @desc      Update comment
+// @route     PUT /api/v1/notes/:id/comments/:commentId
+// @access    Private
+exports.updateComment = async (req, res, next) => {
+  try {
+    const note = await Note.findById(req.params.id);
+
+    if (!note) {
+      return res.status(404).json({ success: false, error: 'Note not found' });
+    }
+
+    const comment = note.comments.id(req.params.commentId);
+
+    if (!comment) {
+      return res.status(404).json({ success: false, error: 'Comment not found' });
+    }
+
+    if (comment.user.toString() !== req.user.id) {
+      return res.status(401).json({ success: false, error: 'User not authorized to update this comment' });
+    }
+
+    comment.text = req.body.text;
+
+    await note.save();
+
+    // Return full comments list to keep UI in sync
+    const populatedNote = await Note.findById(req.params.id)
+      .populate({ path: 'comments.user', select: 'username avatar' });
+
+    res.status(200).json({
+      success: true,
+      data: populatedNote.comments
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+// @desc      Delete comment
+// @route     DELETE /api/v1/notes/:id/comments/:commentId
+// @access    Private
+exports.deleteComment = async (req, res, next) => {
+  try {
+    const note = await Note.findById(req.params.id);
+
+    if (!note) {
+      return res.status(404).json({ success: false, error: 'Note not found' });
+    }
+
+    const comment = note.comments.id(req.params.commentId);
+
+    if (!comment) {
+      return res.status(404).json({ success: false, error: 'Comment not found' });
+    }
+
+    // Allow comment author OR Admin OR Note Owner to delete
+    if (
+      comment.user.toString() !== req.user.id &&
+      req.user.role !== 'admin' &&
+      note.user.toString() !== req.user.id
+    ) {
+      return res.status(401).json({ success: false, error: 'User not authorized to delete this comment' });
+    }
+
+    comment.deleteOne();
+
+    await note.save();
+
+    const populatedNote = await Note.findById(req.params.id)
+      .populate({ path: 'comments.user', select: 'username avatar' });
+
+    res.status(200).json({
+      success: true,
+      data: populatedNote.comments
+    });
   } catch (err) {
     next(err);
   }

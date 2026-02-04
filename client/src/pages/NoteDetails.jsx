@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { getNotes, deleteNote, cloneNote } from '../features/notes/noteSlice';
+
 import ReactMarkdown from 'react-markdown';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus, prism } from 'react-syntax-highlighter/dist/esm/styles/prism';
@@ -20,11 +20,14 @@ import {
     Check,
     FileCode,
     FileDown,
-    ExternalLink
+    ExternalLink,
+    MessageSquare
 } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import Spinner from '../components/Spinner';
 import Mermaid from '../components/Mermaid';
+import { getNotes, deleteNote, cloneNote, addComment, deleteComment, updateComment } from '../features/notes/noteSlice';
+import { followUser, unfollowUser } from '../features/auth/authSlice';
 
 const NoteDetails = () => {
     const { id } = useParams();
@@ -71,6 +74,49 @@ const NoteDetails = () => {
         }
     };
 
+    const reputation = (note.views || 0) * 5 + 10;
+
+    const [editingCommentId, setEditingCommentId] = useState(null);
+    const [editCommentText, setEditCommentText] = useState('');
+
+    const isFollowing = user?.following?.includes(note.user?._id);
+
+    const handleShare = () => {
+        navigator.clipboard.writeText(window.location.href);
+        toast.success('Link copied to clipboard');
+    };
+
+    const handleFollow = () => {
+        if (!user) return navigate('/login');
+        if (isFollowing) {
+            dispatch(unfollowUser(note.user._id));
+        } else {
+            dispatch(followUser(note.user._id));
+        }
+    };
+
+    const startEditingComment = (comment) => {
+        setEditingCommentId(comment._id);
+        setEditCommentText(comment.text);
+    };
+
+    const cancelEditingComment = () => {
+        setEditingCommentId(null);
+        setEditCommentText('');
+    };
+
+    const saveEditedComment = (commentId) => {
+        if (!editCommentText.trim()) return;
+        dispatch(updateComment({ noteId: id, commentId, text: editCommentText }));
+        setEditingCommentId(null);
+    };
+
+    const handleDeleteComment = (commentId) => {
+        if (window.confirm('Delete this contribution?')) {
+            dispatch(deleteComment({ noteId: id, commentId }));
+        }
+    };
+
     if (isLoading || !note) {
         return <Spinner />;
     }
@@ -79,11 +125,13 @@ const NoteDetails = () => {
         <div className="space-y-4 max-w-[1100px] mx-auto pb-20 animate-in fade-in duration-300">
             {/* Header Section */}
             <div className="border-b border-border pb-6 mb-6">
+                {/* ... (keep header content) ... */}
                 <div className="flex flex-col sm:flex-row justify-between items-start gap-4 mb-4">
                     <h1 className="text-[32px] font-normal text-foreground leading-tight tracking-tight">
                         {note.title}
                     </h1>
                     <div className="flex gap-2 shrink-0">
+                        {/* ... (keep existing buttons) ... */}
                         {user && note.user?._id === user._id ? (
                             <Link to={`/notes/edit/${id}`} className="so-btn border border-border hover:bg-muted/50 text-foreground transition-all">
                                 <Edit size={14} /> Edit
@@ -104,7 +152,7 @@ const NoteDetails = () => {
                         </Link>
                     </div>
                 </div>
-
+                {/* ... (keep existing metadata) ... */}
                 <div className="flex flex-wrap gap-6 text-[13px] text-muted-foreground">
                     <span className="flex items-center gap-1.5 border-r border-border pr-6 last:border-0">
                         <span className="font-normal opacity-60">Recorded</span>
@@ -128,7 +176,7 @@ const NoteDetails = () => {
             </div>
 
             <div className="flex flex-col lg:flex-row gap-8">
-                {/* Visual Metadata Column */}
+                {/* ... (keep visual metadata column) ... */}
                 <div className="flex lg:flex-col items-center gap-2 pt-1">
                     <button className="p-3 border border-border rounded-full hover:bg-accent/50 transition-colors text-muted-foreground group">
                         <ChevronUp size={28} className="group-hover:text-primary transition-colors" />
@@ -150,6 +198,7 @@ const NoteDetails = () => {
 
                 {/* Main Content Area */}
                 <div className="flex-1 min-w-0">
+                    {/* ... (keep Article, Backlinks, Tags) ... */}
                     <article className="prose prose-zinc dark:prose-invert max-w-none prose-p:text-[17px] prose-p:leading-[1.8] text-foreground font-normal prose-headings:font-bold prose-headings:tracking-tight">
                         <ReactMarkdown
                             remarkPlugins={[remarkGfm]}
@@ -273,7 +322,6 @@ const NoteDetails = () => {
                         </ReactMarkdown>
                     </article>
 
-                    {/* Backlinks */}
                     {note.backlinks && note.backlinks.length > 0 && (
                         <div className="mt-12 pt-8 border-t border-border">
                             <h3 className="text-[14px] font-bold text-muted-foreground uppercase tracking-[0.1em] mb-4 flex items-center gap-2">
@@ -294,7 +342,6 @@ const NoteDetails = () => {
                         </div>
                     )}
 
-                    {/* Tags */}
                     <div className="flex flex-wrap gap-1.5 mt-10">
                         {note.category && <span className="so-tag py-1 px-3 text-[13px]">{note.category.name}</span>}
                         {note.tags?.map((tag, i) => (
@@ -302,14 +349,17 @@ const NoteDetails = () => {
                         ))}
                     </div>
 
-                    {/* Actions & Attribution */}
+                    {/* Actions & Attribution - UPDATED */}
                     <div className="flex flex-col sm:flex-row justify-between items-start mt-8 pt-6 gap-6 pb-16 border-t border-border/50">
                         <div className="flex items-center gap-6 text-[13px] text-muted-foreground">
-                            <button className="hover:text-primary transition-colors flex items-center gap-1.5 border-none bg-transparent cursor-pointer">
+                            <button onClick={handleShare} className="hover:text-primary transition-colors flex items-center gap-1.5 border-none bg-transparent cursor-pointer">
                                 <Share2 size={14} /> Share
                             </button>
-                            <button className="hover:text-primary transition-colors flex items-center gap-1.5 border-none bg-transparent cursor-pointer">
-                                <Bookmark size={14} /> Follow
+                            <button
+                                onClick={handleFollow}
+                                className={`${isFollowing ? 'text-primary' : 'hover:text-primary'} transition-colors flex items-center gap-1.5 border-none bg-transparent cursor-pointer`}
+                            >
+                                <Bookmark size={14} className={isFollowing ? 'fill-primary' : ''} /> {isFollowing ? 'Following' : 'Follow'}
                             </button>
                             {user && (user.role === 'admin' || note.user?._id === user._id) && (
                                 <button onClick={handleDelete} className="hover:text-rose-500 transition-colors flex items-center gap-1.5 border-none bg-transparent cursor-pointer">
@@ -331,7 +381,18 @@ const NoteDetails = () => {
                                         {note.user?.username || 'System User'}
                                     </p>
                                     <div className="flex items-center gap-1.5 text-[11px] text-muted-foreground font-bold mt-0.5">
-                                        <span>4,281</span>
+                                        <span title="Reputation Points">{reputation.toLocaleString()}</span>
+                                        {/* Rank Badge */}
+                                        {reputation > 500 && (
+                                            <span
+                                                className={`px-1.5 py-0.5 rounded-[2px] text-[9px] uppercase tracking-wider text-white ${reputation > 2000 ? 'bg-amber-400' :
+                                                    reputation > 1000 ? 'bg-slate-300' : 'bg-amber-600'
+                                                    }`}
+                                                title={reputation > 2000 ? 'Gold Contributor' : reputation > 1000 ? 'Silver Contributor' : 'Bronze Contributor'}
+                                            >
+                                                {reputation > 2000 ? 'GOLD' : reputation > 1000 ? 'SILVER' : 'BRONZE'}
+                                            </span>
+                                        )}
                                     </div>
                                 </div>
                             </div>
@@ -381,6 +442,106 @@ const NoteDetails = () => {
                             </div>
                         </div>
                     )}
+
+                    {/* Community Discussion Layer */}
+                    <div className="mt-12 pt-10 border-t border-border">
+                        <h3 className="text-[19px] font-normal mb-6 text-foreground flex items-center gap-3">
+                            <MessageSquare size={20} className="text-primary" /> Discussion & Contributions
+                        </h3>
+
+                        {user ? (
+                            <form onSubmit={(e) => {
+                                e.preventDefault();
+                                if (!e.target.comment.value.trim()) return;
+                                dispatch(addComment({ id, text: e.target.comment.value }));
+                                e.target.comment.value = '';
+                            }} className="mb-8 flex gap-4">
+                                <div className="w-10 h-10 bg-primary/20 rounded-[3px] flex items-center justify-center text-primary font-bold shrink-0">
+                                    {user.username.charAt(0).toUpperCase()}
+                                </div>
+                                <div className="flex-1">
+                                    <textarea
+                                        name="comment"
+                                        placeholder="Contribute your insight..."
+                                        className="w-full bg-background border border-border rounded-[3px] p-3 text-[14px] text-foreground focus:border-primary outline-none min-h-[80px]"
+                                    />
+                                    <button type="submit" className="so-btn so-btn-primary mt-2">
+                                        Post Contribution
+                                    </button>
+                                </div>
+                            </form>
+                        ) : (
+                            <div className="p-4 bg-muted/30 border border-border rounded-[3px] text-center mb-8">
+                                <p className="text-[13px] text-muted-foreground"><Link to="/login" className="text-primary font-bold hover:underline">Log in</Link> to contribute to this record.</p>
+                            </div>
+                        )}
+
+                        <div className="space-y-6">
+                            {note.comments?.length > 0 ? (
+                                note.comments.map((comment, index) => (
+                                    <div key={index} className="flex gap-4 group">
+                                        <div className="w-8 h-8 bg-secondary rounded-[3px] flex items-center justify-center text-[12px] font-bold text-muted-foreground shrink-0 border border-border">
+                                            {comment.user?.username?.charAt(0).toUpperCase() || '?'}
+                                        </div>
+                                        <div className="flex-1">
+                                            <div className="flex items-center justify-between mb-1">
+                                                <div className="flex items-center gap-2">
+                                                    <span className="text-[13px] font-bold text-link">{comment.user?.username || 'Unknown User'}</span>
+                                                    <span className="text-[11px] text-muted-foreground">{new Date(comment.createdAt).toLocaleDateString()}</span>
+                                                </div>
+                                                {user && (user._id === comment.user?._id || user.role === 'admin') && (
+                                                    <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                        <button
+                                                            onClick={() => startEditingComment(comment)}
+                                                            className="text-muted-foreground hover:text-primary"
+                                                            title="Edit"
+                                                        >
+                                                            <Edit size={12} />
+                                                        </button>
+                                                        <button
+                                                            onClick={() => handleDeleteComment(comment._id)}
+                                                            className="text-muted-foreground hover:text-destructive"
+                                                            title="Delete"
+                                                        >
+                                                            <Trash2 size={12} />
+                                                        </button>
+                                                    </div>
+                                                )}
+                                            </div>
+
+                                            {editingCommentId === comment._id ? (
+                                                <div className="mt-2">
+                                                    <textarea
+                                                        value={editCommentText}
+                                                        onChange={(e) => setEditCommentText(e.target.value)}
+                                                        className="w-full bg-background border border-border rounded-[3px] p-2 text-[14px] text-foreground focus:border-primary outline-none min-h-[60px] mb-2"
+                                                    />
+                                                    <div className="flex gap-2">
+                                                        <button
+                                                            onClick={() => saveEditedComment(comment._id)}
+                                                            className="so-btn so-btn-primary py-1 px-3 text-[12px]"
+                                                        >
+                                                            Save
+                                                        </button>
+                                                        <button
+                                                            onClick={cancelEditingComment}
+                                                            className="so-btn border border-border py-1 px-3 text-[12px]"
+                                                        >
+                                                            Cancel
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            ) : (
+                                                <p className="text-[14px] text-foreground/90 leading-relaxed font-normal">{comment.text}</p>
+                                            )}
+                                        </div>
+                                    </div>
+                                ))
+                            ) : (
+                                <p className="text-[13px] text-muted-foreground italic">No feedback recorded yet. Be the first to contribute.</p>
+                            )}
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

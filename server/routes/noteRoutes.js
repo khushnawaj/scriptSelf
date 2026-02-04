@@ -8,7 +8,10 @@ const {
   deleteNote,
   exportNotes,
   adminGetNotes,
-  cloneNote
+  cloneNote,
+  addComment,
+  updateComment,
+  deleteComment
 } = require('../controllers/noteController');
 
 const router = express.Router({ mergeParams: true });
@@ -40,6 +43,10 @@ router
   .post(protect, upload.single('file'), createNote);
 
 router.post('/:id/clone', protect, cloneNote);
+router.post('/:id/comments', protect, addComment);
+router.route('/:id/comments/:commentId')
+  .put(protect, updateComment)
+  .delete(protect, deleteComment);
 
 router
   .route('/:id')
