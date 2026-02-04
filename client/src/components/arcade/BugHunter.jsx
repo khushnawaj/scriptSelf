@@ -48,6 +48,86 @@ const BugHunter = ({ dispatch }) => {
                 type: 'IndexOutOfBounds',
                 testInput: 'arr[3]',
                 testOutput: 'undefined (Expected: 3 nodes processed)'
+            },
+            {
+                id: 'j3',
+                code: `const price = "100";\nconst total = price + 50; // BUG: string concat\nconsole.log(total);`,
+                bugLine: 2,
+                options: ['Number(price) + 50', 'price * 1 + 50', 'Both are valid'],
+                correct: 2,
+                type: 'Type Mismatch',
+                testInput: 'total',
+                testOutput: '"10050" (Expected: 150)'
+            },
+            {
+                id: 'j4',
+                code: `if (status = "active") { // BUG: Assignment in condition\n  grantAccess();\n}`,
+                bugLine: 1,
+                options: ['Use ==', 'Use ===', 'Use .equals()'],
+                correct: 1,
+                type: 'Logical Flaw',
+                testInput: 'status === "inactive"',
+                testOutput: 'Access Granted (Expected: Denied)'
+            },
+            {
+                id: 'j5',
+                code: `const items = [1, 2, 3];\nconst doubled = items.map(i => {\n  i * 2; // BUG: No return\n});`,
+                bugLine: 3,
+                options: ['Add return keyword', 'Remove curly braces', 'Both are valid fixes'],
+                correct: 2,
+                type: 'Missing Return',
+                testInput: 'doubled[0]',
+                testOutput: 'undefined (Expected: 2)'
+            },
+            {
+                id: 'j6',
+                code: `const user = null;\nconst name = user.name; // BUG: Cannot read prop`,
+                bugLine: 2,
+                options: ['const name = user?.name;', 'if(user) name = user.name;', 'Both are valid'],
+                correct: 2,
+                type: 'TypeError',
+                testInput: 'name',
+                testOutput: 'Crash: Cannot read property name of null'
+            },
+            {
+                id: 'j7',
+                code: `async function check() {\n  const res = fetch("/api"); // BUG: Missing await\n  return res.json();\n}`,
+                bugLine: 2,
+                options: ['await fetch("/api")', 'return await res.json()', 'Change to .then()'],
+                correct: 0,
+                type: 'Promise Leak',
+                testInput: 'typeof res',
+                testOutput: 'Promise (Expected: Response)'
+            },
+            {
+                id: 'j8',
+                code: `if (x = 0 || x > 10) { // BUG: Assignment in check\n  doWork();\n}`,
+                bugLine: 1,
+                options: ['x === 0', 'x == 0', 'Both are valid'],
+                correct: 0,
+                type: 'Logic Breach',
+                testInput: 'x = 0',
+                testOutput: 'False (Expected: True)'
+            },
+            {
+                id: 'j9',
+                code: `function count(n) {\n  if(n === 0) return; // BUG: Missing return value\n  return n + count(n-1);\n}`,
+                bugLine: 2,
+                options: ['return 0', 'return 1', 'return n'],
+                correct: 0,
+                type: 'Recursion Depth',
+                testInput: 'count(2)',
+                testOutput: 'NaN (Expected: 3)'
+            },
+            {
+                id: 'j10',
+                code: `const colors = ["red", "blue"];\ncolors[5] = "green"; // BUG: Sparse array\nconsole.log(colors.length);`,
+                bugLine: 2,
+                options: ['Use .push()', 'Initialize with 6 slots', 'Neither, it works fine'],
+                correct: 0,
+                type: 'Memory Leak',
+                testInput: 'colors.length',
+                testOutput: '6 (Expected: 3)'
             }
         ],
         Mid: [
@@ -70,6 +150,86 @@ const BugHunter = ({ dispatch }) => {
                 type: 'Type Coercion',
                 testInput: 'sum(5, "5")',
                 testOutput: '"55" (Expected: 10)'
+            },
+            {
+                id: 'm3',
+                code: `function heavyWork() {\n  const data = new Array(1000000);\n  window.addEventListener('scroll', () => {\n    console.log(data.length); // BUG: Memory Leak\n  });\n}`,
+                bugLine: 4,
+                options: ['Use removeEventListener', 'Use AbortController', 'Both A and B'],
+                correct: 2,
+                type: 'Memory Leak',
+                testInput: 'Heap Size',
+                testOutput: '1.2GB (Expected: < 100MB)'
+            },
+            {
+                id: 'm4',
+                code: `const user = { id: 1, profile: { name: "JD" } };\nconst shallow = { ...user };\nshallow.profile.name = "AD"; // BUG`,
+                bugLine: 3,
+                options: ['Deep clone needed', 'Spread nested profile', 'Use JSON.parse/stringify'],
+                correct: 0,
+                type: 'Shallow Copy',
+                testInput: 'user.profile.name',
+                testOutput: '"AD" (Expected: "JD")'
+            },
+            {
+                id: 'm5',
+                code: `for (var i = 0; i < 3; i++) {\n  setTimeout(() => console.log(i), 100); // BUG\n}`,
+                bugLine: 1,
+                options: ['Use let instead of var', 'Use a closure (IIFE)', 'Both A and B'],
+                correct: 2,
+                type: 'Scope Pollution',
+                testInput: 'Output',
+                testOutput: '3, 3, 3 (Expected: 0, 1, 2)'
+            },
+            {
+                id: 'm6',
+                code: `const nums = [1, 2, 3];\nconst sum = nums.reduce((acc, n) => acc + n); // BUG: No init val`,
+                bugLine: 2,
+                options: ['Add , 0 after callback', 'It works fine actually', 'Use for loop'],
+                correct: 0,
+                type: 'Logic Rift',
+                testInput: 'nums = []',
+                testOutput: 'TypeError: Reduce empty array'
+            },
+            {
+                id: 'm7',
+                code: `function App() {\n  const [count, setCount] = useState(0);\n  const handle = () => {\n    setCount(count + 1);\n    setCount(count + 1); // BUG\n  };\n}`,
+                bugLine: 5,
+                options: ['Use prev => prev + 1', 'Use useEffect', 'Only call it once'],
+                correct: 0,
+                type: 'State Batching',
+                testInput: 'count after call',
+                testOutput: '1 (Expected: 2)'
+            },
+            {
+                id: 'm8',
+                code: `const data = JSON.parse(input); // BUG: Untrusted input\ndisplay(data.name);`,
+                bugLine: 1,
+                options: ['Wrap in try-catch', 'Check if input is string', 'Neither'],
+                correct: 0,
+                type: 'Parsing Error',
+                testInput: 'input = "invalid"',
+                testOutput: 'Uncaught SyntaxError'
+            },
+            {
+                id: 'm9',
+                code: `const btn = document.querySelector("#save");\nbtn.onclick = () => save();\nbtn.onclick = () => log(); // BUG`,
+                bugLine: 3,
+                options: ['Use addEventListener', 'Use a wrapper function', 'Both are correct'],
+                correct: 2,
+                type: 'Event Overwrite',
+                testInput: 'Click',
+                testOutput: 'Only "log" called'
+            },
+            {
+                id: 'm10',
+                code: `const a = {};\nconst b = { key: "val" };\na[b] = 123; // BUG: Stringification\nconsole.log(a);`,
+                bugLine: 3,
+                options: ['Use Map instead', 'Use b.key as index', 'Both are valid'],
+                correct: 2,
+                type: 'Object Collision',
+                testInput: 'a["[object Object]"]',
+                testOutput: '123'
             }
         ],
         Senior: [
@@ -92,6 +252,86 @@ const BugHunter = ({ dispatch }) => {
                 type: 'Performance Breach',
                 testInput: 'fib(45)',
                 testOutput: 'Timeout: Stack Overflow'
+            },
+            {
+                id: 's3',
+                code: `const reducer = (state, action) => {\n  if(action.type === "ADD") {\n    state.items.push(action.item); // BUG\n    return state;\n  }\n};`,
+                bugLine: 3,
+                options: ['Return { ...state, items: [...] }', 'Use Immer', 'Both A and B'],
+                correct: 2,
+                type: 'State Mutation',
+                testInput: 'prev === next',
+                testOutput: 'true (Expected: false)'
+            },
+            {
+                id: 's4',
+                code: `function useTimer(val) {\n  useEffect(() => {\n    setInterval(() => console.log(val), 1000); // BUG\n  }, []);\n}`,
+                bugLine: 3,
+                options: ['Add val to dependencies', 'Use a ref for val', 'Both A and B'],
+                correct: 1,
+                type: 'Stale Closure',
+                testInput: 'Logs',
+                testOutput: 'InitialVal, InitialVal... (Expected: Updates)'
+            },
+            {
+                id: 's5',
+                code: `try {\n  setTimeout(() => {\n    throw new Error("Crash");\n  }, 10); // BUG: Not caught\n} catch(e) { handle(e); }`,
+                bugLine: 3,
+                options: ['Wrap inside timeout', 'Use Promises/Async', 'Both A and B'],
+                correct: 2,
+                type: 'Silent Crash',
+                testInput: 'Error Handler',
+                testOutput: 'Process Exited (Expected: Handled)'
+            },
+            {
+                id: 's6',
+                code: `const query = \`SELECT * FROM users WHERE id = \${id}\`; // BUG: Injection\nawait db.execute(query);`,
+                bugLine: 1,
+                options: ['Use parameterized queries', 'Sanitize id input', 'Both A and B'],
+                correct: 2,
+                type: 'SQL Injection',
+                testInput: 'id = "1 OR 1=1"',
+                testOutput: 'Dumped all users'
+            },
+            {
+                id: 's7',
+                code: `function heavy(n) {\n  let res = 0;\n  for(let i=0; i<n; i++) res += i; // BUG: Blocking main thread\n  return res;\n}`,
+                bugLine: 3,
+                options: ['Use Web Worker', 'Use setImmediate/setTimeout split', 'Both A and B'],
+                correct: 2,
+                type: 'Thread Block',
+                testInput: 'heavy(10^9)',
+                testOutput: 'UI Frozen'
+            },
+            {
+                id: 's8',
+                code: `const middleware = store => next => action => {\n  console.log(action); // BUG: Missing next(action)\n};`,
+                bugLine: 2,
+                options: ['Add next(action)', 'Add return next(action)', 'Both are correct'],
+                correct: 2,
+                type: 'Middleware Lock',
+                testInput: 'Dispatch',
+                testOutput: 'State never updates'
+            },
+            {
+                id: 's9',
+                code: `const App = () => {\n  const [v, setV] = useState(0);\n  useEffect(() => {\n    const id = setInterval(() => setV(v + 1), 1000); // BUG: Stale v\n  }, []);\n}`,
+                bugLine: 4,
+                options: ['setV(v => v + 1)', 'Add v to deps', 'Both are valid fix approaches'],
+                correct: 2,
+                type: 'Stale State Call',
+                testInput: 'v after 5s',
+                testOutput: '1 (Expected: 5)'
+            },
+            {
+                id: 's10',
+                code: `class Node {\n  constructor() {\n    this.child = new Node(); // BUG: Infinite recursion\n  }\n}`,
+                bugLine: 3,
+                options: ['Pass child as arg', 'Initialize as null', 'Both are valid'],
+                correct: 2,
+                type: 'Kernel Panic',
+                testInput: 'new Node()',
+                testOutput: 'Stack Overflow'
             }
         ]
     };
