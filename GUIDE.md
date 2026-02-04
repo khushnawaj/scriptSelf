@@ -29,75 +29,56 @@ Unlock badges by maintaining your streak. Each badge represents a milestone in y
 
 ## 🎮 The Games
 
-### 1. ⌨️ Syntax Sprint (Typing)
+### 1. ⌨️ Syntax Sprint (Elite_Typing_Test)
 *Refine your muscle memory with real world code syntax.*
 
 - **Objective**: Type the displayed code snippet exactly as shown.
 - **Mechanics**:
     - **Real-Time WPM**: Tracks your Words Per Minute live.
     - **Visual Feedback**: Correct characters glow **Green**, incorrect ones flash **Red**.
-    - **Cursor**: A pulsing terminal cursor guides your path.
+    - **SIGNAL_LINK**: Dynamic throughput meter showing your stability.
 - **Scoring**: Base score of 10 XP + a Speed Bonus for WPM > 20.
 
-### 2. 🧠 Memory Matrix
+### 2. 🧠 Memory Matrix (Pattern_Recognition)
 *Train your visual memory with the tech stack.*
 
 - **Objective**: Clear the grid by finding matching pairs of tech icons.
-- **Icons**:
-    - `FileCode` (Source)
-    - `Terminal` (Shell)
-    - `Database` (Data)
-    - `Cpu` (Hardware)
-    - `Globe` (Web)
-    - `Server` (Backend)
-    - `Layers` (Stack)
-    - `Wifi` (Network)
+- **CORE_POWER**: Tracks your pattern recognition efficiency (Optimized at 98%+).
 - **Scoring**: 50 XP base, minus 1 XP for every move taken (Minimum 10 XP). Efficiency is rewarded.
 
-### 3. #️⃣ Hex Hunter
+### 3. #️⃣ Hex Hunter (UI_Color_Accuracy)
 *A challenge for the frontend masters.*
 
 - **Objective**: Identify the correct Hexadecimal code for the displayed color blob.
 - **Mechanics**:
     - **Streak Multiplier**: Consecutive correct answers build a "Round Streak".
     - **Feedback**: Buttons flash Green (Hit) or Red (Miss/Shake).
-- **Difficulty**: 10 Rounds per session.
 - **Scoring**: 15 XP Base + up to 25 XP Streak Bonus per round.
 
-### 4. 🚀 Stack Overflow Escape
+### 4. 🚀 Stack Overflow Escape (Algorithm_Navigation)
 *Navigate the call stack maze.*
 
 - **Objective**: Reach the exit door before memory usage hits 100%.
 - **Mechanics**:
     - **Maze Navigation**: Use arrow keys to move through the call stack.
     - **Logic Gates**: Solve multiple-choice coding puzzles to unlock terminal doors.
-    - **Memory Pressure**: Memory usage increases over time. Solve fast to prevent a stack overflow.
 - **Scoring**: 200 XP for successful escape.
 
-### 5. ⚡ Firewall Breach
+### 5. ⚡ Firewall Breach (Defense_Simulation)
 *System Defense & Reflex Training.*
 
 - **Objective**: Protect the system core. Deflect the data packet (ball) to destroy security nodes (bricks).
 - **Style**: A classic Breakout-style game with a cyberpunk twist.
-- **Controls**: Mouse movement controls the paddle.
-- **Features**:
-    - Particle explosions on impact.
-    - Dynamic angle calculation based on paddle hit position.
-- **Scoring**: 20 XP per brick + 100 XP Level Clear Bonus.
 
-### 6. 👾 Bug Hunter v2.5
+### 6. 👾 Bug Hunter v2.5 (Full_System_Audit)
 *The ultimate debugging challenge.*
 
 - **Objective**: Fix broken code snippets under intense pressure.
 - **Mechanics**:
-    - **3 Difficulty Protocols**: Junior (Syntax), Mid (Logic), and Senior (Kernel) tiers.
-    - **System Monitor**: Live console logs showing real test output and error types.
-    - **Core Integrity**: Each mistake damages your health. 4 strikes = System Lockdown.
-    - **Power-ups**: 
-        - 🛡️ **System Shield**: Blocks the next compilation error.
-        - ⏳ **Time Dilation**: Slows down the countdown clock.
-- **Scoring**: 100 XP base x Difficulty Multiplier + Streak Combo Bonuses.
+    - **Difficulty Protocols**: Junior, Mid, and Senior tiers.
+    - **System Monitor**: Live console logs and error types.
+    - **Power-ups**: 🛡️ System Shield & ⏳ Time Dilation.
 
 ---
 
-*Keep your streak alive and sharpen your stack!*
+*Keep your CORE_POWER high and sharpen your stack!*

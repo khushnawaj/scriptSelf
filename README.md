@@ -34,7 +34,14 @@
 - **Interactive Social Graph**: Click on any follower or following count to browse user networks through high-fidelity modals.
 - **Follow System**: Subscribe to other developers to stay updated on their architectural decision records and logic captures.
 - **Interactive Discussions**: Contribute to notes with threaded comments. Edit or delete your own contributions to maintain precise technical discourse.
-- **Custom Identity**: Add GitHub, LinkedIn, and personal links. Custom avatars and bio support included.
+
+### ⚡ Productivity & Zen Protocols (New)
+- **Tactical Shortcuts**: A global keyboard navigation system to accelerate your workflow.
+    - `Alt + N`: Rapid Record Creation.
+    - `Alt + Z`: Toggle **Zen Mode** (Hides sidebars for deep focus).
+    - `Alt + T`: Instant Theme Switching.
+    - `?`: Open the Tactical Shortcut Command Map.
+- **Zen Focus**: A distraction-free environment that centers your workspace and maximizes vertical real estate for documentation.
 
 ### 🕹️ DevArcade (Premium Cognitive Training)
 *Gamify your growth with a high-fidelity suite of developer mini-games.*

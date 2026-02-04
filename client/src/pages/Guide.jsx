@@ -13,7 +13,9 @@ import {
     Binary,
     Bell,
     UserPlus,
-    Bug
+    Bug,
+    Keyboard,
+    Monitor
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
@@ -248,6 +250,61 @@ const Guide = () => {
                         <p className="text-[14px] text-muted-foreground leading-relaxed">
                             Press <kbd className="bg-muted px-1.5 py-0.5 rounded border border-border text-[11px] font-bold">Ctrl+K</kbd> anywhere to trigger the Command Palette. Instantly jump to any tag, category, or implementation.
                         </p>
+                    </div>
+                </div>
+
+                {/* Productivity Protocols */}
+                <div className="mt-20 pt-16 border-t border-border/50">
+                    <div className="flex flex-col md:flex-row items-center gap-16">
+                        <div className="flex-1 space-y-6">
+                            <div className="flex items-center gap-3 text-primary font-bold uppercase tracking-widest text-[13px]">
+                                <Keyboard size={18} /> Tactical Acceleration
+                            </div>
+                            <h2 className="text-[32px] font-bold leading-tight">Productivity Protocols</h2>
+                            <p className="text-muted-foreground leading-relaxed">
+                                ScriptShelf is engineered for speed. Use the global shortcut system to navigate between missions without a mouse.
+                            </p>
+
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div className="p-4 bg-muted/20 border border-border rounded-[4px] flex justify-between items-center group hover:border-primary/30 transition-colors">
+                                    <span className="text-[13px] font-bold">Zen Mode</span>
+                                    <kbd className="bg-background px-2 py-0.5 border border-border rounded text-[10px] font-black text-primary uppercase">Alt+Z</kbd>
+                                </div>
+                                <div className="p-4 bg-muted/20 border border-border rounded-[4px] flex justify-between items-center group hover:border-primary/30 transition-colors">
+                                    <span className="text-[13px] font-bold">Theme Swap</span>
+                                    <kbd className="bg-background px-2 py-0.5 border border-border rounded text-[10px] font-black text-primary uppercase">Alt+T</kbd>
+                                </div>
+                                <div className="p-4 bg-muted/20 border border-border rounded-[4px] flex justify-between items-center group hover:border-primary/30 transition-colors">
+                                    <span className="text-[13px] font-bold">Arcade</span>
+                                    <kbd className="bg-background px-2 py-0.5 border border-border rounded text-[10px] font-black text-primary uppercase">Alt+A</kbd>
+                                </div>
+                                <div className="p-4 bg-muted/20 border border-border rounded-[4px] flex justify-between items-center group hover:border-primary/30 transition-colors">
+                                    <span className="text-[13px] font-bold">Library</span>
+                                    <kbd className="bg-background px-2 py-0.5 border border-border rounded text-[10px] font-black text-primary uppercase">Alt+L</kbd>
+                                </div>
+                            </div>
+
+                            <p className="text-[12px] text-muted-foreground italic bg-primary/5 p-3 border-l-2 border-primary">
+                                Tip: Press <span className="font-bold text-foreground">?</span> anytime to open the full Tactical Shortcut Map.
+                            </p>
+                        </div>
+                        <div className="flex-1 space-y-8">
+                            <div className="p-8 bg-card border border-border rounded-[12px] relative overflow-hidden group shadow-2xl">
+                                <div className="absolute inset-0 bg-primary/5 opacity-0 group-hover:opacity-100 transition-opacity" />
+                                <div className="flex items-center gap-4 mb-4">
+                                    <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+                                        <Monitor size={24} />
+                                    </div>
+                                    <div>
+                                        <h4 className="font-black uppercase tracking-widest text-[14px]">Zen_Focus_Active</h4>
+                                        <p className="text-[10px] text-muted-foreground uppercase opacity-60">Distraction Filter: 100%</p>
+                                    </div>
+                                </div>
+                                <p className="text-[14px] leading-relaxed text-muted-foreground relative z-10">
+                                    Zen Mode (Alt+Z) centers your viewport and hides all peripheral sidebars. It’s the tactical choice for deep documentation sprints or high-speed code reading.
+                                </p>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
