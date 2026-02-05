@@ -7,10 +7,12 @@ export const register = createAsyncThunk(
   'auth/register',
   async (userData, thunkAPI) => {
     try {
-      await api.post('/auth/register', userData);
-      // After register, we can either automatically login or ask user to login. 
-      // Based on previous context, we want to auto-login.
-      // Let's fetch the user immediately.
+      const res = await api.post('/auth/register', userData);
+      // Save token to localStorage for header-based auth
+      if (res.data.token) {
+        localStorage.setItem('token', res.data.token);
+      }
+
       const userRes = await api.get('/auth/me');
       toast.success('Registration successful!');
       return userRes.data.data;
@@ -26,7 +28,12 @@ export const login = createAsyncThunk(
   'auth/login',
   async (userData, thunkAPI) => {
     try {
-      await api.post('/auth/login', userData);
+      const res = await api.post('/auth/login', userData);
+      // Save token to localStorage for header-based auth
+      if (res.data.token) {
+        localStorage.setItem('token', res.data.token);
+      }
+
       const userRes = await api.get('/auth/me');
       toast.success('Logged in successfully');
       return userRes.data.data;
@@ -64,8 +71,10 @@ export const logout = createAsyncThunk(
   async (_, thunkAPI) => {
     try {
       await api.get('/auth/logout');
+      localStorage.removeItem('token');
       toast.success('Logged out');
     } catch (error) {
+      localStorage.removeItem('token');
       console.error(error);
     }
   }

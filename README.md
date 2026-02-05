@@ -91,6 +91,21 @@
 
 ---
 
+## 📱 Mobile Testing (Local Network)
+
+To test the application on your mobile phone while it's running on your laptop:
+
+1. **Get your Laptop's IP Address**:
+   - Run `ipconfig` (Windows) or `ifconfig` (Mac/Linux) to find your local IP (e.g., `192.168.1.5`).
+2. **Update Client `.env`**:
+   - Set `VITE_API_URL=http://<YOUR_IP>:5000/api/v1`
+3. **Run Client with Host Flag**:
+   - `cd client && npm run dev -- --host`
+4. **Access on Mobile**:
+   - Open your mobile browser and go to `http://<YOUR_IP>:5173` (or the port shown in your terminal).
+
+---
+
 ## 🛡️ Enhanced Admin Features
 - **System-Wide Moderation**: Admins have visibility and control over all notes in the system, including private vaults, to ensure platform integrity.
 - **User Role Management**: Promote or demote users to/from admin roles directly from the management console.

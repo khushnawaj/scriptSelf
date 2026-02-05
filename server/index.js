@@ -26,6 +26,9 @@ const notifications = require('./routes/notificationRoutes');
 
 const app = express();
 
+// Trust proxy for secure cookies on Render
+app.set('trust proxy', 1);
+
 // Request Logger
 app.use((req, res, next) => {
   console.log(`[REQUEST] ${req.method} ${req.url} Origin: ${req.headers.origin}`);
