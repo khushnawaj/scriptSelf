@@ -83,6 +83,10 @@ const userSchema = new mongoose.Schema({
         date: { type: String, required: true }, // YYYY-MM-DD
         count: { type: Number, default: 0 }
     }],
+    reputation: {
+        type: Number,
+        default: 0
+    },
     createdAt: {
         type: Date,
         default: Date.now

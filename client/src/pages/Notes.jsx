@@ -12,7 +12,9 @@ import {
     ThumbsUp,
     Clock,
     User,
-    ChevronDown
+    ChevronDown,
+    Tag,
+    FolderTree
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
@@ -63,42 +65,51 @@ const Notes = () => {
         setPage(1);
     };
 
-    if (notesLoading && page === 1) return <Spinner />;
+    // Only show full spinner on absolute first mount (when total is -1)
+    if (notesLoading && total === -1) return <Spinner />;
 
     return (
         <div className="flex flex-col lg:flex-row gap-8 animate-in fade-in duration-300 min-h-screen">
             {/* Sidebar Filters */}
             <aside className="w-full lg:w-64 shrink-0 space-y-8">
-                <div>
-                    <h3 className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground mb-4 border-b border-border pb-2">Collections</h3>
-                    <div className="flex flex-col gap-1">
+                <div className="space-y-4">
+                    <h3 className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground border-b border-border pb-2 flex items-center justify-between">
+                        Collections
+                        <FolderTree size={12} className="opacity-50" />
+                    </h3>
+                    <div className="flex lg:flex-col gap-1.5 overflow-x-auto pb-2 lg:pb-0 lg:overflow-visible no-scrollbar -mx-4 px-4 lg:mx-0 lg:px-0">
                         <button
                             onClick={() => handleCategoryClick('All')}
-                            className={`text-left px-3 py-2 text-[13px] rounded-[3px] transition-all ${selectedCategory === 'All' ? 'bg-primary/10 text-primary font-bold shadow-sm' : 'text-foreground hover:bg-muted'}`}
+                            className={`group flex items-center gap-2 lg:gap-3 px-3 py-2 lg:py-2.5 text-[12px] lg:text-[13px] rounded-[4px] border transition-all whitespace-nowrap lg:whitespace-normal ${selectedCategory === 'All' ? 'bg-primary border-primary text-white font-bold shadow-md shadow-primary/20' : 'bg-transparent border-transparent text-muted-foreground hover:bg-muted/50 hover:text-foreground'}`}
                         >
+                            <div className={`w-1.5 h-1.5 rounded-full shrink-0 ${selectedCategory === 'All' ? 'bg-white' : 'bg-muted-foreground/30 group-hover:bg-primary'}`} />
                             All Records
                         </button>
                         {categories.map(cat => (
                             <button
                                 key={cat._id}
                                 onClick={() => handleCategoryClick(cat._id)}
-                                className={`text-left px-3 py-2 text-[13px] rounded-[3px] transition-all truncate ${selectedCategory === cat._id ? 'bg-primary/10 text-primary font-bold shadow-sm' : 'text-muted-foreground hover:text-foreground hover:bg-muted'}`}
+                                className={`group flex items-center gap-2 lg:gap-3 px-3 py-2 lg:py-2.5 text-[12px] lg:text-[13px] rounded-[4px] border transition-all whitespace-nowrap lg:whitespace-normal ${selectedCategory === cat._id ? 'bg-primary border-primary text-white font-bold shadow-md shadow-primary/20' : 'bg-transparent border-transparent text-muted-foreground hover:bg-muted/50 hover:text-foreground'}`}
                                 title={cat.name}
                             >
-                                {cat.name}
+                                <div className={`w-1.5 h-1.5 rounded-full shrink-0 ${selectedCategory === cat._id ? 'bg-white' : 'bg-muted-foreground/30 group-hover:bg-primary'}`} />
+                                <span className="truncate">{cat.name}</span>
                             </button>
                         ))}
                     </div>
                 </div>
 
-                <div>
-                    <h3 className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground mb-4 border-b border-border pb-2">Record Types</h3>
-                    <div className="flex flex-wrap lg:flex-col gap-1">
+                <div className="space-y-4">
+                    <h3 className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground border-b border-border pb-2 flex items-center justify-between">
+                        Record Types
+                        <Tag size={12} className="opacity-50" />
+                    </h3>
+                    <div className="flex flex-row lg:flex-col gap-1.5 overflow-x-auto pb-2 lg:pb-0 lg:overflow-visible no-scrollbar -mx-4 px-4 lg:mx-0 lg:px-0">
                         {['All', 'Code', 'Doc', 'ADR', 'Pattern', 'CheatSheet'].map(type => (
                             <button
                                 key={type}
                                 onClick={() => handleTypeClick(type)}
-                                className={`text-left px-3 py-2 text-[13px] rounded-[3px] transition-all ${selectedType === type ? 'bg-indigo-500/10 text-indigo-500 font-bold shadow-sm' : 'text-muted-foreground hover:text-foreground hover:bg-muted'}`}
+                                className={`flex items-center gap-2 lg:gap-3 px-3 py-1.5 lg:py-2 text-[10px] lg:text-[11px] uppercase tracking-wider font-bold rounded-[4px] border transition-all whitespace-nowrap ${selectedType === type ? 'bg-foreground border-foreground text-background shadow-sm' : 'bg-muted/30 border-transparent text-muted-foreground hover:border-border hover:bg-muted/50'}`}
                             >
                                 {type}
                             </button>
@@ -106,7 +117,7 @@ const Notes = () => {
                     </div>
                 </div>
 
-                <div className="bg-muted/30 p-4 rounded-[3px] border border-border">
+                <div className="hidden lg:block bg-muted/30 p-4 rounded-[4px] border border-border">
                     <p className="text-[11px] text-muted-foreground font-bold uppercase mb-2">Reference Guide</p>
                     <p className="text-[12px] text-muted-foreground leading-relaxed">
                         Use <code className="text-primary bg-primary/5 px-1 rounded">[[Title]]</code> in your notes to create dynamic references between records.
@@ -129,8 +140,17 @@ const Notes = () => {
 
                 {/* Filter Bar */}
                 <div className="flex flex-col sm:flex-row justify-between items-center py-4 border-b border-border gap-4">
-                    <div className="text-[17px] font-normal text-foreground">
-                        <span className="font-bold">{total}</span> entry pulse detected
+                    <div className="text-[17px] font-normal text-foreground flex items-center gap-2">
+                        {notesLoading ? (
+                            <div className="flex items-center gap-2">
+                                <div className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+                                <span className="text-[13px] font-bold uppercase tracking-widest text-primary italic">Syncing...</span>
+                            </div>
+                        ) : (
+                            <>
+                                <span className="font-bold">{total === -1 ? 0 : total}</span> entry pulse detected
+                            </>
+                        )}
                     </div>
 
                     <div className="flex items-center gap-4">
@@ -161,7 +181,7 @@ const Notes = () => {
                 )}
 
                 {/* Note List */}
-                <div className="flex flex-col">
+                <div className={`flex flex-col transition-opacity duration-300 ${notesLoading ? 'opacity-40 pointer-events-none' : 'opacity-100'}`}>
                     {notes.map((note) => (
                         <div key={note._id} className="flex p-4 border-b border-border hover:bg-muted/10 transition-colors gap-4 group">
                             {/* Stats Column */}
@@ -192,10 +212,15 @@ const Notes = () => {
                                 </p>
 
                                 <div className="flex flex-wrap items-center justify-between gap-y-3">
-                                    <div className="flex flex-wrap gap-1.5">
-                                        {note.category && <span className="so-tag bg-primary/5 text-primary border-primary/20">{note.category.name}</span>}
+                                    <div className="flex flex-wrap gap-2">
+                                        {note.category && (
+                                            <span className="so-tag bg-primary/10 text-primary border-primary/20 flex items-center gap-1.5">
+                                                <FolderTree size={10} />
+                                                {note.category.name}
+                                            </span>
+                                        )}
                                         {note.tags?.slice(0, 4).map((tag, i) => (
-                                            <span key={i} className="so-tag bg-muted/50 text-muted-foreground border-transparent">#{tag}</span>
+                                            <span key={i} className="so-tag text-muted-foreground bg-muted/50 border-transparent">#{tag}</span>
                                         ))}
                                     </div>
 

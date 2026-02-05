@@ -16,7 +16,8 @@ import {
     Terminal,
     ShieldCheck,
     Flame,
-    Trophy
+    Trophy,
+    Zap
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import Spinner from '../components/Spinner';
@@ -154,6 +155,9 @@ const Profile = () => {
                         <div>
                             <h1 className="text-[28px] font-bold text-foreground flex items-center gap-3">
                                 {user?.username}
+                                <span className="text-[11px] bg-primary/10 text-primary border border-primary/20 px-2 py-0.5 rounded-[4px] font-black uppercase tracking-widest">
+                                    Lvl {Math.floor((user?.reputation || 0) / 100) + 1}
+                                </span>
                                 {user?.role === 'admin' && <ShieldCheck size={20} className="text-primary" />}
                             </h1>
                             <p className="text-muted-foreground flex items-center gap-2 text-[14px]">
@@ -198,6 +202,12 @@ const Profile = () => {
                             </div>
                             <div className="space-y-1">
                                 <p className="text-[21px] font-bold text-primary flex items-center gap-1">
+                                    <Zap size={16} /> {user?.reputation || 0}
+                                </p>
+                                <p className="text-[11px] text-muted-foreground uppercase tracking-wider font-bold">Reputation</p>
+                            </div>
+                            <div className="space-y-1">
+                                <p className="text-[21px] font-bold text-primary flex items-center gap-1">
                                     <Trophy size={16} /> {user?.arcade?.points || 0}
                                 </p>
                                 <p className="text-[11px] text-muted-foreground uppercase tracking-wider font-bold">Arcade XP</p>
@@ -206,13 +216,7 @@ const Profile = () => {
                                 <p className="text-[21px] font-bold text-orange-500 flex items-center gap-1">
                                     <Flame size={16} className="fill-orange-500" /> {user?.arcade?.streak || 0}
                                 </p>
-                                <p className="text-[11px] text-muted-foreground uppercase tracking-wider font-bold">Active Streak</p>
-                            </div>
-                            <div className="space-y-1">
-                                <p className="text-[21px] font-bold text-foreground">
-                                    {user?.role === 'admin' ? 'Elite' : 'Member'}
-                                </p>
-                                <p className="text-[11px] text-muted-foreground uppercase tracking-wider font-bold">Rank</p>
+                                <p className="text-[11px] text-muted-foreground uppercase tracking-wider font-bold">Streak</p>
                             </div>
 
                             <div className="pt-4 border-t border-border/50 col-span-2 grid grid-cols-2 gap-4">

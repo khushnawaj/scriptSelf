@@ -188,7 +188,7 @@ export const getNoteStats = createAsyncThunk(
 
 const initialState = {
   notes: [],
-  total: 0,
+  total: -1, // Use -1 to indicate initial state (never fetched)
   pagination: {},
   stats: null,
   isLoading: false,

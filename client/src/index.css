@@ -156,20 +156,25 @@
 }
 
 .so-tag {
-  background-color: var(--secondary);
-  color: var(--link);
-  border: 1px solid var(--border);
-  padding: 0 8px;
+  background-color: var(--accent);
+  color: var(--primary);
+  border: 1px solid transparent;
+  padding: 2px 10px;
   font-size: 11px;
-  line-height: 20px;
-  border-radius: 2em;
-  display: inline-block;
-  font-weight: 500;
-  transition: all 0.2s ease;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  border-radius: 4px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
+
 .so-tag:hover {
-    background-color: var(--accent);
-    text-decoration: none;
+  background-color: var(--primary);
+  color: var(--primary-foreground);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(128, 128, 0, 0.15);
 }
 
 /* Code Styles for Readability */
@@ -211,6 +216,14 @@
 }
 ::-webkit-scrollbar-thumb:hover {
   background: var(--muted-foreground);
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 
 /* Layout Specific */

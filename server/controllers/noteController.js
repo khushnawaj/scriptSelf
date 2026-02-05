@@ -1,6 +1,7 @@
 const Note = require('../models/Note');
 const fs = require('fs');
 const logUserActivity = require('../utils/activityLogger');
+const awardReputation = require('../utils/reputationEngine');
 
 // Helper for Bidirectional Linking
 const updateBidirectionalLinks = async (noteId, content, userId) => {
@@ -157,8 +158,11 @@ exports.cloneNote = async (req, res, next) => {
       data: clonedNote
     });
 
-    // Log activity
+    // Log activity & Award Points
     await logUserActivity(req.user.id);
+    if (originalNote.user.toString() !== req.user.id) {
+      await awardReputation(req.user.id, 'clone_note');
+    }
   } catch (err) {
     next(err);
   }
@@ -173,7 +177,7 @@ exports.getNote = async (req, res, next) => {
       .populate({ path: 'category', select: 'name' })
       .populate({ path: 'relatedNotes', select: 'title' })
       .populate({ path: 'backlinks', select: 'title' })
-      .populate({ path: 'user', select: 'username avatar bio socialLinks' })
+      .populate({ path: 'user', select: 'username avatar bio socialLinks reputation' })
       .populate({ path: 'comments.user', select: 'username avatar' });
 
     if (!note) {
@@ -239,8 +243,9 @@ exports.createNote = async (req, res, next) => {
       data: note
     });
 
-    // Log activity
+    // Log activity & Award Points
     await logUserActivity(req.user.id);
+    await awardReputation(req.user.id, 'create_note');
   } catch (err) {
     next(err);
   }
@@ -336,6 +341,9 @@ exports.deleteNote = async (req, res, next) => {
 
     await note.deleteOne();
 
+    // Deduct Reputation Points
+    await awardReputation(req.user.id, 'create_note', true);
+
     res.status(200).json({
       success: true,
       data: {}
@@ -415,6 +423,12 @@ exports.addComment = async (req, res, next) => {
     note.comments.unshift(comment);
 
     await note.save();
+
+    // Award Points: Only if commenting on someone else's note
+    if (note.user.toString() !== req.user.id) {
+      await awardReputation(req.user.id, 'add_comment'); // Commenter gets 10
+      await awardReputation(note.user, 'receive_comment'); // Note Owner gets 5
+    }
 
     // Populate user to return immediate visual feedback
     const populatedNote = await Note.findById(req.params.id)
@@ -496,6 +510,12 @@ exports.deleteComment = async (req, res, next) => {
     comment.deleteOne();
 
     await note.save();
+
+    // Deduct reputation points if this wasn't a self-comment
+    if (note.user.toString() !== comment.user.toString()) {
+      await awardReputation(comment.user, 'add_comment', true);
+      await awardReputation(note.user, 'receive_comment', true);
+    }
 
     const populatedNote = await Note.findById(req.params.id)
       .populate({ path: 'comments.user', select: 'username avatar' });

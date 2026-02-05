@@ -23,7 +23,9 @@ import {
     ExternalLink,
     MessageSquare,
     Link as LinkIcon,
-    ChevronRight
+    ChevronRight,
+    Tag as TagIcon,
+    FolderTree
 } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import Spinner from '../components/Spinner';
@@ -382,10 +384,18 @@ const NoteDetails = () => {
                         </div>
                     )}
 
-                    <div className="flex flex-wrap gap-1.5 mt-10">
-                        {note.category && <span className="so-tag py-1 px-3 text-[13px]">{note.category.name}</span>}
+                    <div className="flex flex-wrap gap-2 mt-10">
+                        {note.category && (
+                            <span className="so-tag py-1.5 px-4 text-[12px] bg-primary/10 text-primary border border-primary/20 flex items-center gap-2">
+                                <FolderTree size={12} />
+                                {note.category.name}
+                            </span>
+                        )}
                         {note.tags?.map((tag, i) => (
-                            <span key={i} className="so-tag py-1 px-3 text-[13px] bg-muted/50 text-muted-foreground">#{tag}</span>
+                            <span key={i} className="so-tag py-1.5 px-4 text-[12px] text-muted-foreground bg-accent/30 border-transparent">
+                                <TagIcon size={12} className="opacity-50" />
+                                {tag}
+                            </span>
                         ))}
                     </div>
 
