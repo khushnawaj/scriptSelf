@@ -21,7 +21,9 @@ import {
     FileCode,
     FileDown,
     ExternalLink,
-    MessageSquare
+    MessageSquare,
+    Link as LinkIcon,
+    ChevronRight
 } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import Spinner from '../components/Spinner';
@@ -72,12 +74,12 @@ const NoteDetails = () => {
         }
     };
 
-    const reputation = (note.views || 0) * 5 + 10;
+    const reputation = (note?.views || 0) * 5 + 10;
 
     const [editingCommentId, setEditingCommentId] = useState(null);
     const [editCommentText, setEditCommentText] = useState('');
 
-    const isFollowing = user?.following?.includes(note.user?._id);
+    const isFollowing = user?.following?.includes(note?.user?._id);
 
     const handleShare = () => {
         navigator.clipboard.writeText(window.location.href);
@@ -91,6 +93,12 @@ const NoteDetails = () => {
         } else {
             dispatch(followUser(note.user._id));
         }
+    };
+
+    const handleCopyReference = () => {
+        const ref = `[[${note.title}]]`;
+        navigator.clipboard.writeText(ref);
+        toast.success(`Copied reference: ${ref}`);
     };
 
     const startEditingComment = (comment) => {
@@ -286,7 +294,6 @@ const NoteDetails = () => {
                                     return <p>{content}</p>;
                                 },
                                 li({ children }) {
-                                    // Process links in list items too
                                     const processNodes = (nodes) => {
                                         return nodes.flatMap((node, i) => {
                                             if (typeof node === 'string') {
@@ -296,18 +303,25 @@ const NoteDetails = () => {
                                                     if (part.startsWith('[[') && part.endsWith(']]')) {
                                                         const inner = part.slice(2, -2);
                                                         const [linkPath, linkLabel] = inner.split('|');
+                                                        const title = linkPath.trim();
+                                                        const label = (linkLabel || linkPath).trim();
+
                                                         return (
                                                             <Link
                                                                 key={`${i}-${j}`}
-                                                                to={`/notes?search=${encodeURIComponent(linkPath.trim())}`}
-                                                                className="text-primary font-bold hover:underline"
+                                                                to={`/notes?search=${encodeURIComponent(title)}`}
+                                                                className="text-primary font-bold hover:underline decoration-2 underline-offset-4"
                                                             >
-                                                                {(linkLabel || linkPath).trim()}
+                                                                {label}
                                                             </Link>
                                                         );
                                                     }
                                                     return part;
                                                 });
+                                            }
+                                            if (node?.props?.children) {
+                                                const newChildren = processNodes(Array.isArray(node.props.children) ? node.props.children : [node.props.children]);
+                                                return { ...node, props: { ...node.props, children: newChildren } };
                                             }
                                             return node;
                                         });
@@ -320,23 +334,51 @@ const NoteDetails = () => {
                         </ReactMarkdown>
                     </article>
 
-                    {note.backlinks && note.backlinks.length > 0 && (
-                        <div className="mt-12 pt-8 border-t border-border">
-                            <h3 className="text-[14px] font-bold text-muted-foreground uppercase tracking-[0.1em] mb-4 flex items-center gap-2">
-                                <ExternalLink size={14} /> Knowledge Backlinks
-                            </h3>
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                                {note.backlinks.map((link) => (
-                                    <Link
-                                        key={link._id}
-                                        to={`/notes/${link._id}`}
-                                        className="p-3 border border-border rounded-[3px] bg-card hover:border-primary/50 transition-colors flex items-center gap-3 group"
-                                    >
-                                        <div className="w-1.5 h-1.5 rounded-full bg-primary/40 group-hover:bg-primary transition-colors" />
-                                        <span className="text-[14px] text-foreground truncate">{link.title}</span>
-                                    </Link>
-                                ))}
-                            </div>
+                    {((note.relatedNotes && note.relatedNotes.length > 0) || (note.backlinks && note.backlinks.length > 0)) && (
+                        <div className="mt-12 pt-8 border-t border-border grid grid-cols-1 md:grid-cols-2 gap-8">
+                            {note.relatedNotes && note.relatedNotes.length > 0 && (
+                                <div>
+                                    <h3 className="text-[11px] font-black text-muted-foreground uppercase tracking-[0.2em] mb-4 flex items-center gap-2">
+                                        <History size={14} /> Outbound Pulses
+                                    </h3>
+                                    <div className="space-y-2">
+                                        {note.relatedNotes.map((link) => (
+                                            <Link
+                                                key={link._id}
+                                                to={`/notes/${link._id}`}
+                                                className="block p-3 border border-border rounded-[3px] bg-muted/20 hover:border-primary/50 transition-all group"
+                                            >
+                                                <div className="flex items-center justify-between">
+                                                    <span className="text-[13px] text-foreground font-medium truncate group-hover:text-primary transition-colors">{link.title}</span>
+                                                    <ChevronRight size={14} className="text-muted-foreground opacity-0 group-hover:opacity-100 transition-all shrink-0" />
+                                                </div>
+                                            </Link>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
+
+                            {note.backlinks && note.backlinks.length > 0 && (
+                                <div>
+                                    <h3 className="text-[11px] font-black text-muted-foreground uppercase tracking-[0.2em] mb-4 flex items-center gap-2">
+                                        <ExternalLink size={14} /> Knowledge Backlinks
+                                    </h3>
+                                    <div className="space-y-2">
+                                        {note.backlinks.map((link) => (
+                                            <Link
+                                                key={link._id}
+                                                to={`/notes/${link._id}`}
+                                                className="block p-3 border border-border rounded-[3px] bg-muted/20 hover:border-primary/50 transition-all group"
+                                            >
+                                                <div className="flex items-center justify-between">
+                                                    <span className="text-[13px] text-foreground font-medium truncate group-hover:text-primary transition-colors">{link.title}</span>
+                                                    <ChevronRight size={14} className="text-muted-foreground opacity-0 group-hover:opacity-100 transition-all shrink-0" />
+                                                </div>
+                                            </Link>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
                         </div>
                     )}
 
@@ -352,6 +394,9 @@ const NoteDetails = () => {
                         <div className="flex items-center gap-6 text-[13px] text-muted-foreground">
                             <button onClick={handleShare} className="hover:text-primary transition-colors flex items-center gap-1.5 border-none bg-transparent cursor-pointer">
                                 <Share2 size={14} /> Share
+                            </button>
+                            <button onClick={handleCopyReference} className="hover:text-primary transition-colors flex items-center gap-1.5 border-none bg-transparent cursor-pointer" title="Copy as Wiki-Link reference">
+                                <LinkIcon size={14} /> Reference
                             </button>
                             <button
                                 onClick={handleFollow}

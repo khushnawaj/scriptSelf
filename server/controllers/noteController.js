@@ -44,16 +44,24 @@ exports.getNotes = async (req, res, next) => {
     const startIndex = (page - 1) * limit;
     const endIndex = page * limit;
 
+    const filter = {};
     if (req.query.public === 'true') {
-      // Fetch all public notes
-      query = Note.find({ isPublic: true })
-        .populate({ path: 'category', select: 'name slug' })
-        .populate({ path: 'user', select: 'username avatar' });
+      filter.isPublic = true;
     } else {
-      // Fetch USER's notes (private + public)
-      query = Note.find({ user: req.user.id })
-        .populate({ path: 'category', select: 'name slug' });
+      filter.user = req.user.id;
     }
+
+    if (req.query.category) {
+      filter.category = req.query.category;
+    }
+
+    if (req.query.type) {
+      filter.type = req.query.type;
+    }
+
+    query = Note.find(filter)
+      .populate({ path: 'category', select: 'name slug' })
+      .populate({ path: 'user', select: 'username avatar' });
 
     // Search Support
     if (req.query.search) {

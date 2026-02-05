@@ -41,10 +41,12 @@ export const getNotes = createAsyncThunk(
   'notes/getAll',
   async (params = {}, thunkAPI) => {
     try {
-      const { public: isPublic, search, page = 1, limit = 10 } = params;
+      const { public: isPublic, search, page = 1, limit = 10, category, type } = params;
       let url = `/notes?page=${page}&limit=${limit}`;
       if (isPublic) url += '&public=true';
       if (search) url += `&search=${encodeURIComponent(search)}`;
+      if (category) url += `&category=${category}`;
+      if (type) url += `&type=${type}`;
 
       const res = await api.get(url);
       return res.data; // Return full response with meta

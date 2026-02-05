@@ -1,4 +1,4 @@
-# 🕹️ DevArcade - The Developer's Playground
+# 📟 ScriptShelf: Professional User Manual & Guide
 
 **DevArcade** is a built-in gamified suite designed to refine your developer cognitive stack. Improve your typing speed, visual memory, and color hex recognition while earning XP and maintaining streaks.
 
@@ -81,4 +81,39 @@ Unlock badges by maintaining your streak. Each badge represents a milestone in y
 
 ---
 
-*Keep your CORE_POWER high and sharpen your stack!*
+## 🤖 AI Content Protocol (Note Generation)
+
+To maintain a high-density, professional knowledge base, follow this protocol when using **ChatGPT** or **Claude** to generate technical records for ScriptShelf.
+
+### 📝 The "Perfect Note" Prompt Template
+Copy and paste this base prompt into ChatGPT to ensure it outputs content in the correct format:
+
+> "I am using **ScriptShelf**, a professional development repository. Generate a technical record on **[Enter Topic Here]**. 
+> 
+> **Requirements:**
+> 1. **Format**: Strictly GitHub Flavored Markdown (GFM).
+> 2. **Structure**: 
+>    - Start with a clear `# Title`.
+>    - Include a `## TL;DR` executive summary.
+>    - Use `## Technical Deep-Dive` for the core logic.
+>    - Include a `## Code implementation` block with specific syntax highlighting (e.g., ```javascript).
+>    - If there is a workflow, include a **Mermaid.js** diagram using ```mermaid.
+> 3. **Linking**: Use `[[Internal Title]]` for concepts that should be cross-linked.
+> 4. **Metadata**: Suggest 5 high-density tags and a specific category from: (Frontend, Backend, Architecture, DevOps, Security, Database)."
+
+### 🏛️ ADR (Architectural Decision Record) Format
+For system design decisions, use the **ADR Module**:
+
+*   **Status Tags**: State if the decision is `Proposed`, `Accepted`, or `Superseded`.
+*   **Context**: What is the problem we are solving?
+*   **Decision**: Why this specific tech stack/pattern?
+*   **Consequences**: What are the trade-offs (Performance vs. Speed)?
+
+### 📊 Tactical Data Visualization
+ScriptShelf renders **Mermaid.js** diagrams natively. Ask AI to:
+- *"Provide a Mermaid sequence diagram for this Auth flow."*
+- *"Create a Mermaid Gantt chart for this implementation plan."*
+
+---
+
+*Keep your CORE_POWER high and your technical logic sharp!*
