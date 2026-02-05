@@ -3,7 +3,16 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { login, reset } from '../features/auth/authSlice';
 import { toast } from 'react-hot-toast';
-import { Code2, ExternalLink, Info, Lock } from 'lucide-react';
+import { motion } from 'framer-motion';
+import {
+    Code2,
+    ArrowRight,
+    Lock,
+    ShieldCheck,
+    Terminal,
+    Sparkles,
+    Cpu
+} from 'lucide-react';
 
 const Login = () => {
     const [formData, setFormData] = useState({
@@ -45,60 +54,94 @@ const Login = () => {
     };
 
     return (
-        <div className="min-h-[calc(100vh-150px)] flex flex-col items-center justify-center p-4 animate-in fade-in duration-500">
-            {/* Logo area */}
-            <div className="mb-8 flex flex-col items-center">
-                <Code2 size={42} className="text-primary mb-4" />
-                <h1 className="text-[21px] font-normal text-foreground">Log in to ScriptShelf</h1>
+        <div className="min-h-screen flex flex-col items-center justify-center p-4 bg-[#020617] overflow-hidden relative">
+            {/* Background Decorative Gradients */}
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full pointer-events-none">
+                <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-primary/10 blur-[130px] rounded-full" />
+                <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-blue-600/5 blur-[130px] rounded-full" />
             </div>
 
-            <div className="w-full max-w-[300px] flex flex-col gap-6">
-                {/* Form Card */}
-                <form onSubmit={onSubmit} className="bg-card border border-border p-6 rounded-[3px] shadow-lg space-y-4">
-                    <div className="space-y-1">
-                        <label className="text-[14px] font-bold text-foreground">Email</label>
-                        <input
-                            type="email"
-                            name="email"
-                            value={email}
-                            onChange={onChange}
-                            className="w-full border border-border bg-background rounded-[3px] py-1.5 px-3 text-[13px] outline-none focus:border-primary focus:ring-4 focus:ring-accent transition-all"
-                            required
-                        />
+            <motion.div
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.8 }}
+                className="w-full max-w-[420px] relative z-10"
+            >
+                {/* Status Badge */}
+                <div className="flex justify-center mb-8">
+                    <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/5 border border-white/10 rounded-full text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400 backdrop-blur-md">
+                        <Terminal size={12} className="text-primary" /> Welcome Back
                     </div>
-                    <div className="space-y-1">
-                        <div className="flex justify-between items-center">
-                            <label className="text-[14px] font-bold text-foreground">Password</label>
-                            <Link to="/forgot-password" className="text-[11px] text-[#0074cc] hover:underline cursor-pointer">Forgot password?</Link>
+                </div>
+
+                {/* Main Auth Card */}
+                <div className="bg-white/5 border border-white/10 p-8 md:p-12 rounded-[2.5rem] backdrop-blur-3xl shadow-2xl relative overflow-hidden group">
+                    {/* Inner highlight */}
+                    <div className="absolute -top-24 -right-24 w-48 h-48 bg-primary/10 blur-[60px] rounded-full pointer-events-none transition-transform group-hover:scale-125 duration-700" />
+
+                    <div className="relative z-10 space-y-10">
+                        <div className="text-center">
+                            <h1 className="text-3xl font-black text-white tracking-tight">Login to Vault</h1>
+                            <p className="text-zinc-500 text-sm mt-2">Access your saved notes and code.</p>
                         </div>
-                        <input
-                            type="password"
-                            name="password"
-                            value={password}
-                            onChange={onChange}
-                            className="w-full border border-border bg-background rounded-[3px] py-1.5 px-3 text-[13px] outline-none focus:border-primary focus:ring-4 focus:ring-accent transition-all"
-                            required
-                        />
+
+                        <form onSubmit={onSubmit} className="space-y-6">
+                            <div className="space-y-1.5">
+                                <label className="text-[11px] font-black uppercase tracking-[0.15em] text-zinc-400 ml-1">Email Address</label>
+                                <div className="relative group">
+                                    <input
+                                        type="email"
+                                        name="email"
+                                        value={email}
+                                        onChange={onChange}
+                                        placeholder="yourname@gmail.com"
+                                        className="w-full bg-white/5 border border-white/10 rounded-2xl py-3.5 px-5 text-[15px] outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all text-white placeholder:text-zinc-600"
+                                        required
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="space-y-1.5">
+                                <div className="flex justify-between items-center ml-1">
+                                    <label className="text-[11px] font-black uppercase tracking-[0.15em] text-zinc-400">Password</label>
+                                    <Link to="/forgot-password" opacity-60 className="text-[10px] uppercase font-black tracking-widest text-primary hover:text-blue-400 transition-colors">Forgot?</Link>
+                                </div>
+                                <div className="relative group">
+                                    <input
+                                        type="password"
+                                        name="password"
+                                        value={password}
+                                        onChange={onChange}
+                                        placeholder="••••••••"
+                                        className="w-full bg-white/5 border border-white/10 rounded-2xl py-3.5 px-5 text-[15px] outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all text-white placeholder:text-zinc-600"
+                                        required
+                                    />
+                                </div>
+                            </div>
+
+                            <button
+                                type="submit"
+                                disabled={isLoading}
+                                className="w-full h-14 bg-primary rounded-2xl font-black text-white group flex items-center justify-center gap-2 hover:scale-[1.02] active:scale-[0.98] transition-all mt-4 shadow-xl shadow-primary/20 disabled:opacity-50"
+                            >
+                                {isLoading ? 'LOGGING IN...' : 'OPEN VAULT'}
+                                <ShieldCheck size={20} className="group-hover:scale-110 transition-transform" />
+                            </button>
+                        </form>
+
+                        <div className="pt-4 flex flex-col items-center gap-4 text-[13px] text-zinc-400">
+                            <p>
+                                Need an account? {' '}
+                                <Link to="/register" className="text-primary font-black hover:underline tracking-tight">Create one here</Link>
+                            </p>
+
+                            <div className="flex items-center gap-2 mt-4 px-4 py-1.5 bg-white/5 rounded-full border border-white/10 text-[10px] font-bold uppercase text-zinc-600">
+                                <Cpu size={12} /> SECURE CODE STORAGE
+                            </div>
+                        </div>
                     </div>
-                    <button
-                        type="submit"
-                        disabled={isLoading}
-                        className="w-full so-btn so-btn-primary py-2.5 mt-2"
-                    >
-                        {isLoading ? 'Logging in...' : 'Log in'}
-                    </button>
-                </form>
-
-                {/* Switch to Register */}
-                <div className="text-[13px] text-center text-muted-foreground">
-                    Don't have an account? {' '}
-                    <Link to="/register" className="text-[#0074cc] hover:underline">Sign up</Link>
                 </div>
-
-                <div className="text-[13px] text-center flex items-center justify-center gap-1 text-muted-foreground">
-                    Are you an employer? <ExternalLink size={12} />
-                </div>
-            </div>
+            </motion.div>
         </div>
     );
 };

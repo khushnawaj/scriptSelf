@@ -24,6 +24,7 @@ import Admin from './pages/Admin';
 import Guide from './pages/Guide';
 import NotFound from './pages/NotFound';
 import Arcade from './pages/Arcade';
+import Terms from './pages/Terms';
 import Spinner from './components/Spinner';
 
 // Private Route Component
@@ -101,6 +102,7 @@ function App() {
         </Route>
 
         <Route path="/u/:username" element={<PublicProfile />} />
+        <Route path="/terms" element={<Terms />} />
 
         {/* Fallback */}
         <Route path="*" element={<NotFound />} />

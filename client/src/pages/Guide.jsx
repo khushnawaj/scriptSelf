@@ -17,7 +17,21 @@ import {
     Keyboard,
     Monitor,
     Activity,
-    Terminal
+    Terminal,
+    Eye,
+    Settings,
+    Layout,
+    CheckSquare,
+    Globe,
+    Layers,
+    Cpu,
+    Flame,
+    Trophy,
+    ListFilter,
+    Tags,
+    Star,
+    MessageSquare,
+    Sparkles
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
@@ -30,542 +44,348 @@ const Guide = () => {
                     <BookOpen size={14} /> Official Documentation
                 </div>
                 <h1 className="text-[42px] font-bold text-foreground leading-tight">
-                    Mastering the <span className="text-primary">ScriptShelf</span> Protocol
+                    Master your <span className="text-primary">Knowledge Vault</span>
                 </h1>
-                <p className="text-[18px] text-muted-foreground max-w-2xl mx-auto font-light">
-                    ScriptShelf is more than a note-taker. It's a high-searchability neural network for your technical legacy. Here is how to use it like a pro.
+                <p className="text-[18px] text-muted-foreground max-w-2xl mx-auto font-light leading-relaxed">
+                    ScriptShelf is your high-density neural network for technical logic. This manual covers every feature, shortcut, and strategy to secure your technical legacy.
                 </p>
             </header>
 
+            {/* Quick Start Roadmap */}
+            <section className="mb-24">
+                <h2 className="text-[24px] font-bold mb-8 flex items-center gap-3">
+                    <Flame size={24} className="text-primary" /> The 5-Minute Setup
+                </h2>
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+                    <div className="glass-frost p-6 rounded-[3px] border-t-2 border-t-primary">
+                        <div className="text-[28px] font-black text-primary/20 mb-2">01</div>
+                        <h4 className="font-bold text-[16px] mb-2">Initialize</h4>
+                        <p className="text-[13px] text-muted-foreground leading-relaxed">Open the editor via **Alt+N**. Your capture buffer is ready for logic input.</p>
+                    </div>
+                    <div className="glass-frost p-6 rounded-[3px] border-t-2 border-t-primary">
+                        <div className="text-[28px] font-black text-primary/20 mb-2">02</div>
+                        <h4 className="font-bold text-[16px] mb-2">Categorize</h4>
+                        <p className="text-[13px] text-muted-foreground leading-relaxed">Select a root stack and add surgical tags like #react or #middleware.</p>
+                    </div>
+                    <div className="glass-frost p-6 rounded-[3px] border-t-2 border-t-primary">
+                        <div className="text-[28px] font-black text-primary/20 mb-2">03</div>
+                        <h4 className="font-bold text-[16px] mb-2">Cross-Link</h4>
+                        <p className="text-[13px] text-muted-foreground leading-relaxed">Build neural paths using `[[Note Title]]` to connect related code vaults.</p>
+                    </div>
+                    <div className="glass-frost p-6 rounded-[3px] border-t-2 border-t-primary">
+                        <div className="text-[28px] font-black text-primary/20 mb-2">04</div>
+                        <h4 className="font-bold text-[16px] mb-2">Authorize</h4>
+                        <p className="text-[13px] text-muted-foreground leading-relaxed">Link your GitHub and tech stack in settings to verify your technical ID.</p>
+                    </div>
+                </div>
+            </section>
+
             {/* Core Workflow */}
-            <section className="grid grid-cols-1 md:grid-cols-3 gap-8 py-12">
+            <section className="grid grid-cols-1 md:grid-cols-3 gap-8 py-12 border-t border-border/50">
                 <div className="glass-frost p-8 rounded-[3px] border-t-4 border-t-primary">
                     <div className="w-12 h-12 bg-primary/10 rounded-[3px] flex items-center justify-center text-primary mb-6">
                         <Zap size={24} />
                     </div>
-                    <h3 className="text-[19px] font-bold mb-3">1. Capture</h3>
+                    <h3 className="text-[19px] font-bold mb-3">1. Efficient Capture</h3>
                     <p className="text-[14px] text-muted-foreground leading-relaxed">
-                        Document patterns, ADRs (Architectural Decision Records), or complex logic. Use our clinical Markdown editor with real-time preview.
+                        Capture snippets at terminal speed. Our editor features mirror-sync preview and supports GitHub Flavored Markdown (GFM).
                     </p>
                 </div>
                 <div className="glass-frost p-8 rounded-[3px] border-t-4 border-t-primary">
                     <div className="w-12 h-12 bg-primary/10 rounded-[3px] flex items-center justify-center text-primary mb-6">
                         <Database size={24} />
                     </div>
-                    <h3 className="text-[19px] font-bold mb-3">2. Archive</h3>
+                    <h3 className="text-[19px] font-bold mb-3">2. Atomic Organization</h3>
                     <p className="text-[14px] text-muted-foreground leading-relaxed">
-                        Categorize logic by stacks (React, Backend, DevOps) and add syntax tags. Choose between **Public Sharing** or **Private Vaulting**.
+                        Organize by multi-level stacks and surgical tagging. Move beyond folders into a multidimensional knowledge library.
                     </p>
                     <p className="text-[11px] text-primary/70 font-bold mt-4 uppercase tracking-tighter">
-                        Pro-Tip: Stack labels fuel your Dashboard's "Knowledge Distribution" chart.
+                        PRO-TIP: Tags like #Hooks or #Security enable surgical retrieval.
                     </p>
                 </div>
                 <div className="glass-frost p-8 rounded-[3px] border-t-4 border-t-primary">
                     <div className="w-12 h-12 bg-primary/10 rounded-[3px] flex items-center justify-center text-primary mb-6">
                         <Search size={24} />
                     </div>
-                    <h3 className="text-[19px] font-bold mb-3">3. Retrieve</h3>
+                    <h3 className="text-[19px] font-bold mb-3">3. Rapid Retrieval</h3>
                     <p className="text-[14px] text-muted-foreground leading-relaxed">
-                        Use the **Global Search (Ctrl+K)** or Wiki-Links to navigate your knowledge graph in milliseconds when you're in the middle of a build.
+                        Instant global search and [[Wiki-Links]] allow you to jump between dependencies like a local Wikipedia.
                     </p>
                 </div>
             </section>
 
             {/* Detailed Features */}
-            <div className="space-y-24 mt-12">
-                {/* Wiki Links */}
-                <div className="flex flex-col md:flex-row items-center gap-16">
-                    <div className="flex-1 space-y-6">
+            <div className="space-y-24 mt-20">
+                {/* 1. Tactical Editor */}
+                <div className="flex flex-col md:flex-row items-start gap-16">
+                    <div className="flex-1 space-y-6 text-left">
                         <div className="flex items-center gap-3 text-primary font-bold uppercase tracking-widest text-[13px]">
-                            <Workflow size={18} /> Knowledge Interlinking
+                            <Terminal size={18} /> Component 01: Capture
                         </div>
-                        <h2 className="text-[32px] font-bold leading-tight">The Wiki-Link Neural Network</h2>
+                        <h2 className="text-[32px] font-bold leading-tight">The Tactical Editor</h2>
                         <p className="text-muted-foreground leading-relaxed">
-                            Stop creating isolated notes. ScriptShelf supports **Bidirectional Linking**. Wrap any title in double brackets <code className="bg-muted px-1.5 py-0.5 rounded text-primary">[[Title]]</code> to link them.
+                            A minimalist powerhouse for 100% focused writing. Featuring live side-by-side preview and technical formatting.
                         </p>
-                        <ul className="space-y-3 text-[14px]">
-                            <li className="flex gap-3">
-                                <span className="text-primary font-bold">→</span>
-                                <span>**Automatic Graphing**: Linking creates "Backlinks" automatically at the bottom of the target note.</span>
+                        <ul className="space-y-4 text-[14px]">
+                            <li className="flex gap-4">
+                                <div className="w-6 h-6 rounded bg-primary/10 flex items-center justify-center text-primary shrink-0"><Eye size={14} /></div>
+                                <span>**Mirror-Sync**: Live rendering of tables, checklists, and code.</span>
                             </li>
-                            <li className="flex gap-3">
-                                <span className="text-primary font-bold">→</span>
-                                <span>**Aliases**: Use `[[Target|My Link]]` to clean up your writing while keeping the link intact.</span>
+                            <li className="flex gap-4">
+                                <div className="w-6 h-6 rounded bg-primary/10 flex items-center justify-center text-primary shrink-0"><Code2 size={14} /></div>
+                                <span>**Syntax Mastery**: Full support for 50+ languages including Rust, Go, and Python.</span>
+                            </li>
+                            <li className="flex gap-4">
+                                <div className="w-6 h-6 rounded bg-primary/10 flex items-center justify-center text-primary shrink-0"><Shield size={14} /></div>
+                                <span>**Vault Toggle**: Choose between private encrypted mode or public community library.</span>
                             </li>
                         </ul>
                     </div>
-                    <div className="flex-1 bg-accent/20 p-8 border border-border rounded-[12px] font-mono text-[13px] shadow-2xl">
-                        <div className="flex gap-2 mb-4">
-                            <div className="w-3 h-3 rounded-full bg-rose-500" />
-                            <div className="w-3 h-3 rounded-full bg-amber-500" />
-                            <div className="w-3 h-3 rounded-full bg-emerald-500" />
+                    <div className="flex-1 bg-accent/20 p-8 border border-border rounded-[3px] font-mono text-[13px] shadow-sm text-left w-full">
+                        <div className="flex gap-2 mb-4 border-b border-border/50 pb-2">
+                            <span className="text-[10px] text-muted-foreground uppercase font-bold tracking-widest">Active_Buffer.md</span>
                         </div>
-                        <p className="text-muted-foreground">// Architectural Decision</p>
-                        <p className="text-foreground mt-2">As per our [[Authentication Strategy]], we will use JWT with a 10MB file limit.</p>
-                        <div className="mt-8 pt-4 border-t border-border/50 text-primary uppercase text-[10px] tracking-widest">
-                            Linking to "Authentication Strategy"...
+                        <p className="text-primary font-bold"># Implementing Auth Strategy</p>
+                        <p className="text-muted-foreground mt-2">Connecting with [[Auth Layer]] and [[Redux Store]].</p>
+                        <div className="mt-4 p-4 bg-muted/30 rounded border border-border/50 italic text-[12px]">
+                            -- tech_stack: [react, thunk]<br />
+                            -- privacy: vaulted
                         </div>
+                        <p className="text-zinc-500 mt-6">```javascript<br />const logic = () =&gt; &#123; ... &#125;;<br />```</p>
                     </div>
                 </div>
 
-                {/* Collaboration & Forking */}
-                <div className="flex flex-col md:flex-row-reverse items-center gap-16">
-                    <div className="flex-1 space-y-6">
+                {/* 2. Neural Links */}
+                <div className="flex flex-col md:flex-row-reverse items-start gap-16">
+                    <div className="flex-1 space-y-6 text-left">
                         <div className="flex items-center gap-3 text-primary font-bold uppercase tracking-widest text-[13px]">
-                            <Share2 size={18} /> Collaborative Forking
+                            <Workflow size={18} /> Component 02: Interlink
                         </div>
-                        <h2 className="text-[32px] font-bold leading-tight">Clone to Your Library</h2>
+                        <h2 className="text-[32px] font-bold leading-tight">The Neural Link Protocol</h2>
                         <p className="text-muted-foreground leading-relaxed">
-                            See a brilliant implementation from another user? Don't copy-paste. **Clone** it.
+                            Connect your logic flow. Every note you write is a node in your personal knowledge graph.
                         </p>
                         <ul className="space-y-4">
                             <li className="flex items-start gap-4 p-4 bg-muted/30 rounded-[3px] border-l-4 border-primary">
-                                <div className="text-[20px] font-bold opacity-20">01</div>
                                 <div>
-                                    <p className="font-bold">One-Click Fork</p>
-                                    <p className="text-[13px] text-muted-foreground">Creates a perfect replica in your own private shelf.</p>
+                                    <p className="font-bold">Wiki-Links</p>
+                                    <p className="text-[13px] text-muted-foreground">Type `[[Title]]` to link. ScriptShelf tracks these bidirectional paths.</p>
                                 </div>
                             </li>
                             <li className="flex items-start gap-4 p-4 bg-muted/30 rounded-[3px] border-l-4 border-primary">
-                                <div className="text-[20px] font-bold opacity-20">02</div>
                                 <div>
-                                    <p className="font-bold">Private Evolution</p>
-                                    <p className="text-[13px] text-muted-foreground">Modify the cloned logic privately without affecting the original.</p>
+                                    <p className="font-bold">Auto-Backlinks</p>
+                                    <p className="text-[13px] text-muted-foreground">Navigate backward to see which other notes depend on the current snippet.</p>
                                 </div>
                             </li>
                         </ul>
                     </div>
-                    <div className="flex-1 overflow-hidden rounded-[12px] border border-border shadow-2xl">
-                        <div className="bg-card p-6 space-y-4">
-                            <div className="flex justify-between items-center">
-                                <div className="space-y-1">
-                                    <div className="h-4 w-32 bg-muted rounded" />
-                                    <div className="h-4 w-48 bg-muted/50 rounded" />
-                                </div>
-                                <div className="px-4 py-2 border border-primary text-primary rounded-[3px] text-[12px] font-bold animate-pulse">
-                                    CLONE TO MY SHELF
-                                </div>
-                            </div>
-                            <div className="space-y-2">
-                                <div className="h-4 w-full bg-muted/20 rounded" />
-                                <div className="h-4 w-full bg-muted/20 rounded" />
-                                <div className="h-4 w-2/3 bg-muted/20 rounded" />
-                            </div>
+                    <div className="flex-1 w-full flex flex-col items-center gap-4 py-8 bg-accent/10 rounded-[3px] border border-border border-dashed">
+                        <div className="px-6 py-2 glass-frost border-primary/40 text-primary font-bold rounded">[[ Global Store ]]</div>
+                        <div className="h-8 w-px bg-primary/20" />
+                        <div className="flex gap-4">
+                            <div className="px-4 py-1 bg-muted/50 border border-border rounded text-[12px]">[[ Auth Slice ]]</div>
+                            <div className="px-4 py-1 bg-muted/50 border border-border rounded text-[12px]">[[ User Slice ]]</div>
                         </div>
+                        <div className="mt-4 text-[10px] text-primary font-black uppercase tracking-widest opacity-40">Relationship_Map_Loaded</div>
                     </div>
                 </div>
 
-                {/* Performance Identity */}
-                <div className="mt-20 pt-16 border-t border-border/50">
-                    <div className="flex flex-col md:flex-row items-center gap-16">
-                        <div className="flex-1 space-y-6">
-                            <div className="flex items-center gap-3 text-primary font-bold uppercase tracking-widest text-[13px]">
-                                <Share2 size={18} /> Global Performance Identity
-                            </div>
-                            <h2 className="text-[32px] font-bold leading-tight">Your Professional Signal</h2>
-                            <p className="text-muted-foreground leading-relaxed">
-                                ScriptShelf isn't just a database; it's your resume in high-resolution. Customize your profile to project a senior technical identity.
-                            </p>
-                            <div className="space-y-4">
-                                <div className="flex gap-4 p-4 bg-muted/20 border border-border rounded-[4px]">
-                                    <div className="w-10 h-10 rounded bg-primary/10 flex items-center justify-center text-primary shrink-0">
-                                        <Code2 size={20} />
-                                    </div>
-                                    <div>
-                                        <h4 className="font-bold">Third-Party Sync</h4>
-                                        <p className="text-[13px] text-muted-foreground">Link your GitHub, LinkedIn, and personal domains. Transform your shelf into a portfolio.</p>
-                                    </div>
-                                </div>
-                                <div className="flex gap-4 p-4 bg-muted/20 border border-border rounded-[4px]">
-                                    <div className="w-10 h-10 rounded bg-primary/10 flex items-center justify-center text-primary shrink-0">
-                                        <Activity size={20} />
-                                    </div>
-                                    <div>
-                                        <h4 className="font-bold">Neural Activity Graph</h4>
-                                        <p className="text-[13px] text-muted-foreground">Every note, implementation, and follow is tracked in your contribution heat-map.</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="flex-1 space-y-4">
-                            <div className="glass-frost p-8 rounded-[12px] border-none shadow-2xl relative overflow-hidden">
-                                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary/50 to-transparent" />
-                                <div className="flex items-center gap-4 mb-6">
-                                    <div className="w-16 h-16 rounded-full bg-muted animate-pulse" />
-                                    <div className="space-y-2">
-                                        <div className="h-4 w-32 bg-foreground rounded" />
-                                        <div className="h-3 w-48 bg-muted-foreground/30 rounded" />
-                                    </div>
-                                </div>
-                                <div className="grid grid-cols-7 gap-1">
-                                    {[...Array(28)].map((_, i) => (
-                                        <div key={i} className={`aspect-square rounded-[2px] ${i % 3 === 0 ? 'bg-primary' : 'bg-muted/30'} opacity-${(i % 5) * 20}`} />
-                                    ))}
-                                </div>
-                                <p className="text-[10px] text-center mt-4 text-muted-foreground uppercase tracking-widest font-black">System_Activity_Pulse: Stable</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                {/* Markdown Mastery */}
-                <div className="mt-20 pt-16 border-t border-border/50">
-                    <div className="flex flex-col md:flex-row-reverse items-center gap-16">
-                        <div className="flex-1 space-y-6">
-                            <div className="flex items-center gap-3 text-primary font-bold uppercase tracking-widest text-[13px]">
-                                <Terminal size={18} /> Markdown Mastery
-                            </div>
-                            <h2 className="text-[32px] font-bold leading-tight">Clinical Documentation</h2>
-                            <p className="text-muted-foreground leading-relaxed">
-                                Our editor isn't just a text box—it's a developer-first IDE for logic. We support full **GFM (GitHub Flavored Markdown)** and specialized technical extensions.
-                            </p>
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-4">
-                                <div className="space-y-2">
-                                    <h4 className="font-bold text-foreground flex items-center gap-2">
-                                        <div className="w-1.5 h-1.5 rounded-full bg-primary" /> Syntax Highlighting
-                                    </h4>
-                                    <p className="text-[13px] text-muted-foreground">Full support for JS, Python, Go, and 50+ languages with theme-aware colors.</p>
-                                </div>
-                                <div className="space-y-2">
-                                    <h4 className="font-bold text-foreground flex items-center gap-2">
-                                        <div className="w-1.5 h-1.5 rounded-full bg-primary" /> Task Archives
-                                    </h4>
-                                    <p className="text-[13px] text-muted-foreground">Track implementation checklists with interactive `- [ ]` syntax.</p>
-                                </div>
-                                <div className="space-y-2">
-                                    <h4 className="font-bold text-foreground flex items-center gap-2">
-                                        <div className="w-1.5 h-1.5 rounded-full bg-primary" /> Auto-Formatting
-                                    </h4>
-                                    <p className="text-[13px] text-muted-foreground">Intelligent indentation and list continuation for faster drafting.</p>
-                                </div>
-                                <div className="space-y-2">
-                                    <h4 className="font-bold text-foreground flex items-center gap-2">
-                                        <div className="w-1.5 h-1.5 rounded-full bg-primary" /> Media Embeds
-                                    </h4>
-                                    <p className="text-[13px] text-muted-foreground">Drag and drop screenshots or embed full technical diagrams.</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="flex-1 bg-card border border-border rounded-[12px] p-1 shadow-2xl overflow-hidden group">
-                            <div className="bg-muted/30 p-4 border-b border-border flex items-center gap-2">
-                                <div className="flex gap-1.5">
-                                    <div className="w-2 h-2 rounded-full bg-border" />
-                                    <div className="w-2 h-2 rounded-full bg-border" />
-                                    <div className="w-2 h-2 rounded-full bg-border" />
-                                </div>
-                                <span className="text-[10px] uppercase tracking-widest font-black opacity-40">Editor_Protocol.md</span>
-                            </div>
-                            <div className="p-8 font-mono text-[13px] space-y-4">
-                                <div className="flex gap-3">
-                                    <span className="text-primary opacity-50 italic">1</span>
-                                    <span className="text-foreground"># Technical_Implementation</span>
-                                </div>
-                                <div className="flex gap-3">
-                                    <span className="text-primary opacity-50 italic">2</span>
-                                    <span className="text-muted-foreground">- [x] Setup Redux Store</span>
-                                </div>
-                                <div className="flex gap-3">
-                                    <span className="text-primary opacity-50 italic">3</span>
-                                    <span className="text-muted-foreground">- [ ] Integrate API</span>
-                                </div>
-                                <div className="flex gap-3">
-                                    <span className="text-primary opacity-50 italic">4</span>
-                                    <span className="text-primary">```javascript</span>
-                                </div>
-                                <div className="flex gap-3">
-                                    <span className="text-primary opacity-50 italic">5</span>
-                                    <span className="text-primary">const</span>
-                                    <span className="text-foreground"> signal = (id) =&gt; &#123; ... &#125;;</span>
-                                </div>
-                                <div className="flex gap-3">
-                                    <span className="text-primary opacity-50 italic">6</span>
-                                    <span className="text-primary">```</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                {/* Community & Tactical Alerts */}
-                <div className="flex flex-col md:flex-row items-center gap-16 mt-20 pt-16 border-t border-border/50">
-                    <div className="flex-1 space-y-6">
+                {/* 3. Reputation & Identity */}
+                <div className="flex flex-col md:flex-row items-start gap-16">
+                    <div className="flex-1 space-y-6 text-left">
                         <div className="flex items-center gap-3 text-primary font-bold uppercase tracking-widest text-[13px]">
-                            <Hash size={18} /> Social Knowledge Graph
+                            <Trophy size={18} /> Component 03: Identity
                         </div>
-                        <h2 className="text-[32px] font-bold leading-tight">Tactical Networking</h2>
+                        <h2 className="text-[32px] font-bold leading-tight">Your Technical Footprint</h2>
                         <p className="text-muted-foreground leading-relaxed">
-                            ScriptShelf is a living ecosystem. Stay synchronized with the community through advanced signal protocols.
+                            Convert your knowledge into professional credit. Every contribution adds to your global Reputation XP.
                         </p>
-
-                        <div className="space-y-6">
-                            <div className="flex gap-4">
-                                <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary shrink-0">
-                                    <Bell size={20} />
-                                </div>
-                                <div>
-                                    <h4 className="font-bold text-foreground">Real-time Signal Bell</h4>
-                                    <p className="text-[14px] text-muted-foreground mt-1">
-                                        The tactical bell in your navbar pulses when new signals are detected. Get notified instantly when someone follows you or interacts with your logic.
-                                    </p>
-                                </div>
-                            </div>
-
-                            <div className="flex gap-4">
-                                <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary shrink-0">
-                                    <UserPlus size={20} />
-                                </div>
-                                <div>
-                                    <h4 className="font-bold text-foreground">Interactive Network Graphs</h4>
-                                    <p className="text-[14px] text-muted-foreground mt-1">
-                                        Exploration is core to learning. Click any **Follower** or **Following** count on a profile to open a detailed network list and discover new contributors.
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="flex-1 bg-accent/20 p-8 border border-border rounded-[12px] font-mono text-[13px] shadow-2xl relative overflow-hidden">
-                        <div className="absolute top-0 right-0 p-2 opacity-20">
-                            <Bell size={48} className="text-primary animate-pulse" />
-                        </div>
-                        <div className="flex gap-2 mb-4">
-                            <div className="w-3 h-3 rounded-full bg-rose-500" />
-                            <div className="w-3 h-3 rounded-full bg-amber-500" />
-                            <div className="w-3 h-3 rounded-full bg-emerald-500" />
-                        </div>
                         <div className="space-y-4">
-                            <div className="bg-primary/10 border border-primary/20 p-4 rounded-[4px]">
-                                <p className="text-[11px] text-primary font-bold mb-1 uppercase tracking-tighter">New_Signal_Detected</p>
-                                <p className="text-foreground text-[12px]">@SeniorDev started following your architecture archives.</p>
-                                <p className="text-[10px] text-muted-foreground mt-2">LINK_ESTABLISHED // 2m ago</p>
-                            </div>
-                            <div className="flex items-center justify-between pt-2 border-t border-border/50">
-                                <div className="flex gap-4">
-                                    <span className="text-[11px] font-bold text-foreground hover:text-primary cursor-pointer transition-colors">1.2k Followers</span>
-                                    <span className="text-[11px] font-bold text-foreground hover:text-primary cursor-pointer transition-colors">450 Following</span>
+                            <div className="flex gap-4 p-4 bg-muted/20 border border-border rounded-[4px]">
+                                <div className="w-10 h-10 rounded bg-primary/10 flex items-center justify-center text-primary shrink-0"><Activity size={20} /></div>
+                                <div>
+                                    <h4 className="font-bold text-[15px]">Reputation Pulse</h4>
+                                    <p className="text-[13px] text-muted-foreground">Track consistency with our visual activity heat-map on your profile.</p>
                                 </div>
-                                <span className="bg-primary/20 text-primary text-[10px] px-2 py-0.5 rounded font-bold">VERIFIED</span>
+                            </div>
+                            <div className="flex gap-4 p-4 bg-muted/20 border border-border rounded-[4px]">
+                                <div className="w-10 h-10 rounded bg-primary/10 flex items-center justify-center text-primary shrink-0"><Share2 size={20} /></div>
+                                <div>
+                                    <h4 className="font-bold text-[15px]">The Clone Economy</h4>
+                                    <p className="text-[13px] text-muted-foreground">Fork public scripts to your own shelf to evolve them privately.</p>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-
-                {/* Technical Features */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-12 pt-20">
-                    <div className="space-y-4">
-                        <div className="flex items-center gap-3">
-                            <Binary size={20} className="text-primary" />
-                            <h3 className="text-[21px] font-bold">ADR Management</h3>
+                    <div className="flex-1 w-full glass-frost p-8 rounded-[3px] border-t-0 border-l-4 border-l-primary text-left">
+                        <div className="flex items-center gap-4 mb-6">
+                            <div className="w-12 h-12 bg-primary/20 rounded-full flex items-center justify-center font-black text-primary">K</div>
+                            <div>
+                                <p className="font-bold text-[18px]">Archived_User</p>
+                                <p className="text-[11px] text-primary font-black uppercase tracking-tighter">Level 42 Architect</p>
+                            </div>
                         </div>
-                        <p className="text-[14px] text-muted-foreground leading-relaxed">
-                            Turn your notes into **Architectural Decision Records**. Tag them with statuses like <span className="text-emerald-500 font-bold">Proposed</span>, <span className="text-primary font-bold">Accepted</span>, or <span className="text-rose-500 font-bold">Superceded</span> to track project evolution.
-                        </p>
-                    </div>
-                    <div className="space-y-4">
-                        <div className="flex items-center gap-3">
-                            <Code2 size={20} className="text-primary" />
-                            <h3 className="text-[21px] font-bold">Integrated Resources</h3>
+                        <div className="space-y-2">
+                            <div className="flex justify-between text-[11px] font-bold text-muted-foreground uppercase">
+                                <span>Signal_Strength</span>
+                                <span>85%</span>
+                            </div>
+                            <div className="h-1.5 w-full bg-muted rounded-full"><div className="w-[85%] h-full bg-primary rounded-full" /></div>
                         </div>
-                        <p className="text-[14px] text-muted-foreground leading-relaxed">
-                            Embed YouTube tutorials directly or attach PDF documentations (up to 10MB) to your records. Your logic and its supporting documents stay together.
-                        </p>
-                    </div>
-                    <div className="space-y-4">
-                        <div className="flex items-center gap-3">
-                            <Shield size={20} className="text-primary" />
-                            <h3 className="text-[21px] font-bold">Private Vaults</h3>
-                        </div>
-                        <p className="text-[14px] text-muted-foreground leading-relaxed">
-                            Sensitivity matters. Set records to **Vault** mode to hide them from the public library and global search of other users.
-                        </p>
-                    </div>
-                    <div className="space-y-4">
-                        <div className="flex items-center gap-3">
-                            <Command size={20} className="text-primary" />
-                            <h3 className="text-[21px] font-bold">Universal Search</h3>
-                        </div>
-                        <p className="text-[14px] text-muted-foreground leading-relaxed">
-                            Press <kbd className="bg-muted px-1.5 py-0.5 rounded border border-border text-[11px] font-bold">Ctrl+K</kbd> anywhere to trigger the Command Palette. Instantly jump to any tag, category, or implementation.
-                        </p>
                     </div>
                 </div>
 
-                {/* Pro Architecture Lifecycle */}
+                {/* 4. Strategic Logic Tracker */}
                 <div className="mt-20 pt-16 border-t border-border/50">
-                    <div className="flex flex-col md:flex-row gap-16">
-                        <div className="flex-1 space-y-8">
+                    <div className="flex flex-col md:flex-row-reverse items-start gap-16">
+                        <div className="flex-1 space-y-6 text-left">
                             <div className="flex items-center gap-3 text-primary font-bold uppercase tracking-widest text-[13px]">
-                                <Activity size={18} /> Pro-Level Architecture
+                                <Binary size={18} /> Logic Lifecycle
                             </div>
-                            <h2 className="text-[32px] font-bold leading-tight">Implementation Lifecycle</h2>
+                            <h2 className="text-[32px] font-bold leading-tight">The ADR Status Engine</h2>
                             <p className="text-muted-foreground leading-relaxed">
-                                ScriptShelf uses a professional status engine to track the evolution of your logic. Every ADR progresses through three critical states:
+                                Code evolves. Use Architectural Decision Record (ADR) statuses to track the validity of your logic entries over time.
                             </p>
-
-                            <div className="space-y-4">
-                                <div className="p-5 border border-border rounded-[4px] bg-muted/5">
-                                    <div className="flex items-center gap-3 mb-2">
-                                        <span className="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]" />
-                                        <span className="text-[12px] font-black uppercase tracking-widest text-emerald-500">Proposed</span>
-                                    </div>
-                                    <p className="text-[13px] text-muted-foreground">New architectural patterns or experiments currently under evaluation. Use this for early-stage logic.</p>
+                            <div className="space-y-3">
+                                <div className="flex items-center gap-3 p-3 bg-emerald-500/5 border border-emerald-500/20 rounded-[3px]">
+                                    <span className="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.3)]" />
+                                    <span className="text-[12px] font-bold text-emerald-500 uppercase tracking-widest">Proposed</span>
                                 </div>
-                                <div className="p-5 border border-border rounded-[4px] bg-muted/5">
-                                    <div className="flex items-center gap-3 mb-2">
-                                        <span className="w-2 h-2 rounded-full bg-primary shadow-[0_0_8px_rgba(var(--primary-rgb),0.5)]" />
-                                        <span className="text-[12px] font-black uppercase tracking-widest text-primary">Accepted</span>
-                                    </div>
-                                    <p className="text-[13px] text-muted-foreground">Logic that has been validated in production. These represent the "Source of Truth" for your stack.</p>
+                                <div className="flex items-center gap-3 p-3 bg-primary/5 border border-primary/20 rounded-[3px]">
+                                    <span className="w-2 h-2 rounded-full bg-primary shadow-[0_0_8px_rgba(var(--primary-rgb),0.3)]" />
+                                    <span className="text-[12px] font-bold text-primary uppercase tracking-widest">Accepted</span>
                                 </div>
-                                <div className="p-5 border border-border rounded-[4px] bg-muted/5">
-                                    <div className="flex items-center gap-3 mb-2">
-                                        <span className="w-2 h-2 rounded-full bg-rose-500 shadow-[0_0_8px_rgba(244,63,94,0.5)]" />
-                                        <span className="text-[12px] font-black uppercase tracking-widest text-rose-500">Superceded</span>
-                                    </div>
-                                    <p className="text-[13px] text-muted-foreground">Legacy logic replaced by newer patterns. Vital for historical context and avoiding past mistakes.</p>
+                                <div className="flex items-center gap-3 p-3 bg-rose-500/5 border border-rose-500/20 rounded-[3px]">
+                                    <span className="w-2 h-2 rounded-full bg-rose-500 shadow-[0_0_8px_rgba(244,63,94,0.3)]" />
+                                    <span className="text-[12px] font-bold text-rose-500 uppercase tracking-widest">Superceded</span>
                                 </div>
                             </div>
                         </div>
-                        <div className="flex-1 space-y-6">
-                            <div className="p-8 glass-frost bg-primary/5 rounded-[12px] border-none">
-                                <h4 className="font-bold text-[18px] mb-4">Neural Graph Optimization</h4>
-                                <p className="text-[14px] text-muted-foreground mb-6">
-                                    For maximum retrieval efficiency, we recommend a **High-Density Tagging** strategy:
-                                </p>
-                                <ul className="space-y-4 text-[13px]">
-                                    <li className="flex gap-3">
-                                        <div className="w-6 h-6 rounded bg-primary/20 flex items-center justify-center text-primary shrink-0 text-[10px] font-bold">01</div>
-                                        <span>**Stack Categorization**: Always place logic in a root stack (e.g., *Frontend*) for broad filtering.</span>
-                                    </li>
-                                    <li className="flex gap-3">
-                                        <div className="w-6 h-6 rounded bg-primary/20 flex items-center justify-center text-primary shrink-0 text-[10px] font-bold">02</div>
-                                        <span>**Atomic Syntax Tags**: Use granular tags like *#useMemo* or *#Recursive* for surgical searches.</span>
-                                    </li>
-                                    <li className="flex gap-3">
-                                        <div className="w-6 h-6 rounded bg-primary/20 flex items-center justify-center text-primary shrink-0 text-[10px] font-bold">03</div>
-                                        <span>**Cross-Linking**: Never let a note stand alone. Use [[Wiki-Links]] to connect dependencies.</span>
-                                    </li>
-                                </ul>
-                            </div>
+                        <div className="flex-1 w-full p-8 bg-card border border-border rounded-[3px] border-l-4 border-l-primary text-left">
+                            <h4 className="font-bold mb-4">Why track status?</h4>
+                            <p className="text-[14px] text-muted-foreground leading-relaxed italic">
+                                "Tracking why we moved from REST to GraphQL helps avoid making the same mistakes twice. Status labels provide historical context for your growth."
+                            </p>
                         </div>
                     </div>
                 </div>
 
-                {/* Productivity Protocols */}
+                {/* 5. Productivity Protocols */}
                 <div className="mt-20 pt-16 border-t border-border/50">
-                    <div className="flex flex-col md:flex-row items-center gap-16">
-                        <div className="flex-1 space-y-6">
+                    <div className="flex flex-col md:flex-row items-start gap-16">
+                        <div className="flex-1 space-y-6 text-left">
                             <div className="flex items-center gap-3 text-primary font-bold uppercase tracking-widest text-[13px]">
-                                <Keyboard size={18} /> Tactical Acceleration
+                                <Keyboard size={18} /> Component 04: Control
                             </div>
-                            <h2 className="text-[32px] font-bold leading-tight">Productivity Protocols</h2>
+                            <h2 className="text-[32px] font-bold leading-tight">Master Terminal Controls</h2>
                             <p className="text-muted-foreground leading-relaxed">
-                                ScriptShelf is engineered for speed. Use the global shortcut system to navigate between missions without a mouse.
+                                ScriptShelf is engineered for keyboard-first developers. Navegate at high speeds without reaching for the mouse.
                             </p>
-
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                <div className="p-4 bg-muted/20 border border-border rounded-[4px] flex justify-between items-center group hover:border-primary/30 transition-colors">
+                                <div className="p-4 bg-muted/20 border border-border rounded-[3px] flex justify-between items-center">
+                                    <span className="text-[13px] font-bold">Search Palette</span>
+                                    <kbd className="bg-background px-2 py-0.5 border border-border rounded text-[10px] font-bold text-primary">Ctrl+K</kbd>
+                                </div>
+                                <div className="p-4 bg-muted/20 border border-border rounded-[3px] flex justify-between items-center">
                                     <span className="text-[13px] font-bold">Zen Mode</span>
-                                    <kbd className="bg-background px-2 py-0.5 border border-border rounded text-[10px] font-black text-primary uppercase">Alt+Z</kbd>
+                                    <kbd className="bg-background px-2 py-0.5 border border-border rounded text-[10px] font-bold text-primary">Alt+Z</kbd>
                                 </div>
-                                <div className="p-4 bg-muted/20 border border-border rounded-[4px] flex justify-between items-center group hover:border-primary/30 transition-colors">
-                                    <span className="text-[13px] font-bold">Theme Swap</span>
-                                    <kbd className="bg-background px-2 py-0.5 border border-border rounded text-[10px] font-black text-primary uppercase">Alt+T</kbd>
+                                <div className="p-4 bg-muted/20 border border-border rounded-[3px] flex justify-between items-center">
+                                    <span className="text-[13px] font-bold">New Note</span>
+                                    <kbd className="bg-background px-2 py-0.5 border border-border rounded text-[10px] font-bold text-primary">Alt+N</kbd>
                                 </div>
-                                <div className="p-4 bg-muted/20 border border-border rounded-[4px] flex justify-between items-center group hover:border-primary/30 transition-colors">
-                                    <span className="text-[13px] font-bold">Arcade</span>
-                                    <kbd className="bg-background px-2 py-0.5 border border-border rounded text-[10px] font-black text-primary uppercase">Alt+A</kbd>
-                                </div>
-                                <div className="p-4 bg-muted/20 border border-border rounded-[4px] flex justify-between items-center group hover:border-primary/30 transition-colors">
-                                    <span className="text-[13px] font-bold">Library</span>
-                                    <kbd className="bg-background px-2 py-0.5 border border-border rounded text-[10px] font-black text-primary uppercase">Alt+L</kbd>
+                                <div className="p-4 bg-muted/20 border border-border rounded-[3px] flex justify-between items-center">
+                                    <span className="text-[13px] font-bold">Help Map</span>
+                                    <kbd className="bg-background px-2 py-0.5 border border-border rounded text-[10px] font-bold text-primary">?</kbd>
                                 </div>
                             </div>
-
-                            <p className="text-[12px] text-muted-foreground italic bg-primary/5 p-3 border-l-2 border-primary">
-                                Tip: Press <span className="font-bold text-foreground">?</span> anytime to open the full Tactical Shortcut Map.
-                            </p>
                         </div>
-                        <div className="flex-1 space-y-8">
-                            <div className="p-8 bg-card border border-border rounded-[12px] relative overflow-hidden group shadow-2xl">
-                                <div className="absolute inset-0 bg-primary/5 opacity-0 group-hover:opacity-100 transition-opacity" />
-                                <div className="flex items-center gap-4 mb-4">
-                                    <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary">
-                                        <Monitor size={24} />
-                                    </div>
-                                    <div>
-                                        <h4 className="font-black uppercase tracking-widest text-[14px]">Zen_Focus_Active</h4>
-                                        <p className="text-[10px] text-muted-foreground uppercase opacity-60">Distraction Filter: 100%</p>
-                                    </div>
-                                </div>
-                                <p className="text-[14px] leading-relaxed text-muted-foreground relative z-10">
-                                    Zen Mode (Alt+Z) centers your viewport and hides all peripheral sidebars. It’s the tactical choice for deep documentation sprints or high-speed code reading.
-                                </p>
+                        <div className="flex-1 w-full glass-frost p-8 rounded-[3px] text-left">
+                            <div className="flex items-center gap-3 mb-4">
+                                <Monitor size={20} className="text-primary" />
+                                <h4 className="font-bold">Focus Engine</h4>
                             </div>
+                            <p className="text-[14px] text-muted-foreground leading-relaxed mb-6">
+                                Zen Mode centers your viewport and hides all sidebars. Perfect for deep documentation or high-speed code reading.
+                            </p>
+                            <ul className="space-y-2 text-[12px] font-bold text-primary/70">
+                                <li>- DISTRACTION_FILTER: ENABLED</li>
+                                <li>- VIEWPORT_CENTERING: ACTIVE</li>
+                            </ul>
                         </div>
                     </div>
                 </div>
 
-                {/* DevArcade Section */}
+                {/* 6. DevArcade Game Mode */}
                 <div className="mt-20 pt-16 border-t border-border/50">
                     <div className="flex items-center gap-3 text-primary font-bold uppercase tracking-widest text-[13px] mb-8">
-                        <Zap size={18} /> Cognitive Training
+                        <Zap size={18} /> Training Hub
                     </div>
-                    <h2 className="text-[32px] font-bold leading-tight mb-8">DevArcade: Refine Your Stack</h2>
-                    <p className="text-muted-foreground leading-relaxed mb-10 max-w-2xl">
-                        A built-in gamification suite to keep your developer skills sharp. Earn XP, maintain streaks, and unlock tiered rank badges.
+                    <h2 className="text-[32px] font-bold leading-tight mb-8">DevArcade: Gamified Sharpening</h2>
+                    <p className="text-muted-foreground leading-relaxed mb-10 max-w-2xl text-left">
+                        Play built-in technical mini-games to sharpen your coding reflexes. Earn XP while mastering syntax and pattern recognition.
                     </p>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 text-left">
                         {[
-                            { title: "Syntax Sprint", icon: "TS", desc: "Elite_Typing_Test", color: "text-emerald-500", bg: "bg-emerald-500/10" },
-                            { title: "Memory Matrix", icon: <Database size={20} />, desc: "Pattern_Recognition", color: "text-primary", bg: "bg-primary/10" },
-                            { title: "Hex Hunter", icon: "#", desc: "UI_Color_Accuracy", color: "text-amber-500", bg: "bg-amber-500/10" },
-                            { title: "Firewall Breach", icon: <Shield size={20} />, desc: "Defense_Simulation", color: "text-violet-500", bg: "bg-violet-500/10" },
-                            { title: "Bug Hunter v2.5", icon: <Bug size={20} />, desc: "Full_System_Audit", color: "text-rose-500", bg: "bg-rose-500/10" },
-                            { title: "Stack Escape", icon: <Binary size={20} />, desc: "Algorithm_Navigation", color: "text-cyan-500", bg: "bg-cyan-500/10" },
+                            { title: "Syntax Sprint", icon: <Terminal size={18} />, desc: "Elite Typing Speed", color: "text-emerald-500", bg: "bg-emerald-500/10" },
+                            { title: "Bug Hunter", icon: <Bug size={18} />, desc: "Visual Audit Speed", color: "text-rose-500", bg: "bg-rose-500/10" },
+                            { title: "Logic Loop", icon: <Binary size={18} />, desc: "Algo_Optimizing", color: "text-primary", bg: "bg-primary/10" },
                         ].map((game, i) => (
-                            <div key={i} className="group bg-card/60 border border-border hover:border-primary/50 p-6 rounded-[0.8rem] space-y-4 transition-all hover:-translate-y-1 hover:shadow-xl dark:shadow-primary/5 relative overflow-hidden shadow-sm">
-                                <div className="absolute top-0 right-0 w-24 h-24 bg-primary/5 blur-2xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity" />
-                                <div className="flex justify-between items-start relative z-10">
-                                    <div className={`w-12 h-12 rounded-[10px] ${game.bg} flex items-center justify-center ${game.color} font-black text-xl border border-white/5`}>
-                                        {game.icon}
-                                    </div>
-                                    <div className="flex flex-col items-end gap-1">
-                                        <span className="text-[7px] font-black text-muted-foreground/50 uppercase tracking-widest">SIGNAL_LINK</span>
-                                        <div className="flex gap-0.5">
-                                            {[1, 2, 3].map(bit => <div key={bit} className={`w-0.5 h-2 rounded-full ${game.color} opacity-60`} />)}
-                                        </div>
-                                    </div>
+                            <div key={i} className="group glass-frost hover:border-primary/50 p-6 rounded-[3px] space-y-4 transition-all hover:shadow-lg">
+                                <div className={`w-10 h-10 rounded-[3px] ${game.bg} flex items-center justify-center ${game.color} border border-white/5`}>
+                                    {game.icon}
                                 </div>
-                                <div className="relative z-10">
-                                    <h4 className="font-extrabold text-foreground group-hover:text-primary transition-colors">{game.title}</h4>
-                                    <p className="text-[10px] font-mono font-bold text-muted-foreground mt-1 uppercase tracking-tighter">{game.desc}</p>
+                                <div>
+                                    <h4 className="font-bold text-foreground group-hover:text-primary transition-colors">{game.title}</h4>
+                                    <p className="text-[10px] font-bold text-muted-foreground mt-1 uppercase tracking-tighter">{game.desc}</p>
                                 </div>
                                 <div className="pt-4 border-t border-border flex justify-between items-center group-hover:border-primary/20 transition-colors">
-                                    <div className="flex flex-col">
-                                        <span className="text-[7px] font-black text-muted-foreground/40 uppercase tracking-widest">CORE_POWER</span>
-                                        <span className="text-[9px] font-mono font-bold text-foreground/60">98% OPTIMIZED</span>
-                                    </div>
-                                    <ArrowRight size={14} className={`${game.color} opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all`} />
+                                    <span className="text-[9px] font-bold text-foreground/40 uppercase">System: Ready</span>
+                                    <ArrowRight size={14} className={`${game.color} opacity-0 group-hover:opacity-100 transition-all`} />
                                 </div>
                             </div>
                         ))}
+                    </div>
+                    <div className="mt-8 flex justify-start">
+                        <Link to="/arcade" className="so-btn so-btn-primary px-8 py-3 text-[14px] font-bold">Launch Arcade System</Link>
+                    </div>
+                </div>
+            </div>
+
+            {/* Support Protocols */}
+            <div className="mt-32 pt-20 border-t border-border/50 text-center space-y-12">
+                <h2 className="text-[32px] font-bold tracking-tight">Support Protocols</h2>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-left">
+                    <div className="glass-frost p-8 rounded-[3px] space-y-4 hover:border-primary/50 transition-all cursor-pointer">
+                        <MessageSquare size={24} className="text-primary" />
+                        <h4 className="font-bold">Discord Node</h4>
+                        <p className="text-[13px] text-muted-foreground">Join our community for real-time encrypted support and strategy sharing.</p>
+                    </div>
+                    <div className="glass-frost p-8 rounded-[3px] space-y-4 hover:border-primary/50 transition-all cursor-pointer">
+                        <Bug size={32} className="text-primary" />
+                        <h4 className="font-bold">GitHub Tracker</h4>
+                        <p className="text-[13px] text-muted-foreground">Log signal bugs or request new core modules in our official repository.</p>
+                    </div>
+                    <div className="glass-frost p-8 rounded-[3px] space-y-4 hover:border-primary/50 transition-all cursor-pointer">
+                        <Shield size={24} className="text-primary" />
+                        <h4 className="font-bold">Security Wing</h4>
+                        <p className="text-[13px] text-muted-foreground">Reporting vulnerability signals? Access our encrypted reporting line.</p>
                     </div>
                 </div>
             </div>
 
             {/* Final CTA */}
-            <div className="mt-32 p-12 glass-frost rounded-[12px] text-center space-y-8 border-none relative overflow-hidden">
+            <div className="mt-32 p-12 glass-frost rounded-[3px] text-center space-y-8 border-none border-t-4 border-t-primary relative overflow-hidden">
                 <div className="absolute top-0 right-0 w-64 h-64 bg-primary/20 blur-[100px] -translate-y-1/2 translate-x-1/2" />
-                <h2 className="text-[34px] font-bold leading-tight">Ready to build your archives?</h2>
-                <p className="text-muted-foreground max-w-xl mx-auto">
-                    Start by documenting one pattern you used today. Over time, this becomes your most valuable professional asset.
-                </p>
+                <h2 className="text-[34px] font-bold leading-tight tracking-tight text-white">Your technical legacy <br /> starts with one note.</h2>
                 <div className="flex justify-center gap-4">
                     <Link to="/notes/new" className="so-btn so-btn-primary px-10 py-4 font-bold text-[16px]">
-                        Create First Entry <ArrowRight size={18} className="ml-2" />
+                        Initialize First Entry <Zap size={18} className="ml-2" />
                     </Link>
                 </div>
+                <p className="text-zinc-500 font-bold uppercase tracking-[0.2em] text-[10px]">Session_System: Stable // V2.9.0</p>
             </div>
         </div>
     );

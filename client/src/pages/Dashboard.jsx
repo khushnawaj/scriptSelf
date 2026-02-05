@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { getNotes, getAllNotes } from '../features/notes/noteSlice';
+import { getAllNotes } from '../features/notes/noteSlice';
 import { getCategories } from '../features/categories/categorySlice';
 import {
     Activity,
@@ -40,7 +40,6 @@ const Dashboard = () => {
 
     // Filter private vs public notes for dynamic stats
     const publicNotesCount = userNotes.filter(n => n.isPublic).length;
-    const privateNotesCount = userNotes.length - publicNotesCount;
     const adrCount = userNotes.filter(n => n.type === 'adr').length;
     const patternsCount = userNotes.filter(n => n.type === 'pattern').length;
 

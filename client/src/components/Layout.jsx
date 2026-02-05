@@ -56,13 +56,13 @@ const Layout = () => {
             <NavItem to="/categories" label="Tags" icon={LayoutGrid} />
             <NavItem to="/dashboard" label="Stats" icon={Flag} />
 
-            <div className="mt-4 mb-2 px-2 text-[11px] font-bold uppercase text-muted-foreground/60 tracking-widest">
-                Personal
+            <div className="mt-4 mb-2 px-2 text-[11px] font-black uppercase text-muted-foreground/40 tracking-[0.2em]">
+                Your Space
             </div>
             <NavItem to="/profile" label="Profile" icon={Users} />
-            <NavItem to="/notes/new" label="New Record" icon={Zap} />
+            <NavItem to="/notes/new" label="New Note" icon={Zap} />
             <NavItem to="/arcade" label="Arcade" icon={Gamepad2} />
-            <NavItem to="/guide" label="Learn" icon={BookOpen} />
+            <NavItem to="/guide" label="Help Guide" icon={BookOpen} />
         </div>
     );
 
@@ -120,25 +120,24 @@ const Layout = () => {
                 {/* Right Sidebar - System Intelligence Wing */}
                 <aside className="hidden xl:block w-[340px] shrink-0 p-8 space-y-8 sticky top-[64px] h-[calc(100vh-64px)] overflow-y-auto border-l border-border/30">
                     {/* System Blog/News Card */}
-                    <div className="glass-morphism rounded-[12px] overflow-hidden shadow-xl shadow-primary/5">
-                        <div className="px-5 py-3 bg-primary/5 border-b border-border/50 text-[11px] font-bold text-primary flex items-center gap-2 uppercase tracking-[0.2em]">
-                            <Terminal size={14} /> Intelligence Feed
+                    <div className="bg-white/5 rounded-[1.5rem] overflow-hidden border border-white/10">
+                        <div className="px-5 py-3 bg-primary/5 border-b border-white/5 text-[10px] font-black text-primary flex items-center gap-2 uppercase tracking-[0.2em]">
+                            <Terminal size={14} /> Tips & Updates
                         </div>
                         <div className="p-5 space-y-4">
                             <div className="group cursor-pointer">
-                                <p className="text-[14px] text-foreground font-bold group-hover:text-primary transition-colors leading-tight mb-1">Advanced Knowledge Graph</p>
-                                <p className="text-[12px] text-muted-foreground leading-relaxed">Bidirectional links allow you to map logic like a neural network.</p>
+                                <p className="text-[14px] text-foreground font-black group-hover:text-primary transition-colors leading-tight mb-1">Smart Connections</p>
+                                <p className="text-[12px] text-muted-foreground leading-relaxed">Use brackets to link your notes together like a brain.</p>
                             </div>
                             <div className="group cursor-pointer">
-                                <p className="text-[14px] text-foreground font-bold group-hover:text-primary transition-colors leading-tight mb-1">Pro Search Operators</p>
-                                <p className="text-[12px] text-muted-foreground leading-relaxed">Combine tags and specific ADR statuses for surgical search precision.</p>
+                                <p className="text-[14px] text-foreground font-black group-hover:text-primary transition-colors leading-tight mb-1">Pro Search</p>
+                                <p className="text-[12px] text-muted-foreground leading-relaxed">Combine tags to find any code snippet in milliseconds.</p>
                             </div>
                         </div>
                     </div>
 
-                    {/* Stats/Metrics Preview */}
                     <div className="space-y-4">
-                        <h4 className="text-[11px] font-bold text-muted-foreground uppercase tracking-[0.2em] px-1">Memory Stream</h4>
+                        <h4 className="text-[10px] font-black text-muted-foreground/40 uppercase tracking-[0.2em] px-1">Recent Notes</h4>
                         <div className="space-y-2">
                             {notes?.slice(0, 4).map((note, i) => (
                                 <Link key={i} to={`/notes/${note._id}`} className="flex flex-col gap-1 p-3 hover:bg-muted/50 rounded-[10px] border border-transparent hover:border-border transition-all group">

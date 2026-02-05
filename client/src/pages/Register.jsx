@@ -3,13 +3,17 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, Link } from 'react-router-dom';
 import { register, reset } from '../features/auth/authSlice';
 import { toast } from 'react-hot-toast';
+import { motion } from 'framer-motion';
 import {
     Code2,
     MessageSquare,
     Folders,
     Trophy,
     HelpCircle,
-    CheckCircle2
+    CheckCircle2,
+    ArrowRight,
+    Sparkles,
+    Shield
 } from 'lucide-react';
 
 const Register = () => {
@@ -51,91 +55,146 @@ const Register = () => {
         const userData = { username, email, password };
         dispatch(register(userData));
     };
-
     return (
-        <div className="min-h-[calc(100vh-150px)] flex items-center justify-center p-4 animate-in fade-in duration-500">
-            <div className="max-w-[800px] w-full flex flex-col md:flex-row gap-12 items-center">
+        <div className="min-h-screen flex items-center justify-center p-4 bg-[#020617] overflow-hidden relative">
+            {/* Background Decorative Elements */}
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full pointer-events-none">
+                <div className="absolute top-[20%] right-[10%] w-[30%] h-[40%] bg-primary/10 blur-[120px] rounded-full" />
+                <div className="absolute bottom-[20%] left-[10%] w-[30%] h-[40%] bg-blue-500/5 blur-[120px] rounded-full" />
+            </div>
 
-                {/* Value Propositions - SO Style */}
-                <div className="hidden md:block flex-1 space-y-6">
-                    <h1 className="text-[27px] font-normal text-foreground leading-tight">
-                        Join the ScriptShelf community
-                    </h1>
-                    <div className="space-y-4">
+            <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8 }}
+                className="max-w-[1000px] w-full flex flex-col md:flex-row gap-8 lg:gap-16 items-center relative z-10"
+            >
+
+                {/* Left Side: Value Propositions */}
+                <div className="hidden md:block flex-1 space-y-10">
+                    <motion.div
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: 0.2 }}
+                        className="space-y-4"
+                    >
+                        <div className="inline-flex items-center gap-2 px-3 py-1 bg-primary/20 text-primary border border-primary/30 rounded-full text-[10px] font-black uppercase tracking-widest">
+                            <Sparkles size={12} /> Join the Community
+                        </div>
+                        <h1 className="text-[42px] font-black text-white leading-[1.1] tracking-tighter">
+                            Save your best <br />
+                            <span className="text-primary italic">Code & Ideas</span>
+                        </h1>
+                    </motion.div>
+
+                    <div className="space-y-6">
                         {[
-                            { icon: MessageSquare, text: 'Explain your logic and technical patterns' },
-                            { icon: Folders, text: 'Organize your scripts into reusable archetypes' },
-                            { icon: Trophy, text: 'Unlock badges and earn reputation for documentation' },
-                            { icon: HelpCircle, text: 'Build your personal technical legacy' }
+                            { icon: MessageSquare, text: 'Organize your work', sub: 'Turn messy code snippets into clear, searchable notes.' },
+                            { icon: Shield, text: 'Private and secure', sub: 'Your notes are encrypted and for your eyes only.' },
+                            { icon: Trophy, text: 'Track your growth', sub: 'Earn points as you document and improve your skills.' },
                         ].map((item, i) => (
-                            <div key={i} className="flex items-center gap-3 text-[15px] text-foreground">
-                                <item.icon className="text-primary" size={24} />
-                                <span>{item.text}</span>
-                            </div>
+                            <motion.div
+                                key={i}
+                                initial={{ opacity: 0, x: -20 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                transition={{ delay: 0.4 + i * 0.1 }}
+                                className="flex gap-4 group"
+                            >
+                                <div className="w-12 h-12 shrink-0 bg-white/5 border border-white/10 rounded-xl flex items-center justify-center text-primary group-hover:scale-110 group-hover:bg-primary/10 transition-all">
+                                    <item.icon size={24} />
+                                </div>
+                                <div className="space-y-1">
+                                    <div className="text-[17px] font-bold text-white group-hover:text-primary transition-colors">{item.text}</div>
+                                    <div className="text-[14px] text-zinc-500 font-light">{item.sub}</div>
+                                </div>
+                            </motion.div>
                         ))}
                     </div>
-                    <p className="text-[13px] text-muted-foreground">
-                        Collaborate with yourself. Create your digital vault.
-                    </p>
                 </div>
 
-                {/* Form area */}
-                <div className="w-full max-w-[320px] flex flex-col gap-6">
-                    <div className="bg-card border border-border p-6 rounded-[3px] shadow-lg space-y-4">
-                        <form onSubmit={onSubmit} className="space-y-4">
-                            <div className="space-y-1">
-                                <label className="text-[14px] font-bold text-foreground">Display name</label>
-                                <input
-                                    type="text"
-                                    name="username"
-                                    value={username}
-                                    onChange={onChange}
-                                    className="w-full border border-border bg-background rounded-[3px] py-1.5 px-3 text-[13px] outline-none focus:border-primary focus:ring-4 focus:ring-accent transition-all"
-                                    required
-                                />
+                {/* Right Side: Form */}
+                <motion.div
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: 0.3 }}
+                    className="w-full max-w-[400px]"
+                >
+                    <div className="bg-white/5 border border-white/10 p-8 md:p-10 rounded-3xl backdrop-blur-3xl shadow-2xl relative overflow-hidden group">
+                        {/* Subtle inner glow */}
+                        <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 blur-[40px] rounded-full pointer-events-none" />
+
+                        <div className="relative z-10 space-y-8">
+                            <div className="text-center md:text-left">
+                                <h2 className="text-2xl font-black text-white">Create Account</h2>
+                                <p className="text-zinc-500 text-sm mt-1">Start your vault in less than a minute.</p>
                             </div>
-                            <div className="space-y-1">
-                                <label className="text-[14px] font-bold text-foreground">Email</label>
-                                <input
-                                    type="email"
-                                    name="email"
-                                    value={email}
-                                    onChange={onChange}
-                                    className="w-full border border-border bg-background rounded-[3px] py-1.5 px-3 text-[13px] outline-none focus:border-primary focus:ring-4 focus:ring-accent transition-all"
-                                    required
-                                />
-                            </div>
-                            <div className="space-y-1">
-                                <label className="text-[14px] font-bold text-foreground">Password</label>
-                                <input
-                                    type="password"
-                                    name="password"
-                                    value={password}
-                                    onChange={onChange}
-                                    className="w-full border border-border bg-background rounded-[3px] py-1.5 px-3 text-[13px] outline-none focus:border-primary focus:ring-4 focus:ring-accent transition-all"
-                                    required
-                                />
-                                <p className="text-[11px] text-muted-foreground mt-1">Passwords must contain at least eight characters.</p>
-                            </div>
-                            <button
-                                type="submit"
-                                disabled={isLoading}
-                                className="w-full so-btn so-btn-primary py-2.5 mt-2"
-                            >
-                                {isLoading ? 'Signing up...' : 'Sign up'}
-                            </button>
-                        </form>
-                        <p className="text-[11px] text-muted-foreground leading-normal">
-                            By clicking “Sign up”, you agree to our <span className="text-primary hover:underline cursor-pointer">terms of service</span> and acknowledge the <span className="text-primary hover:underline cursor-pointer">privacy policy</span>.
-                        </p>
+
+                            <form onSubmit={onSubmit} className="space-y-5">
+                                <div className="space-y-1.5">
+                                    <label className="text-[12px] font-black uppercase tracking-widest text-zinc-400 ml-1">Username</label>
+                                    <input
+                                        type="text"
+                                        name="username"
+                                        value={username}
+                                        onChange={onChange}
+                                        placeholder="Pick a cool name"
+                                        className="w-full bg-white/5 border border-white/10 rounded-xl py-3 px-4 text-[14px] outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all text-white placeholder:text-zinc-600"
+                                        required
+                                    />
+                                </div>
+                                <div className="space-y-1.5">
+                                    <label className="text-[12px] font-black uppercase tracking-widest text-zinc-400 ml-1">Email Address</label>
+                                    <input
+                                        type="email"
+                                        name="email"
+                                        value={email}
+                                        onChange={onChange}
+                                        placeholder="yourname@gmail.com"
+                                        className="w-full bg-white/5 border border-white/10 rounded-xl py-3 px-4 text-[14px] outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all text-white placeholder:text-zinc-600"
+                                        required
+                                    />
+                                </div>
+                                <div className="space-y-1.5">
+                                    <label className="text-[12px] font-black uppercase tracking-widest text-zinc-400 ml-1">Password</label>
+                                    <input
+                                        type="password"
+                                        name="password"
+                                        value={password}
+                                        onChange={onChange}
+                                        placeholder="At least 8 characters"
+                                        className="w-full bg-white/5 border border-white/10 rounded-xl py-3 px-4 text-[14px] outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all text-white placeholder:text-zinc-600"
+                                        required
+                                    />
+                                    <p className="text-[10px] text-zinc-600 mt-1.5 italic ml-1 select-none">Use a strong password to keep your code safe.</p>
+                                </div>
+
+                                <button
+                                    type="submit"
+                                    disabled={isLoading}
+                                    className="w-full h-14 bg-primary rounded-xl font-black text-white group flex items-center justify-center gap-2 hover:scale-[1.02] active:scale-[0.98] transition-all mt-4 disabled:opacity-50 disabled:hover:scale-100"
+                                >
+                                    {isLoading ? 'SIGNING UP...' : 'CREATE ACCOUNT'}
+                                    <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
+                                </button>
+                            </form>
+
+                            <p className="text-[11px] text-zinc-500 leading-relaxed text-center px-4">
+                                By signing up, you agree to our <Link to="/terms" className="text-primary hover:underline cursor-pointer font-bold">Terms</Link> and our <Link to="/terms" className="text-primary hover:underline cursor-pointer font-bold">Privacy Policy</Link>.
+                            </p>
+                        </div>
                     </div>
 
-                    <div className="text-[13px] text-center text-foreground">
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ delay: 0.8 }}
+                        className="text-[13px] text-center mt-8 text-zinc-500"
+                    >
                         Already have an account? {' '}
-                        <Link to="/login" className="text-[#0074cc] hover:underline">Log in</Link>
-                    </div>
-                </div>
-            </div>
+                        <Link to="/login" className="text-primary font-black hover:underline tracking-tight">Login here</Link>
+                    </motion.div>
+                </motion.div>
+            </motion.div>
         </div>
     );
 };
