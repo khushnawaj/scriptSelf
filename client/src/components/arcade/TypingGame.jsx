@@ -80,15 +80,15 @@ const TypingGame = ({ dispatch }) => {
     // Render helper for colored text
     const renderText = () => {
         return currentSnippet.split('').map((char, index) => {
-            let colorClass = 'text-muted-foreground/40';
+            let colorClass = 'text-muted-foreground/50 dark:text-muted-foreground/40';
             let bgClass = '';
 
             if (index < input.length) {
                 if (input[index] === char) {
-                    colorClass = 'text-emerald-400';
+                    colorClass = 'text-emerald-600 dark:text-emerald-400 font-bold';
                 } else {
-                    colorClass = 'text-rose-500';
-                    bgClass = 'bg-rose-500/20';
+                    colorClass = 'text-rose-600 dark:text-rose-500';
+                    bgClass = 'bg-rose-500/10 dark:bg-rose-500/20';
                 }
             }
 
@@ -135,9 +135,9 @@ const TypingGame = ({ dispatch }) => {
             </div>
 
             {/* Code Display Area */}
-            <div className="relative bg-slate-950 p-4 sm:p-6 rounded-[2rem] border border-white/5 shadow-2xl transition-all duration-500 w-full flex flex-col items-center">
+            <div className="relative bg-white dark:bg-slate-950 p-4 sm:p-6 rounded-[2rem] border border-border dark:border-white/5 shadow-xl dark:shadow-2xl transition-all duration-500 w-full flex flex-col items-center">
                 <div
-                    className="relative w-full bg-black/40 backdrop-blur-md p-6 sm:p-10 rounded-xl font-mono text-[18px] sm:text-[22px] shadow-inner border border-white/5 min-h-[140px] flex items-center cursor-text transition-all overflow-hidden"
+                    className="relative w-full bg-slate-50 dark:bg-black/40 backdrop-blur-md p-6 sm:p-10 rounded-xl font-mono text-[18px] sm:text-[22px] shadow-inner border border-border dark:border-white/5 min-h-[140px] flex items-center cursor-text transition-all overflow-hidden"
                     onClick={() => inputRef.current?.focus()}
                 >
                     <div className="w-full break-all whitespace-pre-wrap leading-relaxed">{renderText()}</div>

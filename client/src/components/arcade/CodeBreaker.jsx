@@ -106,38 +106,36 @@ const CodeBreaker = ({ dispatch }) => {
             </div>
 
             <div className="flex justify-between items-center mb-6 px-4">
-                <span className="font-bold text-muted-foreground">Attempt {guesses.length + 1}/{ATTEMPTS}</span>
-                <span className="flex items-center gap-2 text-primary font-mono"><Timer size={14} /> {Math.floor(time / 60)}:{(time % 60).toString().padStart(2, '0')}</span>
+                <span className="font-bold text-muted-foreground text-[12px] uppercase tracking-wider">Attempt {guesses.length + 1}/{ATTEMPTS}</span>
+                <span className="flex items-center gap-2 text-primary font-mono font-bold"><Timer size={14} /> {Math.floor(time / 60)}:{(time % 60).toString().padStart(2, '0')}</span>
             </div>
 
             {/* Game Board */}
-            <div className="bg-card border border-border rounded-[12px] p-6 mb-8 flex flex-col gap-3 min-h-[400px]">
+            <div className="bg-white dark:bg-card border border-border rounded-[12px] p-6 mb-8 flex flex-col gap-3 min-h-[400px] shadow-xl dark:shadow-2xl transition-all duration-500">
                 {/* History */}
-                <div className="flex-1 space-y-2 flex flex-col justify-end">
+                <div className="flex-1 space-y-2.5 flex flex-col justify-end">
                     {guesses.map((turn, i) => (
-                        <div key={i} className="flex items-center justify-between bg-muted/30 p-2 rounded-[8px] animate-in fade-in slide-in-from-bottom-2">
+                        <div key={i} className="flex items-center justify-between bg-slate-50 dark:bg-muted/30 p-2.5 rounded-[8px] animate-in fade-in slide-in-from-bottom-2 border border-border/50">
                             <div className="flex gap-2">
                                 {turn.code.map((icon, idx) => (
-                                    <div key={idx} className="w-8 h-8 flex items-center justify-center text-[18px] bg-background border border-border rounded shadow-sm">{icon}</div>
+                                    <div key={idx} className="w-9 h-9 flex items-center justify-center text-[18px] bg-white dark:bg-background border border-border rounded shadow-sm scale-in">{icon}</div>
                                 ))}
                             </div>
-                            <div className="flex gap-1">
-                                {[...Array(turn.feedback.correct)].map((_, j) => <div key={`c-${j}`} className="w-3 h-3 rounded-full bg-emerald-500 shadow-[0_0_5px_rgba(16,185,129,0.5)]" />)}
-                                {[...Array(turn.feedback.partial)].map((_, j) => <div key={`p-${j}`} className="w-3 h-3 rounded-full bg-amber-500 shadow-[0_0_5px_rgba(245,158,11,0.5)]" />)}
-                                {[...Array(4 - turn.feedback.correct - turn.feedback.partial)].map((_, j) => <div key={`m-${j}`} className="w-3 h-3 rounded-full bg-muted border border-border" />)}
+                            <div className="flex gap-1.5 px-2">
+                                {[...Array(turn.feedback.correct)].map((_, j) => <div key={`c-${j}`} className="w-3.5 h-3.5 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]" />)}
+                                {[...Array(turn.feedback.partial)].map((_, j) => <div key={`p-${j}`} className="w-3.5 h-3.5 rounded-full bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.5)]" />)}
+                                {[...Array(4 - turn.feedback.correct - turn.feedback.partial)].map((_, j) => <div key={`m-${j}`} className="w-3.5 h-3.5 rounded-full bg-slate-200 dark:bg-muted border border-border" />)}
                             </div>
                         </div>
                     ))}
+                </div>      {/* Empty Slots Filler can go here if needed to show simpler fixed grid */}
 
-                    {/* Empty Slots Filler can go here if needed to show simpler fixed grid */}
-                </div>
-
-                <div className="border-t border-border pt-4 mt-4">
+                <div className="border-t border-border pt-6 mt-4">
                     {/* Current Guess Input Display */}
-                    <div className="flex justify-center gap-4 mb-6">
+                    <div className="flex justify-center gap-4 mb-8">
                         {[...Array(CODE_LENGTH)].map((_, i) => (
-                            <div key={i} className={`w-12 h-12 flex items-center justify-center text-[24px] border-2 rounded-[12px] transition-all
-                                ${currentGuess[i] ? 'bg-primary/10 border-primary shadow-[0_0_10px_rgba(var(--primary),0.2)]' : 'border-dashed border-border bg-muted/20'}
+                            <div key={i} className={`w-14 h-14 flex items-center justify-center text-[28px] border-2 rounded-xl transition-all duration-300
+                                ${currentGuess[i] ? 'bg-primary/5 border-primary shadow-[0_0_15px_rgba(var(--primary),0.1)]' : 'border-dashed border-border bg-slate-50 dark:bg-muted/20'}
                              `}>
                                 {currentGuess[i]}
                             </div>
@@ -188,7 +186,7 @@ const CodeBreaker = ({ dispatch }) => {
                     )}
                 </div>
             </div>
-        </div>
+        </div >
     );
 };
 

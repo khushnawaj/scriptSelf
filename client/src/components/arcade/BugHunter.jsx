@@ -467,20 +467,20 @@ const BugHunter = ({ dispatch }) => {
     };
 
     return (
-        <div className="w-full h-[600px] lg:h-[82vh] min-h-[550px] relative bg-[#020617] rounded-3xl overflow-hidden border border-cyan-500/30 shadow-[0_0_80px_rgba(6,182,212,0.15)] font-mono selection:bg-cyan-500/40 flex flex-col transition-all duration-500">
+        <div className="w-full h-[600px] lg:h-[82vh] min-h-[550px] relative bg-slate-50 dark:bg-[#020617] rounded-3xl overflow-hidden border border-border dark:border-cyan-500/30 shadow-xl dark:shadow-[0_0_80px_rgba(6,182,212,0.15)] font-mono selection:bg-cyan-500/40 flex flex-col transition-all duration-500">
             {/* VINTAGE CRT EFFECTS */}
             <div className="absolute inset-0 pointer-events-none z-50 opacity-[0.03] scanlines" />
             <div className="absolute inset-0 pointer-events-none z-50 vignette" />
 
             {/* HUD HEADER */}
-            <div className="relative z-10 bg-slate-900/95 backdrop-blur-2xl border-b border-cyan-500/20 shrink-0">
+            <div className="relative z-10 bg-white/95 dark:bg-slate-900/95 backdrop-blur-2xl border-b border-border dark:border-cyan-500/20 shrink-0">
                 <div className="max-w-[1400px] mx-auto p-3 sm:p-5 flex flex-col sm:flex-row justify-between items-center gap-4 sm:gap-6">
                     <div className="flex items-center justify-between w-full sm:w-auto gap-4 lg:gap-8">
                         <div className="flex flex-col">
-                            <span className="text-[7px] text-cyan-500 uppercase tracking-[0.3em] font-black opacity-60 text-center sm:text-left">XP</span>
+                            <span className="text-[7px] text-cyan-600 dark:text-cyan-500 uppercase tracking-[0.3em] font-black opacity-60 text-center sm:text-left">XP</span>
                             <div className="flex items-baseline gap-1">
-                                <span className="text-xl sm:text-3xl font-black text-white tabular-nums tracking-tighter drop-shadow-[0_0_10px_rgba(6,182,212,0.6)]">{score.toLocaleString()}</span>
-                                <span className="text-[8px] text-cyan-500 font-bold opacity-30 uppercase">nodes</span>
+                                <span className="text-xl sm:text-3xl font-black text-foreground dark:text-white tabular-nums tracking-tighter drop-shadow-[0_0_10px_rgba(6,182,212,0.4)] dark:drop-shadow-[0_0_10px_rgba(6,182,212,0.6)]">{score.toLocaleString()}</span>
+                                <span className="text-[8px] text-cyan-600 dark:text-cyan-500 font-bold opacity-30 uppercase">nodes</span>
                             </div>
                         </div>
 
@@ -524,7 +524,7 @@ const BugHunter = ({ dispatch }) => {
             <div id="game-container" className="relative z-10 grid grid-cols-1 lg:grid-cols-4 flex-1 overflow-hidden">
 
                 {/* LEFT: CONSOLE / STATUS */}
-                <div className="hidden lg:flex flex-col border-r border-white/5 bg-slate-950/50 p-4 font-mono text-[10px] overflow-hidden">
+                <div className="hidden lg:flex flex-col border-r border-border dark:border-white/5 bg-slate-100/30 dark:bg-slate-950/50 p-4 font-mono text-[10px] overflow-hidden">
                     <div className="mb-3 flex items-center justify-between opacity-40">
                         <span className="flex items-center gap-2 tracking-widest"><Cpu size={10} /> SYS_MON</span>
                         <span className="animate-pulse">● LIVE</span>
@@ -557,10 +557,10 @@ const BugHunter = ({ dispatch }) => {
                     {gameState === 'menu' && (
                         <div className="text-center space-y-6 sm:space-y-10 animate-in fade-in zoom-in duration-500 w-full max-w-lg">
                             <div className="space-y-2">
-                                <h1 className="text-4xl sm:text-6xl font-black tracking-tighter text-white drop-shadow-[0_0_15px_rgba(255,255,255,0.2)]">
+                                <h1 className="text-4xl sm:text-6xl font-black tracking-tighter text-foreground dark:text-white drop-shadow-[0_0_15px_rgba(255,255,255,0.1)]">
                                     BUG<span className="text-cyan-500">_HUNTER</span>
                                 </h1>
-                                <p className="text-slate-500 text-[9px] tracking-[0.4em] uppercase font-black">Global_Debug_Interface_v2.4</p>
+                                <p className="text-muted-foreground text-[9px] tracking-[0.4em] uppercase font-black">Global_Debug_Interface_v2.4</p>
                             </div>
 
                             <div className="flex flex-col gap-2 w-full">
@@ -602,8 +602,8 @@ const BugHunter = ({ dispatch }) => {
                         <div className="w-full max-w-4xl space-y-6 animate-in slide-in-from-bottom-6 duration-500">
                             {/* CODE DECK */}
                             <div className="relative group">
-                                <div className="absolute -inset-0.5 bg-gradient-to-r from-cyan-500 to-indigo-500 rounded-xl blur opacity-10 group-hover:opacity-20 transition duration-1000"></div>
-                                <div className="relative bg-[#070b18] border border-white/5 rounded-xl overflow-hidden shadow-2xl">
+                                <div className="absolute -inset-0.5 bg-gradient-to-r from-cyan-500 to-indigo-500 rounded-xl blur opacity-5 dark:opacity-10 group-hover:opacity-10 dark:group-hover:opacity-20 transition duration-1000"></div>
+                                <div className="relative bg-white dark:bg-[#070b18] border border-border dark:border-white/5 rounded-xl overflow-hidden shadow-2xl">
                                     {/* TERMINAL HEADER */}
                                     <div className="bg-slate-900/60 px-4 py-2 flex items-center gap-3 border-b border-white/5">
                                         <div className="flex gap-1">
@@ -627,10 +627,10 @@ const BugHunter = ({ dispatch }) => {
                                             </div>
                                         )}
 
-                                        <pre className="text-slate-400">
+                                        <pre className="text-slate-600 dark:text-slate-400">
                                             {activeSnippet.code.split('\n').map((line, i) => (
-                                                <div key={activeSnippet.key + i} className={`flex transition-all duration-500 ${i + 1 === activeSnippet.bugLine ? 'bg-rose-500/5 text-rose-300' : ''}`}>
-                                                    <span className="w-8 text-slate-800 select-none mr-4 text-right font-bold italic opacity-40">{String(i + 1).padStart(2, '0')}</span>
+                                                <div key={activeSnippet.key + i} className={`flex transition-all duration-500 ${i + 1 === activeSnippet.bugLine ? 'bg-rose-500/5 text-rose-600 dark:text-rose-300' : ''}`}>
+                                                    <span className="w-8 text-slate-300 dark:text-slate-800 select-none mr-4 text-right font-bold italic opacity-40">{String(i + 1).padStart(2, '0')}</span>
                                                     <code className="whitespace-pre-wrap">{line}</code>
                                                 </div>
                                             ))}

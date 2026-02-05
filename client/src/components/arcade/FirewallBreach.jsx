@@ -230,8 +230,8 @@ const FirewallBreach = ({ dispatch }) => {
                 </div>
             </div>
 
-            <div className="relative bg-slate-950 p-4 sm:p-6 rounded-[2rem] border border-white/5 shadow-2xl transition-all duration-500 w-full flex justify-center">
-                <div className="relative overflow-hidden rounded-xl border border-white/5 bg-black/40">
+            <div className="relative bg-white dark:bg-slate-950 p-4 sm:p-6 rounded-[2rem] border border-border dark:border-white/5 shadow-xl dark:shadow-2xl transition-all duration-500 w-full flex justify-center">
+                <div className="relative overflow-hidden rounded-xl border border-border dark:border-white/5 bg-slate-50 dark:bg-black/40 shadow-inner">
                     {gameState !== 'playing' && (
                         <div className="absolute inset-0 bg-black/80 backdrop-blur-md flex flex-col items-center justify-center z-20 p-6">
                             {gameState === 'menu' && (

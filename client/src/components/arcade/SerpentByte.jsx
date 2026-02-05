@@ -117,17 +117,17 @@ const SerpentByte = ({ dispatch }) => {
             </div>
 
             <div className="flex justify-between items-center mb-6 px-4">
-                <span className="font-bold text-primary text-[20px]">Score: {score}</span>
-                <span className="text-[12px] text-muted-foreground font-mono bg-secondary/50 px-2 py-1 rounded">SPEED: {Math.round((BASE_SPEED - speed + 10))}MS</span>
+                <span className="font-bold text-primary text-[20px] drop-shadow-sm">{score} XP</span>
+                <span className="text-[10px] text-muted-foreground font-black uppercase tracking-widest bg-slate-100 dark:bg-secondary/50 px-3 py-1.5 rounded-lg border border-border">SPEED: {Math.round((BASE_SPEED - speed + 10))}MS</span>
             </div>
 
             <div
-                className="relative bg-slate-950 rounded-[12px] border border-border shadow-2xl overflow-hidden mx-auto"
+                className="relative bg-white dark:bg-slate-950 rounded-[2rem] border border-border dark:border-white/5 shadow-xl dark:shadow-2xl overflow-hidden mx-auto transition-all duration-500"
                 style={{ width: 400, height: 400 }}
             >
                 {/* Grid Overlay */}
-                <div className="absolute inset-0 grid grid-cols-[repeat(20,1fr)] grid-rows-[repeat(20,1fr)] pointer-events-none opacity-10">
-                    {[...Array(400)].map((_, i) => <div key={i} className="border-[0.5px] border-emerald-500/30" />)}
+                <div className="absolute inset-0 grid grid-cols-[repeat(20,1fr)] grid-rows-[repeat(20,1fr)] pointer-events-none opacity-20 dark:opacity-10">
+                    {[...Array(400)].map((_, i) => <div key={i} className="border-[0.5px] border-slate-200 dark:border-emerald-500/30" />)}
                 </div>
 
                 {/* Snake */}

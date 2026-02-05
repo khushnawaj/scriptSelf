@@ -92,27 +92,27 @@ const MemoryGame = ({ dispatch }) => {
             </div>
 
             {/* Stats */}
-            <div className="w-full flex justify-between items-center bg-card border border-border/50 p-3 rounded-xl shadow-sm">
+            <div className="w-full flex justify-between items-center bg-card border border-border p-3 rounded-xl shadow-sm">
                 <div className="flex flex-col items-start min-w-[70px]">
-                    <span className="text-[8px] font-black opacity-40 uppercase tracking-widest">RUNTIME</span>
+                    <span className="text-[8px] font-black text-muted-foreground uppercase tracking-widest">RUNTIME</span>
                     <span className="text-lg font-black text-foreground tabular-nums">{Math.floor(time / 60)}:{(time % 60).toString().padStart(2, '0')}</span>
                 </div>
                 <div className="flex flex-col items-end min-w-[70px]">
-                    <span className="text-[8px] font-black opacity-40 uppercase tracking-widest">CYCLES</span>
+                    <span className="text-[8px] font-black text-muted-foreground uppercase tracking-widest">CYCLES</span>
                     <span className="text-lg font-black text-foreground">{moves}</span>
                 </div>
             </div>
 
             {/* Grid Container */}
-            <div className={`relative bg-slate-950 p-4 sm:p-6 rounded-[2rem] border border-white/5 shadow-2xl transition-all duration-500 w-full flex justify-center ${isWon ? 'opacity-20 blur-xl scale-95' : ''}`}>
+            <div className={`relative bg-white dark:bg-slate-950 p-4 sm:p-6 rounded-[2rem] border border-border dark:border-white/5 shadow-xl dark:shadow-2xl transition-all duration-500 w-full flex justify-center ${isWon ? 'opacity-20 blur-xl scale-95' : ''}`}>
                 <div className="grid grid-cols-4 gap-2.5 sm:gap-4 w-full max-w-[400px]">
                     {cards.map((iconKey, index) => (
                         <div
                             key={index}
                             onClick={() => handleCardClick(index)}
                             className={`aspect-square cursor-pointer rounded-xl flex items-center justify-center transition-all duration-500 transform border-2 ${flipped.includes(index) || solved.includes(index)
-                                ? 'bg-primary/10 rotate-0 border-primary/40 shadow-[0_0_15px_rgba(var(--primary),0.2)] text-primary'
-                                : 'bg-white/[0.03] rotate-180 hover:bg-white/[0.08] border-white/5 text-transparent'
+                                ? 'bg-primary/5 dark:bg-primary/10 rotate-0 border-primary/40 shadow-[0_0_15px_rgba(var(--primary),0.1)] dark:shadow-[0_0_15px_rgba(var(--primary),0.2)] text-primary'
+                                : 'bg-slate-50 dark:bg-white/[0.03] rotate-180 hover:bg-slate-100 dark:hover:bg-white/[0.08] border-border dark:border-white/5 text-transparent'
                                 }`}
                         >
                             <div className={`transition-all duration-300 transform ${flipped.includes(index) || solved.includes(index) ? 'opacity-100 scale-100' : 'opacity-0 scale-50'}`}>
@@ -123,7 +123,7 @@ const MemoryGame = ({ dispatch }) => {
                 </div>
 
                 {isWon && (
-                    <div className="absolute inset-0 z-20 flex items-center justify-center bg-black/60 backdrop-blur-md rounded-[2rem] animate-in fade-in duration-500">
+                    <div className="absolute inset-0 z-20 flex items-center justify-center bg-white/60 dark:bg-black/60 backdrop-blur-md rounded-[2rem] animate-in fade-in duration-500">
                         <div className="text-center p-6">
                             <Trophy size={60} className="text-yellow-500 mx-auto mb-4 drop-shadow-[0_0_20px_rgba(234,179,8,0.6)]" />
                             <h2 className="text-2xl font-black text-foreground tracking-tighter uppercase mb-2">Matrix Cleared</h2>
@@ -139,7 +139,7 @@ const MemoryGame = ({ dispatch }) => {
             <div className="flex gap-4">
                 <button
                     onClick={initializeGame}
-                    className="px-6 py-2.5 bg-white/5 hover:bg-white/10 border border-white/10 text-[9px] font-black uppercase tracking-[0.2em] rounded-xl transition-all active:scale-95"
+                    className="px-6 py-2.5 bg-secondary hover:bg-accent border border-border dark:bg-white/5 dark:hover:bg-white/10 dark:border-white/10 text-[9px] font-black uppercase tracking-[0.2em] rounded-xl transition-all active:scale-95 text-foreground"
                     disabled={isWon}
                 >
                     FORCE_RESET

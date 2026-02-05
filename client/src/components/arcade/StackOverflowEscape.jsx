@@ -155,17 +155,17 @@ const StackOverflowEscape = ({ dispatch }) => {
             </div>
 
             {/* Stats */}
-            <div className="flex justify-between items-center bg-card border border-border/50 p-3 rounded-xl shadow-sm">
+            <div className="flex justify-between items-center bg-card border border-border p-3 rounded-xl shadow-sm">
                 <div className="flex flex-col items-start min-w-[60px]">
-                    <span className="text-[8px] font-black opacity-40 uppercase tracking-widest">FRAME</span>
+                    <span className="text-[8px] font-black text-muted-foreground uppercase tracking-widest">FRAME</span>
                     <span className="text-lg font-black text-foreground tabular-nums">LVL_0{level + 1}</span>
                 </div>
                 <div className="flex-1 mx-6">
-                    <div className="flex justify-between text-[8px] font-black opacity-40 uppercase tracking-tighter mb-1">
+                    <div className="flex justify-between text-[8px] font-black text-muted-foreground uppercase tracking-tighter mb-1">
                         <span>HEAP_UTILIZATION</span>
                         <span>{memory}%</span>
                     </div>
-                    <div className="h-2 bg-muted rounded-full overflow-hidden border border-white/5">
+                    <div className="h-2 bg-slate-100 dark:bg-muted rounded-full overflow-hidden border border-border dark:border-white/5">
                         <div
                             className={`h-full transition-all duration-500 ${memory > 80 ? 'bg-rose-500 animate-pulse' : 'bg-cyan-500'}`}
                             style={{ width: `${memory}%` }}
@@ -175,14 +175,14 @@ const StackOverflowEscape = ({ dispatch }) => {
             </div>
 
             {/* Grid */}
-            <div className={`relative bg-slate-950 p-4 sm:p-6 rounded-[2rem] border border-white/5 shadow-2xl transition-all duration-500 ${gameState !== 'playing' ? 'opacity-20 blur-xl scale-95' : ''}`}>
+            <div className={`relative bg-white dark:bg-slate-950 p-4 sm:p-6 rounded-[2rem] border border-border dark:border-white/5 shadow-xl dark:shadow-2xl transition-all duration-500 ${gameState !== 'playing' ? 'opacity-20 blur-xl scale-95' : ''}`}>
                 <div className="grid grid-cols-5 gap-2 sm:gap-3 max-w-[280px] mx-auto">
                     {grid.map((row, y) => (
                         row.map((cell, x) => {
                             let content = '';
-                            let bg = 'bg-white/[0.03]';
+                            let bg = 'bg-slate-50 dark:bg-white/[0.03]';
 
-                            if (cell === 1) bg = 'bg-slate-900 border border-white/5 shadow-inner'; // Wall
+                            if (cell === 1) bg = 'bg-slate-200 dark:bg-slate-900 border border-border dark:border-white/5 shadow-inner'; // Wall
                             if (cell === 3) { content = '🚪'; bg = 'bg-emerald-500/10 border border-emerald-500/30'; } // Exit
                             if (cell === 4) { content = '🔒'; bg = 'bg-rose-500/10 border border-rose-500/30 animate-pulse'; } // Door
                             if (x === player.x && y === player.y) { content = '🤖'; bg = 'bg-cyan-500/20 border-2 border-cyan-500 shadow-[0_0_15px_rgba(6,182,212,0.4)] z-10 scale-105'; }
