@@ -46,12 +46,12 @@ const Dashboard = () => {
 
     return (
         <div className="space-y-8 animate-in fade-in duration-700">
-            <div className="flex justify-between items-end border-b border-border pb-6">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end border-b border-border pb-6 gap-4">
                 <div>
                     <h1 className="text-[24px] font-semibold text-foreground tracking-tight">Technical Pulse</h1>
                     <p className="text-muted-foreground text-[13px] opacity-80">Welcome back, {user?.username}. Your knowledge base overview.</p>
                 </div>
-                <Link to="/notes/new" className="so-btn so-btn-primary h-10 px-6 flex items-center gap-2">
+                <Link to="/notes/new" className="so-btn so-btn-primary h-10 px-6 flex items-center gap-2 w-full sm:w-auto">
                     <Plus size={16} /> New Record
                 </Link>
             </div>

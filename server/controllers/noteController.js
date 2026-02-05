@@ -38,6 +38,12 @@ exports.getNotes = async (req, res, next) => {
   try {
     let query;
 
+    // Pagination
+    const page = parseInt(req.query.page, 10) || 1;
+    const limit = parseInt(req.query.limit, 10) || 10;
+    const startIndex = (page - 1) * limit;
+    const endIndex = page * limit;
+
     if (req.query.public === 'true') {
       // Fetch all public notes
       query = Note.find({ isPublic: true })
@@ -70,11 +76,36 @@ exports.getNotes = async (req, res, next) => {
     // Sort by pinned first, then newest
     query = query.sort('-isPinned -createdAt');
 
+    // Count total for pagination
+    const total = await Note.countDocuments(query.getFilter());
+
+    // Apply pagination
+    query = query.skip(startIndex).limit(limit);
+
     const notes = await query;
+
+    // Pagination result
+    const pagination = {};
+
+    if (endIndex < total) {
+      pagination.next = {
+        page: page + 1,
+        limit
+      };
+    }
+
+    if (startIndex > 0) {
+      pagination.previous = {
+        page: page - 1,
+        limit
+      };
+    }
 
     res.status(200).json({
       success: true,
       count: notes.length,
+      total,
+      pagination,
       data: notes
     });
   } catch (err) {

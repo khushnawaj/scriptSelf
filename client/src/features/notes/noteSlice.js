@@ -41,12 +41,25 @@ export const getNotes = createAsyncThunk(
   'notes/getAll',
   async (params = {}, thunkAPI) => {
     try {
-      const { public: isPublic, search } = params;
-      let url = '/notes';
-      if (isPublic) url += '?public=true';
-      if (search) url += (url.includes('?') ? '&' : '?') + `search=${encodeURIComponent(search)}`;
+      const { public: isPublic, search, page = 1, limit = 10 } = params;
+      let url = `/notes?page=${page}&limit=${limit}`;
+      if (isPublic) url += '&public=true';
+      if (search) url += `&search=${encodeURIComponent(search)}`;
 
       const res = await api.get(url);
+      return res.data; // Return full response with meta
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.response?.data?.error);
+    }
+  }
+);
+
+// Get single note
+export const getNote = createAsyncThunk(
+  'notes/getOne',
+  async (id, thunkAPI) => {
+    try {
+      const res = await api.get(`/notes/${id}`);
       return res.data.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.response?.data?.error);
@@ -173,6 +186,8 @@ export const getNoteStats = createAsyncThunk(
 
 const initialState = {
   notes: [],
+  total: 0,
+  pagination: {},
   stats: null,
   isLoading: false,
   isError: false,
@@ -218,7 +233,18 @@ const noteSlice = createSlice({
       })
       .addCase(getNotes.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.notes = action.payload;
+        state.notes = action.payload.data;
+        state.total = action.payload.total;
+        state.pagination = action.payload.pagination;
+      })
+      .addCase(getNote.fulfilled, (state, action) => {
+        state.isLoading = false;
+        const index = state.notes.findIndex(n => n._id === action.payload._id);
+        if (index !== -1) {
+          state.notes[index] = action.payload;
+        } else {
+          state.notes.push(action.payload);
+        }
       })
       .addCase(getNotes.rejected, (state, action) => {
         state.isLoading = false;

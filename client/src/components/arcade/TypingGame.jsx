@@ -119,17 +119,17 @@ const TypingGame = ({ dispatch }) => {
             </div>
 
             {/* Stats */}
-            <div className="w-full flex justify-between items-center bg-card border border-border/50 p-3 rounded-xl shadow-sm">
+            <div className="w-full flex justify-between items-center bg-card border border-border p-3 rounded-xl shadow-sm">
                 <div className="flex flex-col items-start min-w-[60px]">
-                    <span className="text-[8px] font-black opacity-40 uppercase tracking-widest">WPM</span>
-                    <span className="text-lg font-black text-white tabular-nums">{wpm}</span>
+                    <span className="text-[8px] font-black text-muted-foreground uppercase tracking-widest">WPM</span>
+                    <span className="text-lg font-black text-foreground tabular-nums">{wpm}</span>
                 </div>
                 <div className="flex flex-col items-center min-w-[60px]">
-                    <span className="text-[8px] font-black opacity-40 uppercase tracking-widest">DONE</span>
+                    <span className="text-[8px] font-black text-muted-foreground uppercase tracking-widest">DONE</span>
                     <span className="text-lg font-black text-primary">{completed}</span>
                 </div>
                 <div className="flex flex-col items-end min-w-[60px]">
-                    <span className="text-[8px] font-black opacity-40 uppercase tracking-widest">XP</span>
+                    <span className="text-[8px] font-black text-muted-foreground uppercase tracking-widest">XP</span>
                     <span className="text-lg font-black text-amber-500">{score}</span>
                 </div>
             </div>

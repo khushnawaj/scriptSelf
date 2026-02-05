@@ -18,36 +18,28 @@ import { Link } from 'react-router-dom';
 
 const Notes = () => {
     const dispatch = useDispatch();
-    const { notes, isLoading: notesLoading } = useSelector((state) => state.notes);
+    const { notes, total, pagination, isLoading: notesLoading } = useSelector((state) => state.notes);
     const { categories, isLoading: catsLoading } = useSelector((state) => state.categories);
 
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedCategory, setSelectedCategory] = useState('All');
     const [sort, setSort] = useState('newest');
+    const [page, setPage] = useState(1);
 
     useEffect(() => {
-        dispatch(getAllNotes());
+        const cat = selectedCategory === 'All' ? null : selectedCategory;
+        dispatch(getNotes({ search: searchTerm, page, limit: 10 }));
         dispatch(getCategories());
 
         // Handle search query from URL (Wiki-Links)
         const params = new URLSearchParams(window.location.search);
         const searchParam = params.get('search');
-        if (searchParam) {
+        if (searchParam && !searchTerm) {
             setSearchTerm(decodeURIComponent(searchParam));
         }
-    }, [dispatch]);
+    }, [dispatch, searchTerm, page]);
 
-    const filteredNotes = notes.filter((note) => {
-        const matchesSearch = note.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            note.content.toLowerCase().includes(searchTerm.toLowerCase());
-        const matchesCategory = selectedCategory === 'All' || note.category?.name === selectedCategory;
-
-        let matchesTab = true;
-        if (sort === 'public') matchesTab = note.isPublic;
-        if (sort === 'private') matchesTab = !note.isPublic;
-
-        return matchesSearch && matchesCategory && matchesTab;
-    });
+    const filteredNotes = notes; // Now filtered on server for search/page
 
     if (notesLoading || catsLoading) return <Spinner />;
 
@@ -146,6 +138,40 @@ const Notes = () => {
                     </div>
                 )}
             </div>
+
+            {/* Pagination Controls */}
+            {total > 10 && (
+                <div className="flex items-center justify-between pt-8 pb-12 border-t border-border mt-4">
+                    <div className="text-[13px] text-muted-foreground">
+                        Showing <span className="font-bold text-foreground">{(page - 1) * 10 + 1}</span> to <span className="font-bold text-foreground">{Math.min(page * 10, total)}</span> of <span className="font-bold text-foreground">{total}</span> records
+                    </div>
+                    <div className="flex border border-border rounded-[3px] overflow-hidden">
+                        <button
+                            onClick={() => setPage(page - 1)}
+                            disabled={!pagination.previous}
+                            className="px-4 py-2 text-[13px] bg-card hover:bg-muted disabled:opacity-50 disabled:cursor-not-allowed border-r border-border transition-colors transition-all"
+                        >
+                            Prev
+                        </button>
+                        {[...Array(Math.ceil(total / 10))].map((_, i) => (
+                            <button
+                                key={i}
+                                onClick={() => setPage(i + 1)}
+                                className={`px-4 py-2 text-[13px] border-r border-border last:border-r-0 transition-all ${page === i + 1 ? 'bg-primary text-white font-bold' : 'bg-card text-foreground hover:bg-muted'}`}
+                            >
+                                {i + 1}
+                            </button>
+                        ))}
+                        <button
+                            onClick={() => setPage(page + 1)}
+                            disabled={!pagination.next}
+                            className="px-4 py-2 text-[13px] bg-card hover:bg-muted disabled:opacity-50 disabled:cursor-not-allowed transition-colors transition-all"
+                        >
+                            Next
+                        </button>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

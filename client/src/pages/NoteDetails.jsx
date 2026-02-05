@@ -26,7 +26,7 @@ import {
 import { toast } from 'react-hot-toast';
 import Spinner from '../components/Spinner';
 import Mermaid from '../components/Mermaid';
-import { getNotes, deleteNote, cloneNote, addComment, deleteComment, updateComment } from '../features/notes/noteSlice';
+import { getNote, deleteNote, cloneNote, addComment, deleteComment, updateComment } from '../features/notes/noteSlice';
 import { followUser, unfollowUser } from '../features/auth/authSlice';
 
 const NoteDetails = () => {
@@ -42,10 +42,8 @@ const NoteDetails = () => {
     const [isCloning, setIsCloning] = useState(false);
 
     useEffect(() => {
-        if (!note) {
-            dispatch(getNotes());
-        }
-    }, [id, note, dispatch]);
+        dispatch(getNote(id));
+    }, [id, dispatch]);
 
     const handleCopy = (text, index) => {
         navigator.clipboard.writeText(text);

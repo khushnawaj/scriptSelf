@@ -78,8 +78,14 @@ export default function CommandPalette() {
                                 value={query}
                                 onChange={(e) => setQuery(e.target.value)}
                             />
-                            <div className="flex items-center gap-1.5 shrink-0">
-                                <kbd className="px-1.5 py-0.5 rounded-[3px] border border-border bg-card text-[10px] font-bold text-muted-foreground">ESC</kbd>
+                            <div className="flex items-center gap-2 shrink-0">
+                                <button
+                                    onClick={() => setIsOpen(false)}
+                                    className="p-1.5 hover:bg-muted rounded-[3px] text-muted-foreground sm:hidden"
+                                >
+                                    <Plus size={20} className="rotate-45" />
+                                </button>
+                                <kbd className="hidden sm:inline-flex px-1.5 py-0.5 rounded-[3px] border border-border bg-card text-[10px] font-bold text-muted-foreground">ESC</kbd>
                             </div>
                         </div>
 

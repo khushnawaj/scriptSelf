@@ -218,14 +218,14 @@ const FirewallBreach = ({ dispatch }) => {
             </div>
 
             {/* Stats */}
-            <div className="w-full flex justify-between items-center bg-card border border-border/50 p-3 rounded-xl shadow-sm">
+            <div className="w-full flex justify-between items-center bg-card border border-border p-3 rounded-xl shadow-sm">
                 <div className="flex flex-col items-start min-w-[80px]">
-                    <span className="text-[8px] font-black text-muted-foreground uppercase tracking-widest opacity-50">SYNC_SCORE</span>
+                    <span className="text-[8px] font-black text-muted-foreground uppercase tracking-widest">SYNC_SCORE</span>
                     <span className="text-xl font-black text-foreground tabular-nums">{score}</span>
                 </div>
                 <div className="flex gap-1.5 min-w-[60px] justify-end">
                     {[0, 1, 2].map(i => (
-                        <div key={i} className={`w-3.5 h-3.5 rounded-full transition-all duration-300 ${i < lives ? 'bg-rose-500 shadow-[0_0_10px_rgba(244,63,94,0.5)]' : 'bg-slate-800'}`} />
+                        <div key={i} className={`w-3.5 h-3.5 rounded-full transition-all duration-300 ${i < lives ? 'bg-rose-500 shadow-[0_0_10px_rgba(244,63,94,0.5)]' : 'bg-slate-300 dark:bg-slate-800'}`} />
                     ))}
                 </div>
             </div>
