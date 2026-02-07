@@ -144,7 +144,7 @@ const AdminDashboard = () => {
     }, [users]);
 
     const handleBulkAction = useCallback((action) => {
-        toast(`Bulk ${action} - Feature coming soon!`, { icon: 'ℹ️' });
+        toast(`Bulk ${action} - Feature coming soon!`);
     }, []);
 
     const exportData = useCallback((type) => {
@@ -322,12 +322,12 @@ const AdminDashboard = () => {
                             <QuickActionButton
                                 icon={<Mail size={18} />}
                                 label="Send Broadcast"
-                                onClick={() => toast('Broadcast feature coming soon', { icon: '📧' })}
+                                onClick={() => toast('Broadcast feature coming soon')}
                             />
                             <QuickActionButton
                                 icon={<BarChart3 size={18} />}
                                 label="View Analytics"
-                                onClick={() => toast('Analytics coming soon', { icon: '📊' })}
+                                onClick={() => toast('Analytics coming soon')}
                             />
                         </div>
                     </div>

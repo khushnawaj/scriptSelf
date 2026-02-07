@@ -426,10 +426,10 @@ const BugHunter = ({ dispatch }) => {
                 const roll = Math.random();
                 if (roll > 0.5) {
                     setPowerUps(p => ({ ...p, shield: true }));
-                    toast.success("SYSTEM SHIELD ACTIVATED", { icon: '🛡️', style: { background: '#1e293b', color: '#fff', border: '1px solid #06b6d4' } });
+                    toast.success("SYSTEM SHIELD ACTIVATED");
                 } else {
                     setPowerUps(p => ({ ...p, slowMotion: p.slowMotion + 5 }));
-                    toast.success("TIME DILATION ACTIVE", { icon: '⏳', style: { background: '#1e293b', color: '#fff', border: '1px solid #10b981' } });
+                    toast.success("TIME DILATION ACTIVE");
                 }
             }
 
@@ -442,7 +442,7 @@ const BugHunter = ({ dispatch }) => {
             if (powerUps.shield) {
                 setPowerUps(p => ({ ...p, shield: false }));
                 setFeedback({ message: 'SHIELD BLOCKED!', type: 'shield' });
-                toast.error("SHIELD BREACHED", { icon: '🛡️' });
+                toast.error("SHIELD BREACHED");
             } else {
                 setHealth(h => {
                     const newHealth = h - 25;

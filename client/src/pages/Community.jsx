@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import { io } from 'socket.io-client';
 import api from '../utils/api';
-import { Send, Globe, Zap, Paperclip, File, Image as ImageIcon, Video, Loader2, Download, ArrowLeft, Maximize2 } from 'lucide-react';
+import { Send, Globe, Zap, Paperclip, File, Image as ImageIcon, Video, Loader2, Download, ArrowLeft, Maximize2, X } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { toast } from 'react-hot-toast';
 
@@ -92,7 +92,7 @@ const Community = () => {
                 headers: { 'Content-Type': 'multipart/form-data' }
             });
             setSelectedFile(res.data.data);
-            toast.success('File ready to send');
+            toast.success('File uploaded successfully');
         } catch (err) {
             toast.error('Upload failed');
         } finally {
@@ -248,17 +248,28 @@ const Community = () => {
             {/* Input Area */}
             <div className="p-4 bg-secondary/30 border-t border-border">
                 {selectedFile && (
-                    <div className="mb-3 p-3 bg-accent/20 rounded-lg border border-primary/20 flex items-center gap-3 animate-in slide-in-from-bottom-2 duration-300">
-                        <div className="p-2 bg-primary/10 rounded-md text-primary">
-                            {selectedFile.fileType === 'image' ? <ImageIcon size={18} /> : selectedFile.fileType === 'video' ? <Video size={18} /> : <File size={18} />}
+                    <div className="mb-3 px-1 animate-in slide-in-from-bottom-2 duration-300">
+                        <div className="relative inline-block group">
+                            <div className="w-14 h-14 bg-muted/40 border border-border rounded-xl overflow-hidden flex items-center justify-center relative">
+                                {selectedFile.fileType === 'image' || selectedFile.type === 'image' ? (
+                                    <img src={selectedFile.url} alt="Preview" className="w-full h-full object-cover" />
+                                ) : (
+                                    <div className="text-muted-foreground p-3 bg-primary/10 rounded-lg">
+                                        {selectedFile.fileType === 'video' ? <Video size={20} /> : <File size={20} />}
+                                    </div>
+                                )}
+                                <div className="absolute inset-0 bg-black/5 dark:bg-black/10 pointer-events-none" />
+                            </div>
+
+                            <button
+                                type="button"
+                                onClick={() => setSelectedFile(null)}
+                                className="absolute -top-2 -right-2 bg-background border border-border text-muted-foreground hover:text-red-500 hover:border-red-500/30 rounded-full p-1 shadow-sm transition-all scale-90 hover:scale-100 z-50 cursor-pointer"
+                                title="Remove file"
+                            >
+                                <X size={12} strokeWidth={3} />
+                            </button>
                         </div>
-                        <div className="flex-1 min-w-0">
-                            <p className="text-[12px] font-bold text-foreground truncate">{selectedFile.name}</p>
-                            <p className="text-[10px] text-muted-foreground uppercase">{selectedFile.fileType} ready</p>
-                        </div>
-                        <button onClick={() => setSelectedFile(null)} className="p-1 hover:bg-red-500/10 hover:text-red-500 rounded transition-colors">
-                            <ArrowLeft size={16} className="rotate-45" />
-                        </button>
                     </div>
                 )}
                 <form onSubmit={handleSendMessage} className="flex gap-2">

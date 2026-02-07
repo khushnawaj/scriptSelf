@@ -51,15 +51,7 @@ const ShortcutManager = () => {
                     case 'z':
                         e.preventDefault();
                         const isZen = document.body.classList.toggle('zen-mode');
-                        toast.success(isZen ? 'Zen Mode Enabled' : 'Normal View Restored', {
-                            icon: '🧘',
-                            style: {
-                                borderRadius: '4px',
-                                background: 'var(--primary)',
-                                color: 'var(--primary-foreground)',
-                                fontSize: '12px'
-                            }
-                        });
+                        toast.success(isZen ? 'Zen Mode Enabled' : 'Normal View Restored');
                         break;
                     case 't':
                         e.preventDefault();

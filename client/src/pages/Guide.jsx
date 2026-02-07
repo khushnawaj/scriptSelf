@@ -410,7 +410,7 @@ const Guide = () => {
                                     <p className="text-[11px] text-muted-foreground">New optimization technique for React renders...</p>
                                 </div>
                                 <div className="flex gap-2 text-[10px] text-primary/70 font-bold">
-                                    <span>🔥 Trending</span>
+                                    <span>Trending</span>
                                     <span>•</span>
                                     <span>247 Active Users</span>
                                 </div>
@@ -468,7 +468,7 @@ const Guide = () => {
                                 </div>
                             </div>
                             <div className="mt-4 p-3 bg-red-500/10 border border-red-500/20 rounded">
-                                <p className="text-[10px] text-red-500 font-black uppercase tracking-wider">⚠️ Admin Access Required</p>
+                                <p className="text-[10px] text-red-500 font-black uppercase tracking-wider">Admin Access Required</p>
                             </div>
                         </div>
                     </div>

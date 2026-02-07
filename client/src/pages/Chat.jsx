@@ -168,10 +168,7 @@ const Chat = () => {
 
             URL.revokeObjectURL(localPreview.url);
             setSelectedFile(res.data.data);
-            toast.success('📤 Ready to send', {
-                duration: 2000,
-                style: { background: '#10b981', color: '#fff', fontWeight: 'bold' }
-            });
+            toast.success('File uploaded successfully');
         } catch (err) {
             toast.error('Upload failed. Try again.');
             setSelectedFile(null);
@@ -331,96 +328,88 @@ const Chat = () => {
                         {/* Input */}
                         <div className="p-6 bg-background/95 dark:bg-background/70 backdrop-blur-xl border-t border-border/50">
                             <AnimatePresence>
-                                {activeFile && (
-                                    <motion.div
-                                        initial={{ y: 20, opacity: 0, scale: 0.95 }}
-                                        animate={{ y: 0, opacity: 1, scale: 1 }}
-                                        exit={{ y: 20, opacity: 0, scale: 0.95 }}
-                                        transition={{ type: "spring", stiffness: 300, damping: 25 }}
-                                        className="mb-4 p-4 bg-gradient-to-r from-primary/5 via-primary/10 to-primary/5 dark:from-primary/10 dark:via-primary/15 dark:to-primary/10 rounded-2xl border border-primary/20 flex items-center gap-4 relative overflow-hidden shadow-lg"
-                                    >
-                                        {isUploading && (
-                                            <motion.div
-                                                className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 dark:via-white/5 to-transparent"
-                                                animate={{ x: ['-100%', '100%'] }}
-                                                transition={{ repeat: Infinity, duration: 1.5, ease: "linear" }}
-                                            />
-                                        )}
+                                <form onSubmit={handleSendMessage} className="flex gap-3 items-end">
+                                    <div className="flex-1 bg-secondary/20 dark:bg-secondary/10 border border-border/50 rounded-2xl focus-within:border-primary/50 focus-within:ring-2 focus-within:ring-primary/10 transition-all duration-300">
+                                        {/* Compact File Preview Chip */}
+                                        <AnimatePresence>
+                                            {activeFile && (
+                                                <motion.div
+                                                    initial={{ opacity: 0, scale: 0.95 }}
+                                                    animate={{ opacity: 1, scale: 1 }}
+                                                    exit={{ opacity: 0, scale: 0.95 }}
+                                                    className="px-3 pt-3 pb-1"
+                                                >
+                                                    <div className="relative inline-block group">
+                                                        <div className="w-14 h-14 bg-muted/40 border border-border rounded-xl overflow-hidden flex items-center justify-center relative">
+                                                            {isUploading ? (
+                                                                <Loader2 size={20} className="animate-spin text-primary" />
+                                                            ) : activeFile.fileType === 'image' && activeFile.url ? (
+                                                                <img src={activeFile.url} alt="Preview" className="w-full h-full object-cover opacity-90 group-hover:opacity-100 transition-opacity" />
+                                                            ) : (
+                                                                <div className="text-muted-foreground">
+                                                                    {activeFile.fileType === 'video' ? <Video size={24} /> : <File size={24} />}
+                                                                </div>
+                                                            )}
 
-                                        <div className={`w-14 h-14 bg-primary/10 dark:bg-primary/20 rounded-xl flex items-center justify-center text-primary relative ${isUploading ? 'animate-pulse' : ''}`}>
-                                            {isUploading ? (
-                                                <Loader2 size={24} className="animate-spin" />
-                                            ) : (
-                                                <>
-                                                    {activeFile.fileType === 'image' ? <ImageIcon size={24} /> : activeFile.fileType === 'video' ? <Video size={24} /> : <File size={24} />}
-                                                </>
+                                                            {/* Overlay Gradient for Text/Icon visibility if needed */}
+                                                            <div className="absolute inset-0 bg-black/5 dark:bg-black/10 pointer-events-none" />
+                                                        </div>
+
+                                                        {/* Close Button (Always visible on hover or if regular file) */}
+                                                        {!isUploading && (
+                                                            <button
+                                                                type="button"
+                                                                onClick={() => {
+                                                                    if (activeFile.isLocal && activeFile.url) {
+                                                                        URL.revokeObjectURL(activeFile.url);
+                                                                    }
+                                                                    setSelectedFile(null);
+                                                                }}
+                                                                className="absolute -top-2 -right-2 bg-background border border-border text-muted-foreground hover:text-red-500 hover:border-red-500/30 rounded-full p-1 shadow-sm transition-all scale-90 hover:scale-100 z-50 cursor-pointer"
+                                                                title="Remove file"
+                                                            >
+                                                                <X size={12} strokeWidth={3} />
+                                                            </button>
+                                                        )}
+                                                    </div>
+                                                </motion.div>
                                             )}
-                                        </div>
+                                        </AnimatePresence>
 
-                                        <div className="flex-1 min-w-0 relative z-10">
-                                            <p className="text-sm font-black text-foreground truncate mb-1">{activeFile.name}</p>
-                                            <div className="flex items-center gap-2">
-                                                {isUploading ? (
-                                                    <p className="text-[10px] text-primary uppercase font-black tracking-widest animate-pulse">Uploading...</p>
-                                                ) : activeFile.isLocal ? (
-                                                    <p className="text-[10px] text-amber-500 dark:text-amber-400 uppercase font-black tracking-widest">Preview</p>
-                                                ) : (
-                                                    <p className="text-[10px] text-green-600 dark:text-green-400 uppercase font-black tracking-widest flex items-center gap-1">
-                                                        <CheckCheck size={12} /> Ready
-                                                    </p>
-                                                )}
-                                            </div>
-                                        </div>
-
-                                        {!isUploading && (
+                                        {/* Input Area */}
+                                        <div className="flex items-end p-2">
+                                            <input type="file" ref={fileInputRef} onChange={(e) => uploadFile(e.target.files[0])} className="hidden" />
                                             <button
-                                                onClick={() => {
-                                                    if (activeFile.isLocal && activeFile.url) {
-                                                        URL.revokeObjectURL(activeFile.url);
-                                                    }
-                                                    setSelectedFile(null);
-                                                }}
-                                                className="p-2 text-red-500 dark:text-red-400 hover:bg-red-500/10 dark:hover:bg-red-500/20 rounded-xl transition-all relative z-10"
+                                                type="button"
+                                                onClick={() => fileInputRef.current.click()}
+                                                disabled={isUploading}
+                                                className="p-3 text-muted-foreground hover:text-primary transition-colors flex-shrink-0 disabled:opacity-50"
                                             >
-                                                <X size={18} />
+                                                <Paperclip size={18} />
                                             </button>
-                                        )}
-                                    </motion.div>
-                                )}
-                            </AnimatePresence>
-
-                            <form onSubmit={handleSendMessage} className="flex gap-3 items-end">
-                                <div className="flex-1 bg-secondary/20 dark:bg-secondary/10 border border-border/50 rounded-2xl flex items-end p-2 focus-within:border-primary/50 focus-within:ring-2 focus-within:ring-primary/10 transition-all duration-300">
-                                    <input type="file" ref={fileInputRef} onChange={(e) => uploadFile(e.target.files[0])} className="hidden" />
+                                            <textarea
+                                                rows="1"
+                                                value={newMessage}
+                                                onChange={(e) => {
+                                                    setNewMessage(e.target.value);
+                                                    e.target.style.height = 'auto';
+                                                    e.target.style.height = `${Math.min(e.target.scrollHeight, 120)}px`;
+                                                }}
+                                                onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSendMessage(e); } }}
+                                                placeholder="Type a message..."
+                                                className="flex-1 bg-transparent border-none outline-none py-3 px-2 text-[14px] min-h-[46px] resize-none overflow-y-auto custom-scrollbar placeholder:text-muted-foreground/50"
+                                            />
+                                        </div>
+                                    </div>
                                     <button
-                                        type="button"
-                                        onClick={() => fileInputRef.current.click()}
-                                        disabled={isUploading}
-                                        className="p-3 text-muted-foreground hover:text-primary transition-colors flex-shrink-0 disabled:opacity-50"
+                                        type="submit"
+                                        disabled={isUploading || (!newMessage.trim() && !activeFile)}
+                                        className="p-4 rounded-2xl bg-primary text-white hover:opacity-90 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 shadow-lg shadow-primary/20 dark:shadow-primary/30"
                                     >
-                                        {isUploading ? <Loader2 size={18} className="animate-spin" /> : <Paperclip size={18} />}
+                                        <Send size={20} />
                                     </button>
-                                    <textarea
-                                        rows="1"
-                                        value={newMessage}
-                                        onChange={(e) => {
-                                            setNewMessage(e.target.value);
-                                            e.target.style.height = 'auto';
-                                            e.target.style.height = `${Math.min(e.target.scrollHeight, 120)}px`;
-                                        }}
-                                        onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSendMessage(e); } }}
-                                        placeholder="Type a message..."
-                                        className="flex-1 bg-transparent border-none outline-none py-3 px-2 text-[14px] min-h-[46px] resize-none overflow-y-auto custom-scrollbar placeholder:text-muted-foreground/50"
-                                    />
-                                </div>
-                                <button
-                                    type="submit"
-                                    disabled={isUploading || (!newMessage.trim() && !activeFile)}
-                                    className="p-4 rounded-2xl bg-primary text-white hover:opacity-90 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 shadow-lg shadow-primary/20 dark:shadow-primary/30"
-                                >
-                                    <Send size={20} />
-                                </button>
-                            </form>
+                                </form>
+                            </AnimatePresence>
                         </div>
                     </motion.div>
                 ) : (

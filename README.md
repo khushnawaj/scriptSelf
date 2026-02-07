@@ -43,6 +43,12 @@
     - `?`: Open the Tactical Shortcut Command Map.
 - **Zen Focus**: A distraction-free environment that centers your workspace and maximizes vertical real estate for documentation.
 
+### 💬 Real-Time Collaboration & Community (New)
+- **Private Encrypted Chat**: Secure, end-to-end like real-time messaging with typing indicators, read receipts, and online status.
+- **Gemini-Style File Sharing**: Modern, compact thumbnail previews for image/video uploads with overlay controls, inspired by leading AI interfaces.
+- **Global Community Stream**: A public channel for all developers to share insights, code snippets, and resources in real-time.
+- **Socket.IO Integration**: Instant message delivery and live updates without refreshing.
+
 ### 🕹️ DevArcade (Premium Cognitive Training)
 *Gamify your growth with a high-fidelity suite of developer mini-games.*
 
@@ -52,7 +58,7 @@
 - **Hex Hunter**: Pixel-perfect color accuracy test.
 - **Stack Overflow Escape & Firewall Breach**: Advanced algorithm and reflex challenges with tiered difficulty.
 - **Bug Hunter v2.5**: Premium multi-stage debugger simulation with system monitoring and power-ups.
-- **Ranked Badge System**: maintain daily streaks to promote from **Script Kiddie** to **Elite Architect**.
+- **Ranked Badge System**: Maintain daily streaks to promote from **Script Kiddie** to **Elite Architect**.
 
 ---
 
