@@ -11,12 +11,13 @@ const {
   cloneNote,
   addComment,
   updateComment,
-  deleteComment
+  deleteComment,
+  togglePin
 } = require('../controllers/noteController');
 
 const router = express.Router({ mergeParams: true });
 
-const { protect, authorize } = require('../middleware/authMiddleware');
+const { protect, authorize, detectUser } = require('../middleware/authMiddleware');
 const upload = require('../middleware/uploadMiddleware');
 
 // Dashboard Stats
@@ -37,9 +38,15 @@ router.get('/export', protect, exportNotes);
 // Admin Route for all system notes
 router.get('/admin/all', protect, authorize('admin'), adminGetNotes);
 
+// Mark answer as solution
+router.put('/:id/comments/:commentId/solution', protect, require('../controllers/noteController').markSolution);
+
+// Pin/Unpin Note (Admin)
+router.put('/:id/pin', protect, authorize('admin'), togglePin);
+
 router
   .route('/')
-  .get(protect, getNotes)
+  .get(detectUser, getNotes)
   .post(protect, upload.single('file'), createNote);
 
 router.post('/:id/clone', protect, cloneNote);
@@ -50,7 +57,7 @@ router.route('/:id/comments/:commentId')
 
 router
   .route('/:id')
-  .get(protect, getNote)
+  .get(detectUser, getNote)
   .put(protect, upload.single('file'), updateNote)
   .delete(protect, deleteNote);
 

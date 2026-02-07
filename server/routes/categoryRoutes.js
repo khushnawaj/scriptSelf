@@ -12,22 +12,20 @@ const noteRouter = require('./noteRoutes');
 
 const router = express.Router();
 
-const { protect } = require('../middleware/authMiddleware');
+const { protect, detectUser } = require('../middleware/authMiddleware');
 
 // Re-route into other resource routers
 router.use('/:categoryId/notes', noteRouter);
 
-router.use(protect);
-
 router
   .route('/')
-  .get(getCategories)
-  .post(createCategory);
+  .get(detectUser, getCategories)
+  .post(protect, createCategory);
 
 router
   .route('/:id')
-  .get(getCategory)
-  .put(updateCategory)
-  .delete(deleteCategory);
+  .get(detectUser, getCategory)
+  .put(protect, updateCategory)
+  .delete(protect, deleteCategory);
 
 module.exports = router;

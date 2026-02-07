@@ -16,7 +16,8 @@ import {
     UserCog,
     Gamepad2,
     Trophy,
-    Flame
+    Flame,
+    Pin
 } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import { useSelector } from 'react-redux';
@@ -115,6 +116,16 @@ const Admin = () => {
             toast.success('Note removed by admin');
         } catch (error) {
             toast.error('Failed to delete note');
+        }
+    };
+
+    const handleTogglePin = async (id) => {
+        try {
+            const { data } = await api.put(`/notes/${id}/pin`);
+            setAllNotes(allNotes.map(n => n._id === id ? { ...n, isPinned: data.data.isPinned } : n));
+            toast.success(data.data.isPinned ? 'Record pinned to top' : 'Record unpinned');
+        } catch (error) {
+            toast.error('Failed to toggle pin state');
         }
     };
 
@@ -300,7 +311,10 @@ const Admin = () => {
                                     <tbody className="divide-y divide-border">
                                         {filteredNotes.map(n => (
                                             <tr key={n._id} className="hover:bg-muted/20 transition-colors">
-                                                <td className="px-6 py-4 font-bold text-foreground">{n.title}</td>
+                                                <td className="px-6 py-4 font-bold text-foreground flex items-center gap-2">
+                                                    {n.isPinned && <Pin size={14} className="text-amber-500 fill-amber-500" />}
+                                                    {n.title}
+                                                </td>
                                                 <td className="px-6 py-4 text-muted-foreground">{n.user?.username || 'Redacted'}</td>
                                                 <td className="px-6 py-4">
                                                     <span className="so-tag">{n.category?.name || 'Uncategorized'}</span>
@@ -310,7 +324,14 @@ const Admin = () => {
                                                         {n.isPublic ? 'Public' : 'Private'}
                                                     </span>
                                                 </td>
-                                                <td className="px-6 py-4 text-right">
+                                                <td className="px-6 py-4 text-right flex items-center justify-end gap-2">
+                                                    <button
+                                                        onClick={() => handleTogglePin(n._id)}
+                                                        className={`p-2 transition-colors ${n.isPinned ? 'text-amber-500' : 'text-muted-foreground hover:text-amber-500'}`}
+                                                        title={n.isPinned ? 'Unpin Note' : 'Pin Note'}
+                                                    >
+                                                        <Pin size={16} className={n.isPinned ? 'fill-amber-500' : ''} />
+                                                    </button>
                                                     <button
                                                         onClick={() => handleDeleteNote(n._id)}
                                                         className="p-2 text-muted-foreground hover:text-rose-500 transition-colors"

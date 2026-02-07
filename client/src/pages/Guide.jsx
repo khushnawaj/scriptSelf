@@ -31,7 +31,10 @@ import {
     Tags,
     Star,
     MessageSquare,
-    Sparkles
+    Sparkles,
+    Users,
+    FileText,
+    Download
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
@@ -317,7 +320,161 @@ const Guide = () => {
                     </div>
                 </div>
 
-                {/* 6. DevArcade Game Mode */}
+                {/* 6. Real-Time Chat System */}
+                <div className="mt-20 pt-16 border-t border-border/50">
+                    <div className="flex flex-col md:flex-row items-start gap-16">
+                        <div className="flex-1 space-y-6 text-left">
+                            <div className="flex items-center gap-3 text-primary font-bold uppercase tracking-widest text-[13px]">
+                                <MessageSquare size={18} /> Component 05: Communication
+                            </div>
+                            <h2 className="text-[32px] font-bold leading-tight">Encrypted Signal Protocol</h2>
+                            <p className="text-muted-foreground leading-relaxed">
+                                Connect with fellow developers through our end-to-end encrypted chat system. Share code, collaborate on projects, and build your network.
+                            </p>
+                            <ul className="space-y-4 text-[14px]">
+                                <li className="flex gap-4">
+                                    <div className="w-6 h-6 rounded bg-primary/10 flex items-center justify-center text-primary shrink-0"><Shield size={14} /></div>
+                                    <span>**End-to-End Encryption**: All messages are encrypted in transit and at rest.</span>
+                                </li>
+                                <li className="flex gap-4">
+                                    <div className="w-6 h-6 rounded bg-primary/10 flex items-center justify-center text-primary shrink-0"><CheckSquare size={14} /></div>
+                                    <span>**Read Receipts**: Single tick (sent), double tick (delivered), blue tick (read).</span>
+                                </li>
+                                <li className="flex gap-4">
+                                    <div className="w-6 h-6 rounded bg-primary/10 flex items-center justify-center text-primary shrink-0"><Share2 size={14} /></div>
+                                    <span>**File Sharing**: Send images, videos, and documents up to 10MB instantly.</span>
+                                </li>
+                            </ul>
+                        </div>
+                        <div className="flex-1 bg-accent/20 p-8 border border-border rounded-[3px] font-mono text-[13px] shadow-sm text-left w-full">
+                            <div className="flex gap-2 mb-4 border-b border-border/50 pb-2">
+                                <span className="text-[10px] text-muted-foreground uppercase font-bold tracking-widest">Chat_Interface.jsx</span>
+                            </div>
+                            <div className="space-y-4">
+                                <div className="flex items-center gap-3 p-3 bg-primary/5 rounded border-l-4 border-primary">
+                                    <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+                                    <span className="text-xs text-muted-foreground">Encrypted Connection Active</span>
+                                </div>
+                                <div className="p-3 bg-muted/30 rounded text-xs">
+                                    <p className="text-primary font-bold mb-1">@developer_42</p>
+                                    <p className="text-muted-foreground">Check out this React hook I built...</p>
+                                    <div className="flex items-center gap-2 mt-2">
+                                        <span className="text-[9px] opacity-40">12:34 PM</span>
+                                        <CheckSquare size={10} className="text-blue-500" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {/* 7. Community Feed */}
+                <div className="mt-20 pt-16 border-t border-border/50">
+                    <div className="flex flex-col md:flex-row-reverse items-start gap-16">
+                        <div className="flex-1 space-y-6 text-left">
+                            <div className="flex items-center gap-3 text-primary font-bold uppercase tracking-widest text-[13px]">
+                                <Globe size={18} /> Component 06: Collective
+                            </div>
+                            <h2 className="text-[32px] font-bold leading-tight">The Global Knowledge Stream</h2>
+                            <p className="text-muted-foreground leading-relaxed">
+                                Broadcast your discoveries to the entire ScriptShelf community. Share breakthroughs, ask questions, and learn from the collective intelligence.
+                            </p>
+                            <div className="space-y-4">
+                                <div className="flex gap-4 p-4 bg-muted/20 border border-border rounded-[4px]">
+                                    <div className="w-10 h-10 rounded bg-primary/10 flex items-center justify-center text-primary shrink-0"><Sparkles size={20} /></div>
+                                    <div>
+                                        <h4 className="font-bold text-[15px]">Public Broadcasting</h4>
+                                        <p className="text-[13px] text-muted-foreground">Share code snippets, tutorials, and insights with the entire community.</p>
+                                    </div>
+                                </div>
+                                <div className="flex gap-4 p-4 bg-muted/20 border border-border rounded-[4px]">
+                                    <div className="w-10 h-10 rounded bg-primary/10 flex items-center justify-center text-primary shrink-0"><Share2 size={20} /></div>
+                                    <div>
+                                        <h4 className="font-bold text-[15px]">Media Support</h4>
+                                        <p className="text-[13px] text-muted-foreground">Attach images, videos, and files to enrich your posts.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="flex-1 w-full glass-frost p-8 rounded-[3px] border-t-0 border-l-4 border-l-primary text-left">
+                            <div className="flex items-center gap-4 mb-6">
+                                <div className="w-12 h-12 bg-gradient-to-br from-primary/20 to-primary/10 rounded-full flex items-center justify-center font-black text-primary">C</div>
+                                <div>
+                                    <p className="font-bold text-[18px]">Community_Feed</p>
+                                    <p className="text-[11px] text-primary font-black uppercase tracking-tighter">Live Global Stream</p>
+                                </div>
+                            </div>
+                            <div className="space-y-3">
+                                <div className="p-3 bg-muted/30 rounded border border-border/50">
+                                    <p className="text-xs font-bold mb-1">Latest Discovery</p>
+                                    <p className="text-[11px] text-muted-foreground">New optimization technique for React renders...</p>
+                                </div>
+                                <div className="flex gap-2 text-[10px] text-primary/70 font-bold">
+                                    <span>🔥 Trending</span>
+                                    <span>•</span>
+                                    <span>247 Active Users</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {/* 8. Admin Console */}
+                <div className="mt-20 pt-16 border-t border-border/50">
+                    <div className="flex flex-col md:flex-row items-start gap-16">
+                        <div className="flex-1 space-y-6 text-left">
+                            <div className="flex items-center gap-3 text-red-500 font-bold uppercase tracking-widest text-[13px]">
+                                <Shield size={18} /> Component 07: Administration
+                            </div>
+                            <h2 className="text-[32px] font-bold leading-tight">System Control Center</h2>
+                            <p className="text-muted-foreground leading-relaxed">
+                                For authorized administrators only. Manage users, moderate content, and monitor system health from a unified command center.
+                            </p>
+                            <ul className="space-y-4 text-[14px]">
+                                <li className="flex gap-4">
+                                    <div className="w-6 h-6 rounded bg-red-500/10 flex items-center justify-center text-red-500 shrink-0"><Users size={14} /></div>
+                                    <span>**User Management**: View, edit roles, and manage user accounts.</span>
+                                </li>
+                                <li className="flex gap-4">
+                                    <div className="w-6 h-6 rounded bg-red-500/10 flex items-center justify-center text-red-500 shrink-0"><FileText size={14} /></div>
+                                    <span>**Content Moderation**: Pin, delete, or feature community content.</span>
+                                </li>
+                                <li className="flex gap-4">
+                                    <div className="w-6 h-6 rounded bg-red-500/10 flex items-center justify-center text-red-500 shrink-0"><Activity size={14} /></div>
+                                    <span>**Analytics Dashboard**: Track system metrics and user activity.</span>
+                                </li>
+                                <li className="flex gap-4">
+                                    <div className="w-6 h-6 rounded bg-red-500/10 flex items-center justify-center text-red-500 shrink-0"><Download size={14} /></div>
+                                    <span>**Data Export**: Download user and content data for backup.</span>
+                                </li>
+                            </ul>
+                        </div>
+                        <div className="flex-1 w-full p-8 bg-gradient-to-br from-red-500/5 to-red-600/5 border-2 border-red-500/20 rounded-[3px] text-left">
+                            <div className="flex items-center gap-3 mb-6">
+                                <Shield size={24} className="text-red-500" />
+                                <div>
+                                    <h4 className="font-bold text-[18px]">Security Level: Omega</h4>
+                                    <p className="text-[11px] text-red-500 font-black uppercase tracking-tighter">Authorized Personnel Only</p>
+                                </div>
+                            </div>
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className="p-4 bg-card border border-border rounded">
+                                    <p className="text-[24px] font-black text-foreground">1,247</p>
+                                    <p className="text-[10px] text-muted-foreground uppercase font-bold">Total Users</p>
+                                </div>
+                                <div className="p-4 bg-card border border-border rounded">
+                                    <p className="text-[24px] font-black text-foreground">3,891</p>
+                                    <p className="text-[10px] text-muted-foreground uppercase font-bold">Content Items</p>
+                                </div>
+                            </div>
+                            <div className="mt-4 p-3 bg-red-500/10 border border-red-500/20 rounded">
+                                <p className="text-[10px] text-red-500 font-black uppercase tracking-wider">⚠️ Admin Access Required</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {/* 9. DevArcade Game Mode */}
                 <div className="mt-20 pt-16 border-t border-border/50">
                     <div className="flex items-center gap-3 text-primary font-bold uppercase tracking-widest text-[13px] mb-8">
                         <Zap size={18} /> Training Hub

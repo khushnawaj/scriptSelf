@@ -2,12 +2,13 @@ const express = require('express');
 const path = require('path');
 const dotenv = require('dotenv');
 const morgan = require('morgan');
-const colors = require('colors'); // Optional usually, but helps debugging
+const colors = require('colors');
 const cookieParser = require('cookie-parser');
 const mongoSanitize = require('express-mongo-sanitize');
 const helmet = require('helmet');
 const xss = require('xss-clean');
 const hpp = require('hpp');
+const cors = require('cors');
 const connectDB = require('./config/db');
 const errorHandler = require('./middleware/errorMiddleware');
 
@@ -23,58 +24,134 @@ const users = require('./routes/userRoutes');
 const categories = require('./routes/categoryRoutes');
 const notes = require('./routes/noteRoutes');
 const notifications = require('./routes/notificationRoutes');
+const chat = require('./routes/chatRoutes');
 
 const app = express();
-
-// Trust proxy for secure cookies on Render
-app.set('trust proxy', 1);
-
-// Request Logger
-app.use((req, res, next) => {
-  console.log(`[REQUEST] ${req.method} ${req.url} Origin: ${req.headers.origin}`);
-  next();
+const server = require('http').createServer(app);
+const io = require('socket.io')(server, {
+  cors: {
+    origin: "*",
+    methods: ["GET", "POST"]
+  }
 });
 
-const cors = require('cors');
+// Socket.io Logic
+io.on('connection', (socket) => {
+  console.log('New client connected');
 
-// Permissive CORS for debugging
-const params = {
-  origin: true, // Reflects the request origin
+  socket.on('joinPrivate', (userId) => {
+    socket.join(userId);
+    console.log(`User ${userId} joined their private room`);
+  });
+
+  socket.on('sendMessage', async (data) => {
+    try {
+      const { sender, recipient, message, attachment } = data;
+      const Chat = require('./models/Chat');
+
+      const chatData = {
+        sender,
+        recipient: recipient || null,
+        message: message || ""
+      };
+
+      if (attachment && attachment.url) {
+        chatData.attachment = {
+          url: attachment.url,
+          name: attachment.name,
+          fileType: attachment.fileType || attachment.type || 'file'
+        };
+      }
+
+      // Check if recipient is online to set initial status
+      // For simplicity, we'll mark as 'sent' first, then let the recipient confirm delivery
+      const newChat = await Chat.create(chatData);
+      const populatedChat = await Chat.findById(newChat._id)
+        .populate('sender', 'username avatar')
+        .lean();
+
+      if (recipient) {
+        // Broadcast to recipient
+        io.to(recipient).emit('privateMessage', populatedChat);
+        // Also send back to sender so they have the DB version with ID and status
+        socket.emit('privateMessage', populatedChat);
+
+        // Notify recipient (Notification system)
+        const Notification = require('./models/Notification');
+        await Notification.create({
+          recipient,
+          sender,
+          type: 'comment',
+          message: `New message from ${populatedChat.sender.username}`,
+          link: `/chat?user=${sender}`
+        });
+      } else {
+        io.emit('message', populatedChat);
+      }
+    } catch (err) {
+      console.error('Socket error:', err);
+    }
+  });
+
+  // Handle Double Tick (Delivered)
+  socket.on('messageDelivered', async ({ messageId, senderId }) => {
+    try {
+      const Chat = require('./models/Chat');
+      const chat = await Chat.findByIdAndUpdate(messageId, { status: 'delivered' }, { new: true });
+      if (chat) {
+        io.to(senderId).emit('statusUpdate', { messageId, status: 'delivered' });
+      }
+    } catch (err) {
+      console.error('Delivery update error:', err);
+    }
+  });
+
+  // Handle Blue Tick (Read)
+  socket.on('markAsRead', async ({ recipientId, senderId }) => {
+    try {
+      const Chat = require('./models/Chat');
+      // Update all messages from sender to recipient as read
+      await Chat.updateMany(
+        { sender: senderId, recipient: recipientId, status: { $ne: 'read' } },
+        { status: 'read' }
+      );
+      io.to(senderId).emit('messagesRead', { recipientId });
+    } catch (err) {
+      console.error('Read update error:', err);
+    }
+  });
+
+  socket.on('disconnect', () => {
+    console.log('Client disconnected');
+  });
+});
+
+// Trust proxy
+app.set('trust proxy', 1);
+
+// Permissive CORS
+const corsOptions = {
+  origin: true,
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'Origin']
 };
-
-app.use(cors(params));
-app.options('*', cors(params));
-
-// Health check route
-app.get('/', (req, res) => {
-  res.send('API is running...');
-});
+app.use(cors(corsOptions));
+app.options('*', cors(corsOptions));
 
 // Body parser
 app.use(express.json());
-
-// Cookie parser
 app.use(cookieParser());
+app.use(morgan('dev'));
 
-// Set static folder
+// Static folders
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-// Sanitize data
+// Security
 app.use(mongoSanitize());
-
-// Set security headers
-app.use(helmet({
-  crossOriginResourcePolicy: false,
-}));
-
-// Prevent XSS attacks
+app.use(helmet({ crossOriginResourcePolicy: false }));
 app.use(xss());
-
-// Prevent http param pollution
 app.use(hpp());
 
 // Mount routers
@@ -83,25 +160,12 @@ app.use('/api/v1/users', users);
 app.use('/api/v1/categories', categories);
 app.use('/api/v1/notes', notes);
 app.use('/api/v1/notifications', notifications);
+app.use('/api/v1/chat', chat);
 
+// Error middleare
 app.use(errorHandler);
 
-const PORT = process.env.PORT || 5000;
-
-const server = app.listen(
-  PORT,
-  console.log(`Server running in ${process.env.NODE_ENV} mode on port ${PORT}`)
-);
-
-// Handle unhandled promise rejections
-// Handle unhandled promise rejections
-process.on('unhandledRejection', (err, promise) => {
-  console.log(`Error: ${err.message}`);
-  // Do not close server on Render, keep it alive
-  // server.close(() => process.exit(1));
-});
-
-process.on('uncaughtException', (err) => {
-  console.log(`Uncaught Exception: ${err.message}`);
-  // Keep alive
+const PORT = process.env.PORT || 5001;
+server.listen(PORT, () => {
+  console.log(`Server running in ${process.env.NODE_ENV} mode on port ${PORT}`.yellow.bold);
 });

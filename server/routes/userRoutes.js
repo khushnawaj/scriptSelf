@@ -24,14 +24,12 @@ router.get('/:id/following', getFollowing);
 router.use(protect);
 
 // Public User Routes (Protected)
+router.get('/', getUsers);
 router.put('/arcade', updateArcadeStats);
 router.post('/:id/follow', followUser);
 router.delete('/:id/follow', unfollowUser);
 
-// Admin Routes
-router.route('/')
-    .get(authorize('admin'), getUsers);
-
+// Admin Routes for specific users
 router.route('/:id')
     .get(authorize('admin'), getUser)
     .delete(authorize('admin'), deleteUser);

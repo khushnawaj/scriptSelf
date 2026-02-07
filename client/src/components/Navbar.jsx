@@ -19,7 +19,7 @@ import {
     Gamepad2,
     Flame
 } from 'lucide-react';
-import { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import NotificationBell from './NotificationBell';
 
@@ -32,11 +32,11 @@ const Navbar = ({ onMenuClick }) => {
     const [isProfileOpen, setIsProfileOpen] = useState(false);
     const profileRef = useRef(null);
 
-    const handleLogout = () => {
+    const handleLogout = useCallback(() => {
         dispatch(logout());
         dispatch(reset());
         navigate('/login');
-    };
+    }, [dispatch, navigate]);
 
     useEffect(() => {
         const handleClickOutside = (event) => {

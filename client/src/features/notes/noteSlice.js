@@ -173,6 +173,21 @@ export const updateComment = createAsyncThunk(
   }
 );
 
+// Mark Solution
+export const markSolution = createAsyncThunk(
+  'notes/markSolution',
+  async ({ noteId, commentId }, thunkAPI) => {
+    try {
+      const res = await api.put(`/notes/${noteId}/comments/${commentId}/solution`);
+      toast.success('Solution marked');
+      return { id: noteId, comments: res.data.data };
+    } catch (error) {
+      toast.error('Failed to mark solution');
+      return thunkAPI.rejectWithValue(error.response?.data?.error);
+    }
+  }
+);
+
 // Get Stats
 export const getNoteStats = createAsyncThunk(
   'notes/getStats',
@@ -185,6 +200,22 @@ export const getNoteStats = createAsyncThunk(
     }
   }
 );
+
+// Toggle Pin (Admin)
+export const togglePin = createAsyncThunk(
+  'notes/togglePin',
+  async (id, thunkAPI) => {
+    try {
+      const res = await api.put(`/notes/${id}/pin`);
+      toast.success(res.data.data.isPinned ? 'Post Pinned!' : 'Post Unpinned');
+      return res.data.data;
+    } catch (error) {
+      toast.error('Failed to toggle pin');
+      return thunkAPI.rejectWithValue(error.response?.data?.error);
+    }
+  }
+);
+
 
 const initialState = {
   notes: [],
@@ -292,6 +323,13 @@ const noteSlice = createSlice({
           state.notes[noteIndex].comments = comments;
         }
       })
+      .addCase(markSolution.fulfilled, (state, action) => {
+        const { id, comments } = action.payload;
+        const noteIndex = state.notes.findIndex((n) => n._id === id);
+        if (noteIndex !== -1) {
+          state.notes[noteIndex].comments = comments;
+        }
+      })
       .addCase(getAllNotes.pending, (state) => {
         state.isLoading = true;
       })
@@ -303,6 +341,12 @@ const noteSlice = createSlice({
         state.isLoading = false;
         state.isError = true;
         state.message = action.payload;
+      })
+      .addCase(togglePin.fulfilled, (state, action) => {
+        const index = state.notes.findIndex(n => n._id === action.payload._id);
+        if (index !== -1) {
+          state.notes[index] = action.payload;
+        }
       });
   },
 });

@@ -1,31 +1,38 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { loadUser } from './features/auth/authSlice';
-import { useEffect } from 'react';
+import { useEffect, lazy, Suspense } from 'react';
 import { Toaster } from 'react-hot-toast';
 
 import Layout from './components/Layout';
-// We will update PrivateRoute to use redux, but we can also inline it here for simplicity
-// or import a Redux-aware PrivateRoute. Let's inline/refactor here.
+import Spinner from './components/Spinner';
 
+// Eager load critical pages
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Register from './pages/Register';
-import ForgotPassword from './pages/ForgotPassword';
-import ResetPassword from './pages/ResetPassword';
-import Dashboard from './pages/Dashboard';
-import Profile from './pages/Profile';
-import PublicProfile from './pages/PublicProfile';
-import Notes from './pages/Notes';
-import NoteEditor from './pages/NoteEditor';
-import NoteDetails from './pages/NoteDetails';
-import Categories from './pages/Categories';
-import Admin from './pages/Admin';
-import Guide from './pages/Guide';
-import NotFound from './pages/NotFound';
-import Arcade from './pages/Arcade';
-import Terms from './pages/Terms';
-import Spinner from './components/Spinner';
+
+// Lazy load heavy/less-critical pages
+const ForgotPassword = lazy(() => import('./pages/ForgotPassword'));
+const ResetPassword = lazy(() => import('./pages/ResetPassword'));
+const Dashboard = lazy(() => import('./pages/Dashboard'));
+const Profile = lazy(() => import('./pages/Profile'));
+const PublicProfile = lazy(() => import('./pages/PublicProfile'));
+const Notes = lazy(() => import('./pages/Notes'));
+const NoteEditor = lazy(() => import('./pages/NoteEditor'));
+const NoteDetails = lazy(() => import('./pages/NoteDetails'));
+const Categories = lazy(() => import('./pages/Categories'));
+const AdminDashboard = lazy(() => import('./pages/AdminDashboard'));
+const Guide = lazy(() => import('./pages/Guide'));
+const NotFound = lazy(() => import('./pages/NotFound'));
+const Arcade = lazy(() => import('./pages/Arcade'));
+const Issues = lazy(() => import('./pages/Issues'));
+const Terms = lazy(() => import('./pages/Terms'));
+const Community = lazy(() => import('./pages/Community'));
+const Chat = lazy(() => import('./pages/Chat'));
+const AdminRoute = lazy(() => import('./components/AdminRoute'));
+const CommandPalette = lazy(() => import('./components/CommandPalette'));
+const ShortcutManager = lazy(() => import('./components/ShortcutManager'));
 
 // Private Route Component
 const PrivateRoute = ({ children }) => {
@@ -43,10 +50,6 @@ const PublicRoute = ({ children }) => {
   return user ? <Navigate to="/dashboard" /> : children;
 }
 
-import AdminRoute from './components/AdminRoute';
-import CommandPalette from './components/CommandPalette';
-import ShortcutManager from './components/ShortcutManager';
-
 function App() {
   const dispatch = useDispatch();
 
@@ -56,8 +59,10 @@ function App() {
 
   return (
     <Router>
-      <CommandPalette />
-      <ShortcutManager />
+      <Suspense fallback={<Spinner fullPage message="Loading..." />}>
+        <CommandPalette />
+        <ShortcutManager />
+      </Suspense>
       <Toaster
         position="bottom-right"
         toastOptions={{
@@ -72,41 +77,43 @@ function App() {
           }
         }}
       />
-      <Routes>
-        <Route path="/" element={<PublicRoute><Home /></PublicRoute>} />
-        <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
-        <Route path="/register" element={<PublicRoute><Register /></PublicRoute>} />
-        <Route path="/forgot-password" element={<PublicRoute><ForgotPassword /></PublicRoute>} />
-        <Route path="/reset-password/:resetToken" element={<PublicRoute><ResetPassword /></PublicRoute>} />
+      <Suspense fallback={<Spinner fullPage message="Loading page..." />}>
+        <Routes>
+          <Route path="/" element={<PublicRoute><Home /></PublicRoute>} />
+          <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
+          <Route path="/register" element={<PublicRoute><Register /></PublicRoute>} />
+          <Route path="/forgot-password" element={<PublicRoute><ForgotPassword /></PublicRoute>} />
+          <Route path="/reset-password/:resetToken" element={<PublicRoute><ResetPassword /></PublicRoute>} />
 
-        <Route element={
-          <PrivateRoute>
-            <Layout />
-          </PrivateRoute>
-        }>
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/profile" element={<Profile />} />
-          <Route path="/notes" element={<Notes />} />
-          <Route path="/notes/new" element={<NoteEditor />} />
-          <Route path="/notes/:id" element={<NoteDetails />} />
-          <Route path="/notes/edit/:id" element={<NoteEditor />} />
-          <Route path="/categories" element={<Categories />} />
+          <Route element={<Layout />}>
+            {/* Public Access Routes */}
+            <Route path="/guide" element={<Guide />} />
+            <Route path="/arcade" element={<Arcade />} />
+            <Route path="/issues" element={<Issues />} />
+            <Route path="/notes/:id" element={<NoteDetails />} />
+            <Route path="/notes" element={<Notes />} />
+            <Route path="/categories" element={<Categories />} />
+            <Route path="/u/:username" element={<PublicProfile />} />
 
-          <Route element={<AdminRoute />}>
-            <Route path="/admin" element={<Admin />} />
-            <Route path="/admin" element={<Admin />} />
+            {/* Validated Access Routes */}
+            <Route path="/dashboard" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
+            <Route path="/profile" element={<PrivateRoute><Profile /></PrivateRoute>} />
+            <Route path="/community" element={<PrivateRoute><Community /></PrivateRoute>} />
+            <Route path="/chat" element={<PrivateRoute><Chat /></PrivateRoute>} />
+            <Route path="/notes/new" element={<PrivateRoute><NoteEditor /></PrivateRoute>} />
+            <Route path="/notes/edit/:id" element={<PrivateRoute><NoteEditor /></PrivateRoute>} />
+
+            <Route element={<AdminRoute />}>
+              <Route path="/admin" element={<AdminDashboard />} />
+            </Route>
           </Route>
 
-          <Route path="/guide" element={<Guide />} />
-          <Route path="/arcade" element={<Arcade />} />
-        </Route>
+          <Route path="/terms" element={<Terms />} />
 
-        <Route path="/u/:username" element={<PublicProfile />} />
-        <Route path="/terms" element={<Terms />} />
-
-        {/* Fallback */}
-        <Route path="*" element={<NotFound />} />
-      </Routes>
+          {/* Fallback */}
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </Suspense>
     </Router>
   );
 }

@@ -14,13 +14,15 @@ import {
     Zap,
     X,
     BookOpen,
-    Gamepad2
+    Gamepad2,
+    MessageCircle
 } from 'lucide-react';
 import { useSelector } from 'react-redux';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const Layout = () => {
     const location = useLocation();
+    const { user } = useSelector((state) => state.auth);
     const { notes } = useSelector((state) => state.notes);
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
@@ -52,17 +54,46 @@ const Layout = () => {
             <div className="mt-4 mb-2 px-2 text-[11px] font-bold uppercase text-muted-foreground/60 tracking-widest">
                 Public
             </div>
+            <NavItem to="/issues" label="Issues" icon={MessageSquare} />
             <NavItem to="/notes" label="Library" icon={FileText} />
             <NavItem to="/categories" label="Tags" icon={LayoutGrid} />
             <NavItem to="/dashboard" label="Stats" icon={Flag} />
 
-            <div className="mt-4 mb-2 px-2 text-[11px] font-black uppercase text-muted-foreground/40 tracking-[0.2em]">
-                Your Space
-            </div>
-            <NavItem to="/profile" label="Profile" icon={Users} />
-            <NavItem to="/notes/new" label="New Note" icon={Zap} />
-            <NavItem to="/arcade" label="Arcade" icon={Gamepad2} />
-            <NavItem to="/guide" label="Help Guide" icon={BookOpen} />
+            {user && (
+                <>
+                    <div className="mt-4 mb-2 px-2 text-[11px] font-black uppercase text-muted-foreground/40 tracking-[0.2em]">
+                        Your Space
+                    </div>
+                    <NavItem to="/profile" label="Profile" icon={Users} />
+                    <NavItem to="/notes/new" label="New Note" icon={Zap} />
+                    <NavItem to="/arcade" label="Arcade" icon={Gamepad2} />
+
+                    <div className="mt-4 mb-2 px-2 text-[11px] font-black uppercase text-muted-foreground/40 tracking-[0.2em]">
+                        Communication
+                    </div>
+                    <NavItem to="/community" label="Community Chat" icon={Zap} />
+                    <NavItem to="/chat" label="Private Chat" icon={MessageCircle} />
+
+                    <div className="mt-4">
+                        <NavItem to="/guide" label="Help Guide" icon={BookOpen} />
+                    </div>
+
+                    {user.role === 'admin' && (
+                        <div className="mt-4 border-t border-border pt-4">
+                            <NavItem to="/admin" label="Admin Console" icon={Settings} />
+                        </div>
+                    )}
+                </>
+            )}
+            {!user && (
+                <>
+                    <div className="mt-4 mb-2 px-2 text-[11px] font-black uppercase text-muted-foreground/40 tracking-[0.2em]">
+                        Resources
+                    </div>
+                    <NavItem to="/guide" label="Help Guide" icon={BookOpen} />
+                    <NavItem to="/arcade" label="Arcade" icon={Gamepad2} />
+                </>
+            )}
         </div>
     );
 

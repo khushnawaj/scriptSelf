@@ -5,10 +5,15 @@ const Category = require('../models/Category');
 // @access    Private (or Public for global ones)
 exports.getCategories = async (req, res, next) => {
   try {
-    // Find categories that are either global OR created by the current user
-    const categories = await Category.find({
+    const query = { isGlobal: true };
+    if (req.user) {
+      query.$or = [{ isGlobal: true }, { createdBy: req.user.id }];
+      delete query.isGlobal; // Since $or handles it
+    }
+
+    const categories = await Category.find(req.user ? {
       $or: [{ isGlobal: true }, { createdBy: req.user.id }]
-    }).populate('notes');
+    } : { isGlobal: true }).populate('notes');
 
     res.status(200).json({
       success: true,
@@ -32,8 +37,9 @@ exports.getCategory = async (req, res, next) => {
     }
 
     // Access control: Allow if global or owned by user
-    if (!category.isGlobal && category.createdBy.toString() !== req.user.id) {
-       return res.status(403).json({ success: false, error: `Not authorized to access this category` });
+    const isOwner = req.user && category.createdBy.toString() === req.user.id;
+    if (!category.isGlobal && !isOwner) {
+      return res.status(403).json({ success: false, error: `Not authorized to access this category` });
     }
 
     res.status(200).json({
@@ -55,7 +61,7 @@ exports.createCategory = async (req, res, next) => {
 
     // Only admin can create global categories
     if (req.body.isGlobal && req.user.role !== 'admin') {
-       return res.status(403).json({ success: false, error: `Not authorized to create global categories` });
+      return res.status(403).json({ success: false, error: `Not authorized to create global categories` });
     }
 
     const category = await Category.create(req.body);
@@ -82,7 +88,7 @@ exports.updateCategory = async (req, res, next) => {
 
     // Make sure user is category owner or admin (if global)
     if (category.createdBy.toString() !== req.user.id && req.user.role !== 'admin') {
-       return res.status(403).json({ success: false, error: `Not authorized to update this category` });
+      return res.status(403).json({ success: false, error: `Not authorized to update this category` });
     }
 
     category = await Category.findByIdAndUpdate(req.params.id, req.body, {
@@ -107,14 +113,14 @@ exports.deleteCategory = async (req, res, next) => {
     const category = await Category.findById(req.params.id);
 
     if (!category) {
-       return res.status(404).json({ success: false, error: `No category with the id of ${req.params.id}` });
+      return res.status(404).json({ success: false, error: `No category with the id of ${req.params.id}` });
     }
 
     // Make sure user is category owner
     // Note: If it's a global category, maybe only admin should delete?
     // Current logic: only creator can delete.
     if (category.createdBy.toString() !== req.user.id && req.user.role !== 'admin') {
-       return res.status(403).json({ success: false, error: `Not authorized to delete this category` });
+      return res.status(403).json({ success: false, error: `Not authorized to delete this category` });
     }
 
     await category.deleteOne();

@@ -50,6 +50,11 @@ exports.deleteUser = async (req, res, next) => {
             return res.status(404).json({ success: false, error: `No user with the id of ${req.params.id}` });
         }
 
+        // Prevent self-deletion
+        if (user._id.toString() === req.user.id) {
+            return res.status(400).json({ success: false, error: 'You cannot delete yourself' });
+        }
+
         await user.deleteOne();
 
         res.status(200).json({

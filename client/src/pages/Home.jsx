@@ -119,8 +119,8 @@ const Home = () => {
                                 <Link to="/register" className="h-14 px-10 rounded-2xl bg-white text-black font-bold text-[16px] flex items-center justify-center hover:scale-105 transition-all">
                                     Get Started
                                 </Link>
-                                <Link to="/guide" className="h-14 px-10 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-xl hover:bg-white/10 font-bold text-[16px] flex items-center justify-center transition-all">
-                                    How it Works
+                                <Link to="/notes" className="h-14 px-10 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-xl hover:bg-white/10 font-bold text-[16px] flex items-center justify-center transition-all">
+                                    Browse as Guest
                                 </Link>
                             </>
                         )}

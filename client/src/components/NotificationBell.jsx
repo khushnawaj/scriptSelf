@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { Bell, UserPlus, MessageSquare, Heart, Settings, Trash2, ExternalLink } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
@@ -19,7 +19,7 @@ const NotificationBell = () => {
     const [isOpen, setIsOpen] = useState(false);
     const dropdownRef = useRef(null);
 
-    const fetchNotifications = async () => {
+    const fetchNotifications = useCallback(async () => {
         try {
             const res = await api.get('/notifications');
             const data = res.data?.data || [];
@@ -28,7 +28,7 @@ const NotificationBell = () => {
         } catch (err) {
             console.error('Failed to fetch notifications');
         }
-    };
+    }, []);
 
     useEffect(() => {
         fetchNotifications();
@@ -47,7 +47,7 @@ const NotificationBell = () => {
         return () => document.removeEventListener("mousedown", handleClickOutside);
     }, []);
 
-    const markAsRead = async (id) => {
+    const markAsRead = useCallback(async (id) => {
         try {
             await api.put(`/notifications/${id}/read`);
             setNotifications(prev =>
@@ -57,9 +57,9 @@ const NotificationBell = () => {
         } catch (err) {
             console.error('Failed to mark notification as read');
         }
-    };
+    }, []);
 
-    const deleteNotification = async (id) => {
+    const deleteNotification = useCallback(async (id) => {
         try {
             await api.delete(`/notifications/${id}`);
             setNotifications(prev => prev.filter(n => n._id !== id));
@@ -71,7 +71,7 @@ const NotificationBell = () => {
         } catch (err) {
             console.error('Failed to delete notification');
         }
-    };
+    }, [notifications]);
 
     const getIcon = (type) => {
         switch (type) {

@@ -25,12 +25,14 @@ import {
     Link as LinkIcon,
     ChevronRight,
     Tag as TagIcon,
-    FolderTree
+    FolderTree,
+    CheckCircle2,
+    Pin
 } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import Spinner from '../components/Spinner';
 import Mermaid from '../components/Mermaid';
-import { getNote, deleteNote, cloneNote, addComment, deleteComment, updateComment } from '../features/notes/noteSlice';
+import { getNote, deleteNote, cloneNote, addComment, deleteComment, updateComment, markSolution, togglePin } from '../features/notes/noteSlice';
 import { followUser, unfollowUser } from '../features/auth/authSlice';
 
 const NoteDetails = () => {
@@ -125,6 +127,14 @@ const NoteDetails = () => {
         }
     };
 
+    const handleMarkSolution = (commentId) => {
+        dispatch(markSolution({ noteId: id, commentId }));
+    };
+
+    const handlePin = () => {
+        dispatch(togglePin(id));
+    };
+
     if (isLoading || !note) {
         return <Spinner />;
     }
@@ -135,10 +145,20 @@ const NoteDetails = () => {
             <div className="border-b border-border pb-6 mb-6">
                 {/* ... (keep header content) ... */}
                 <div className="flex flex-col sm:flex-row justify-between items-start gap-4 mb-4">
-                    <h1 className="text-[32px] font-normal text-foreground leading-tight tracking-tight">
+                    <h1 className="text-[32px] font-normal text-foreground leading-tight tracking-tight flex items-center gap-3">
+                        {note.isPinned && <Pin className="text-amber-500 fill-amber-500" size={24} />}
                         {note.title}
                     </h1>
                     <div className="flex gap-2 shrink-0">
+                        {user && user.role === 'admin' && (
+                            <button
+                                onClick={handlePin}
+                                className={`so-btn border transition-all font-bold flex items-center gap-2 ${note.isPinned ? 'border-amber-500 text-amber-500 hover:bg-amber-500/10' : 'border-border text-muted-foreground hover:text-foreground'}`}
+                                title={note.isPinned ? 'Unpin Post' : 'Pin Post to Top'}
+                            >
+                                <Pin size={14} className={note.isPinned ? 'fill-amber-500' : ''} />
+                            </button>
+                        )}
                         {/* ... (keep existing buttons) ... */}
                         {user && note.user?._id === user._id ? (
                             <Link to={`/notes/edit/${id}`} className="so-btn border border-border hover:bg-muted/50 text-foreground transition-all">
@@ -499,7 +519,7 @@ const NoteDetails = () => {
                     {/* Community Discussion Layer */}
                     <div className="mt-12 pt-10 border-t border-border">
                         <h3 className="text-[19px] font-normal mb-6 text-foreground flex items-center gap-3">
-                            <MessageSquare size={20} className="text-primary" /> Discussion & Contributions
+                            <MessageSquare size={20} className="text-primary" /> {note.type === 'issue' ? 'Answers & Solutions' : 'Discussion & Contributions'}
                         </h3>
 
                         {user ? (
@@ -531,65 +551,85 @@ const NoteDetails = () => {
 
                         <div className="space-y-6">
                             {note.comments?.length > 0 ? (
-                                note.comments.map((comment, index) => (
-                                    <div key={index} className="flex gap-4 group">
-                                        <div className="w-8 h-8 bg-secondary rounded-[3px] flex items-center justify-center text-[12px] font-bold text-muted-foreground shrink-0 border border-border">
-                                            {comment.user?.username?.charAt(0).toUpperCase() || '?'}
-                                        </div>
-                                        <div className="flex-1">
-                                            <div className="flex items-center justify-between mb-1">
-                                                <div className="flex items-center gap-2">
-                                                    <span className="text-[13px] font-bold text-link">{comment.user?.username || 'Unknown User'}</span>
-                                                    <span className="text-[11px] text-muted-foreground">{new Date(comment.createdAt).toLocaleDateString()}</span>
-                                                </div>
-                                                {user && (user._id === comment.user?._id || user.role === 'admin') && (
-                                                    <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                                                        <button
-                                                            onClick={() => startEditingComment(comment)}
-                                                            className="text-muted-foreground hover:text-primary"
-                                                            title="Edit"
-                                                        >
-                                                            <Edit size={12} />
-                                                        </button>
-                                                        <button
-                                                            onClick={() => handleDeleteComment(comment._id)}
-                                                            className="text-muted-foreground hover:text-destructive"
-                                                            title="Delete"
-                                                        >
-                                                            <Trash2 size={12} />
-                                                        </button>
+                                [...note.comments]
+                                    .sort((a, b) => (b.isSolution === a.isSolution) ? 0 : b.isSolution ? 1 : -1)
+                                    .map((comment, index) => (
+                                        <div key={index} className={`flex gap-4 group p-4 rounded-[6px] transition-all ${comment.isSolution ? 'bg-green-500/5 border border-green-500/20' : ''}`}>
+                                            <div className="w-8 h-8 bg-secondary rounded-[3px] flex items-center justify-center text-[12px] font-bold text-muted-foreground shrink-0 border border-border">
+                                                {comment.user?.username?.charAt(0).toUpperCase() || '?'}
+                                            </div>
+                                            <div className="flex-1">
+                                                <div className="flex items-center justify-between mb-1">
+                                                    <div className="flex items-center gap-2">
+                                                        <span className="text-[13px] font-bold text-link">{comment.user?.username || 'Unknown User'}</span>
+                                                        <span className="text-[11px] text-muted-foreground">{new Date(comment.createdAt).toLocaleDateString()}</span>
+                                                        {comment.isSolution && (
+                                                            <span className="flex items-center gap-1 text-[10px] uppercase font-bold text-green-600 bg-green-500/10 px-2 py-0.5 rounded-full border border-green-500/20">
+                                                                <CheckCircle2 size={10} /> Solution
+                                                            </span>
+                                                        )}
                                                     </div>
+                                                    <div className="flex items-center gap-2">
+                                                        {/* Mark Solution Button (Only for Issue Author) */}
+                                                        {user && note.type === 'issue' && note.user._id === user._id && !comment.isSolution && (
+                                                            <button
+                                                                onClick={() => handleMarkSolution(comment._id)}
+                                                                className="opacity-0 group-hover:opacity-100 transition-opacity text-[10px] font-bold uppercase text-muted-foreground hover:text-green-500 flex items-center gap-1"
+                                                                title="Mark as Solution"
+                                                            >
+                                                                <CheckCircle2 size={12} /> Accept Answer
+                                                            </button>
+                                                        )}
+
+                                                        {user && (user._id === comment.user?._id || user.role === 'admin') && (
+                                                            <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity ml-2">
+                                                                <button
+                                                                    onClick={() => startEditingComment(comment)}
+                                                                    className="text-muted-foreground hover:text-primary"
+                                                                    title="Edit"
+                                                                >
+                                                                    <Edit size={12} />
+                                                                </button>
+                                                                <button
+                                                                    onClick={() => handleDeleteComment(comment._id)}
+                                                                    className="text-muted-foreground hover:text-destructive"
+                                                                    title="Delete"
+                                                                >
+                                                                    <Trash2 size={12} />
+                                                                </button>
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                </div>
+
+                                                {editingCommentId === comment._id ? (
+                                                    <div className="mt-2">
+                                                        <textarea
+                                                            value={editCommentText}
+                                                            onChange={(e) => setEditCommentText(e.target.value)}
+                                                            className="w-full bg-background border border-border rounded-[3px] p-2 text-[14px] text-foreground focus:border-primary outline-none min-h-[60px] mb-2"
+                                                        />
+                                                        <div className="flex gap-2">
+                                                            <button
+                                                                onClick={() => saveEditedComment(comment._id)}
+                                                                className="so-btn so-btn-primary py-1 px-3 text-[12px]"
+                                                            >
+                                                                Save
+                                                            </button>
+                                                            <button
+                                                                onClick={cancelEditingComment}
+                                                                className="so-btn border border-border py-1 px-3 text-[12px]"
+                                                            >
+                                                                Cancel
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                ) : (
+                                                    <p className="text-[14px] text-foreground/90 leading-relaxed font-normal">{comment.text}</p>
                                                 )}
                                             </div>
-
-                                            {editingCommentId === comment._id ? (
-                                                <div className="mt-2">
-                                                    <textarea
-                                                        value={editCommentText}
-                                                        onChange={(e) => setEditCommentText(e.target.value)}
-                                                        className="w-full bg-background border border-border rounded-[3px] p-2 text-[14px] text-foreground focus:border-primary outline-none min-h-[60px] mb-2"
-                                                    />
-                                                    <div className="flex gap-2">
-                                                        <button
-                                                            onClick={() => saveEditedComment(comment._id)}
-                                                            className="so-btn so-btn-primary py-1 px-3 text-[12px]"
-                                                        >
-                                                            Save
-                                                        </button>
-                                                        <button
-                                                            onClick={cancelEditingComment}
-                                                            className="so-btn border border-border py-1 px-3 text-[12px]"
-                                                        >
-                                                            Cancel
-                                                        </button>
-                                                    </div>
-                                                </div>
-                                            ) : (
-                                                <p className="text-[14px] text-foreground/90 leading-relaxed font-normal">{comment.text}</p>
-                                            )}
                                         </div>
-                                    </div>
-                                ))
+                                    ))
                             ) : (
                                 <p className="text-[13px] text-muted-foreground italic">No feedback recorded yet. Be the first to contribute.</p>
                             )}

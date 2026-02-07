@@ -8,6 +8,7 @@ import Spinner from '../components/Spinner';
 
 const Categories = () => {
     const dispatch = useDispatch();
+    const { user } = useSelector((state) => state.auth);
     const { categories, isLoading } = useSelector((state) => state.categories);
     const { notes } = useSelector((state) => state.notes);
 
@@ -17,8 +18,13 @@ const Categories = () => {
 
     useEffect(() => {
         dispatch(getCategories());
-        dispatch(getNotes());
-    }, [dispatch]);
+        if (user) {
+            dispatch(getNotes());
+        } else {
+            // For guest, fetch public notes to get counts correct?
+            dispatch(getNotes({ public: true }));
+        }
+    }, [dispatch, user]);
 
     const filteredCategories = categories.filter(cat =>
         cat.name.toLowerCase().includes(searchTerm.toLowerCase())
@@ -46,12 +52,14 @@ const Categories = () => {
         <div className="space-y-6 animate-in fade-in duration-300">
             <div className="flex flex-col sm:flex-row justify-between items-start gap-4">
                 <h1 className="text-[27px] font-normal text-foreground">Tags</h1>
-                <button
-                    onClick={() => setShowModal(true)}
-                    className="so-btn so-btn-primary py-2.5 px-3"
-                >
-                    Create new tag
-                </button>
+                {user && (
+                    <button
+                        onClick={() => setShowModal(true)}
+                        className="so-btn so-btn-primary py-2.5 px-3"
+                    >
+                        Create new tag
+                    </button>
+                )}
             </div>
 
             <p className="text-[15px] font-normal text-muted-foreground max-w-2xl leading-relaxed">
@@ -79,12 +87,14 @@ const Categories = () => {
                             <div>
                                 <div className="flex justify-between items-start mb-2">
                                     <span className="so-tag text-[12px]">{cat.name}</span>
-                                    <button
-                                        onClick={() => handleDelete(cat._id)}
-                                        className="text-muted-foreground hover:text-rose-500 p-1"
-                                    >
-                                        <Trash2 size={14} />
-                                    </button>
+                                    {user && (
+                                        <button
+                                            onClick={() => handleDelete(cat._id)}
+                                            className="text-muted-foreground hover:text-rose-500 p-1"
+                                        >
+                                            <Trash2 size={14} />
+                                        </button>
+                                    )}
                                 </div>
                                 <p className="text-[12px] text-foreground/80 line-clamp-3 mb-4 leading-normal">
                                     {cat.description || 'No description provided for this technical category.'}

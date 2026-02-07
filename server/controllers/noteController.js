@@ -46,18 +46,45 @@ exports.getNotes = async (req, res, next) => {
     const endIndex = page * limit;
 
     const filter = {};
-    if (req.query.public === 'true') {
+
+    // 1. Access Level & Scope
+    if (req.query.type === 'issue') {
+      // Issues are a global public board
+      filter.type = 'issue';
+    } else if (req.query.public === 'true') {
+      // Explicitly requesting public notes (from everyone)
       filter.isPublic = true;
-    } else {
+    } else if (req.query.public === 'false' && req.user) {
+      // Explicitly requesting private notes (only mine)
+      filter.isPublic = false;
       filter.user = req.user.id;
+    } else if (req.user) {
+      // Default: My notes (Public + Private)
+      filter.user = req.user.id;
+    } else {
+      // Guest user requesting non- public data -> Return empty
+      return res.status(200).json({
+        success: true,
+        count: 0,
+        total: 0,
+        pagination: {},
+        data: []
+      });
     }
 
+    // 2. Category Filter
     if (req.query.category) {
       filter.category = req.query.category;
     }
 
-    if (req.query.type) {
+    // 3. Type Filter
+    if (req.query.type === 'issue') {
+      filter.type = 'issue';
+    } else if (req.query.type) {
       filter.type = req.query.type;
+    } else {
+      // Default: Exclude issues from the technical library/general feed
+      filter.type = { $ne: 'issue' };
     }
 
     query = Note.find(filter)
@@ -184,7 +211,17 @@ exports.getNote = async (req, res, next) => {
       return res.status(404).json({ success: false, error: `No note found with id ${req.params.id}` });
     }
 
-    if (!note.isPublic && note.user._id.toString() !== req.user.id) {
+    // Access Rules:
+    // 1. Note is Public -> Allow
+    // 2. Note is Type 'issue' -> Allow
+    // 3. User is Owner -> Allow
+    // 4. Admin -> Allow (implied if we added admin check, but simple owner check here)
+
+    const isPublic = note.isPublic || note.type === 'issue';
+    const isOwner = req.user && note.user._id.toString() === req.user.id;
+    const isAdmin = req.user && req.user.role === 'admin';
+
+    if (!isPublic && !isOwner && !isAdmin) {
       return res.status(403).json({ success: false, error: `Not authorized to view this private note` });
     }
 
@@ -335,7 +372,7 @@ exports.deleteNote = async (req, res, next) => {
       return res.status(404).json({ success: false, error: `No note found` });
     }
 
-    if (note.user.toString() !== req.user.id) {
+    if (note.user.toString() !== req.user.id && req.user.role !== 'admin') {
       return res.status(403).json({ success: false, error: `Not authorized to delete this note` });
     }
 
@@ -428,6 +465,16 @@ exports.addComment = async (req, res, next) => {
     if (note.user.toString() !== req.user.id) {
       await awardReputation(req.user.id, 'add_comment'); // Commenter gets 10
       await awardReputation(note.user, 'receive_comment'); // Note Owner gets 5
+
+      // Trigger Notification
+      const Notification = require('../models/Notification');
+      await Notification.create({
+        recipient: note.user,
+        sender: req.user.id,
+        type: 'comment',
+        message: `${req.user.username} commented on your note: ${note.title}`,
+        link: `/notes/${note._id}`
+      });
     }
 
     // Populate user to return immediate visual feedback
@@ -529,6 +576,53 @@ exports.deleteComment = async (req, res, next) => {
   }
 };
 
+// @desc      Mark comment as solution
+// @route     PUT /api/v1/notes/:id/comments/:commentId/solution
+// @access    Private (Owner Only)
+exports.markSolution = async (req, res, next) => {
+  try {
+    const note = await Note.findById(req.params.id);
+
+    if (!note) {
+      return res.status(404).json({ success: false, error: 'Note not found' });
+    }
+
+    // Only Note Owner or Admin can mark solution
+    if (note.user.toString() !== req.user.id && req.user.role !== 'admin') {
+      return res.status(401).json({ success: false, error: 'Not authorized to select solution' });
+    }
+
+    const comment = note.comments.id(req.params.commentId);
+
+    if (!comment) {
+      return res.status(404).json({ success: false, error: 'Contribution not found' });
+    }
+
+    // Toggle solution status
+    // First unmark any other solutions? Usually only one solution allowed.
+    note.comments.forEach(c => c.isSolution = false);
+
+    comment.isSolution = true;
+
+    await note.save();
+
+    // Award Rep to Solution Author
+    if (comment.user.toString() !== req.user.id) {
+      await awardReputation(comment.user, 'mark_solution', true); // Custom rep for solution?
+    }
+
+    const populatedNote = await Note.findById(req.params.id)
+      .populate({ path: 'comments.user', select: 'username avatar' });
+
+    res.status(200).json({
+      success: true,
+      data: populatedNote.comments
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
 // @desc      Get all notes (Admin)
 // @route     GET /api/v1/notes/admin/all
 // @access    Private/Admin
@@ -543,6 +637,34 @@ exports.adminGetNotes = async (req, res, next) => {
       success: true,
       count: notes.length,
       data: notes
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+// @desc      Toggle pin status of a note
+// @route     PUT /api/v1/notes/:id/pin
+// @access    Private/Admin
+exports.togglePin = async (req, res, next) => {
+  try {
+    const note = await Note.findById(req.params.id);
+
+    if (!note) {
+      return res.status(404).json({ success: false, error: 'Note not found' });
+    }
+
+    // Check if user is admin
+    if (req.user.role !== 'admin') {
+      return res.status(403).json({ success: false, error: 'Not authorized to pin notes' });
+    }
+
+    note.isPinned = !note.isPinned;
+    await note.save();
+
+    res.status(200).json({
+      success: true,
+      data: note
     });
   } catch (err) {
     next(err);

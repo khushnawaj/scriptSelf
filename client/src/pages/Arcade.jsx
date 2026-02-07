@@ -23,8 +23,11 @@ import FirewallBreach from "../components/arcade/FirewallBreach";
 import StackOverflowEscape from "../components/arcade/StackOverflowEscape";
 import BugHunter from "../components/arcade/BugHunter";
 
+import { useNavigate } from "react-router-dom";
+
 const Arcade = () => {
     const dispatch = useDispatch();
+    const navigate = useNavigate();
     const { user } = useSelector((state) => state.auth);
 
     const [activeGame, setActiveGame] = useState(null);
@@ -149,12 +152,12 @@ const Arcade = () => {
                         xl:grid-cols-3
                     "
                 >
-                    <GameCard title="Memory Matrix" desc="Neural Link" icon={<Brain size={28} />} onClick={() => setActiveGame("memory")} color="primary" />
-                    <GameCard title="Syntax Sprint" desc="Handshake" icon={<Hash size={28} />} onClick={() => setActiveGame("typing")} color="emerald" />
-                    <GameCard title="Hex Hunter" desc="Vision" icon={<span className="text-2xl font-black">#</span>} onClick={() => setActiveGame("hex")} color="pink" />
-                    <GameCard title="Firewall Breach" desc="Infiltration" icon={<Zap size={28} />} onClick={() => setActiveGame("breach")} color="violet" />
-                    <GameCard title="Stack Escape" desc="Recursion" icon={<Ghost size={28} />} onClick={() => setActiveGame("escape")} color="cyan" />
-                    <GameCard title="Bug Hunter" desc="Debug" icon={<Bug size={28} />} onClick={() => setActiveGame("hunter")} color="lime" />
+                    <GameCard title="Memory Matrix" desc="Neural Link" icon={<Brain size={28} />} onClick={() => user ? setActiveGame("memory") : navigate('/login')} color="primary" />
+                    <GameCard title="Syntax Sprint" desc="Handshake" icon={<Hash size={28} />} onClick={() => user ? setActiveGame("typing") : navigate('/login')} color="emerald" />
+                    <GameCard title="Hex Hunter" desc="Vision" icon={<span className="text-2xl font-black">#</span>} onClick={() => user ? setActiveGame("hex") : navigate('/login')} color="pink" />
+                    <GameCard title="Firewall Breach" desc="Infiltration" icon={<Zap size={28} />} onClick={() => user ? setActiveGame("breach") : navigate('/login')} color="violet" />
+                    <GameCard title="Stack Escape" desc="Recursion" icon={<Ghost size={28} />} onClick={() => user ? setActiveGame("escape") : navigate('/login')} color="cyan" />
+                    <GameCard title="Bug Hunter" desc="Debug" icon={<Bug size={28} />} onClick={() => user ? setActiveGame("hunter") : navigate('/login')} color="lime" />
                 </div>
             ) : (
                 /* =====================================================

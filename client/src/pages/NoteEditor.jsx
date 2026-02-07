@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { useNavigate, useParams, Link } from 'react-router-dom';
+import { useNavigate, useParams, Link, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { createNote, getNotes, updateNote } from '../features/notes/noteSlice';
 import { getCategories, createCategory } from '../features/categories/categorySlice';
@@ -118,6 +118,8 @@ const NoteEditor = () => {
         }
     }, [dispatch, id, notes.length]);
 
+    const location = useLocation();
+
     useEffect(() => {
         if (id && notes.length > 0) {
             const noteToEdit = notes.find(n => n._id === id);
@@ -132,14 +134,21 @@ const NoteEditor = () => {
                     isPublic: noteToEdit.isPublic || false,
                     videoUrl: noteToEdit.videoUrl || '',
                 });
-                // Data just loaded, so not yet "dirty"
                 setTimeout(() => setIsDirty(false), 500);
             }
         } else if (!id) {
-            // New note: not yet dirty
+            // New note initialization
+            if (location.state?.type === 'issue') {
+                setFormData(prev => ({
+                    ...prev,
+                    type: 'issue',
+                    isPublic: true, // Issues are always public
+                    categoryId: categories.find(c => c.name === 'General')?._id || '' // Default to General if exists
+                }));
+            }
             setTimeout(() => setIsDirty(false), 500);
         }
-    }, [id, notes]);
+    }, [id, notes, location.state, categories]);
 
     const onChange = (e) => {
         const { name, value, type: inputType, checked } = e.target;
@@ -253,7 +262,7 @@ const NoteEditor = () => {
                     </div>
                     <div>
                         <h1 className="text-[24px] font-bold text-foreground">
-                            {id ? 'Edit Note' : 'Create New Note'}
+                            {id ? 'Edit Record' : type === 'issue' ? 'Ask a Question' : 'Create New Note'}
                         </h1>
                         <p className="text-[12px] text-muted-foreground uppercase tracking-widest font-bold">Workspace / Library</p>
                     </div>
@@ -431,6 +440,7 @@ const NoteEditor = () => {
                                     className="w-full border border-border bg-background rounded-[3px] py-1.5 px-3 text-[13px] text-foreground outline-none focus:border-primary"
                                 >
                                     <option value="doc">Standard Doc</option>
+                                    <option value="issue">Community Question (Issue)</option>
                                     <option value="adr">Arch Decision (ADR)</option>
                                     <option value="pattern">Logic Pattern</option>
                                     <option value="code">Code Snippet</option>

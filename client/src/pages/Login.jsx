@@ -104,7 +104,7 @@ const Login = () => {
                             <div className="space-y-1.5">
                                 <div className="flex justify-between items-center ml-1">
                                     <label className="text-[11px] font-black uppercase tracking-[0.15em] text-zinc-400">Password</label>
-                                    <Link to="/forgot-password" opacity-60 className="text-[10px] uppercase font-black tracking-widest text-primary hover:text-blue-400 transition-colors">Forgot?</Link>
+                                    <Link to="/forgot-password" title="Forgot Password" className="text-[10px] uppercase font-black tracking-widest text-primary hover:text-blue-400 transition-colors">Forgot?</Link>
                                 </div>
                                 <div className="relative group">
                                     <input
@@ -134,6 +134,9 @@ const Login = () => {
                                 Need an account? {' '}
                                 <Link to="/register" className="text-primary font-black hover:underline tracking-tight">Create one here</Link>
                             </p>
+                            <Link to="/notes" className="text-[12px] text-zinc-500 font-bold uppercase tracking-widest hover:text-white transition-colors border-b border-transparent hover:border-white pb-0.5">
+                                Continue as Guest
+                            </Link>
 
                             <div className="flex items-center gap-2 mt-4 px-4 py-1.5 bg-white/5 rounded-full border border-white/10 text-[10px] font-bold uppercase text-zinc-600">
                                 <Cpu size={12} /> SECURE CODE STORAGE

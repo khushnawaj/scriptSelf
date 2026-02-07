@@ -44,6 +44,20 @@ const noteSchema = new mongoose.Schema({
         codeSnippet: String,
         updatedAt: { type: Date, default: Date.now }
     }],
+    // 1. Restore adrStatus validation
+    adrStatus: {
+        type: String,
+        validate: {
+            validator: function (v) {
+                const validStatuses = ['proposed', 'accepted', 'deprecated', 'superseded'];
+                return !v || validStatuses.includes(v.toLowerCase());
+            },
+            message: props => `${props.value} is not a valid ADR status.`
+        },
+        default: 'proposed'
+    },
+
+    // 2. Add isSolution to comments (lines 47-62)
     comments: [{
         user: {
             type: mongoose.Schema.ObjectId,
@@ -55,11 +69,17 @@ const noteSchema = new mongoose.Schema({
             required: true,
             trim: true
         },
+        isSolution: {
+            type: Boolean,
+            default: false
+        },
         createdAt: {
             type: Date,
             default: Date.now
         }
     }],
+
+    // 3. Update type validation (lines 63-75)
     type: {
         type: String,
         default: 'doc',
@@ -67,22 +87,11 @@ const noteSchema = new mongoose.Schema({
         trim: true,
         validate: {
             validator: function (v) {
-                const validTypes = ['code', 'pdf', 'doc', 'cheatsheet', 'adr', 'pattern', 'other'];
+                const validTypes = ['code', 'pdf', 'doc', 'cheatsheet', 'adr', 'pattern', 'issue', 'other'];
                 return !v || validTypes.includes(v.toLowerCase());
             },
             message: props => `${props.value} is not a recognized tech-record type.`
         }
-    },
-    adrStatus: {
-        type: String,
-        validate: {
-            validator: function (v) {
-                const validStatuses = ['proposed', 'accepted', 'deprecated', 'superseded'];
-                return !v || validStatuses.includes(v.toLowerCase());
-            },
-            message: props => `${props.value} is not a valid ADR status.`
-        },
-        default: 'proposed'
     },
     // For Bidirectional Linking
     backlinks: [{

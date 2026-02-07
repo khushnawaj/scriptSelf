@@ -14,25 +14,39 @@ import {
     User,
     ChevronDown,
     Tag,
-    FolderTree
+    FolderTree,
+    Pin
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const Notes = () => {
     const dispatch = useDispatch();
+    const { user } = useSelector((state) => state.auth);
     const { notes, total, pagination, isLoading: notesLoading } = useSelector((state) => state.notes);
     const { categories, isLoading: catsLoading } = useSelector((state) => state.categories);
 
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedCategory, setSelectedCategory] = useState('All');
     const [selectedType, setSelectedType] = useState('All');
-    const [sort, setSort] = useState('newest'); // newest, public, private
+
+    // Default to 'public' sort if user is not logged in, otherwise 'newest'
+    const [sort, setSort] = useState(user ? 'newest' : 'public');
+
     const [page, setPage] = useState(1);
+
+    // Sync sort state when user login state changes
+    useEffect(() => {
+        if (!user && sort !== 'public') {
+            setSort('public');
+        }
+    }, [user]);
 
     useEffect(() => {
         const catId = selectedCategory === 'All' ? null : selectedCategory;
         const type = selectedType === 'All' ? null : selectedType.toLowerCase();
-        const isPublic = sort === 'public' ? true : (sort === 'private' ? false : null);
+
+        // If guest, always forcing public=true
+        const isPublic = (!user || sort === 'public') ? true : (sort === 'private' ? false : null);
 
         const params = {
             search: searchTerm,
@@ -42,7 +56,7 @@ const Notes = () => {
             type: type
         };
 
-        if (sort === 'public') params.public = true;
+        if (isPublic) params.public = true;
 
         dispatch(getNotes(params));
         dispatch(getCategories());
@@ -53,7 +67,7 @@ const Notes = () => {
         if (searchParam && !searchTerm) {
             setSearchTerm(decodeURIComponent(searchParam));
         }
-    }, [dispatch, searchTerm, page, selectedCategory, selectedType, sort]);
+    }, [dispatch, searchTerm, page, selectedCategory, selectedType, sort, user]);
 
     const handleCategoryClick = (id) => {
         setSelectedCategory(id);
@@ -133,9 +147,15 @@ const Notes = () => {
                         <h1 className="text-[27px] font-normal text-foreground leading-tight tracking-tight">Technical Library</h1>
                         <p className="text-[13px] text-muted-foreground">Archive of system logic, patterns, and architectural decisions.</p>
                     </div>
-                    <Link to="/notes/new" className="so-btn so-btn-primary py-2.5 px-6 shrink-0 shadow-lg shadow-primary/10">
-                        <Plus size={16} className="mr-1" /> Post New Record
-                    </Link>
+                    {user ? (
+                        <Link to="/notes/new" className="so-btn so-btn-primary py-2.5 px-6 shrink-0 shadow-lg shadow-primary/10">
+                            <Plus size={16} className="mr-1" /> Post New Record
+                        </Link>
+                    ) : (
+                        <Link to="/login" className="so-btn border border-primary text-primary hover:bg-primary/5 py-2.5 px-6 shrink-0 transition-all font-bold">
+                            Log in to Contribute
+                        </Link>
+                    )}
                 </div>
 
                 {/* Filter Bar */}
@@ -155,7 +175,7 @@ const Notes = () => {
 
                     <div className="flex items-center gap-4">
                         <div className="flex border border-border rounded-[3px] overflow-hidden shadow-sm bg-card">
-                            {['Newest', 'Public', 'Private'].map((tab) => (
+                            {(user ? ['Newest', 'Public', 'Private'] : ['Public']).map((tab) => (
                                 <button
                                     key={tab}
                                     onClick={() => setSort(tab.toLowerCase())}
@@ -203,8 +223,9 @@ const Notes = () => {
                             <div className="flex-1 min-w-0">
                                 <Link
                                     to={`/notes/${note._id}`}
-                                    className="text-[18px] font-normal text-link hover:text-link-hover mb-1 line-clamp-2 leading-snug transition-colors group-hover:underline"
+                                    className="text-[18px] font-normal text-link hover:text-link-hover mb-1 line-clamp-2 leading-snug transition-colors group-hover:underline flex items-center gap-2"
                                 >
+                                    {note.isPinned && <Pin size={16} className="text-amber-500 fill-amber-500 shrink-0" />}
                                     {note.title}
                                 </Link>
                                 <p className="text-[14px] text-muted-foreground line-clamp-2 mt-1 mb-4 font-normal leading-relaxed">
