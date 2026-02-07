@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { updateArcadeStats } from '../../features/auth/authSlice';
-import { Terminal, Code2, Database, Globe, Hash, GitBranch, Cpu, ListRestart, Zap, ChevronRight, Volume2, VolumeX, Eye, Binary } from 'lucide-react';
+import { Terminal, Code2, Database, Globe, Hash, GitBranch, Cpu, ListRestart, Zap, ChevronRight, Volume2, VolumeX, Eye, Binary, Trophy } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import confetti from 'canvas-confetti';
 import { fetchGitHubSnippet, fetchTechTrivia } from '../../services/snippetService';
@@ -99,6 +99,7 @@ const TypingGame = ({ dispatch }) => {
             case 'levelUp':
                 // Arpeggio
                 [440, 554, 659, 880, 1108].forEach((freq, i) => {
+                    const ctx = audioContextRef.current;
                     const o = ctx.createOscillator();
                     const g = ctx.createGain();
                     o.connect(g);
@@ -139,15 +140,22 @@ const TypingGame = ({ dispatch }) => {
         return () => clearTimeout(timeout);
     }, [gameState]);
 
-    // Keyboard Shortcuts
+    // Keyboard Shortcuts & Input Handling
     useEffect(() => {
         const handleKeyDown = (e) => {
+            // Scan Phase Shortcuts
             if (e.key === 'Enter' && gameState === 'SCANNING') {
                 handleStartBlind();
             }
             if (e.key === 'Tab') {
-                e.preventDefault();
+                e.preventDefault(); // Prevent focus loss
                 nextSnippet();
+            }
+
+            // Backspace Handling (Crucial for typing feel)
+            if (e.key === 'Backspace' && gameState === 'BLIND') {
+                setInput(prev => prev.slice(0, -1));
+                playSound('type'); // Optional: distinct delete sound?
             }
         };
         window.addEventListener('keydown', handleKeyDown);
@@ -256,14 +264,18 @@ const TypingGame = ({ dispatch }) => {
 
     const handleChange = (e) => {
         if (loading || gameState === 'SCANNING') return;
+
+        // We use native input value for standard typing, but override for Blind mode backspace handling above
         const val = e.target.value;
+        const widthDiff = val.length - input.length;
+
         if (!startTime) setStartTime(Date.now());
 
+        // Prevent overtyping
         if (val.length > currentSnippet.length) return;
 
-        // Sound Feedback
-        if (val.length > input.length) {
-            // Typing forward
+        // Sound Feedback: Only play if adding characters (Deletion handled in keydown)
+        if (widthDiff > 0) {
             const char = val.slice(-1);
             const targetChar = currentSnippet[val.length - 1];
             if (char === targetChar) {
@@ -359,124 +371,157 @@ const TypingGame = ({ dispatch }) => {
             );
         }
 
-        // 2. BLIND PHASE (Cyberpunk Terminal Look)
-        if (gameState === 'BLIND') {
-            return (
-                <div className="relative font-mono text-lg tracking-wide">
-                    {/* Typed correct text */}
-                    <span className="text-amber-400 font-bold drop-shadow-[0_0_8px_rgba(245,158,11,0.5)]">{input}</span>
+        // UNIFIED RENDERING for BLIND & REVEALED to prevent layout shifts
+        return (
+            <div className="relative font-mono breaking-keep whitespace-pre-wrap">
+                {currentSnippet.split('').map((char, index) => {
+                    let className = '';
+                    let content = char === ' ' ? '\u00A0' : char;
 
-                    {/* Retro Block Cursor */}
-                    <span className="inline-block w-[0.6em] h-[1.1em] align-middle bg-amber-500 animate-pulse shadow-[0_0_10px_#f59e0b] mx-[1px]" />
+                    const isTyped = index < input.length;
+                    const isCurrent = index === input.length;
 
-                    {/* Pending Text (Teasing Blur) */}
-                    <span className="blur-[3px] opacity-30 grayscale select-none transition-all duration-500 ease-out">{currentSnippet.slice(input.length)}</span>
-                </div>
-            );
-        }
+                    // --- BLIND MODE STYLES ---
+                    if (gameState === 'BLIND') {
+                        if (isTyped) {
+                            className = 'text-amber-400 font-bold drop-shadow-[0_0_8px_rgba(245,158,11,0.5)]';
+                        } else if (isCurrent) {
+                            // Block Cursor for Blind Mode
+                            return (
+                                <span key={index} className="relative inline-block">
+                                    <span className="absolute inset-0 bg-amber-500 animate-pulse shadow-[0_0_10px_#f59e0b]" />
+                                    <span className="relative z-10 text-transparent">{content}</span>
+                                </span>
+                            );
+                        } else {
+                            // Pending text is BLURRED but takes up same space
+                            className = 'blur-[4px] opacity-40 grayscale select-none';
+                        }
+                    }
 
-        // 3. REVEALED
-        return currentSnippet.split('').map((char, index) => {
-            let colorClass = 'text-muted-foreground/20';
+                    // --- REVEALED MODE STYLES ---
+                    else {
+                        if (isTyped) {
+                            if (input[index] === char) {
+                                className = 'text-emerald-400 font-bold drop-shadow-[0_0_5px_rgba(16,185,129,0.5)]';
+                            } else {
+                                className = 'text-rose-500 font-bold bg-rose-500/10 decoration-rose-500 underline underline-offset-4';
+                            }
+                        } else if (isCurrent) {
+                            // Active Cursor for Revealed Mode
+                            return (
+                                <span key={index} className="relative inline-block animate-pulse">
+                                    <span className="absolute inset-0 bg-primary/20" />
+                                    <span className="relative z-10 text-foreground border-b-2 border-primary font-black">
+                                        {content}
+                                    </span>
+                                </span>
+                            );
+                        } else {
+                            className = 'text-muted-foreground/50 transition-colors duration-200';
+                        }
+                    }
 
-            if (index < input.length) {
-                if (input[index] === char) {
-                    colorClass = 'text-emerald-400 font-bold drop-shadow-[0_0_5px_rgba(16,185,129,0.5)]';
-                } else {
-                    colorClass = 'text-rose-500 font-bold bg-rose-500/10 decoration-rose-500 underline underline-offset-4';
-                }
-            } else if (index === input.length) {
-                // Active Character Cursor
-                return (
-                    <span key={index} className="relative inline-block">
-                        <span className="absolute inset-0 bg-primary/20 animate-pulse" />
-                        <span className="relative z-10 text-foreground border-b-2 border-primary">
-                            {char === ' ' ? '\u00A0' : char}
+                    return (
+                        <span key={index} className={`${className} inline-block transition-all duration-200`}>
+                            {content}
                         </span>
-                    </span>
-                );
-            }
-
-            return (
-                <span key={index} className={`${colorClass} transition-colors duration-100`}>
-                    {char === ' ' ? '\u00A0' : char}
-                </span>
-            );
-        });
+                    );
+                })}
+            </div>
+        );
     };
 
 
     return (
         <div className="w-full max-w-6xl mx-auto space-y-10 py-10 px-4 sm:px-6 lg:px-8 animate-in fade-in duration-500">
-            {/* Header Stats */}
-            <div className="space-y-4">
-                <div className="flex flex-col sm:flex-row justify-between items-start gap-4">
-                    <h1 className="text-[32px] font-bold text-foreground flex items-center gap-3">
-                        <span className="flex flex-col">
-                            <span>Syntax Sprint</span>
-                            <span className="text-[10px] font-black text-primary uppercase tracking-[0.3em]">{getLevelTitle(level)} // LVL {level}</span>
+            {/* Header & Stats */}
+            <header className="flex flex-col md:flex-row justify-between items-center gap-6 border-b border-border/50 pb-8">
+                <div>
+                    <h1 className="text-3xl font-black tracking-tighter flex items-center gap-3">
+                        <Terminal size={32} className="text-primary" />
+                        <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary to-emerald-400">
+                            BLIND_CODER_V1
                         </span>
-                        {startTime && <span className="so-tag bg-emerald-500/10 text-emerald-600 border-emerald-500/20 animate-pulse">LIVE_SESSION</span>}
                     </h1>
-                    <div className="flex gap-4 p-4 bg-card border border-border rounded-[3px] shadow-sm">
-                        <div className="flex flex-col items-center">
-                            <span className="text-[10px] font-black text-amber-500 uppercase tracking-widest mb-1 flex items-center gap-1"><Zap size={10} /> Streak</span>
-                            <span className="text-[24px] font-bold text-amber-500 tabular-nums leading-none">x{streak}</span>
+                    <p className="text-muted-foreground mt-2 font-mono text-sm max-w-md">
+                        &gt; SYSTEM_STATUS: ONLINE<br />
+                        &gt; OBJECTIVE: MEMORIZE_AND_EXECUTE
+                    </p>
+                </div>
+
+                <div className="flex gap-4">
+                    <div className="bg-card border border-border p-4 rounded-lg min-w-[140px] shadow-sm relative overflow-hidden group">
+                        <div className="absolute inset-0 bg-primary/5 translate-y-full group-hover:translate-y-0 transition-transform duration-500" />
+                        <div className="relative z-10">
+                            <span className="text-[10px] font-black text-muted-foreground uppercase tracking-wider flex items-center gap-2">
+                                <Trophy size={12} /> Rank
+                            </span>
+                            <div className="text-xl font-black mt-1 text-foreground">{getLevelTitle(level)}</div>
+                            <div className="mt-2 h-1 w-full bg-secondary rounded-full overflow-hidden">
+                                <div className="h-full bg-primary transition-all duration-500" style={{ width: `${(score % 500) / 5}%` }} />
+                            </div>
                         </div>
-                        <div className="w-px bg-border mx-2" />
-                        <div className="flex flex-col">
-                            <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-1">Live WPM</span>
-                            <span className="text-[24px] font-bold text-emerald-600 tabular-nums leading-none">{wpm}</span>
-                        </div>
-                        <div className="w-px bg-border mx-2" />
-                        <div className="flex flex-col">
-                            <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-1">Global XP</span>
-                            <span className="text-[24px] font-bold text-primary tabular-nums leading-none">{score}</span>
-                        </div>
-                        <div className="w-px bg-border mx-2" />
-                        <div className="flex flex-col">
-                            <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-1">Records</span>
-                            <span className="text-[24px] font-bold text-foreground tabular-nums leading-none">{completed}</span>
+                    </div>
+
+                    <div className="bg-card border border-border p-4 rounded-lg min-w-[120px] shadow-sm relative overflow-hidden group">
+                        <div className="absolute inset-0 bg-orange-500/5 translate-y-full group-hover:translate-y-0 transition-transform duration-500" />
+                        <div className="relative z-10">
+                            <span className="text-[10px] font-black text-muted-foreground uppercase tracking-wider flex items-center gap-2">
+                                <Zap size={12} /> Streak
+                            </span>
+                            <div className="text-3xl font-black mt-1 text-orange-500 tabular-nums">x{streak}</div>
                         </div>
                     </div>
                 </div>
-                <p className="text-[15px] text-muted-foreground max-w-2xl leading-relaxed">
-                    Memorize the syntax pattern during the scan phase, then execute blindly from memory.
-                </p>
-                {/* Level Progress Bar */}
-                <div className="w-full h-1 bg-secondary rounded-full overflow-hidden">
-                    <div
-                        className="h-full bg-primary transition-all duration-1000 ease-out"
-                        style={{ width: `${(score % 500) / 5}%` }}
-                    />
-                </div>
-            </div>
+            </header>
 
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
-                {/* Sidebar */}
-                <div className="lg:col-span-4 space-y-8">
-                    <section className="space-y-4">
-                        <h3 className="text-[13px] font-bold uppercase tracking-widest text-muted-foreground px-1 flex items-center justify-between">
-                            Active Paradigms
-                        </h3>
-                        <div className="grid grid-cols-2 gap-2">
-                            {CATEGORIES.map(cat => (
-                                <button
-                                    key={cat.id}
-                                    onClick={() => setCurrentCategory(cat.id)}
-                                    className={`px-3 py-2 border rounded-[3px] text-[12px] font-bold uppercase tracking-tight transition-all flex items-center justify-between group
-                                        ${currentCategory === cat.id
-                                            ? 'bg-primary border-primary text-primary-foreground shadow-sm'
-                                            : 'bg-secondary border-border text-muted-foreground hover:border-primary/50 hover:text-primary'
-                                        }`}
-                                >
-                                    <span className="flex items-center gap-2">{cat.icon} {cat.name}</span>
-                                    {currentCategory === cat.id && <ChevronRight size={14} className="opacity-60" />}
-                                </button>
-                            ))}
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+
+                {/* Sidebar: Categories */}
+                <aside className="lg:col-span-4 space-y-4">
+                    <div className="bg-secondary/30 rounded-lg p-1.5 flex gap-1 mb-6">
+                        <div className="flex-1 text-center py-1.5 text-[10px] font-bold uppercase tracking-widest text-foreground bg-background shadow-sm rounded-[4px]">
+                            Input_Select
                         </div>
-                    </section>
-                </div>
+                        <div className="flex-1 text-center py-1.5 text-[10px] font-bold uppercase tracking-widest text-muted-foreground opacity-50">
+                            Config
+                        </div>
+                    </div>
+
+                    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-2 gap-3">
+                        {CATEGORIES.map((cat) => (
+                            <button
+                                key={cat.id}
+                                onClick={() => setCurrentCategory(cat.id)}
+                                className={`
+                                    group relative flex items-center gap-3 p-3 text-left transition-all rounded-md border
+                                    ${currentCategory === cat.id
+                                        ? 'bg-primary/10 border-primary text-primary shadow-[0_0_15px_rgba(16,185,129,0.15)]'
+                                        : 'bg-card hover:bg-secondary border-transparent hover:border-border text-muted-foreground hover:text-foreground'}
+                                `}
+                            >
+                                <span className={`p-2 rounded-md ${currentCategory === cat.id ? 'bg-primary text-primary-foreground' : 'bg-secondary group-hover:bg-background'}`}>
+                                    {cat.icon}
+                                </span>
+                                <span className="text-xs font-bold tracking-wide">{cat.name}</span>
+                                {currentCategory === cat.id && (
+                                    <span className="absolute right-3 w-1.5 h-1.5 rounded-full bg-primary animate-pulse shadow-[0_0_8px_currentColor]" />
+                                )}
+                            </button>
+                        ))}
+                    </div>
+
+                    <div className="mt-8 p-4 bg-blue-500/5 border border-blue-500/20 rounded-lg">
+                        <h3 className="text-[10px] font-black uppercase text-blue-500 flex items-center gap-2 mb-2">
+                            <Binary size={12} /> Protocol_Info
+                        </h3>
+                        <p className="text-xs text-muted-foreground leading-relaxed">
+                            System requires explicit syntax matching. <br />
+                            <span className="text-foreground font-bold">Accuracy > Speed.</span>
+                        </p>
+                    </div>
+                </aside>
 
                 {/* Main Console - Cyberpunk/Arcade Container */}
                 <div className="lg:col-span-8 space-y-6">
@@ -617,7 +662,6 @@ const TypingGame = ({ dispatch }) => {
                 </div>
             </div>
 
-
             {/* Skip Button moved to bottom for better flow */}
             <div className="flex justify-center">
                 <button
@@ -634,4 +678,3 @@ const TypingGame = ({ dispatch }) => {
 };
 
 export default TypingGame;
-
