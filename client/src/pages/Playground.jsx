@@ -218,32 +218,35 @@ setTimeout(() => {
                 </div>
 
                 {/* Output Pane */}
-                <div className="w-full md:w-[35%] md:min-w-[300px] h-[50%] md:h-full shrink-0 flex flex-col bg-[#1e1e1e] border-t md:border-t-0 md:border-l border-white/5 shadow-2xl z-10">
-                    <div className="h-10 shrink-0 border-b border-white/5 flex items-center justify-between px-4 bg-[#252526]">
+                <div className={`w-full md:w-[35%] md:min-w-[300px] h-[50%] md:h-full shrink-0 flex flex-col border-t md:border-t-0 md:border-l shadow-2xl z-10 transition-colors duration-300 ${theme === 'dark' ? 'bg-[#0d1117] border-white/5' : 'bg-secondary/30 border-border'
+                    }`}>
+                    <div className={`h-10 shrink-0 border-b flex items-center justify-between px-4 ${theme === 'dark' ? 'bg-[#161b22] border-white/5' : 'bg-muted border-border'
+                        }`}>
                         <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/70">Console Output</span>
-                        <div className="flex gap-1.5">
-                            <span className="w-2.5 h-2.5 rounded-full bg-red-500/20 border border-red-500/50"></span>
-                            <span className="w-2.5 h-2.5 rounded-full bg-yellow-500/20 border border-yellow-500/50"></span>
-                            <span className="w-2.5 h-2.5 rounded-full bg-green-500/20 border border-green-500/50"></span>
+                        <div className="flex gap-1.5 grayscale opacity-50">
+                            <span className="w-2 h-2 rounded-full bg-red-500"></span>
+                            <span className="w-2 h-2 rounded-full bg-yellow-500"></span>
+                            <span className="w-2 h-2 rounded-full bg-green-500"></span>
                         </div>
                     </div>
 
                     <div
                         ref={outputRef}
-                        className="flex-1 overflow-auto p-4 font-mono text-xs space-y-1.5 scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent"
+                        className={`flex-1 overflow-auto p-4 font-mono text-[11px] space-y-1.5 scrollbar-thin ${theme === 'dark' ? 'scrollbar-thumb-white/10' : 'scrollbar-thumb-black/10'
+                            } scrollbar-track-transparent`}
                     >
                         {output.length === 0 ? (
-                            <div className="flex flex-col items-center justify-center h-full text-muted-foreground/30 gap-2">
-                                <TerminalIcon size={32} />
-                                <span className="font-medium">Ready to execute...</span>
+                            <div className="flex flex-col items-center justify-center h-full text-muted-foreground/20 gap-2">
+                                <TerminalIcon size={32} strokeWidth={1.5} />
+                                <span className="font-medium text-[10px] tracking-tight">Ready to execute...</span>
                             </div>
                         ) : (
                             output.map((log, i) => (
-                                <div key={i} className={`flex gap-2 group hover:bg-white/5 p-1 rounded transition-colors break-words ${log.type === 'error' ? 'text-red-400' :
-                                    log.type === 'warn' ? 'text-yellow-400' :
-                                        'text-slate-300'
+                                <div key={i} className={`flex gap-2 group p-1.5 rounded transition-all break-words ${log.type === 'error' ? 'text-red-500 bg-red-500/5' :
+                                        log.type === 'warn' ? 'text-yellow-600 bg-yellow-500/5' :
+                                            theme === 'dark' ? 'text-slate-300 hover:bg-white/5' : 'text-slate-600 hover:bg-black/5'
                                     }`}>
-                                    <span className="opacity-30 select-none w-14 shrink-0 font-light text-[10px] pt-0.5 hidden sm:block">{log.timestamp}</span>
+                                    <span className="opacity-30 select-none w-14 shrink-0 font-light text-[9px] pt-0.5 hidden sm:block">{log.timestamp}</span>
                                     <pre className="whitespace-pre-wrap font-inherit break-all flex-1">{log.content}</pre>
                                 </div>
                             ))
