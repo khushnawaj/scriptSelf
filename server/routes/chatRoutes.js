@@ -5,7 +5,7 @@ const upload = require('../middleware/uploadMiddleware');
 
 const router = express.Router();
 
-router.get('/', getChatMessages);
+router.get('/', protect, getChatMessages);
 router.put('/:id', protect, editMessage);
 router.delete('/:id', protect, deleteMessage);
 
