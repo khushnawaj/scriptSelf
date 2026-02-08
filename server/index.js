@@ -159,6 +159,8 @@ app.use('/api/v1/auth/register', authLimiter);
 // Stricter CORS
 const allowedOrigins = [
   process.env.CLIENT_URL,
+  'https://script-self-two.vercel.app',
+  'https://script-self-two.vercel.app/',
   'http://localhost:3000',
   'http://localhost:5173'
 ].filter(Boolean);
