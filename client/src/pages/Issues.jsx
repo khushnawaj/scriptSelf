@@ -24,7 +24,7 @@ const Issues = () => {
     const { user } = useSelector((state) => state.auth);
 
     const [searchTerm, setSearchTerm] = useState('');
-    const [filter, setFilter] = useState('all'); // all, solved, open
+    const [filter, setFilter] = useState('all'); // all, solved, open, unanswered, mine
     const [page, setPage] = useState(1);
 
     // Initial Fetch
@@ -70,6 +70,7 @@ const Issues = () => {
         const isSolved = note.comments?.some(c => c.isSolution);
         if (filter === 'solved') return isSolved;
         if (filter === 'open') return !isSolved;
+        if (filter === 'unanswered') return (!note.comments || note.comments.length === 0);
         if (filter === 'mine') return user && note.user && (note.user._id === user._id || note.user === user._id);
         return true;
     });
@@ -110,8 +111,8 @@ const Issues = () => {
                     />
                 </form>
 
-                <div className="flex bg-secondary/30 p-1 rounded-[8px] border border-border shrink-0">
-                    {['All', 'Open', 'Solved', 'Mine'].map((f) => (
+                <div className="flex bg-secondary/30 p-1 rounded-[8px] border border-border shrink-0 overflow-x-auto">
+                    {['All', 'Open', 'Solved', 'Unanswered', 'Mine'].map((f) => (
                         <button
                             key={f}
                             onClick={() => setFilter(f.toLowerCase())}

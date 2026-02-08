@@ -128,34 +128,6 @@ io.on('connection', (socket) => {
   });
 });
 
-// Trust proxy
-app.set('trust proxy', 1);
-
-// Compression
-app.use(compression());
-
-// Rate Limiting
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // limit each IP to 100 requests per windowMs
-  message: 'Too many requests from this IP, please try again after 15 minutes',
-  standardHeaders: true,
-  legacyHeaders: false,
-});
-
-// Specific limiter for Auth (login/register)
-const authLimiter = rateLimit({
-  windowMs: 60 * 60 * 1000, // 1 hour
-  max: 20, // limit each IP to 20 attempts per hour
-  message: 'Too many auth attempts. Please try again in an hour.',
-  standardHeaders: true,
-  legacyHeaders: false,
-});
-
-app.use('/api', limiter);
-app.use('/api/v1/auth/login', authLimiter);
-app.use('/api/v1/auth/register', authLimiter);
-
 // Stricter CORS
 const allowedOrigins = [
   process.env.CLIENT_URL,
@@ -167,9 +139,9 @@ const allowedOrigins = [
 
 const corsOptions = {
   origin: function (origin, callback) {
-    // allow requests with no origin (like mobile apps or curl requests)
     if (!origin) return callback(null, true);
-    if (allowedOrigins.indexOf(origin) !== -1 || process.env.NODE_ENV === 'development') {
+    // Allow development or explicitly allowed origins
+    if (process.env.NODE_ENV === 'development' || allowedOrigins.indexOf(origin) !== -1) {
       callback(null, true);
     } else {
       callback(new Error('Not allowed by CORS'));
@@ -179,8 +151,38 @@ const corsOptions = {
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'Origin']
 };
+
 app.use(cors(corsOptions));
 app.options('*', cors(corsOptions));
+
+// Trust proxy
+app.set('trust proxy', 1);
+
+// Compression
+app.use(compression());
+
+// Rate Limiting (Increased for development)
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: process.env.NODE_ENV === 'development' ? 1000 : 100,
+  message: 'Too many requests from this IP',
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+const authLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000,
+  max: process.env.NODE_ENV === 'development' ? 200 : 20,
+  message: 'Too many auth attempts.',
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+app.use('/api', limiter);
+app.use('/api/v1/auth/login', authLimiter);
+app.use('/api/v1/auth/register', authLimiter);
+
+// CORS removed from here and moved to top
 
 // Body parser
 app.use(express.json());

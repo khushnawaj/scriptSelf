@@ -131,8 +131,15 @@ const NoteDetails = () => {
         dispatch(markSolution({ noteId: id, commentId }));
     };
 
+    const [commentPreview, setCommentPreview] = useState(false);
+    const [commentText, setCommentText] = useState('');
+
     const handlePin = () => {
         dispatch(togglePin(id));
+    };
+
+    const handleQuickAction = (text) => {
+        setCommentText(prev => prev ? `${prev}\n\n${text}` : text);
     };
 
     if (isLoading || !note) {
@@ -145,9 +152,14 @@ const NoteDetails = () => {
             <div className="border-b border-border pb-6 mb-6">
                 {/* ... (keep header content) ... */}
                 <div className="flex flex-col sm:flex-row justify-between items-start gap-4 mb-4">
-                    <h1 className="text-[32px] font-normal text-foreground leading-tight tracking-tight flex items-center gap-3">
+                    <h1 className="text-[32px] font-normal text-foreground leading-tight tracking-tight flex flex-wrap items-center gap-3">
                         {note.isPinned && <Pin className="text-amber-500 fill-amber-500" size={24} />}
                         {note.title}
+                        {note.type === 'issue' && (note.comments?.length || 0) === 0 && (
+                            <span className="bg-amber-500/10 text-amber-500 border border-amber-500/20 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest animate-pulse">
+                                Unanswered
+                            </span>
+                        )}
                     </h1>
                     <div className="flex gap-2 shrink-0">
                         {user && user.role === 'admin' && (
@@ -525,27 +537,79 @@ const NoteDetails = () => {
                         {user ? (
                             <form onSubmit={(e) => {
                                 e.preventDefault();
-                                if (!e.target.comment.value.trim()) return;
-                                dispatch(addComment({ id, text: e.target.comment.value }));
-                                e.target.comment.value = '';
-                            }} className="mb-8 flex gap-4">
-                                <div className="w-10 h-10 bg-primary/20 rounded-[3px] flex items-center justify-center text-primary font-bold shrink-0">
-                                    {user.username.charAt(0).toUpperCase()}
+                                if (!commentText.trim()) return;
+                                dispatch(addComment({ id, text: commentText }));
+                                setCommentText('');
+                                setCommentPreview(false);
+                            }} className="mb-10 bg-secondary/10 p-6 rounded-[8px] border border-border/50 shadow-sm relative overflow-hidden">
+                                {/* Decorative Accent */}
+                                <div className="absolute top-0 left-0 w-1 h-full bg-primary/40" />
+
+                                <div className="flex justify-between items-center mb-4">
+                                    <div className="flex items-center gap-3">
+                                        <div className="w-8 h-8 bg-primary/20 rounded-full flex items-center justify-center text-primary font-bold text-xs ring-2 ring-background">
+                                            {user.username.charAt(0).toUpperCase()}
+                                        </div>
+                                        <span className="text-sm font-bold text-foreground">Drafting Response</span>
+                                    </div>
+                                    <div className="flex gap-1.5">
+                                        <button
+                                            type="button"
+                                            onClick={() => setCommentPreview(!commentPreview)}
+                                            className={`text-[10px] uppercase font-black tracking-widest px-3 py-1.5 rounded transition-all ${commentPreview ? 'bg-primary text-white' : 'bg-background border border-border text-muted-foreground hover:border-primary/50'}`}
+                                        >
+                                            {commentPreview ? 'Editor' : 'Preview Result'}
+                                        </button>
+                                    </div>
                                 </div>
-                                <div className="flex-1">
+
+                                {commentPreview ? (
+                                    <div className="min-h-[140px] bg-background border border-border p-4 rounded-[3px] prose prose-sm dark:prose-invert max-w-none mb-3">
+                                        <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                                            {commentText || "*Nothing to preview yet...*"}
+                                        </ReactMarkdown>
+                                    </div>
+                                ) : (
                                     <textarea
-                                        name="comment"
-                                        placeholder="Contribute your insight..."
-                                        className="w-full bg-background border border-border rounded-[3px] p-3 text-[14px] text-foreground focus:border-primary outline-none min-h-[80px]"
+                                        value={commentText}
+                                        onChange={(e) => setCommentText(e.target.value)}
+                                        placeholder="Use Markdown to share code snippets... `backticks` for code blocks."
+                                        className="w-full bg-background border border-border rounded-[3px] p-4 text-[14px] text-foreground focus:border-primary outline-none min-h-[140px] font-mono transition-all mb-3 placeholder:opacity-50"
                                     />
-                                    <button type="submit" className="so-btn so-btn-primary mt-2">
+                                )}
+
+                                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                                    {/* Quick Context Buttons */}
+                                    <div className="flex flex-wrap gap-2">
+                                        {[
+                                            { label: 'Step/Steps?', text: 'Can you provide the step-by-step instructions to reproduce this?' },
+                                            { label: 'Environment?', text: 'What is your current OS/Browser and version?' },
+                                            { label: 'Check Logs', text: 'Please check your console/terminal logs and paste the error here.' }
+                                        ].map((btn, i) => (
+                                            <button
+                                                key={i}
+                                                type="button"
+                                                onClick={() => handleQuickAction(btn.text)}
+                                                className="text-[10px] font-bold text-primary bg-primary/5 border border-primary/10 px-2 py-1 rounded hover:bg-primary/20 transition-all uppercase"
+                                            >
+                                                + {btn.label}
+                                            </button>
+                                        ))}
+                                    </div>
+
+                                    <button type="submit" className="so-btn so-btn-primary py-2.5 px-6 shadow-lg shadow-primary/20">
                                         Post Contribution
                                     </button>
                                 </div>
                             </form>
                         ) : (
-                            <div className="p-4 bg-muted/30 border border-border rounded-[3px] text-center mb-8">
-                                <p className="text-[13px] text-muted-foreground"><Link to="/login" className="text-primary font-bold hover:underline">Log in</Link> to contribute to this record.</p>
+                            <div className="p-8 bg-muted/20 border border-border border-dashed rounded-[12px] text-center mb-10 overflow-hidden relative">
+                                <div className="relative z-10">
+                                    <p className="text-[14px] text-muted-foreground mb-4 font-medium italic">Shared knowledge builds better systems.</p>
+                                    <Link to="/login" className="so-btn so-btn-primary inline-flex items-center gap-2">
+                                        Log in to respond
+                                    </Link>
+                                </div>
                             </div>
                         )}
 
@@ -574,10 +638,10 @@ const NoteDetails = () => {
                                                         {user && note.type === 'issue' && note.user._id === user._id && !comment.isSolution && (
                                                             <button
                                                                 onClick={() => handleMarkSolution(comment._id)}
-                                                                className="opacity-0 group-hover:opacity-100 transition-opacity text-[10px] font-bold uppercase text-muted-foreground hover:text-green-500 flex items-center gap-1"
+                                                                className="opacity-0 group-hover:opacity-100 transition-opacity text-[10px] font-black uppercase text-green-600 bg-green-500/5 border border-green-500/20 px-3 py-1 rounded hover:bg-green-500 hover:text-white flex items-center gap-1.5"
                                                                 title="Mark as Solution"
                                                             >
-                                                                <CheckCircle2 size={12} /> Accept Answer
+                                                                <CheckCircle2 size={12} /> Mark Best Answer
                                                             </button>
                                                         )}
 
@@ -607,14 +671,15 @@ const NoteDetails = () => {
                                                         <textarea
                                                             value={editCommentText}
                                                             onChange={(e) => setEditCommentText(e.target.value)}
-                                                            className="w-full bg-background border border-border rounded-[3px] p-2 text-[14px] text-foreground focus:border-primary outline-none min-h-[60px] mb-2"
+                                                            className="w-full bg-background border border-border rounded-[3px] p-2 text-[14px] text-foreground focus:border-primary outline-none min-h-[100px] mb-2 font-mono"
+                                                            placeholder="Use Markdown for code blocks..."
                                                         />
                                                         <div className="flex gap-2">
                                                             <button
                                                                 onClick={() => saveEditedComment(comment._id)}
                                                                 className="so-btn so-btn-primary py-1 px-3 text-[12px]"
                                                             >
-                                                                Save
+                                                                Save Changes
                                                             </button>
                                                             <button
                                                                 onClick={cancelEditingComment}
@@ -625,7 +690,34 @@ const NoteDetails = () => {
                                                         </div>
                                                     </div>
                                                 ) : (
-                                                    <p className="text-[14px] text-foreground/90 leading-relaxed font-normal">{comment.text}</p>
+                                                    <div className="prose prose-sm dark:prose-invert max-w-none prose-p:leading-relaxed prose-pre:bg-muted/50 prose-pre:border prose-pre:border-border mt-2">
+                                                        <ReactMarkdown
+                                                            remarkPlugins={[remarkGfm]}
+                                                            components={{
+                                                                code({ node, inline, className, children, ...props }) {
+                                                                    const match = /language-(\w+)/.exec(className || '')
+                                                                    const codeString = String(children).replace(/\n$/, '');
+                                                                    return !inline && match ? (
+                                                                        <SyntaxHighlighter
+                                                                            style={theme === 'dark' ? vscDarkPlus : prism}
+                                                                            language={match[1]}
+                                                                            PreTag="div"
+                                                                            className="!rounded-[3px] !text-[12px] !p-4"
+                                                                            {...props}
+                                                                        >
+                                                                            {codeString}
+                                                                        </SyntaxHighlighter>
+                                                                    ) : (
+                                                                        <code className="bg-accent/40 text-primary px-1 py-0.5 rounded-[2px] font-mono text-[12px]" {...props}>
+                                                                            {children}
+                                                                        </code>
+                                                                    )
+                                                                }
+                                                            }}
+                                                        >
+                                                            {comment.text}
+                                                        </ReactMarkdown>
+                                                    </div>
                                                 )}
                                             </div>
                                         </div>

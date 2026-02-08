@@ -448,8 +448,8 @@ exports.addComment = async (req, res, next) => {
       return res.status(404).json({ success: false, error: 'Note not found' });
     }
 
-    if (!note.isPublic && note.user.toString() !== req.user.id) {
-      return res.status(403).json({ success: false, error: 'Private note' });
+    if (!note.isPublic && note.type !== 'issue' && note.user.toString() !== req.user.id) {
+      return res.status(403).json({ success: false, error: 'Private record contribution forbidden' });
     }
 
     const comment = {

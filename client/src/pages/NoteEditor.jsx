@@ -142,8 +142,9 @@ const NoteEditor = () => {
                 setFormData(prev => ({
                     ...prev,
                     type: 'issue',
-                    isPublic: true, // Issues are always public
-                    categoryId: categories.find(c => c.name === 'General')?._id || '' // Default to General if exists
+                    isPublic: true,
+                    content: `### Problem Description\n\n\n### Expected Behavior\n\n\n### Context / Environment\n- OS:\n- Browser:\n- Version:\n\n### Reproducible Steps\n1. \n2. \n3. `,
+                    categoryId: categories.find(c => c.name === 'General')?._id || ''
                 }));
             }
             setTimeout(() => setIsDirty(false), 500);
@@ -153,10 +154,19 @@ const NoteEditor = () => {
     const onChange = (e) => {
         const { name, value, type: inputType, checked } = e.target;
         setIsDirty(true);
-        setFormData(prev => ({
-            ...prev,
-            [name]: inputType === 'checkbox' ? checked : value
-        }));
+
+        if (name === 'type' && value === 'issue' && !formData.content) {
+            setFormData(prev => ({
+                ...prev,
+                type: value,
+                content: `### Problem Description\n\n\n### Expected Behavior\n\n\n### Context / Environment\n- OS:\n- Browser:\n- Version:\n\n### Reproducible Steps\n1. \n2. \n3. `
+            }));
+        } else {
+            setFormData(prev => ({
+                ...prev,
+                [name]: inputType === 'checkbox' ? checked : value
+            }));
+        }
     };
 
     const handleEditorDidMount = (editor) => {
@@ -307,8 +317,8 @@ const NoteEditor = () => {
                             name="title"
                             value={title}
                             onChange={onChange}
-                            placeholder="Title of your documentation..."
-                            className="w-full bg-transparent text-[28px] font-bold text-foreground border-none outline-none placeholder:text-muted-foreground/30 focus:ring-0"
+                            placeholder={type === 'issue' ? "Question: What specific problem are you facing? (e.g. 'Redux state not updating after API call')" : "Title of your documentation..."}
+                            className={`w-full bg-transparent text-[28px] font-bold border-none outline-none placeholder:text-muted-foreground/30 focus:ring-0 ${type === 'issue' ? 'text-primary' : 'text-foreground'}`}
                             required
                         />
                         <div className="h-px w-full bg-border absolute bottom-0 left-0" />
@@ -544,15 +554,29 @@ const NoteEditor = () => {
                         </div>
                     </div>
 
-                    <div className="bg-accent/30 border border-primary/20 p-5 rounded-[3px]">
-                        <h3 className="text-[13px] font-bold text-foreground mb-2 flex items-center gap-2">
-                            <HelpCircle size={14} className="text-primary" /> System Pro-Tip
-                        </h3>
-                        <p className="text-[12px] text-muted-foreground leading-relaxed italic">
-                            Use the **Split View** to see your README live as you document logic.
-                            Patterns with high-quality tags are 80% easier to find later.
-                        </p>
-                    </div>
+                    {type === 'issue' ? (
+                        <div className="bg-primary/5 border border-primary/20 p-5 rounded-[3px]">
+                            <h3 className="text-[13px] font-bold text-primary mb-3 flex items-center gap-2">
+                                <Info size={14} /> Community Guidelines
+                            </h3>
+                            <ul className="text-[11px] text-muted-foreground space-y-2 list-disc pl-4">
+                                <li>Be specific about the error message.</li>
+                                <li>Provide a <span className="text-primary font-bold">Minimal Reproducible Example</span>.</li>
+                                <li>Tag your tech stack for better visibility.</li>
+                                <li>Award solutions to help the community grow.</li>
+                            </ul>
+                        </div>
+                    ) : (
+                        <div className="bg-accent/30 border border-primary/20 p-5 rounded-[3px]">
+                            <h3 className="text-[13px] font-bold text-foreground mb-2 flex items-center gap-2">
+                                <HelpCircle size={14} className="text-primary" /> System Pro-Tip
+                            </h3>
+                            <p className="text-[12px] text-muted-foreground leading-relaxed italic">
+                                Use the **Split View** to see your README live as you document logic.
+                                Patterns with high-quality tags are 80% easier to find later.
+                            </p>
+                        </div>
+                    )}
                 </div>
             </div>
 

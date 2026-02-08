@@ -78,6 +78,20 @@ ScriptShelf is a full-scale **MERN Stack** (MongoDB, Express, React, Node.js) ap
 *   **Implementation**: `app.use(compression())` in the main server file.
 *   **Benefit**: This reduces the "Serialized Payload" size, which is critical for Users on 3G/4G networks.
 
+### **5. Gamification: Award & XP System**
+*   **Engine**: Handled by `reputationEngine.js` using Atomic MongoDB updates (`$inc`).
+*   **Reputation Breakdown**:
+    *   `mark_solution`: **+100 XP** (Community Hero - solving someone's problem)
+    *   `create_note`: **+50 XP** (Documentation creation)
+    *   `clone_note`: **+25 XP** (Curating knowledge)
+    *   `arcade_game`: **+15 XP** (Skill-based training)
+    *   `add_comment`: **+10 XP** (Engagement)
+    *   `receive_comment`: **+5 XP** (Contribution quality)
+*   **Rank Hierarchy**:
+    *   🥉 **Bronze**: 500+ Reputation
+    *   🥈 **Silver**: 1000+ Reputation
+    *   🥇 **Gold**: 2000+ Reputation
+
 ---
 
 ## 🚀 5. Blueprint: Rebuilding ScriptShelf from Scratch
