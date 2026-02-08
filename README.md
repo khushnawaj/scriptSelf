@@ -11,6 +11,7 @@
 - **Visual Logic (Mermaid.js)**: Native rendering of flowcharts, sequence diagrams, and ER diagrams directly within documentation.
 - **Second Brain (Bidirectional Linking)**: Support for `[[Wiki-Style Links]]` with automatic backlink discovery. Notes grow into an interconnected knowledge web.
 - **Logic Patterns**: Dedicated classification for Best Practices and Anti-Patterns to serve as a living handbook for teams.
+- **Logic Sandbox**: A built-in JavaScript playground for quick prototyping and console debugging without leaving the app.
 - **Obsidian-Compatible Export**: Markdown bundles now include YAML frontmatter, ready for local sync or Obsidian integration.
 
 ### 🛠️ Developer Productivity
@@ -39,6 +40,10 @@
 - **Tactical Shortcuts**: A global keyboard navigation system to accelerate your workflow.
     - `Alt + N`: Rapid Record Creation.
     - `Alt + Z`: Toggle **Zen Mode** (Hides sidebars for deep focus).
+    - `Alt + X`: Launch Playground.
+    - `Alt + C`: Open Global Chat.
+    - `Alt + M`: View Community Feed.
+    - `Alt + I`: Report Issues.
     - `Alt + T`: Instant Theme Switching.
     - `?`: Open the Tactical Shortcut Command Map.
 - **Zen Focus**: A distraction-free environment that centers your workspace and maximizes vertical real estate for documentation.

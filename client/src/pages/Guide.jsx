@@ -154,7 +154,7 @@ const Guide = () => {
                             -- tech_stack: [react, thunk]<br />
                             -- privacy: vaulted
                         </div>
-                        <p className="text-zinc-500 mt-6">```javascript<br />const logic = () =&gt; &#123; ... &#125;;<br />```</p>
+                        <p className="text-muted-foreground mt-6">```javascript<br />const logic = () =&gt; &#123; ... &#125;;<br />```</p>
                     </div>
                 </div>
 
@@ -244,7 +244,7 @@ const Guide = () => {
                     <div className="flex flex-col md:flex-row-reverse items-start gap-16">
                         <div className="flex-1 space-y-6 text-left">
                             <div className="flex items-center gap-3 text-primary font-bold uppercase tracking-widest text-[13px]">
-                                <Binary size={18} /> Logic Lifecycle
+                                <Binary size={18} /> Component 04: Logic Lifecycle
                             </div>
                             <h2 className="text-[32px] font-bold leading-tight">The ADR Status Engine</h2>
                             <p className="text-muted-foreground leading-relaxed">
@@ -279,7 +279,7 @@ const Guide = () => {
                     <div className="flex flex-col md:flex-row items-start gap-16">
                         <div className="flex-1 space-y-6 text-left">
                             <div className="flex items-center gap-3 text-primary font-bold uppercase tracking-widest text-[13px]">
-                                <Keyboard size={18} /> Component 04: Control
+                                <Keyboard size={18} /> Component 05: Control
                             </div>
                             <h2 className="text-[32px] font-bold leading-tight">Master Terminal Controls</h2>
                             <p className="text-muted-foreground leading-relaxed">
@@ -297,6 +297,22 @@ const Guide = () => {
                                 <div className="p-4 bg-muted/20 border border-border rounded-[3px] flex justify-between items-center">
                                     <span className="text-[13px] font-bold">New Note</span>
                                     <kbd className="bg-background px-2 py-0.5 border border-border rounded text-[10px] font-bold text-primary">Alt+N</kbd>
+                                </div>
+                                <div className="p-4 bg-muted/20 border border-border rounded-[3px] flex justify-between items-center">
+                                    <span className="text-[13px] font-bold">Playground</span>
+                                    <kbd className="bg-background px-2 py-0.5 border border-border rounded text-[10px] font-bold text-primary">Alt+X</kbd>
+                                </div>
+                                <div className="p-4 bg-muted/20 border border-border rounded-[3px] flex justify-between items-center">
+                                    <span className="text-[13px] font-bold">Global Chat</span>
+                                    <kbd className="bg-background px-2 py-0.5 border border-border rounded text-[10px] font-bold text-primary">Alt+C</kbd>
+                                </div>
+                                <div className="p-4 bg-muted/20 border border-border rounded-[3px] flex justify-between items-center">
+                                    <span className="text-[13px] font-bold">Community</span>
+                                    <kbd className="bg-background px-2 py-0.5 border border-border rounded text-[10px] font-bold text-primary">Alt+M</kbd>
+                                </div>
+                                <div className="p-4 bg-muted/20 border border-border rounded-[3px] flex justify-between items-center">
+                                    <span className="text-[13px] font-bold">Issues</span>
+                                    <kbd className="bg-background px-2 py-0.5 border border-border rounded text-[10px] font-bold text-primary">Alt+I</kbd>
                                 </div>
                                 <div className="p-4 bg-muted/20 border border-border rounded-[3px] flex justify-between items-center">
                                     <span className="text-[13px] font-bold">Help Map</span>
@@ -325,7 +341,7 @@ const Guide = () => {
                     <div className="flex flex-col md:flex-row items-start gap-16">
                         <div className="flex-1 space-y-6 text-left">
                             <div className="flex items-center gap-3 text-primary font-bold uppercase tracking-widest text-[13px]">
-                                <MessageSquare size={18} /> Component 05: Communication
+                                <MessageSquare size={18} /> Component 06: Communication
                             </div>
                             <h2 className="text-[32px] font-bold leading-tight">Encrypted Signal Protocol</h2>
                             <p className="text-muted-foreground leading-relaxed">
@@ -373,7 +389,7 @@ const Guide = () => {
                     <div className="flex flex-col md:flex-row-reverse items-start gap-16">
                         <div className="flex-1 space-y-6 text-left">
                             <div className="flex items-center gap-3 text-primary font-bold uppercase tracking-widest text-[13px]">
-                                <Globe size={18} /> Component 06: Collective
+                                <Globe size={18} /> Component 07: Collective
                             </div>
                             <h2 className="text-[32px] font-bold leading-tight">The Global Knowledge Stream</h2>
                             <p className="text-muted-foreground leading-relaxed">
@@ -419,12 +435,99 @@ const Guide = () => {
                     </div>
                 </div>
 
-                {/* 8. Admin Console */}
+
+
+                {/* 10. Playground */}
+                <div className="mt-20 pt-16 border-t border-border/50">
+                    <div className="flex flex-col md:flex-row-reverse items-start gap-16">
+                        <div className="flex-1 space-y-6 text-left">
+                            <div className="flex items-center gap-3 text-primary font-bold uppercase tracking-widest text-[13px]">
+                                <Terminal size={18} /> Component 08: Playground
+                            </div>
+                            <h2 className="text-[32px] font-bold leading-tight">The Logic Sandbox</h2>
+                            <p className="text-muted-foreground leading-relaxed">
+                                A safe, isolated environment to prototype JavaScript logic before integrating it into your main codebase. Features a patched console for real-time output debugging.
+                            </p>
+                            <ul className="space-y-4 text-[14px]">
+                                <li className="flex gap-4">
+                                    <div className="w-6 h-6 rounded bg-primary/10 flex items-center justify-center text-primary shrink-0"><Zap size={14} /></div>
+                                    <span>**Instant Execution**: Run standard JS and async functions immediately with the Play button.</span>
+                                </li>
+                                <li className="flex gap-4">
+                                    <div className="w-6 h-6 rounded bg-primary/10 flex items-center justify-center text-primary shrink-0"><Monitor size={14} /></div>
+                                    <span>**Console Mirror**: System console logs are captured and displayed in a dedicated output pane.</span>
+                                </li>
+                                <li className="flex gap-4">
+                                    <div className="w-6 h-6 rounded bg-primary/10 flex items-center justify-center text-primary shrink-0"><Layout size={14} /></div>
+                                    <span>**Zen Integration**: Toggle `Alt+Z` to maximize the coding area for purely focused prototyping.</span>
+                                </li>
+                            </ul>
+                        </div>
+                        <div className="flex-1 w-full bg-card/50 border border-border p-8 rounded-[3px] text-left font-mono text-[13px]">
+                            <div className="flex items-center justify-between border-b border-border/50 pb-4 mb-4">
+                                <span className="font-bold text-primary">Playground.js</span>
+                                <div className="flex gap-2">
+                                    <div className="w-2 h-2 rounded-full bg-red-500/50" />
+                                    <div className="w-2 h-2 rounded-full bg-yellow-500/50" />
+                                    <div className="w-2 h-2 rounded-full bg-green-500/50" />
+                                </div>
+                            </div>
+                            <div className="space-y-2 text-muted-foreground">
+                                <p><span className="text-purple-400">const</span> <span className="text-blue-400">calculate</span> = (x) =&gt; &#123;</p>
+                                <p className="pl-4"><span className="text-purple-400">return</span> x * <span className="text-orange-400">2</span>;</p>
+                                <p>&#125;;</p>
+                                <p className="text-emerald-500/50 italic">// Output: 42</p>
+                            </div>
+                            <div className="mt-6 p-3 bg-black/20 rounded border border-white/5">
+                                <p className="text-[10px] text-muted-foreground uppercase tracking-widest mb-1">Console Output</p>
+                                <p className="text-primary">&gt; Calculation complete.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {/* 9. DevArcade Game Mode */}
+                <div className="mt-20 pt-16 border-t border-border/50">
+                    <div className="flex items-center gap-3 text-primary font-bold uppercase tracking-widest text-[13px] mb-8">
+                        <Zap size={18} /> Component 09: Training Hub
+                    </div>
+                    <h2 className="text-[32px] font-bold leading-tight mb-8">DevArcade: Gamified Sharpening</h2>
+                    <p className="text-muted-foreground leading-relaxed mb-10 max-w-2xl text-left">
+                        Play built-in technical mini-games to sharpen your coding reflexes. Earn XP while mastering syntax and pattern recognition.
+                    </p>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 text-left">
+                        {[
+                            { title: "Syntax Sprint", icon: <Terminal size={18} />, desc: "Elite Typing Speed", color: "text-emerald-500", bg: "bg-emerald-500/10" },
+                            { title: "Bug Hunter", icon: <Bug size={18} />, desc: "Visual Audit Speed", color: "text-rose-500", bg: "bg-rose-500/10" },
+                            { title: "Logic Loop", icon: <Binary size={18} />, desc: "Algo_Optimizing", color: "text-primary", bg: "bg-primary/10" },
+                        ].map((game, i) => (
+                            <div key={i} className="group glass-frost hover:border-primary/50 p-6 rounded-[3px] space-y-4 transition-all hover:shadow-lg">
+                                <div className={`w-10 h-10 rounded-[3px] ${game.bg} flex items-center justify-center ${game.color} border border-white/5`}>
+                                    {game.icon}
+                                </div>
+                                <div>
+                                    <h4 className="font-bold text-foreground group-hover:text-primary transition-colors">{game.title}</h4>
+                                    <p className="text-[10px] font-bold text-muted-foreground mt-1 uppercase tracking-tighter">{game.desc}</p>
+                                </div>
+                                <div className="pt-4 border-t border-border flex justify-between items-center group-hover:border-primary/20 transition-colors">
+                                    <span className="text-[9px] font-bold text-foreground/40 uppercase">System: Ready</span>
+                                    <ArrowRight size={14} className={`${game.color} opacity-0 group-hover:opacity-100 transition-all`} />
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                    <div className="mt-8 flex justify-start">
+                        <Link to="/arcade" className="so-btn so-btn-primary px-8 py-3 text-[14px] font-bold">Launch Arcade System</Link>
+                    </div>
+                </div>
+
+                {/* 10. Admin Console */}
                 <div className="mt-20 pt-16 border-t border-border/50">
                     <div className="flex flex-col md:flex-row items-start gap-16">
                         <div className="flex-1 space-y-6 text-left">
                             <div className="flex items-center gap-3 text-red-500 font-bold uppercase tracking-widest text-[13px]">
-                                <Shield size={18} /> Component 07: Administration
+                                <Shield size={18} /> Component 10: Administration
                             </div>
                             <h2 className="text-[32px] font-bold leading-tight">System Control Center</h2>
                             <p className="text-muted-foreground leading-relaxed">
@@ -473,42 +576,6 @@ const Guide = () => {
                         </div>
                     </div>
                 </div>
-
-                {/* 9. DevArcade Game Mode */}
-                <div className="mt-20 pt-16 border-t border-border/50">
-                    <div className="flex items-center gap-3 text-primary font-bold uppercase tracking-widest text-[13px] mb-8">
-                        <Zap size={18} /> Training Hub
-                    </div>
-                    <h2 className="text-[32px] font-bold leading-tight mb-8">DevArcade: Gamified Sharpening</h2>
-                    <p className="text-muted-foreground leading-relaxed mb-10 max-w-2xl text-left">
-                        Play built-in technical mini-games to sharpen your coding reflexes. Earn XP while mastering syntax and pattern recognition.
-                    </p>
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 text-left">
-                        {[
-                            { title: "Syntax Sprint", icon: <Terminal size={18} />, desc: "Elite Typing Speed", color: "text-emerald-500", bg: "bg-emerald-500/10" },
-                            { title: "Bug Hunter", icon: <Bug size={18} />, desc: "Visual Audit Speed", color: "text-rose-500", bg: "bg-rose-500/10" },
-                            { title: "Logic Loop", icon: <Binary size={18} />, desc: "Algo_Optimizing", color: "text-primary", bg: "bg-primary/10" },
-                        ].map((game, i) => (
-                            <div key={i} className="group glass-frost hover:border-primary/50 p-6 rounded-[3px] space-y-4 transition-all hover:shadow-lg">
-                                <div className={`w-10 h-10 rounded-[3px] ${game.bg} flex items-center justify-center ${game.color} border border-white/5`}>
-                                    {game.icon}
-                                </div>
-                                <div>
-                                    <h4 className="font-bold text-foreground group-hover:text-primary transition-colors">{game.title}</h4>
-                                    <p className="text-[10px] font-bold text-muted-foreground mt-1 uppercase tracking-tighter">{game.desc}</p>
-                                </div>
-                                <div className="pt-4 border-t border-border flex justify-between items-center group-hover:border-primary/20 transition-colors">
-                                    <span className="text-[9px] font-bold text-foreground/40 uppercase">System: Ready</span>
-                                    <ArrowRight size={14} className={`${game.color} opacity-0 group-hover:opacity-100 transition-all`} />
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                    <div className="mt-8 flex justify-start">
-                        <Link to="/arcade" className="so-btn so-btn-primary px-8 py-3 text-[14px] font-bold">Launch Arcade System</Link>
-                    </div>
-                </div>
             </div>
 
             {/* Support Protocols */}
@@ -536,13 +603,13 @@ const Guide = () => {
             {/* Final CTA */}
             <div className="mt-32 p-12 glass-frost rounded-[3px] text-center space-y-8 border-none border-t-4 border-t-primary relative overflow-hidden">
                 <div className="absolute top-0 right-0 w-64 h-64 bg-primary/20 blur-[100px] -translate-y-1/2 translate-x-1/2" />
-                <h2 className="text-[34px] font-bold leading-tight tracking-tight text-white">Your technical legacy <br /> starts with one note.</h2>
+                <h2 className="text-[34px] font-bold leading-tight tracking-tight text-foreground">Your technical legacy <br /> starts with one note.</h2>
                 <div className="flex justify-center gap-4">
                     <Link to="/notes/new" className="so-btn so-btn-primary px-10 py-4 font-bold text-[16px]">
                         Initialize First Entry <Zap size={18} className="ml-2" />
                     </Link>
                 </div>
-                <p className="text-zinc-500 font-bold uppercase tracking-[0.2em] text-[10px]">Session_System: Stable // V2.9.0</p>
+                <p className="text-muted-foreground font-bold uppercase tracking-[0.2em] text-[10px]">Session_System: Stable // V2.9.0</p>
             </div>
         </div>
     );

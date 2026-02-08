@@ -1,11 +1,13 @@
 const express = require('express');
-const { getChatMessages } = require('../controllers/chatController');
+const { getChatMessages, editMessage, deleteMessage } = require('../controllers/chatController');
 const { protect } = require('../middleware/authMiddleware');
 const upload = require('../middleware/uploadMiddleware');
 
 const router = express.Router();
 
-router.get('/', protect, getChatMessages);
+router.get('/', getChatMessages);
+router.put('/:id', protect, editMessage);
+router.delete('/:id', protect, deleteMessage);
 
 router.post('/upload', protect, upload.single('file'), (req, res) => {
     if (!req.file) {

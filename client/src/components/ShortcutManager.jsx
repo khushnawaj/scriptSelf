@@ -48,9 +48,27 @@ const ShortcutManager = () => {
                         e.preventDefault();
                         navigate('/guide');
                         break;
+                    case 'x':
+                        e.preventDefault();
+                        navigate('/playground');
+                        break;
+                    case 'c':
+                        e.preventDefault();
+                        navigate('/chat');
+                        break;
+                    case 'm':
+                        e.preventDefault();
+                        navigate('/community');
+                        break;
+                    case 'i':
+                        e.preventDefault();
+                        navigate('/issues');
+                        break;
                     case 'z':
                         e.preventDefault();
                         const isZen = document.body.classList.toggle('zen-mode');
+                        // Fire resize events repeatedly to catch end of transitions
+                        [10, 100, 300, 500].forEach(t => setTimeout(() => window.dispatchEvent(new Event('resize')), t));
                         toast.success(isZen ? 'Zen Mode Enabled' : 'Normal View Restored');
                         break;
                     case 't':
@@ -86,6 +104,10 @@ const ShortcutManager = () => {
         { key: 'Alt + Z', desc: 'Toggle Zen Mode (Hider)' },
         { key: 'Alt + P', desc: 'View Profile Status' },
         { key: 'Alt + G', desc: 'Open Document Guide' },
+        { key: 'Alt + X', desc: 'Launch Playground' },
+        { key: 'Alt + C', desc: 'Open Global Chat' },
+        { key: 'Alt + M', desc: 'View Community Feed' },
+        { key: 'Alt + I', desc: 'Report Issues' },
         { key: 'Alt + T', desc: 'Toggle System Theme' },
         { key: '?', desc: 'Toggle this Help Menu' },
     ];

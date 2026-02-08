@@ -240,7 +240,62 @@ body.zen-mode aside {
     display: none !important;
 }
 body.zen-mode main {
-    border-left: none !important;
     max-width: 900px !important;
     margin: 0 auto !important;
+    border-left: none !important;
+}
+
+/* App Mode Layout (e.g. Playground) - Always Applies */
+main.layout-full-width {
+    height: calc(100vh - 64px); /* Full height minus navbar */
+    overflow: hidden; /* Prevent document scroll, use internal scroll */
+    display: flex;
+    flex-direction: column;
+    padding: 0 !important; /* Force no padding for immersive views */
+}
+
+/* High-Fidelity Blueprint Utilities */
+.blueprint-grid {
+    background-image: 
+        linear-gradient(rgba(0, 160, 255, 0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 160, 255, 0.05) 1px, transparent 1px);
+    background-size: 40px 40px;
+}
+
+.blueprint-grid-fine {
+    background-image: 
+        linear-gradient(rgba(0, 160, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 160, 255, 0.03) 1px, transparent 1px);
+    background-size: 8px 8px;
+}
+
+@keyframes blueprint-pulse {
+    0%, 100% { opacity: 0.3; }
+    50% { opacity: 1; }
+}
+
+.animate-blueprint-pulse {
+    animation: blueprint-pulse 4s ease-in-out infinite;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background: rgba(0, 160, 255, 0.2);
+    border-radius: 2px;
+}
+
+/* Zen Mode Overrides to ensure full width/height usage */
+body.zen-mode main.layout-full-width {
+    max-width: 100% !important;
+    margin: 0 !important;
+    border-left: none !important;
+    height: calc(100vh - 64px) !important; 
 }

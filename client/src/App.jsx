@@ -33,6 +33,7 @@ const Chat = lazy(() => import('./pages/Chat'));
 const AdminRoute = lazy(() => import('./components/AdminRoute'));
 const CommandPalette = lazy(() => import('./components/CommandPalette'));
 const ShortcutManager = lazy(() => import('./components/ShortcutManager'));
+const Playground = lazy(() => import('./pages/Playground'));
 
 // Private Route Component
 const PrivateRoute = ({ children }) => {
@@ -94,11 +95,12 @@ function App() {
             <Route path="/notes" element={<Notes />} />
             <Route path="/categories" element={<Categories />} />
             <Route path="/u/:username" element={<PublicProfile />} />
+            <Route path="/community" element={<Community />} />
+            <Route path="/playground" element={<Playground />} />
 
             {/* Validated Access Routes */}
             <Route path="/dashboard" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
             <Route path="/profile" element={<PrivateRoute><Profile /></PrivateRoute>} />
-            <Route path="/community" element={<PrivateRoute><Community /></PrivateRoute>} />
             <Route path="/chat" element={<PrivateRoute><Chat /></PrivateRoute>} />
             <Route path="/notes/new" element={<PrivateRoute><NoteEditor /></PrivateRoute>} />
             <Route path="/notes/edit/:id" element={<PrivateRoute><NoteEditor /></PrivateRoute>} />
@@ -106,6 +108,7 @@ function App() {
             <Route element={<AdminRoute />}>
               <Route path="/admin" element={<AdminDashboard />} />
             </Route>
+
           </Route>
 
           <Route path="/terms" element={<Terms />} />

@@ -21,15 +21,23 @@ const awardReputation = async (userId, activityType, isDeduction = false) => {
 
         if (isDeduction) points = -points;
 
-        const user = await User.findById(userId);
+        // Atomic update to prevent race conditions
+        const update = { $inc: { reputation: points } };
+
+        // Use findByIdAndUpdate with $inc for atomicity
+        const user = await User.findByIdAndUpdate(
+            userId,
+            update,
+            { new: true, runValidators: true }
+        );
+
         if (!user) return;
 
-        // Apply change but prevent negative reputation
-        let newReputation = (user.reputation || 0) + points;
-        if (newReputation < 0) newReputation = 0;
-
-        user.reputation = newReputation;
-        await user.save();
+        // Ensure reputation doesn't drop below 0 (Post-operation safeguard)
+        if (user.reputation < 0) {
+            user.reputation = 0;
+            await user.save();
+        }
 
     } catch (err) {
         console.error('[Reputation-Engine] Failed to update reputation:', err);

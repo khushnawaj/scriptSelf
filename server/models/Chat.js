@@ -28,7 +28,9 @@ const ChatSchema = new mongoose.Schema({
         type: String,
         enum: ['sent', 'delivered', 'read'],
         default: 'sent'
-    }
+    },
+    isEdited: { type: Boolean, default: false },
+    isDeleted: { type: Boolean, default: false }
 }, {
     minimize: false, // Ensure empty objects aren't saved, but we'll handle this in logic anyway
     timestamps: true

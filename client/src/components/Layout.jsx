@@ -36,7 +36,7 @@ const Layout = () => {
         return (
             <Link
                 to={to}
-                className={`flex items-center gap-2 py-2 px-2 text-[13px] border-r-4 transition-all ${isActive
+                className={`flex items-center gap-1.5 py-1.5 px-2 text-[13px] border-r-4 transition-all ${isActive
                     ? 'bg-accent text-foreground font-bold border-r-primary'
                     : 'text-muted-foreground border-r-transparent hover:text-foreground'
                     }`}
@@ -48,52 +48,36 @@ const Layout = () => {
     };
 
     const SidebarContent = () => (
-        <div className="flex flex-col">
+        <div className="flex flex-col space-y-0.5">
             <NavItem to="/" label="Home" exact icon={Globe} />
+            <NavItem to="/dashboard" label="Overview" icon={LayoutGrid} />
 
-            <div className="mt-4 mb-2 px-2 text-[11px] font-bold uppercase text-muted-foreground/60 tracking-widest">
-                Public
+            <div className="mt-3 mb-1 px-2 text-[10px] font-black uppercase text-muted-foreground/40 tracking-[0.2em]">
+                Library
             </div>
-            <NavItem to="/issues" label="Issues" icon={MessageSquare} />
-            <NavItem to="/notes" label="Library" icon={FileText} />
-            <NavItem to="/categories" label="Tags" icon={LayoutGrid} />
-            <NavItem to="/dashboard" label="Stats" icon={Flag} />
+            <NavItem to="/notes" label="All Notes" icon={FileText} />
+            {user && <NavItem to="/notes/new" label="New Note" icon={Zap} />}
+            <NavItem to="/categories" label="Tags" icon={BookOpen} />
+            <NavItem to="/issues" label="Issues" icon={Flag} />
 
-            {user && (
-                <>
-                    <div className="mt-4 mb-2 px-2 text-[11px] font-black uppercase text-muted-foreground/40 tracking-[0.2em]">
-                        Your Space
-                    </div>
-                    <NavItem to="/profile" label="Profile" icon={Users} />
-                    <NavItem to="/notes/new" label="New Note" icon={Zap} />
-                    <NavItem to="/arcade" label="Arcade" icon={Gamepad2} />
+            <div className="mt-3 mb-1 px-2 text-[10px] font-black uppercase text-muted-foreground/40 tracking-[0.2em]">
+                Studio
+            </div>
+            <NavItem to="/playground" label="Playground" icon={Terminal} />
+            <NavItem to="/arcade" label="Arcade" icon={Gamepad2} />
 
-                    <div className="mt-4 mb-2 px-2 text-[11px] font-black uppercase text-muted-foreground/40 tracking-[0.2em]">
-                        Communication
-                    </div>
-                    <NavItem to="/community" label="Community Chat" icon={Zap} />
-                    <NavItem to="/chat" label="Private Chat" icon={MessageCircle} />
+            <div className="mt-3 mb-1 px-2 text-[10px] font-black uppercase text-muted-foreground/40 tracking-[0.2em]">
+                Connect
+            </div>
+            <NavItem to="/community" label="Community" icon={Globe} />
+            {user && <NavItem to="/chat" label="Messages" icon={MessageCircle} />}
 
-                    <div className="mt-4">
-                        <NavItem to="/guide" label="Help Guide" icon={BookOpen} />
-                    </div>
-
-                    {user.role === 'admin' && (
-                        <div className="mt-4 border-t border-border pt-4">
-                            <NavItem to="/admin" label="Admin Console" icon={Settings} />
-                        </div>
-                    )}
-                </>
-            )}
-            {!user && (
-                <>
-                    <div className="mt-4 mb-2 px-2 text-[11px] font-black uppercase text-muted-foreground/40 tracking-[0.2em]">
-                        Resources
-                    </div>
-                    <NavItem to="/guide" label="Help Guide" icon={BookOpen} />
-                    <NavItem to="/arcade" label="Arcade" icon={Gamepad2} />
-                </>
-            )}
+            <div className="mt-3 mb-1 px-2 text-[10px] font-black uppercase text-muted-foreground/40 tracking-[0.2em]">
+                System
+            </div>
+            {user && <NavItem to="/profile" label="Profile" icon={Users} />}
+            {user?.role === 'admin' && <NavItem to="/admin" label="Console" icon={Settings} />}
+            <NavItem to="/guide" label="Guide" icon={Info} />
         </div>
     );
 
@@ -144,7 +128,7 @@ const Layout = () => {
                 </aside>
 
                 {/* Main Content Area */}
-                <main className="flex-1 p-4 sm:p-8 border-l border-border/10 min-w-0 bg-background/30 backdrop-blur-3xl">
+                <main className={`flex-1 p-4 sm:p-8 border-l border-border/10 min-w-0 bg-background/30 backdrop-blur-3xl ${location.pathname === '/playground' ? 'layout-full-width' : ''}`}>
                     <Outlet />
                 </main>
 
@@ -191,7 +175,7 @@ const Layout = () => {
                         <ul className="text-[12px] text-muted-foreground space-y-3">
                             <li className="flex items-center justify-between">
                                 <span>Global Search</span>
-                                <kbd className="px-2 py-0.5 bg-background border border-border rounded-[4px] text-[10px] font-bold shadow-sm">⌘K</kbd>
+                                <kbd className="px-2 py-0.5 bg-background border border-border rounded-[4px] text-[10px] font-bold shadow-sm">CTRL+K</kbd>
                             </li>
                             <li className="flex items-center justify-between">
                                 <span>Quick Help</span>

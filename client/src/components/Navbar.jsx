@@ -17,7 +17,8 @@ import {
     HelpCircle,
     Menu,
     Gamepad2,
-    Flame
+    Flame,
+    Terminal
 } from 'lucide-react';
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -77,6 +78,7 @@ const Navbar = ({ onMenuClick }) => {
                     <Link to="/arcade" className="px-3 py-2 text-[13px] font-medium text-muted-foreground hover:text-foreground hover:bg-muted/50 rounded-[6px] transition-all flex items-center gap-2">
                         <Gamepad2 size={16} className="text-primary hidden group-hover:block" /> Arcade
                     </Link>
+
                 </div>
 
                 {/* Search Bar - Premium SO Style */}
@@ -86,8 +88,8 @@ const Navbar = ({ onMenuClick }) => {
                         <span className="hidden sm:inline">Search your intelligence...</span>
                         <span className="sm:hidden">Search...</span>
                         <div className="hidden md:flex items-center gap-1 opacity-50">
-                            <kbd className="px-1.5 py-0.5 rounded-[4px] border border-border bg-background text-[10px] font-bold">⌘</kbd>
-                            <kbd className="px-1.5 py-0.5 rounded-[4px] border border-border bg-background text-[10px] font-bold">K</kbd>
+                            <kbd className="px-1.5 py-0.5 rounded-[4px] border border-border bg-background text-[9px] font-black">CTRL</kbd>
+                            <kbd className="px-1.5 py-0.5 rounded-[4px] border border-border bg-background text-[9px] font-black">K</kbd>
                         </div>
                     </div>
                 </div>
