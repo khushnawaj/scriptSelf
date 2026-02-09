@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { loadUser } from './features/auth/authSlice';
 import { useEffect, lazy, Suspense } from 'react';
 import { Toaster } from 'react-hot-toast';
+import { Analytics } from "@vercel/analytics/react";
 
 import Layout from './components/Layout';
 import Spinner from './components/Spinner';
@@ -37,18 +38,31 @@ const Playground = lazy(() => import('./pages/Playground'));
 
 // Private Route Component
 const PrivateRoute = ({ children }) => {
-  const { user, isLoading } = useSelector((state) => state.auth);
+  const { user, isInitialized } = useSelector((state) => state.auth);
 
-  if (isLoading) return <Spinner fullPage message="Authenticating Session" />;
+  // Still show spinner for private routes because we MUST know if user is logged in
+  if (!isInitialized) return <Spinner fullPage message="Authenticating Session" />;
 
   return user ? children : <Navigate to="/login" />;
 };
 
-// Public Route Component (redirects if already logged in)
+// Public Route Component
 const PublicRoute = ({ children }) => {
-  const { user, isLoading } = useSelector((state) => state.auth);
-  if (isLoading) return <Spinner fullPage />;
-  return user ? <Navigate to="/dashboard" /> : children;
+  const { user, isInitialized } = useSelector((state) => state.auth);
+  const path = window.location.pathname;
+
+  // Pages where showing a spinner is acceptable to prevent flashes (Login/Register)
+  // We EXCLUDE the root path '/' so the landing page loads instantly
+  const isAuthFormPage = path === '/login' || path === '/register' || path === '/forgot-password' || path === '/reset-password';
+
+  if (isAuthFormPage && !isInitialized) return <Spinner fullPage />;
+
+  // If initialized and user is logged in, redirect away from Home or Auth forms
+  if (isInitialized && user && (isAuthFormPage || path === '/')) {
+    return <Navigate to="/dashboard" />;
+  }
+
+  return children;
 }
 
 function App() {
@@ -60,6 +74,7 @@ function App() {
 
   return (
     <Router>
+      <Analytics />
       <Suspense fallback={<Spinner fullPage message="Loading..." />}>
         <CommandPalette />
         <ShortcutManager />

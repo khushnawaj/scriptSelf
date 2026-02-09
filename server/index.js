@@ -199,6 +199,9 @@ app.use(helmet({ crossOriginResourcePolicy: false }));
 app.use(xss());
 app.use(hpp());
 
+// Health check
+app.get('/health', (req, res) => res.status(200).json({ status: 'ok', timestamp: new Date().toISOString() }));
+
 // Mount routers
 app.use('/api/v1/auth', auth);
 app.use('/api/v1/users', users);

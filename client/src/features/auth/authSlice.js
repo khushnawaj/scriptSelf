@@ -172,7 +172,8 @@ export const loadUser = createAsyncThunk(
 const initialState = {
   user: null,
   isAuthenticated: false,
-  isLoading: true, // Start true to check auth on mount
+  isLoading: true,
+  isInitialized: false, // Track first check completion
   isError: false,
   message: '',
 };
@@ -230,11 +231,13 @@ const authSlice = createSlice({
       .addCase(loadUser.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isAuthenticated = true;
+        state.isInitialized = true;
         state.user = action.payload;
       })
       .addCase(loadUser.rejected, (state) => {
         state.isLoading = false;
         state.isAuthenticated = false;
+        state.isInitialized = true;
         state.user = null;
       })
       // Update Profile

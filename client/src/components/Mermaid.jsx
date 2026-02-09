@@ -17,29 +17,50 @@ const Mermaid = ({ chart }) => {
     const ref = useRef(null);
 
     useEffect(() => {
-        if (ref.current && chart) {
-            // Generating a unique ID for each diagram
+        let isMounted = true;
+
+        const renderDiagram = async () => {
+            if (!ref.current || !chart) return;
+
             const id = `mermaid-${Math.random().toString(36).substr(2, 9)}`;
 
-            // Clean up previous content
-            ref.current.innerHTML = '';
-            const container = document.createElement('div');
-            container.id = id;
-            ref.current.appendChild(container);
+            // Clean up previous content and show loading state
+            if (ref.current) {
+                ref.current.innerHTML = '<div class="animate-pulse text-muted-foreground text-[12px]">Generating diagram...</div>';
+            }
 
             try {
-                mermaid.render(id, chart).then(({ svg }) => {
-                    if (ref.current) {
-                        ref.current.innerHTML = svg;
-                    }
-                });
+                const { svg } = await mermaid.render(id, chart);
+                if (isMounted && ref.current) {
+                    ref.current.innerHTML = svg;
+                }
             } catch (error) {
                 console.error('Mermaid render error:', error);
-                if (ref.current) {
-                    ref.current.innerHTML = `<pre class="text-rose-500 p-4 bg-rose-500/10 border border-rose-500/20 rounded">Failed to render diagram: ${error.message}</pre>`;
+                if (isMounted && ref.current) {
+                    ref.current.innerHTML = `
+                        <div class="text-rose-500 p-6 bg-rose-500/10 border border-rose-500/20 rounded-[3px] w-full">
+                            <h4 class="font-bold text-sm mb-2 flex items-center gap-2">
+                                <span class="bg-rose-500 text-white text-[10px] px-1.5 py-0.5 rounded">SYNTAX_ERROR</span>
+                                Diagram Parse Failed
+                            </h4>
+                            <p class="text-[12px] opacity-80 leading-relaxed mb-4">
+                                The diagram syntax contains invalid tokens that Mermaid cannot process.
+                            </p>
+                            <details class="text-[10px] cursor-pointer">
+                                <summary class="font-bold uppercase tracking-widest opacity-50 hover:opacity-100 transition-opacity">Show Error Details</summary>
+                                <pre class="mt-2 p-3 bg-black/20 rounded overflow-x-auto whitespace-pre-wrap font-mono">${error.message || error}</pre>
+                            </details>
+                        </div>
+                    `;
                 }
             }
-        }
+        };
+
+        renderDiagram();
+
+        return () => {
+            isMounted = false;
+        };
     }, [chart]);
 
     return (
