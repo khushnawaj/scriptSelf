@@ -26,7 +26,12 @@ const Mermaid = ({ chart }) => {
 
             // Clean up previous content and show loading state
             if (ref.current) {
-                ref.current.innerHTML = '<div class="animate-pulse text-muted-foreground text-[12px]">Generating diagram...</div>';
+                ref.current.innerHTML = `
+                    <div class="flex flex-col items-center justify-center gap-2 py-10 opacity-50">
+                        <div class="w-5 h-5 border-2 border-primary/30 border-t-primary rounded-full animate-spin"></div>
+                        <div class="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground">Synthesizing Logic_</div>
+                    </div>
+                `;
             }
 
             try {
@@ -36,20 +41,52 @@ const Mermaid = ({ chart }) => {
                 }
             } catch (error) {
                 console.error('Mermaid render error:', error);
+
+                // Detection for specific common errors
+                const isAtLayerError = chart.includes('@layer') && !chart.includes('"@layer"');
+                const suggestion = isAtLayerError
+                    ? 'TIP: Wrap labels containing "@" or spaces in double quotes, e.g., ["@layer Directives"]'
+                    : 'Check for missing connectors (-->) or unclosed brackets.';
+
                 if (isMounted && ref.current) {
                     ref.current.innerHTML = `
-                        <div class="text-rose-500 p-6 bg-rose-500/10 border border-rose-500/20 rounded-[3px] w-full">
-                            <h4 class="font-bold text-sm mb-2 flex items-center gap-2">
-                                <span class="bg-rose-500 text-white text-[10px] px-1.5 py-0.5 rounded">SYNTAX_ERROR</span>
-                                Diagram Parse Failed
-                            </h4>
-                            <p class="text-[12px] opacity-80 leading-relaxed mb-4">
-                                The diagram syntax contains invalid tokens that Mermaid cannot process.
-                            </p>
-                            <details class="text-[10px] cursor-pointer">
-                                <summary class="font-bold uppercase tracking-widest opacity-50 hover:opacity-100 transition-opacity">Show Error Details</summary>
-                                <pre class="mt-2 p-3 bg-black/20 rounded overflow-x-auto whitespace-pre-wrap font-mono">${error.message || error}</pre>
-                            </details>
+                        <div class="w-full max-w-2xl mx-auto overflow-hidden rounded-[4px] border border-rose-500/30 bg-black/40 backdrop-blur-md shadow-2xl animate-in zoom-in-95 duration-300">
+                            <!-- Header Bar -->
+                            <div class="px-4 py-2 border-b border-rose-500/20 bg-rose-500/10 flex items-center justify-between">
+                                <div class="flex items-center gap-2">
+                                    <div class="flex gap-1.5 mr-2">
+                                        <div class="w-2.5 h-2.5 rounded-full bg-rose-500/50"></div>
+                                        <div class="w-2.5 h-2.5 rounded-full bg-rose-500/20"></div>
+                                        <div class="w-2.5 h-2.5 rounded-full bg-rose-500/20"></div>
+                                    </div>
+                                    <span class="text-[10px] font-black uppercase tracking-[0.2em] text-rose-500">System_Failure_Detected (x00)</span>
+                                </div>
+                                <span class="bg-rose-500 text-white text-[9px] px-1.5 py-0.5 rounded font-black tracking-widest">PARSE_ERR</span>
+                            </div>
+
+                            <!-- Body Content -->
+                            <div class="p-6 space-y-4">
+                                <div class="space-y-1">
+                                    <p class="text-rose-400 font-bold text-[14px]">Diagram Parsing Engine Failed</p>
+                                    <p class="text-[12px] text-muted-foreground/80 leading-relaxed font-mono italic">
+                                        "${suggestion}"
+                                    </p>
+                                </div>
+
+                                <div class="bg-black/40 border border-white/5 p-4 rounded text-left font-mono text-[11px] text-rose-300/80 overflow-x-auto max-h-[150px] custom-scrollbar">
+                                    <span class="text-rose-500/50 mr-2 opacity-50 select-none">DEBUG:</span>
+                                    ${error.message || error}
+                                </div>
+
+                                <div class="flex items-center gap-4 pt-2">
+                                    <button 
+                                        onclick="navigator.clipboard.writeText('${(error.message || error).replace(/'/g, "\\'")}')"
+                                        class="text-[10px] font-black uppercase tracking-[0.2em] px-3 py-1.5 rounded border border-rose-500/20 hover:bg-rose-500/10 transition-all text-rose-500"
+                                    >
+                                        Copy Debug Trace
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                     `;
                 }

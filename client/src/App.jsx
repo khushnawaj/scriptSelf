@@ -70,11 +70,48 @@ function App() {
 
   useEffect(() => {
     dispatch(loadUser());
+
+    // Global Error & Rejection Toasting Setup
+    const handleGlobalError = (event) => {
+      // Filter out safe/expected errors
+      if (
+        event.message?.includes('401') ||
+        event.message?.includes('Unauthorized') ||
+        event.message?.includes('Insights')
+      ) return;
+
+      toast.error(`System Signal Error: ${event.message || 'Unknown Execution Fault'}`, {
+        icon: '⚠️',
+        duration: 4000
+      });
+    };
+
+    const handleUnhandledRejection = (event) => {
+      // Filter out standard 401 rejections from auth checks
+      if (
+        event.reason?.response?.status === 401 ||
+        event.reason === 'Not authorized' ||
+        String(event.reason)?.includes('Insights')
+      ) return;
+
+      toast.error(`Neural Link Refused: ${event.reason?.message || event.reason || 'Unhandled Async Fault'}`, {
+        icon: '🛑',
+        duration: 5000
+      });
+    };
+
+    window.addEventListener('error', handleGlobalError);
+    window.addEventListener('unhandledrejection', handleUnhandledRejection);
+
+    return () => {
+      window.removeEventListener('error', handleGlobalError);
+      window.removeEventListener('unhandledrejection', handleUnhandledRejection);
+    };
   }, [dispatch]);
 
   return (
     <Router>
-      <Analytics />
+      {import.meta.env.PROD && <Analytics />}
       <Suspense fallback={<Spinner fullPage message="Loading..." />}>
         <CommandPalette />
         <ShortcutManager />
