@@ -87,6 +87,16 @@ const userSchema = new mongoose.Schema({
         type: Number,
         default: 0
     },
+    experimentGroup: {
+        type: String,
+        enum: ['A', 'B'],
+        default: () => (Math.random() < 0.5 ? 'A' : 'B')
+    },
+    featureFlags: {
+        type: Map,
+        of: Boolean,
+        default: {}
+    },
     createdAt: {
         type: Date,
         default: Date.now

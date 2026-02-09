@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
-import { X, User, ArrowRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { X, User, ArrowRight } from 'lucide-react';
+import { createPortal } from 'react-dom';
 import { Link } from 'react-router-dom';
 import api from '../utils/api';
 import Spinner from './Spinner';
@@ -34,81 +35,86 @@ const UserListModal = ({ isOpen, onClose, userId, title, type }) => {
         return () => window.removeEventListener('keydown', handleEsc);
     }, [onClose]);
 
-    return (
+    const modalContent = (
         <AnimatePresence>
             {isOpen && (
-                <div className="fixed inset-0 z-[1000] flex items-center justify-center p-4">
+                <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 overflow-hidden pointer-events-auto">
                     <motion.div
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
                         onClick={onClose}
-                        className="absolute inset-0 bg-slate-950/80 backdrop-blur-sm"
+                        className="absolute inset-0 bg-background/60 backdrop-blur-md"
                     />
 
                     <motion.div
-                        initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                        initial={{ opacity: 0, scale: 0.95, y: 10 }}
                         animate={{ opacity: 1, scale: 1, y: 0 }}
-                        exit={{ opacity: 0, scale: 0.9, y: 20 }}
-                        className="relative w-full max-w-md bg-card border border-border rounded-[4px] shadow-2xl overflow-hidden"
+                        exit={{ opacity: 0, scale: 0.95, y: 10 }}
+                        className="relative w-full max-w-md bg-card border border-border rounded-xl shadow-2xl overflow-hidden"
                     >
                         {/* Header */}
-                        <div className="p-4 border-b border-border flex items-center justify-between bg-muted/20">
-                            <h3 className="text-[12px] font-black uppercase tracking-[0.2em] text-foreground">{title}</h3>
-                            <button onClick={onClose} className="p-1 hover:bg-muted/50 rounded-full transition-colors">
-                                <X size={18} className="text-muted-foreground" />
+                        <div className="px-5 py-4 border-b border-border flex items-center justify-between bg-muted/10">
+                            <h3 className="text-[11px] font-bold uppercase tracking-[0.2em] text-foreground">{title}</h3>
+                            <button onClick={onClose} className="p-1.5 hover:bg-secondary rounded-md transition-colors text-muted-foreground hover:text-foreground">
+                                <X size={18} />
                             </button>
                         </div>
 
                         {/* Content */}
-                        <div className="max-h-[400px] overflow-y-auto p-2 no-scrollbar">
+                        <div className="max-h-[450px] overflow-y-auto p-3 no-scrollbar">
                             {loading ? (
-                                <div className="py-20 flex justify-center">
+                                <div className="py-20 flex flex-col items-center gap-3">
                                     <Spinner />
+                                    <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground animate-pulse">Syncing sector...</p>
                                 </div>
                             ) : users.length > 0 ? (
-                                <div className="space-y-1">
+                                <div className="space-y-1.5">
                                     {users.map((u) => (
                                         <Link
                                             key={u._id}
                                             to={`/u/${u.username}`}
                                             onClick={onClose}
-                                            className="flex items-center justify-between p-3 rounded-[3px] hover:bg-muted/50 group transition-all"
+                                            className="flex items-center justify-between p-3.5 rounded-lg hover:bg-secondary/80 group transition-all border border-transparent hover:border-border"
                                         >
-                                            <div className="flex items-center gap-3">
-                                                <div className="w-10 h-10 bg-primary/10 rounded-[2px] flex items-center justify-center text-primary font-bold overflow-hidden border border-primary/20">
+                                            <div className="flex items-center gap-4">
+                                                <div className="w-11 h-11 bg-secondary border border-border rounded-lg flex items-center justify-center text-primary font-bold overflow-hidden shadow-sm">
                                                     {u.avatar ? (
                                                         <img src={u.avatar} alt={u.username} className="w-full h-full object-cover" />
                                                     ) : (
-                                                        u.username.charAt(0).toUpperCase()
+                                                        <span className="text-lg text-muted-foreground opacity-50">{u.username.charAt(0).toUpperCase()}</span>
                                                     )}
                                                 </div>
-                                                <div>
+                                                <div className="space-y-0.5">
                                                     <p className="text-[14px] font-bold text-foreground group-hover:text-primary transition-colors">{u.username}</p>
-                                                    <p className="text-[11px] text-muted-foreground truncate max-w-[180px]">
-                                                        {u.bio || 'ScriptShelf Member'}
+                                                    <p className="text-[10px] text-muted-foreground font-medium line-clamp-1 max-w-[180px]">
+                                                        {u.bio || 'ScriptShelf Architect'}
                                                     </p>
                                                 </div>
                                             </div>
-                                            <ArrowRight size={14} className="text-muted-foreground group-hover:text-primary group-hover:translate-x-1 transition-all" />
+                                            <div className="p-1.5 bg-muted/50 rounded-md group-hover:bg-primary/10 group-hover:text-primary transition-all">
+                                                <ArrowRight size={14} className="group-hover:translate-x-0.5 transition-transform" />
+                                            </div>
                                         </Link>
                                     ))}
                                 </div>
                             ) : (
-                                <div className="py-20 text-center space-y-3">
-                                    <User size={32} className="mx-auto text-muted-foreground opacity-20" />
-                                    <p className="text-[13px] text-muted-foreground italic">No users found in this sector.</p>
+                                <div className="py-20 text-center space-y-4">
+                                    <div className="w-14 h-14 bg-muted/50 rounded-full flex items-center justify-center mx-auto border border-border/50">
+                                        <User size={24} className="text-muted-foreground opacity-30" />
+                                    </div>
+                                    <p className="text-[11px] font-bold text-muted-foreground uppercase tracking-widest">No connections found</p>
                                 </div>
                             )}
                         </div>
 
                         {/* Footer */}
-                        <div className="p-3 bg-muted/10 border-t border-border flex justify-end">
+                        <div className="px-5 py-3.5 bg-muted/5 border-t border-border flex justify-end">
                             <button
                                 onClick={onClose}
-                                className="px-4 py-1.5 text-[11px] font-bold text-muted-foreground hover:text-foreground uppercase tracking-widest transition-colors"
+                                className="px-4 py-2 text-[10px] font-bold text-primary hover:text-primary/80 uppercase tracking-widest transition-colors"
                             >
-                                Close_Buffer
+                                Dismiss_Overlay
                             </button>
                         </div>
                     </motion.div>
@@ -116,6 +122,8 @@ const UserListModal = ({ isOpen, onClose, userId, title, type }) => {
             )}
         </AnimatePresence>
     );
+
+    return createPortal(modalContent, document.body);
 };
 
 export default UserListModal;

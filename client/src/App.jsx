@@ -2,7 +2,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { useSelector, useDispatch } from 'react-redux';
 import { loadUser } from './features/auth/authSlice';
 import { useEffect, lazy, Suspense } from 'react';
-import { Toaster } from 'react-hot-toast';
+import { Toaster, toast } from 'react-hot-toast';
 import { Analytics } from "@vercel/analytics/react";
 
 import Layout from './components/Layout';

@@ -28,7 +28,10 @@ import {
     BarChart3,
     Download,
     RefreshCw,
-    UserPlus
+    UserPlus,
+    FlaskConical,
+    Zap,
+    Settings2
 } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 import { motion } from 'framer-motion';
@@ -142,6 +145,30 @@ const AdminDashboard = () => {
         toast(`Bulk ${action} - Feature coming soon!`);
     }, []);
 
+    const handleGroupUpdate = async (id, group) => {
+        try {
+            await api.put(`/users/${id}/group`, { group });
+            toast.success('User group updated');
+            setUsers(users.map(u => u._id === id ? { ...u, experimentGroup: group } : u));
+        } catch (error) {
+            toast.error('Failed to update group');
+        }
+    };
+
+    const handleFlagUpdate = async (id, flagName, value) => {
+        try {
+            const user = users.find(u => u._id === id);
+            const currentFlags = user.featureFlags || {};
+            const newFlags = { ...currentFlags, [flagName]: value };
+
+            await api.put(`/users/${id}/flags`, { flags: newFlags });
+            toast.success(`Feature flag '${flagName}' updated`);
+            setUsers(users.map(u => u._id === id ? { ...u, featureFlags: newFlags } : u));
+        } catch (error) {
+            toast.error('Failed to update feature flags');
+        }
+    };
+
     const exportData = useCallback((type) => {
         const dataToExport = type === 'users' ? users : notes;
         const dataStr = JSON.stringify(dataToExport, null, 2);
@@ -235,7 +262,7 @@ const AdminDashboard = () => {
 
             {/* Tab Navigation */}
             <div className="flex gap-2 mb-6 overflow-x-auto no-scrollbar border-b border-border pb-2">
-                {['overview', 'users', 'content', 'issues'].map(tab => (
+                {['overview', 'users', 'content', 'issues', 'experiments'].map(tab => (
                     <button
                         key={tab}
                         onClick={() => setActiveTab(tab)}
@@ -339,50 +366,100 @@ const AdminDashboard = () => {
                                     <th className="text-left p-4 text-xs font-bold uppercase tracking-wider text-muted-foreground">Email</th>
                                     <th className="text-left p-4 text-xs font-bold uppercase tracking-wider text-muted-foreground">Role</th>
                                     <th className="text-left p-4 text-xs font-bold uppercase tracking-wider text-muted-foreground">Reputation</th>
-                                    <th className="text-left p-4 text-xs font-bold uppercase tracking-wider text-muted-foreground">Joined</th>
+                                    <th className="text-left p-4 text-xs font-bold uppercase tracking-wider text-muted-foreground">Group</th>
                                     <th className="text-right p-4 text-xs font-bold uppercase tracking-wider text-muted-foreground">Actions</th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-border">
                                 {filteredUsers.map(u => (
-                                    <tr key={u._id} className="hover:bg-muted/30 transition-colors">
-                                        <td className="p-4">
-                                            <div className="flex items-center gap-3">
-                                                <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center font-black text-primary">
-                                                    {u.username[0].toUpperCase()}
+                                    <React.Fragment key={u._id}>
+                                        <tr className="hover:bg-muted/30 transition-colors">
+                                            <td className="p-4">
+                                                <div className="flex items-center gap-3">
+                                                    <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center font-black text-primary text-xs">
+                                                        {u.username[0].toUpperCase()}
+                                                    </div>
+                                                    <span className="font-bold text-sm">{u.username}</span>
                                                 </div>
-                                                <span className="font-bold">{u.username}</span>
-                                            </div>
-                                        </td>
-                                        <td className="p-4 text-sm text-muted-foreground">{u.email}</td>
-                                        <td className="p-4">
-                                            <select
-                                                value={u.role}
-                                                onChange={(e) => handleRoleUpdate(u._id, e.target.value)}
-                                                className="bg-muted border border-border rounded-lg px-3 py-1.5 text-sm font-bold outline-none focus:border-primary/50"
-                                            >
-                                                <option value="user">User</option>
-                                                <option value="admin">Admin</option>
-                                            </select>
-                                        </td>
-                                        <td className="p-4">
-                                            <span className="px-3 py-1 bg-amber-500/10 text-amber-600 dark:text-amber-400 rounded-full text-xs font-black">
-                                                {u.reputation || 0}
-                                            </span>
-                                        </td>
-                                        <td className="p-4 text-sm text-muted-foreground">
-                                            {new Date(u.createdAt).toLocaleDateString()}
-                                        </td>
-                                        <td className="p-4 text-right">
-                                            <button
-                                                onClick={() => handleDeleteUser(u._id)}
-                                                className="p-2 hover:bg-red-500/10 text-red-500 rounded-lg transition-colors"
-                                                title="Delete User"
-                                            >
-                                                <Trash2 size={16} />
-                                            </button>
-                                        </td>
-                                    </tr>
+                                            </td>
+                                            <td className="p-4 text-sm text-muted-foreground">{u.email}</td>
+                                            <td className="p-4">
+                                                <select
+                                                    value={u.role}
+                                                    onChange={(e) => handleRoleUpdate(u._id, e.target.value)}
+                                                    className="bg-muted border border-border rounded-lg px-3 py-1.5 text-xs font-bold outline-none focus:border-primary/50"
+                                                >
+                                                    <option value="user">User</option>
+                                                    <option value="admin">Admin</option>
+                                                </select>
+                                            </td>
+                                            <td className="p-4">
+                                                <span className="px-3 py-1 bg-amber-500/10 text-amber-600 dark:text-amber-400 rounded-full text-[10px] font-black">
+                                                    {u.reputation || 0}
+                                                </span>
+                                            </td>
+                                            <td className="p-4">
+                                                <div className={`text-[10px] font-black w-6 h-6 flex items-center justify-center rounded-md border ${u.experimentGroup === 'A' ? 'bg-primary/10 text-primary border-primary/20' : 'bg-blue-500/10 text-blue-500 border-blue-500/20'}`}>
+                                                    {u.experimentGroup || 'A'}
+                                                </div>
+                                            </td>
+                                            <td className="p-4 text-right">
+                                                <div className="flex items-center justify-end gap-2">
+                                                    <button
+                                                        onClick={() => setSelectedUser(selectedUser?._id === u._id ? null : u)}
+                                                        className={`p-2 rounded-lg transition-colors ${selectedUser?._id === u._id ? 'bg-primary text-primary-foreground' : 'hover:bg-primary/10 text-primary'}`}
+                                                        title="Manage Flags"
+                                                    >
+                                                        <Settings2 size={16} />
+                                                    </button>
+                                                    <button
+                                                        onClick={() => handleDeleteUser(u._id)}
+                                                        className="p-2 hover:bg-red-500/10 text-red-500 rounded-lg transition-colors"
+                                                        title="Delete User"
+                                                    >
+                                                        <Trash2 size={16} />
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        {selectedUser?._id === u._id && (
+                                            <tr className="bg-muted/10">
+                                                <td colSpan="6" className="p-4 border-b border-border/50">
+                                                    <div className="flex flex-col gap-4 animate-in slide-in-from-top-2 duration-300">
+                                                        <div className="flex items-center justify-between">
+                                                            <h4 className="text-[10px] font-black uppercase tracking-widest text-muted-foreground flex items-center gap-2">
+                                                                <Zap size={10} className="text-primary" /> User Settings Override
+                                                            </h4>
+                                                            <div className="flex items-center gap-2">
+                                                                <span className="text-[10px] font-bold text-muted-foreground">COHORT:</span>
+                                                                <select
+                                                                    value={u.experimentGroup || 'A'}
+                                                                    onChange={(e) => handleGroupUpdate(u._id, e.target.value)}
+                                                                    className="bg-background border border-border rounded px-2 py-1 text-[10px] font-black outline-none focus:border-primary/50"
+                                                                >
+                                                                    <option value="A">Group_Alpha</option>
+                                                                    <option value="B">Group_Beta</option>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                                                            {['v2_bars', 'dark_mode_experimental', 'new_editor', 'global_chat'].map(flag => (
+                                                                <div key={flag} className="flex items-center justify-between p-2 bg-background border border-border/50 rounded-lg">
+                                                                    <span className="text-[9px] font-mono font-bold truncate pr-2 text-muted-foreground uppercase">{flag.replace(/_/g, ' ')}</span>
+                                                                    <button
+                                                                        onClick={() => handleFlagUpdate(u._id, flag, !u.featureFlags?.[flag])}
+                                                                        className={`w-7 h-3.5 rounded-full relative transition-all ${u.featureFlags?.[flag] ? 'bg-primary' : 'bg-muted'}`}
+                                                                    >
+                                                                        <div className={`absolute top-0.5 w-2.5 h-2.5 bg-white rounded-full transition-all ${u.featureFlags?.[flag] ? 'right-0.5' : 'left-0.5'}`} />
+                                                                    </button>
+                                                                </div>
+                                                            ))}
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        )}
+                                    </React.Fragment>
                                 ))}
                             </tbody>
                         </table>
@@ -434,8 +511,104 @@ const AdminDashboard = () => {
                 </div>
             )}
 
+            {activeTab === 'experiments' && (
+                <div className="space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-400">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div className="bg-card border border-border rounded-2xl p-6 shadow-sm">
+                            <div className="flex items-center gap-3 mb-6">
+                                <div className="p-2.5 bg-primary/10 text-primary rounded-xl"><FlaskConical size={20} /></div>
+                                <h3 className="font-black text-sm uppercase tracking-wider">Cohort Distribution</h3>
+                            </div>
+                            <div className="space-y-6">
+                                <div>
+                                    <div className="flex justify-between text-[11px] font-black uppercase tracking-tighter mb-2">
+                                        <span className="text-muted-foreground">Group_Alpha</span>
+                                        <span className="text-primary">{users.filter(u => u.experimentGroup === 'A' || !u.experimentGroup).length} Units</span>
+                                    </div>
+                                    <div className="h-1.5 w-full bg-secondary rounded-full overflow-hidden">
+                                        <motion.div
+                                            initial={{ width: 0 }}
+                                            animate={{ width: `${(users.filter(u => u.experimentGroup === 'A' || !u.experimentGroup).length / users.length) * 100}%` }}
+                                            className="h-full bg-primary"
+                                        />
+                                    </div>
+                                </div>
+                                <div>
+                                    <div className="flex justify-between text-[11px] font-black uppercase tracking-tighter mb-2">
+                                        <span className="text-muted-foreground">Group_Beta</span>
+                                        <span className="text-blue-500">{users.filter(u => u.experimentGroup === 'B').length} Units</span>
+                                    </div>
+                                    <div className="h-1.5 w-full bg-secondary rounded-full overflow-hidden">
+                                        <motion.div
+                                            initial={{ width: 0 }}
+                                            animate={{ width: `${(users.filter(u => u.experimentGroup === 'B').length / users.length) * 100}%` }}
+                                            className="h-full bg-blue-500 shadow-[0_0_8px_rgba(59,130,246,0.5)]"
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 
-        </div>
+                        <div className="bg-card border border-border rounded-2xl p-6 shadow-sm">
+                            <div className="flex items-center gap-3 mb-6">
+                                <div className="p-2.5 bg-amber-500/10 text-amber-500 rounded-xl"><Zap size={20} /></div>
+                                <h3 className="font-black text-sm uppercase tracking-wider">Active Experiment Status</h3>
+                            </div>
+                            <div className="space-y-3">
+                                {[
+                                    { name: 'V2_BARS_ROLLOUT', status: 'RUNNING', color: 'text-green-500 bg-green-500/10' },
+                                    { name: 'DARK_MODE_V3', status: 'PROPOSED', color: 'text-muted-foreground bg-muted/50' },
+                                    { name: 'GLOBAL_CHAT', status: 'ARCHIVED', color: 'text-muted-foreground bg-muted/50' }
+                                ].map((exp, idx) => (
+                                    <div key={idx} className="flex items-center justify-between p-3 bg-muted/20 border border-border/50 rounded-xl">
+                                        <span className="text-[10px] font-black tracking-widest">{exp.name}</span>
+                                        <span className={`text-[9px] font-black px-2 py-0.5 rounded ${exp.color}`}>{exp.status}</span>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+
+                        <div className="bg-card border border-border rounded-2xl p-6 shadow-sm relative overflow-hidden group">
+                            <div className="relative z-10 h-full flex flex-col">
+                                <div className="flex items-center gap-3 mb-4">
+                                    <div className="p-2.5 bg-blue-500/10 text-blue-500 rounded-xl"><BarChart3 size={20} /></div>
+                                    <h3 className="font-black text-sm uppercase tracking-wider">Telemetry</h3>
+                                </div>
+                                <p className="text-[11px] text-muted-foreground font-medium leading-relaxed mb-4">
+                                    Real-time engagement metrics are being aggregated. Beta cohort shows 12% higher interaction on XP visualization sub-modules.
+                                </p>
+                                <button className="mt-auto w-full py-2 bg-secondary/50 text-muted-foreground text-[10px] font-black uppercase tracking-widest rounded-lg hover:bg-primary hover:text-white transition-all">
+                                    View Detailed Analytics
+                                </button>
+                            </div>
+                            <motion.div
+                                className="absolute -right-4 -bottom-4 opacity-5 group-hover:opacity-10 transition-opacity"
+                                animate={{ rotate: 360 }}
+                                transition={{ repeat: Infinity, duration: 20, ease: 'linear' }}
+                            >
+                                <Database size={120} />
+                            </motion.div>
+                        </div>
+                    </div>
+
+                    <div className="bg-card border border-border rounded-2xl p-6 border-l-4 border-l-primary/50 relative overflow-hidden">
+                        <div className="relative z-10">
+                            <h3 className="font-black text-sm uppercase tracking-widest mb-4 flex items-center gap-2">
+                                <Settings2 size={18} className="text-primary" /> Master System Protocol
+                            </h3>
+                            <p className="text-xs text-muted-foreground leading-relaxed max-w-4xl">
+                                A/B group assignments are permanently bound to user identities upon initialization. Manual overrides are available via the <span className="text-foreground font-bold italic">User Management</span> matrix. All feature flags are hot-swappable and require no system reboot. Telemetry data is synchronized across all nodes every 300 seconds.
+                            </p>
+                        </div>
+                        <div className="absolute top-0 right-0 p-2 opacity-10">
+                            <Shield size={40} />
+                        </div>
+                    </div>
+                </div>
+            )}
+
+
+        </div >
     );
 };
 

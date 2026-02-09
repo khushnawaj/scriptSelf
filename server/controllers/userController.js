@@ -288,3 +288,52 @@ exports.getFollowing = async (req, res, next) => {
         next(err);
     }
 };
+
+// @desc      Update user feature flags
+// @route     PUT /api/v1/users/:id/flags
+// @access    Private/Admin
+exports.updateUserFlags = async (req, res, next) => {
+    try {
+        const user = await User.findById(req.params.id);
+        if (!user) return res.status(404).json({ success: false, error: 'User not found' });
+
+        user.featureFlags = req.body.flags;
+        await user.save();
+
+        res.status(200).json({ success: true, data: user });
+    } catch (err) {
+        next(err);
+    }
+};
+
+// @desc      Update user experiment group
+// @route     PUT /api/v1/users/:id/group
+// @access    Private/Admin
+exports.updateUserGroup = async (req, res, next) => {
+    try {
+        const user = await User.findById(req.params.id);
+        if (!user) return res.status(404).json({ success: false, error: 'User not found' });
+
+        user.experimentGroup = req.body.group;
+        await user.save();
+
+        res.status(200).json({ success: true, data: user });
+    } catch (err) {
+        next(err);
+    }
+};
+
+module.exports = {
+    getUsers: exports.getUsers,
+    getUser: exports.getUser,
+    deleteUser: exports.deleteUser,
+    updateUserRole: exports.updateUserRole,
+    updateArcadeStats: exports.updateArcadeStats,
+    followUser: exports.followUser,
+    unfollowUser: exports.unfollowUser,
+    getPublicUser: exports.getPublicUser,
+    getFollowers: exports.getFollowers,
+    getFollowing: exports.getFollowing,
+    updateUserFlags: exports.updateUserFlags,
+    updateUserGroup: exports.updateUserGroup
+};

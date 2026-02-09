@@ -9,7 +9,9 @@ const {
     updateArcadeStats,
     getPublicUser,
     getFollowers,
-    getFollowing
+    getFollowing,
+    updateUserFlags,
+    updateUserGroup
 } = require('../controllers/userController');
 
 const router = express.Router({ mergeParams: true });
@@ -36,5 +38,11 @@ router.route('/:id')
 
 router.route('/:id/role')
     .put(authorize('admin'), updateUserRole);
+
+router.route('/:id/flags')
+    .put(authorize('admin'), updateUserFlags);
+
+router.route('/:id/group')
+    .put(authorize('admin'), updateUserGroup);
 
 module.exports = router;

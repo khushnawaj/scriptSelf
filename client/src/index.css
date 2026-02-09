@@ -274,6 +274,15 @@ main.layout-full-width {
     50% { opacity: 1; }
 }
 
+@keyframes spin-slow {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.animate-spin-slow {
+    animation: spin-slow 8s linear infinite;
+}
+
 .animate-blueprint-pulse {
     animation: blueprint-pulse 4s ease-in-out infinite;
 }
