@@ -97,11 +97,20 @@ const userSchema = new mongoose.Schema({
         of: Boolean,
         default: {}
     },
+    preferences: {
+        designSystem: {
+            type: String,
+            enum: ['v1', 'v2', 'v3', 'v4', 'v5'],
+            default: 'v1'
+        }
+    },
+
     createdAt: {
         type: Date,
         default: Date.now
     }
 });
+
 
 // Encrypt password using bcrypt
 userSchema.pre('save', async function (next) {

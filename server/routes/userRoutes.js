@@ -11,8 +11,10 @@ const {
     getFollowers,
     getFollowing,
     updateUserFlags,
-    updateUserGroup
+    updateUserGroup,
+    updateUserPreferences
 } = require('../controllers/userController');
+
 
 const router = express.Router({ mergeParams: true });
 
@@ -28,7 +30,9 @@ router.use(protect);
 // Public User Routes (Protected)
 router.get('/', getUsers);
 router.put('/arcade', updateArcadeStats);
+router.put('/preferences', updateUserPreferences);
 router.post('/:id/follow', followUser);
+
 router.delete('/:id/follow', unfollowUser);
 
 // Admin Routes for specific users

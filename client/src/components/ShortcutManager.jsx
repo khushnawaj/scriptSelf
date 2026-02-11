@@ -12,14 +12,16 @@ const ShortcutManager = () => {
 
     useEffect(() => {
         const handleKeyDown = (e) => {
-            // Don't trigger if user is typing in an input or textarea
-            if (
+            // Don't trigger if user is typing in an input, textarea, or code editor
+            const isTyping =
                 document.activeElement.tagName === 'INPUT' ||
                 document.activeElement.tagName === 'TEXTAREA' ||
-                document.activeElement.isContentEditable
-            ) {
-                return;
-            }
+                document.activeElement.isContentEditable ||
+                (e.target?.closest && (e.target.closest('.monaco-editor') || e.target.closest('.ace_editor')));
+
+
+            if (isTyping) return;
+
 
             // Alt + Key Shortcuts
             if (e.altKey) {

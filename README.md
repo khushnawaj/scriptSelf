@@ -31,6 +31,8 @@
 - **Time-Series Insights**: Track your productivity with a 14-day history of note creation (powered by Chart.js).
 
 ### 👤 Profile & Community (Core Networking)
+- **Intelligence Briefing**: Profiles now feature dynamic metrics including **System Level (LVL)**, **Current XP**, and **Neural Sync Status** to visualize technical maturity.
+- **Dynamic Backgrounds**: High-tier architects (Expert/Legendary) unlock specialized background animations (Neural Grids/Overlord effects) upon profile viewing.
 - **Real-time Signal Alerts**: A dedicated tactical notification bell in the navbar that pulses for new follows and interactions.
 - **Interactive Social Graph**: Click on any follower or following count to browse user networks through high-fidelity modals.
 - **Follow System**: Subscribe to other developers to stay updated on their architectural decision records and logic captures.

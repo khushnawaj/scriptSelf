@@ -13,7 +13,8 @@ import {
     Globe,
     Binary,
     ChevronRight,
-    User
+    User,
+    Activity
 } from 'lucide-react';
 
 const EngineeringLanding = ({ user, notes }) => {
@@ -35,6 +36,7 @@ const EngineeringLanding = ({ user, notes }) => {
         { title: 'New Note', desc: 'Write down a new idea', icon: Plus, color: 'text-primary', bg: 'bg-primary/10', path: '/notes/new' },
         { title: 'Playground', desc: 'Test your code here', icon: Code, color: 'text-blue-500', bg: 'bg-blue-500/10', path: '/playground' },
         { title: 'Games', desc: 'Play coding games', icon: Binary, color: 'text-amber-500', bg: 'bg-amber-500/10', path: '/arcade' },
+        { title: 'Neural Graph', desc: 'Visual connections', icon: Activity, color: 'text-emerald-500', bg: 'bg-emerald-500/10', path: '/network' },
         { title: 'All Notes', desc: 'Browse your library', icon: Database, color: 'text-purple-500', bg: 'bg-purple-500/10', path: '/notes' },
     ];
 

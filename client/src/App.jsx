@@ -35,6 +35,8 @@ const AdminRoute = lazy(() => import('./components/AdminRoute'));
 const CommandPalette = lazy(() => import('./components/CommandPalette'));
 const ShortcutManager = lazy(() => import('./components/ShortcutManager'));
 const Playground = lazy(() => import('./pages/Playground'));
+const Network = lazy(() => import('./pages/Network'));
+const Levels = lazy(() => import('./pages/Levels'));
 
 // Private Route Component
 const PrivateRoute = ({ children }) => {
@@ -149,6 +151,8 @@ function App() {
             <Route path="/u/:username" element={<PublicProfile />} />
             <Route path="/community" element={<Community />} />
             <Route path="/playground" element={<Playground />} />
+            <Route path="/network" element={<Network />} />
+            <Route path="/levels" element={<Levels />} />
 
             {/* Validated Access Routes */}
             <Route path="/dashboard" element={<PrivateRoute><Dashboard /></PrivateRoute>} />

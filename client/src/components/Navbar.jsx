@@ -26,9 +26,12 @@ import NotificationBell from './NotificationBell';
 
 const Navbar = ({ onMenuClick }) => {
     const { user } = useSelector((state) => state.auth);
-    const { theme, toggleTheme } = useTheme();
+    const { theme, toggleTheme, themeAssets } = useTheme();
     const navigate = useNavigate();
     const dispatch = useDispatch();
+
+    const LogoIcon = themeAssets?.icons?.brand || Code2;
+
 
     const [isProfileOpen, setIsProfileOpen] = useState(false);
     const profileRef = useRef(null);
@@ -63,9 +66,10 @@ const Navbar = ({ onMenuClick }) => {
 
                 {/* Logo */}
                 <Link to="/" className="flex items-center gap-2 shrink-0 group">
-                    <div className="p-1.5 bg-primary rounded-[6px] transition-transform duration-300">
-                        <Code2 size={18} className="text-white" />
+                    <div className="p-1.5 bg-primary rounded-[6px] transition-all duration-300 group-hover:rotate-[360deg]">
+                        <LogoIcon size={18} className="text-white" />
                     </div>
+
                     <span className="text-[18px] font-semibold tracking-tight hidden sm:inline text-foreground">
                         script<span className="text-primary">shelf.</span>
                     </span>

@@ -323,7 +323,25 @@ exports.updateUserGroup = async (req, res, next) => {
     }
 };
 
+// @desc      Update user preferences
+// @route     PUT /api/v1/users/preferences
+// @access    Private
+exports.updateUserPreferences = async (req, res, next) => {
+    try {
+        const user = await User.findById(req.user.id);
+        if (!user) return res.status(404).json({ success: false, error: 'User not found' });
+
+        user.preferences = { ...user.preferences, ...req.body.preferences };
+        await user.save();
+
+        res.status(200).json({ success: true, data: user.preferences });
+    } catch (err) {
+        next(err);
+    }
+};
+
 module.exports = {
+
     getUsers: exports.getUsers,
     getUser: exports.getUser,
     deleteUser: exports.deleteUser,
@@ -335,5 +353,7 @@ module.exports = {
     getFollowers: exports.getFollowers,
     getFollowing: exports.getFollowing,
     updateUserFlags: exports.updateUserFlags,
-    updateUserGroup: exports.updateUserGroup
+    updateUserGroup: exports.updateUserGroup,
+    updateUserPreferences: exports.updateUserPreferences
 };
+

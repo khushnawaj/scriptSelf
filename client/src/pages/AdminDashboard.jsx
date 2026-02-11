@@ -55,6 +55,10 @@ const AdminDashboard = () => {
     const [notes, setNotes] = useState([]);
     const [activeTab, setActiveTab] = useState('overview');
     const [selectedUser, setSelectedUser] = useState(null);
+    const [globalThemeVersion, setGlobalThemeVersion] = useState('v1');
+    const { toggleDesignSystem, themeAssets } = useTheme();
+    const ThemeIcon = themeAssets?.icons?.hero || Shield;
+
 
     useEffect(() => {
         if (!user || user.role !== 'admin') {
@@ -63,7 +67,32 @@ const AdminDashboard = () => {
             return;
         }
         fetchData();
+        fetchGlobalSettings();
     }, [user, navigate]);
+
+    const fetchGlobalSettings = async () => {
+        try {
+            const { data } = await api.get('/system/settings/theme_version');
+            if (data.success) {
+                setGlobalThemeVersion(data.data.value);
+            }
+        } catch (error) {
+            console.error('Failed to fetch system settings');
+        }
+    };
+
+    const handleToggleGlobalTheme = async () => {
+        const nextVersion = globalThemeVersion === 'v1' ? 'v2' : 'v1';
+        try {
+            await api.put('/system/settings/theme_version', { value: nextVersion });
+            setGlobalThemeVersion(nextVersion);
+            toggleDesignSystem(nextVersion);
+            toast.success(`System Theme updated to ${nextVersion.toUpperCase()}`);
+        } catch (error) {
+            toast.error('Failed to update system theme');
+        }
+    };
+
 
     const fetchData = useCallback(async () => {
         try {
@@ -204,12 +233,13 @@ const AdminDashboard = () => {
     if (isLoading) return <Spinner fullPage message="Loading Admin Console..." />;
 
     return (
-        <div className="max-w-[1600px] mx-auto p-4 sm:p-8 animate-in fade-in duration-500">
+        <div className={`max-w-[1600px] mx-auto p-4 sm:p-8 ${themeAssets?.animation}`}>
             {/* Header */}
             <div className="flex items-center justify-between mb-8 border-b border-border pb-6">
+
                 <div className="flex items-center gap-4">
-                    <div className="p-3 bg-gradient-to-br from-red-500/20 to-red-600/10 text-red-500 rounded-xl">
-                        <Shield size={32} />
+                    <div className="p-3 bg-primary/10 rounded-xl transition-all duration-500 scale-110">
+                        <ThemeIcon size={32} className="text-primary" />
                     </div>
                     <div>
                         <h1 className="text-3xl font-bold text-foreground tracking-tight">System Administration</h1>
@@ -262,7 +292,8 @@ const AdminDashboard = () => {
 
             {/* Tab Navigation */}
             <div className="flex gap-2 mb-6 overflow-x-auto no-scrollbar border-b border-border pb-2">
-                {['overview', 'users', 'content', 'issues', 'experiments'].map(tab => (
+                {['overview', 'users', 'content', 'issues', 'experiments', 'system'].map(tab => (
+
                     <button
                         key={tab}
                         onClick={() => setActiveTab(tab)}
@@ -607,6 +638,90 @@ const AdminDashboard = () => {
                 </div>
             )}
 
+            {activeTab === 'system' && (
+
+                <div className="space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-400">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="bg-card border border-border rounded-2xl p-8 shadow-sm relative overflow-hidden">
+                            <div className="relative z-10">
+                                <h3 className="text-xl font-bold mb-2 flex items-center gap-3">
+                                    <Zap size={24} className="text-primary" />
+                                    Global Theme Management
+                                </h3>
+                                <p className="text-sm text-muted-foreground mb-8 max-w-md">
+                                    Switch the entire project design system. Theme V1 uses the original Olive/GitHub aesthetic. Theme V2 introduces a modern Indigo/Slate vibrant design with softer edges.
+                                </p>
+
+                                <div className="flex items-center gap-6 p-4 bg-muted/20 border border-border/50 rounded-2xl">
+                                    <div className="flex-1">
+                                        <p className="text-xs font-black uppercase tracking-widest text-muted-foreground mb-1">Active Design System</p>
+                                        <p className="text-lg font-bold text-primary">{globalThemeVersion.toUpperCase()}</p>
+                                    </div>
+                                    <div className="flex gap-2">
+                                        {[
+                                            { id: 'v1', name: 'Script Classic' },
+                                            { id: 'v2', name: 'Shelf Modern' },
+                                            { id: 'v3', name: 'Logic Pro' },
+                                            { id: 'v4', name: 'Learning Lab' },
+                                            { id: 'v5', name: 'Stack Dev' }
+                                        ].map(v => (
+
+                                            <button
+                                                key={v.id}
+                                                onClick={() => {
+                                                    const nextVersion = v.id;
+                                                    api.put('/system/settings/theme_version', { value: nextVersion });
+                                                    setGlobalThemeVersion(nextVersion);
+                                                    toggleDesignSystem(nextVersion);
+                                                    toast.success(`System Theme updated to ${v.name}`);
+                                                }}
+                                                className={`px-4 py-2 rounded-lg text-[10px] font-black uppercase transition-all ${globalThemeVersion === v.id ? 'bg-primary text-white scale-105' : 'bg-secondary/50 text-muted-foreground hover:bg-secondary'}`}
+                                            >
+                                                {v.name}
+                                            </button>
+                                        ))}
+                                    </div>
+
+                                </div>
+
+                            </div>
+                            <div className="absolute -right-10 -bottom-10 opacity-5 pointer-events-none">
+                                <Zap size={200} />
+                            </div>
+                        </div>
+
+                        <div className="bg-card border border-border rounded-2xl p-8 shadow-sm">
+                            <h3 className="text-xl font-bold mb-6 flex items-center gap-3">
+                                <Shield size={24} className="text-primary" />
+                                Security & Infrastructure
+                            </h3>
+                            <div className="space-y-4">
+                                <div className="flex items-center justify-between p-3 bg-secondary/30 rounded-xl border border-border/50">
+                                    <span className="text-xs font-bold">API Status</span>
+                                    <span className="px-2 py-0.5 bg-green-500/10 text-green-500 text-[10px] font-black rounded uppercase">Operational</span>
+                                </div>
+                                <div className="flex items-center justify-between p-3 bg-secondary/30 rounded-xl border border-border/50">
+                                    <span className="text-xs font-bold">Database Mode</span>
+                                    <span className="px-2 py-0.5 bg-blue-500/10 text-blue-500 text-[10px] font-black rounded uppercase">Encrypted</span>
+                                </div>
+                                <div className="flex items-center justify-between p-3 bg-secondary/30 rounded-xl border border-border/50">
+                                    <span className="text-xs font-bold">Auth Provider</span>
+                                    <span className="px-2 py-0.5 bg-amber-500/10 text-amber-500 text-[10px] font-black rounded uppercase">Passport.js / JWT</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="bg-gradient-to-br from-primary/5 to-transparent border border-primary/20 rounded-2xl p-6">
+                        <h4 className="font-black text-[10px] uppercase tracking-[0.3em] mb-4 text-primary">System Notice</h4>
+                        <p className="text-xs text-muted-foreground leading-relaxed">
+                            Theme changes are propagated instantly to all active sessions via the context provider. The Design System flag controls CSS variable injections and layout utility classes. No functional changes are performed during theme hot-swaps.
+                        </p>
+                    </div>
+                </div>
+            )}
+
+
 
         </div >
     );
@@ -615,15 +730,15 @@ const AdminDashboard = () => {
 const StatCard = ({ icon, label, value, color, trend }) => {
     const colorClasses = {
         blue: 'text-blue-500 bg-blue-500/10',
-        green: 'text-green-500 bg-green-500/10',
+        green: 'text-teal-500 bg-teal-500/10',
         amber: 'text-amber-500 bg-amber-500/10',
         purple: 'text-purple-500 bg-purple-500/10'
     };
 
     return (
-        <div className="group bg-secondary/20 border border-border/50 p-6 rounded-3xl backdrop-blur-xl hover:border-primary/40 hover:-translate-y-1 transition-all duration-500">
+        <div className="group bg-card border border-border/50 p-6 rounded-[2rem] hover:border-primary/40 hover:-translate-y-2 transition-all duration-500 shadow-sm">
             <div className="flex items-center justify-between mb-6">
-                <div className={`p-4 rounded-2xl ${colorClasses[color]} group-hover:scale-110 transition-transform duration-300`}>
+                <div className={`p-4 rounded-2xl ${colorClasses[color]} group-hover:scale-110 transition-transform duration-500`}>
                     {icon}
                 </div>
                 {trend && (
@@ -633,12 +748,13 @@ const StatCard = ({ icon, label, value, color, trend }) => {
                 )}
             </div>
             <div>
-                <p className="text-[11px] font-medium text-muted-foreground uppercase tracking-[0.2em] mb-2">{label}</p>
-                <h3 className="text-4xl font-bold text-foreground tracking-tight group-hover:text-primary transition-colors">{value}</h3>
+                <p className="text-[11px] font-bold text-muted-foreground uppercase tracking-[0.2em] mb-2">{label}</p>
+                <h3 className="text-4xl font-bold text-foreground tracking-tight group-hover:text-primary transition-colors duration-500">{value}</h3>
             </div>
         </div>
     );
 };
+
 
 
 const QuickActionButton = ({ icon, label, onClick }) => (

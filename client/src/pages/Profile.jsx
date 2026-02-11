@@ -29,6 +29,7 @@ import {
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { useFeature } from '../hooks/useFeature';
+import { useTheme } from '../context/ThemeContext';
 import api from '../utils/api';
 import Spinner from '../components/Spinner';
 import ContributionGraph from '../components/profile/ContributionGraph';
@@ -36,7 +37,10 @@ import UserListModal from '../components/UserListModal';
 
 const Profile = () => {
     const dispatch = useDispatch();
+    const { designSystem, saveDesignSystem, allThemes } = useTheme();
+
     const isExperimentB = useFeature('v2_bars', { abTest: 'B' });
+
     const { user, isLoading, isSuccess } = useSelector((state) => state.auth);
     const { notes } = useSelector((state) => state.notes);
 
@@ -356,7 +360,61 @@ const Profile = () => {
                             </div>
                         </div>
                     </div>
+                    {/* Design System Picker - Minimal & Calm */}
+                    <div className="bg-card border border-border rounded-xl p-6 space-y-5 shadow-sm">
+                        <div className="flex items-center justify-between">
+                            <h3 className="text-[11px] font-bold uppercase tracking-[0.2em] text-muted-foreground flex items-center gap-2">
+                                <Layers size={14} className="text-primary" /> Visual Identity
+                            </h3>
+                        </div>
+
+                        <div className="space-y-2">
+                            {allThemes.map((t) => {
+                                const isActive = designSystem === t.id;
+                                return (
+                                    <button
+                                        key={t.id}
+                                        onClick={() => saveDesignSystem(t.id)}
+                                        className={`w-full flex items-center gap-4 p-3 rounded-xl border transition-all duration-200 group
+                                            ${isActive
+                                                ? 'bg-primary/[0.03] border-primary/40 shadow-sm'
+                                                : 'bg-transparent border-transparent hover:bg-secondary/40'}`}
+                                    >
+                                        <div className="relative shrink-0">
+                                            <div
+                                                className={`w-8 h-8 rounded-lg shadow-inner transition-transform duration-300 ${isActive ? 'scale-110' : 'group-hover:scale-105'}`}
+                                                style={{ backgroundColor: t.color, opacity: isActive ? 1 : 0.6 }}
+                                            />
+                                            {isActive && (
+                                                <div className="absolute -top-1 -right-1 w-3.5 h-3.5 bg-primary text-white rounded-full flex items-center justify-center ring-2 ring-card">
+                                                    <CheckCircle size={8} />
+                                                </div>
+                                            )}
+                                        </div>
+
+                                        <div className="flex-1 text-left">
+                                            <p className={`text-[12px] font-bold transition-colors ${isActive ? 'text-foreground' : 'text-muted-foreground group-hover:text-foreground/80'}`}>
+                                                {t.name}
+                                            </p>
+                                            <p className="text-[9px] text-muted-foreground/60 font-medium uppercase tracking-tighter">
+                                                {t.id === 'v1' ? 'Classic Protocol' :
+                                                    t.id === 'v2' ? 'Modern Interface' :
+                                                        t.id === 'v3' ? 'Technical Logic' :
+                                                            t.id === 'v4' ? 'Guided Learning' : 'Tech Noir Mode'}
+                                            </p>
+                                        </div>
+                                    </button>
+                                );
+                            })}
+                        </div>
+                        <div className="pt-2">
+                            <p className="text-[10px] text-muted-foreground/50 italic text-center leading-relaxed">System design preferences are synchronized across your cloud profile.</p>
+                        </div>
+                    </div>
+
                 </aside>
+
+
 
                 {/* --- MAIN CONTENT --- */}
                 <main className="flex-1 space-y-8">

@@ -14,6 +14,8 @@ import {
 import { useNavigate } from 'react-router-dom';
 import Spinner from '../components/Spinner';
 import EngineeringLanding from '../components/EngineeringLanding';
+import { getReputationTier } from '../utils/reputation';
+import NeuralBackground from '../components/NeuralBackground';
 
 const Dashboard = () => {
     const dispatch = useDispatch();
@@ -29,9 +31,14 @@ const Dashboard = () => {
     if (notesLoading) return <Spinner />;
 
     const userNotes = notes.filter(n => (n.user?._id || n.user) === user?._id);
+    const currentTier = getReputationTier(user?.reputation || 0);
 
     return (
-        <div className="max-w-[1400px] mx-auto p-4 sm:p-10 space-y-12 animate-in fade-in slide-in-from-bottom-6 duration-1000">
+        <div className="max-w-[1400px] mx-auto p-4 sm:p-10 space-y-12 animate-in fade-in slide-in-from-bottom-6 duration-1000 relative">
+            {/* Dynamic Background for High Tiers */}
+            {currentTier.name === 'Legendary Master' && <NeuralBackground variant="overlord" />}
+            {currentTier.name === 'Expert Architect' && <NeuralBackground variant="grid" />}
+
             {/* Simple Modern Header */}
             <header className="flex flex-col md:flex-row md:items-center justify-between gap-8">
                 <div className="space-y-1">

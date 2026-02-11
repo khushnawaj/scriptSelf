@@ -27,8 +27,10 @@ const categories = require('./routes/categoryRoutes');
 const notes = require('./routes/noteRoutes');
 const notifications = require('./routes/notificationRoutes');
 const chat = require('./routes/chatRoutes');
+const system = require('./routes/systemRoutes');
 
 const app = express();
+
 const server = require('http').createServer(app);
 const io = require('socket.io')(server, {
   cors: {
@@ -209,8 +211,10 @@ app.use('/api/v1/categories', categories);
 app.use('/api/v1/notes', notes);
 app.use('/api/v1/notifications', notifications);
 app.use('/api/v1/chat', chat);
+app.use('/api/v1/system', system);
 
 // Error middleare
+
 app.use(errorHandler);
 
 const PORT = process.env.PORT || 5001;

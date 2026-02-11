@@ -158,83 +158,98 @@ const Guide = () => {
                     </div>
                 </div>
 
-                {/* 2. Neural Links */}
+                {/* 2. Neural Graph & Links */}
                 <div className="flex flex-col md:flex-row-reverse items-start gap-16">
                     <div className="flex-1 space-y-6 text-left">
                         <div className="flex items-center gap-3 text-primary font-bold uppercase tracking-widest text-[13px]">
-                            <Workflow size={18} /> Component 02: Interlink
+                            <Share2 size={18} /> Component 02: Visual Intelligence
                         </div>
-                        <h2 className="text-[32px] font-bold leading-tight">The Neural Link Protocol</h2>
+                        <h2 className="text-[32px] font-bold leading-tight">The Neural Graph</h2>
                         <p className="text-muted-foreground leading-relaxed">
-                            Connect your logic flow. Every note you write is a node in your personal knowledge graph.
+                            Visualize the interconnected web of your archives. ScriptShelf map nodes based on semantic relationships and shared tags.
                         </p>
                         <ul className="space-y-4">
                             <li className="flex items-start gap-4 p-4 bg-muted/30 rounded-[3px] border-l-4 border-primary">
                                 <div>
-                                    <p className="font-bold">Wiki-Links</p>
-                                    <p className="text-[13px] text-muted-foreground">Type `[[Title]]` to link. ScriptShelf tracks these bidirectional paths.</p>
+                                    <p className="font-bold">Neural Mapping</p>
+                                    <p className="text-[13px] text-muted-foreground">Access the global interactive graph via `/network`. See how your logic clusters together.</p>
                                 </div>
                             </li>
                             <li className="flex items-start gap-4 p-4 bg-muted/30 rounded-[3px] border-l-4 border-primary">
                                 <div>
-                                    <p className="font-bold">Auto-Backlinks</p>
-                                    <p className="text-[13px] text-muted-foreground">Navigate backward to see which other notes depend on the current snippet.</p>
+                                    <p className="font-bold">Wiki-Link Protocol</p>
+                                    <p className="text-[13px] text-muted-foreground">Type `[[Title]]` to forge bidirectional links. These links appear as visible neural paths in the graph.</p>
                                 </div>
                             </li>
                         </ul>
                     </div>
-                    <div className="flex-1 w-full flex flex-col items-center gap-4 py-8 bg-accent/10 rounded-[3px] border border-border border-dashed">
-                        <div className="px-6 py-2 glass-frost border-primary/40 text-primary font-bold rounded">[[ Global Store ]]</div>
-                        <div className="h-8 w-px bg-primary/20" />
-                        <div className="flex gap-4">
-                            <div className="px-4 py-1 bg-muted/50 border border-border rounded text-[12px]">[[ Auth Slice ]]</div>
-                            <div className="px-4 py-1 bg-muted/50 border border-border rounded text-[12px]">[[ User Slice ]]</div>
+                    <div className="flex-1 w-full bg-black/20 rounded-2xl border border-border overflow-hidden p-4 group">
+                        <div className="relative w-full h-[200px] flex items-center justify-center">
+                            {/* Visual representation of graph */}
+                            <div className="absolute inset-0 bg-primary/5 blur-3xl rounded-full animate-pulse" />
+                            <div className="relative z-10 flex flex-col items-center gap-2">
+                                <Activity size={40} className="text-primary opacity-50" />
+                                <span className="text-[10px] font-black text-primary uppercase tracking-[0.3em]">Neural_Link_Active</span>
+                            </div>
+                            <div className="absolute top-10 left-10 w-3 h-3 bg-primary rounded-full blur-[2px]" />
+                            <div className="absolute bottom-10 right-20 w-4 h-4 bg-primary/40 rounded-full blur-[2px]" />
+                            <div className="absolute top-20 right-10 w-2 h-2 bg-emerald-500 rounded-full blur-[2px]" />
                         </div>
-                        <div className="mt-4 text-[10px] text-primary font-black uppercase tracking-widest opacity-40">Relationship_Map_Loaded</div>
                     </div>
                 </div>
 
-                {/* 3. Reputation & Identity */}
+                {/* 3. Reputation & Reputation Tiers */}
                 <div className="flex flex-col md:flex-row items-start gap-16">
                     <div className="flex-1 space-y-6 text-left">
                         <div className="flex items-center gap-3 text-primary font-bold uppercase tracking-widest text-[13px]">
-                            <Trophy size={18} /> Component 03: Identity
+                            <Trophy size={18} /> Component 03: Reputation Tiers
                         </div>
-                        <h2 className="text-[32px] font-bold leading-tight">Your Technical Footprint</h2>
+                        <h2 className="text-[32px] font-bold leading-tight">Forge your Technical ID</h2>
                         <p className="text-muted-foreground leading-relaxed">
-                            Convert your knowledge into professional credit. Every contribution adds to your global Reputation XP.
+                            Ascend the ranks from a code-scripter to a System Overlord. Your reputation is tracked through our multi-tier architecture.
                         </p>
                         <div className="space-y-4">
                             <div className="flex gap-4 p-4 bg-muted/20 border border-border rounded-[4px]">
-                                <div className="w-10 h-10 rounded bg-primary/10 flex items-center justify-center text-primary shrink-0"><Activity size={20} /></div>
+                                <div className="w-10 h-10 rounded bg-primary/10 flex items-center justify-center text-primary shrink-0"><CheckSquare size={20} /></div>
                                 <div>
-                                    <h4 className="font-bold text-[15px]">Reputation Pulse</h4>
-                                    <p className="text-[13px] text-muted-foreground">Track consistency with our visual activity heat-map on your profile.</p>
+                                    <h4 className="font-bold text-[15px]">The 5 Tiers of Archiving</h4>
+                                    <p className="text-[13px] text-muted-foreground">Junior Scripter, Senior Architect, Staff Neuralist, Principal Engineer, and System Overlord.</p>
                                 </div>
                             </div>
                             <div className="flex gap-4 p-4 bg-muted/20 border border-border rounded-[4px]">
-                                <div className="w-10 h-10 rounded bg-primary/10 flex items-center justify-center text-primary shrink-0"><Share2 size={20} /></div>
+                                <div className="w-10 h-10 rounded bg-primary/10 flex items-center justify-center text-primary shrink-0"><Flame size={20} /></div>
                                 <div>
-                                    <h4 className="font-bold text-[15px]">The Clone Economy</h4>
-                                    <p className="text-[13px] text-muted-foreground">Fork public scripts to your own shelf to evolve them privately.</p>
+                                    <h4 className="font-bold text-[15px]">XP & Progress</h4>
+                                    <p className="text-[13px] text-muted-foreground">Earn Intelligence Points through note contributions, public archiving, and simulations.</p>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div className="flex-1 w-full glass-frost p-8 rounded-[3px] border-t-0 border-l-4 border-l-primary text-left">
+                    <div className="flex-1 w-full bg-card border border-border rounded-[3px] border-l-4 border-l-primary p-8 text-left relative overflow-hidden">
+                        <div className="absolute -top-10 -right-10 w-40 h-40 bg-emerald-500/10 rounded-full blur-3xl" />
                         <div className="flex items-center gap-4 mb-6">
-                            <div className="w-12 h-12 bg-primary/20 rounded-full flex items-center justify-center font-black text-primary">K</div>
+                            <div className="w-14 h-14 bg-secondary border-2 border-emerald-500/20 rounded-2xl flex items-center justify-center font-black text-emerald-500 text-xl shadow-xl">S</div>
                             <div>
-                                <p className="font-bold text-[18px]">Archived_User</p>
-                                <p className="text-[11px] text-primary font-black uppercase tracking-tighter">Level 42 Architect</p>
+                                <p className="font-black text-[20px] text-foreground">Senior Architect</p>
+                                <p className="text-[10px] text-emerald-500 font-black uppercase tracking-[0.2em]">Rank: Tier II // Authorized</p>
                             </div>
                         </div>
-                        <div className="space-y-2">
-                            <div className="flex justify-between text-[11px] font-bold text-muted-foreground uppercase">
-                                <span>Signal_Strength</span>
-                                <span>85%</span>
+                        <div className="space-y-4">
+                            <div className="space-y-2">
+                                <div className="flex justify-between text-[11px] font-black text-muted-foreground uppercase tracking-widest">
+                                    <span>Intelligence_Sync</span>
+                                    <span className="text-emerald-500">72%</span>
+                                </div>
+                                <div className="h-2 w-full bg-secondary rounded-full overflow-hidden border border-border/50">
+                                    <div className="w-[72%] h-full bg-emerald-500 rounded-full" />
+                                </div>
                             </div>
-                            <div className="h-1.5 w-full bg-muted rounded-full"><div className="w-[85%] h-full bg-primary rounded-full" /></div>
+                            <p className="text-[9px] text-muted-foreground/60 font-medium uppercase tracking-tight text-center">428 / 500 Intelligence Points to Next Tier</p>
+                        </div>
+                        <div className="mt-6 pt-6 border-t border-border/50">
+                            <Link to="/levels" className="w-full py-2 bg-primary/10 hover:bg-primary/20 text-primary text-[10px] font-black uppercase tracking-widest rounded transition-all flex items-center justify-center gap-2">
+                                View Full Leveling Rules <ArrowRight size={14} />
+                            </Link>
                         </div>
                     </div>
                 </div>
@@ -274,64 +289,67 @@ const Guide = () => {
                     </div>
                 </div>
 
-                {/* 5. Productivity Protocols */}
+                {/* 5. Command Palette v2 & UI */}
                 <div className="mt-20 pt-16 border-t border-border/50">
                     <div className="flex flex-col md:flex-row items-start gap-16">
                         <div className="flex-1 space-y-6 text-left">
                             <div className="flex items-center gap-3 text-primary font-bold uppercase tracking-widest text-[13px]">
-                                <Keyboard size={18} /> Component 05: Control
+                                <Keyboard size={18} /> Component 05: Control Protocol
                             </div>
-                            <h2 className="text-[32px] font-bold leading-tight">Master Terminal Controls</h2>
+                            <h2 className="text-[32px] font-bold leading-tight">Master Command Palette</h2>
                             <p className="text-muted-foreground leading-relaxed">
-                                ScriptShelf is engineered for keyboard-first developers. Navegate at high speeds without reaching for the mouse.
+                                ScriptShelf v2 features a high-speed command hub for navigation, theme switching, and system operations.
                             </p>
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                <div className="p-4 bg-muted/20 border border-border rounded-[3px] flex justify-between items-center">
-                                    <span className="text-[13px] font-bold">Search Palette</span>
+                                <div className="p-4 bg-muted/20 border border-border rounded-[3px] flex justify-between items-center transition-all hover:border-primary/50 group">
+                                    <span className="text-[13px] font-bold group-hover:text-primary">Command Mode</span>
                                     <kbd className="bg-background px-2 py-0.5 border border-border rounded text-[10px] font-bold text-primary">Ctrl+K</kbd>
                                 </div>
-                                <div className="p-4 bg-muted/20 border border-border rounded-[3px] flex justify-between items-center">
-                                    <span className="text-[13px] font-bold">Zen Mode</span>
-                                    <kbd className="bg-background px-2 py-0.5 border border-border rounded text-[10px] font-bold text-primary">Alt+Z</kbd>
-                                </div>
-                                <div className="p-4 bg-muted/20 border border-border rounded-[3px] flex justify-between items-center">
-                                    <span className="text-[13px] font-bold">New Note</span>
+                                <div className="p-4 bg-muted/20 border border-border rounded-[3px] flex justify-between items-center transition-all hover:border-primary/50 group">
+                                    <span className="text-[13px] font-bold group-hover:text-primary">New Note</span>
                                     <kbd className="bg-background px-2 py-0.5 border border-border rounded text-[10px] font-bold text-primary">Alt+N</kbd>
                                 </div>
-                                <div className="p-4 bg-muted/20 border border-border rounded-[3px] flex justify-between items-center">
-                                    <span className="text-[13px] font-bold">Playground</span>
+                                <div className="p-4 bg-muted/20 border border-border rounded-[3px] flex justify-between items-center transition-all hover:border-primary/50 group">
+                                    <span className="text-[13px] font-bold group-hover:text-primary">Playground</span>
                                     <kbd className="bg-background px-2 py-0.5 border border-border rounded text-[10px] font-bold text-primary">Alt+X</kbd>
                                 </div>
-                                <div className="p-4 bg-muted/20 border border-border rounded-[3px] flex justify-between items-center">
-                                    <span className="text-[13px] font-bold">Global Chat</span>
-                                    <kbd className="bg-background px-2 py-0.5 border border-border rounded text-[10px] font-bold text-primary">Alt+C</kbd>
+                                <div className="p-4 bg-muted/20 border border-border rounded-[3px] flex justify-between items-center transition-all hover:border-primary/50 group">
+                                    <span className="text-[13px] font-bold group-hover:text-primary">Neural Graph</span>
+                                    <kbd className="bg-background px-2 py-0.5 border border-border rounded text-[10px] font-bold text-primary">Alt+G</kbd>
                                 </div>
-                                <div className="p-4 bg-muted/20 border border-border rounded-[3px] flex justify-between items-center">
-                                    <span className="text-[13px] font-bold">Community</span>
-                                    <kbd className="bg-background px-2 py-0.5 border border-border rounded text-[10px] font-bold text-primary">Alt+M</kbd>
-                                </div>
-                                <div className="p-4 bg-muted/20 border border-border rounded-[3px] flex justify-between items-center">
-                                    <span className="text-[13px] font-bold">Issues</span>
-                                    <kbd className="bg-background px-2 py-0.5 border border-border rounded text-[10px] font-bold text-primary">Alt+I</kbd>
-                                </div>
-                                <div className="p-4 bg-muted/20 border border-border rounded-[3px] flex justify-between items-center">
-                                    <span className="text-[13px] font-bold">Help Map</span>
-                                    <kbd className="bg-background px-2 py-0.5 border border-border rounded text-[10px] font-bold text-primary">?</kbd>
+                            </div>
+
+                            <div className="space-y-4 pt-4">
+                                <p className="text-[11px] font-black uppercase text-primary tracking-widest">Active Slash Commands</p>
+                                <div className="grid grid-cols-2 gap-3">
+                                    {[
+                                        { cmd: '/new', desc: 'Create record' },
+                                        { cmd: '/theme v3', desc: 'Switch theme' },
+                                        { cmd: '/dark', desc: 'Active night' },
+                                        { cmd: '/network', desc: 'Open Graph' },
+                                    ].map(item => (
+                                        <div key={item.cmd} className="flex items-center gap-3 p-3 bg-card border border-border rounded shadow-sm">
+                                            <span className="text-primary font-bold text-[12px]">{item.cmd}</span>
+                                            <span className="text-[10px] text-muted-foreground uppercase font-medium">{item.desc}</span>
+                                        </div>
+                                    ))}
                                 </div>
                             </div>
                         </div>
-                        <div className="flex-1 w-full glass-frost p-8 rounded-[3px] text-left">
-                            <div className="flex items-center gap-3 mb-4">
-                                <Monitor size={20} className="text-primary" />
-                                <h4 className="font-bold">Focus Engine</h4>
+                        <div className="flex-1 w-full space-y-6">
+                            <div className="glass-frost p-8 rounded-[3px] text-left border-t-0 border-l-4 border-l-primary">
+                                <div className="flex items-center gap-3 mb-4">
+                                    <Monitor size={20} className="text-primary" />
+                                    <h4 className="font-bold">Thematic Scrollbars</h4>
+                                </div>
+                                <p className="text-[14px] text-muted-foreground leading-relaxed">
+                                    Our interface is fully synchronized. Custom scrollbars now adapt to your active theme's primary HSL tokens for a perfect visual flow.
+                                </p>
                             </div>
-                            <p className="text-[14px] text-muted-foreground leading-relaxed mb-6">
-                                Zen Mode centers your viewport and hides all sidebars. Perfect for deep documentation or high-speed code reading.
-                            </p>
-                            <ul className="space-y-2 text-[12px] font-bold text-primary/70">
-                                <li>- DISTRACTION_FILTER: ENABLED</li>
-                                <li>- VIEWPORT_CENTERING: ACTIVE</li>
-                            </ul>
+                            <div className="p-6 bg-accent/10 border border-border border-dashed rounded-[3px] text-left">
+                                <h4 className="text-[12px] font-bold text-primary uppercase tracking-[0.2em] mb-2">PRO_PROTOCOL: RECENT_ITEMS</h4>
+                                <p className="text-[13px] text-muted-foreground">The command palette caches your last 5 viewed items for rapid-fire switching during deep-work sessions.</p>
+                            </div>
                         </div>
                     </div>
                 </div>
