@@ -2,6 +2,7 @@ const Note = require('../models/Note');
 const fs = require('fs');
 const logUserActivity = require('../utils/activityLogger');
 const awardReputation = require('../utils/reputationEngine');
+const notificationService = require('../services/notificationService');
 
 // Helper for Bidirectional Linking
 const updateBidirectionalLinks = async (noteId, content, userId) => {
@@ -468,8 +469,7 @@ exports.addComment = async (req, res, next) => {
       await awardReputation(note.user, 'receive_comment'); // Note Owner gets 5
 
       // Trigger Notification
-      const Notification = require('../models/Notification');
-      await Notification.create({
+      await notificationService.sendNotification({
         recipient: note.user,
         sender: req.user.id,
         type: 'comment',
@@ -709,7 +709,7 @@ exports.shareNote = async (req, res, next) => {
 
     for (const recipient of recipients) {
       if (recipient._id.toString() !== req.user.id) {
-        await Notification.create({
+        await notificationService.sendNotification({
           recipient: recipient._id,
           sender: req.user.id,
           type: 'share',

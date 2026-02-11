@@ -13,6 +13,7 @@ const compression = require('compression');
 const rateLimit = require('express-rate-limit');
 const connectDB = require('./config/db');
 const errorHandler = require('./middleware/errorMiddleware');
+const notificationService = require('./services/notificationService'); // Import Notification Service
 
 // Load env vars
 dotenv.config();
@@ -38,6 +39,9 @@ const io = require('socket.io')(server, {
     methods: ["GET", "POST"]
   }
 });
+
+// Initialize Notification Service with IO
+notificationService.setIO(io);
 
 // Socket.io Logic
 io.on('connection', (socket) => {
@@ -81,8 +85,8 @@ io.on('connection', (socket) => {
         socket.emit('privateMessage', populatedChat);
 
         // Notify recipient (Notification system)
-        const Notification = require('./models/Notification');
-        await Notification.create({
+        // Notify recipient (Notification system)
+        await notificationService.sendNotification({
           recipient,
           sender,
           type: 'comment',

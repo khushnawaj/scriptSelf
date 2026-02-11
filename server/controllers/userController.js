@@ -1,6 +1,7 @@
 const User = require('../models/User');
 const Note = require('../models/Note');
 const logUserActivity = require('../utils/activityLogger');
+const notificationService = require('../services/notificationService');
 
 // @desc      Get all users
 // @route     GET /api/v1/users
@@ -176,8 +177,7 @@ exports.followUser = async (req, res, next) => {
             await currentUser.updateOne({ $push: { following: req.params.id } });
 
             // Trigger Notification
-            const Notification = require('../models/Notification');
-            await Notification.create({
+            await notificationService.sendNotification({
                 recipient: userToFollow._id,
                 sender: currentUser._id,
                 type: 'follow',

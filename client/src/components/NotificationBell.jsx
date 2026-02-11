@@ -2,6 +2,9 @@ import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { Bell, UserPlus, MessageSquare, Heart, Settings, Trash2, ExternalLink } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
+import { useSelector } from 'react-redux'; // Access user state
+import { io } from 'socket.io-client';
+import { toast } from 'react-hot-toast';
 import api from '../utils/api';
 
 const formatRelativeTime = (date) => {
@@ -19,6 +22,8 @@ const NotificationBell = () => {
     const [isOpen, setIsOpen] = useState(false);
     const [filter, setFilter] = useState('all'); // 'all' or 'unread'
     const dropdownRef = useRef(null);
+    const socketRef = useRef(null);
+    const { user } = useSelector((state) => state.auth);
 
     const fetchNotifications = useCallback(async () => {
         try {
@@ -33,9 +38,33 @@ const NotificationBell = () => {
 
     useEffect(() => {
         fetchNotifications();
-        const interval = setInterval(fetchNotifications, 30000);
-        return () => clearInterval(interval);
-    }, [fetchNotifications]);
+
+        // Setup Socket.io for Real-time Notifications
+        if (user && !socketRef.current) {
+            const socketUrl = (import.meta.env.VITE_API_URL || 'http://localhost:5005/api/v1').replace('/api/v1', '');
+            socketRef.current = io(socketUrl, {
+                reconnection: true,
+                reconnectionAttempts: 5,
+                reconnectionDelay: 1000
+            });
+
+            socketRef.current.on('connect', () => {
+                // Join user's private room to receive personal notifications
+                socketRef.current.emit('joinPrivate', user._id);
+            });
+
+            socketRef.current.on('notification', (newNotification) => {
+                setNotifications(prev => [newNotification, ...prev]);
+                setUnreadCount(prev => prev + 1);
+                toast.success(`New ${newNotification.type}: ${newNotification.sender?.username || 'User'} sent a signal`);
+            });
+        }
+
+        return () => {
+            if (socketRef.current) socketRef.current.disconnect();
+            socketRef.current = null;
+        };
+    }, [fetchNotifications, user]);
 
     useEffect(() => {
         const handleClickOutside = (event) => {
