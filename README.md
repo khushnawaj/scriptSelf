@@ -1,151 +1,115 @@
-# 📜 ScriptShelf
+# 📜 ScriptShelf  
 
-**ScriptShelf** is a high-performance, senior-level MERN stack application designed for developers and power users to organize, share, and manage code snippets, documentation, and PDF resources with professional-grade productivity tools.
+**ScriptShelf** is a high-performance, senior-level MERN stack application designed for developers and power users to organize, share, and manage code snippets, documentation, and PDF resources with professional-grade productivity tools. It goes beyond simple CRUD operations to offer a fully gamified, real-time, and resilient knowledge management ecosystem.  
 
----
+---  
 
-## 🚀 Key Features
+## 🚀 Key Features  
 
-### 🧠 Strategic Knowledge Management (Senior Level)
-- **Architectural Decision Records (ADR)**: Document the "Why" behind system choices with specialized templates and status tracking (Proposed, Accepted, Deprecated).
-- **Visual Logic (Mermaid.js)**: Native rendering of flowcharts, sequence diagrams, and ER diagrams directly within documentation.
-- **Second Brain (Bidirectional Linking)**: Support for `[[Wiki-Style Links]]` with automatic backlink discovery. Notes grow into an interconnected knowledge web.
-- **Logic Patterns**: Dedicated classification for Best Practices and Anti-Patterns to serve as a living handbook for teams.
-- **Logic Sandbox**: A built-in JavaScript playground for quick prototyping and console debugging without leaving the app.
-- **Obsidian-Compatible Export**: Markdown bundles now include YAML frontmatter, ready for local sync or Obsidian integration.
+### 📡 Real-Time Social Architecture (New)  
+- **Instant Notification System**: Powered by **Redis & Socket.io**, get alerted the second someone interacts with your work (comments, likes, follows) without refreshing the page.  
+- **Live Chat**: Secure, end-to-end real-time messaging with typing indicators, read receipts, and online status.  
+- **Global Community Stream**: A public channel for all developers to share insights, code snippets, and resources in real-time.  
+- **Visual File Sharing**: Modern, compact thumbnail previews for image/video uploads with overlay controls, inspired by leading AI interfaces.  
 
-### 🛠️ Developer Productivity
-- **Command Palette (CMD+K)**: A global, lightning-fast interface to search notes, navigate the app, and trigger actions.
-- **Smart Tagging**: Automatic keyword detection (React, Node, etc.) to organize your content without manual effort.
-- **Related Notes**: Link notes together to create a personal knowledge base.
-- **Markdown Support**: Full GFM (GitHub Flavored Markdown) support with syntax highlighting and copy-to-clipboard code blocks.
+### 🎮 Gamification Engine (DevArcade)  
+- **Reputation System**: Earn XP and level up from **Script Kiddie** to **Elite Architect** by contributing quality content.  
+- **Badges & Achievements**: Unlock unique accolades for maintaining streaks, solving bugs, and mastering syntax.  
+- **Interactive Leaderboards**: Compete with other developers globally.  
+- **Mini-Games Suite**:  
+    - **Syntax Sprint**: Typing accuracy with real-time error detection.  
+    - **Memory Matrix**: Neural recognition training for tech stacks.  
+    - **Hex Hunter**: Pixel-perfect color accuracy test.  
+    - **Bug Hunter v2.5**: Premium multi-stage debugger simulation.  
 
-### 📁 Advanced Note Management
-- **PDF Deep Search**: Automatic text extraction from uploaded PDFs using `pdf-parse`, making documents fully searchable.
-- **Version History**: Track changes with a built-in history array—never lose a previous version of your snippets.
-- **Pinned Notes**: Keep your most important scripts at the top of your dashboard.
-- **Bulk Export**: Export entire categories as a structured Markdown ZIP bundle for offline reading.
+### 🧠 Strategic Knowledge Management  
+- **Architectural Decision Records (ADR)**: Document the "Why" behind system choices with specialized templates.  
+- **Visual Logic (Mermaid.js)**: Native rendering of flowcharts, sequence diagrams, and ER diagrams directly within documentation.  
+- **Second Brain (Bidirectional Linking)**: Support for `[[Wiki-Style Links]]` with automatic backlink discovery.  
+- **PDF Deep Search**: Automatic text extraction from uploaded PDFs using `pdf-parse`, making documents fully searchable.  
+- **Markdown Support**: Full GFM support with syntax highlighting and copy-to-clipboard code blocks.  
 
-### 📊 Professional Analytics
-- **Dynamic Dashboard**: Visualize your note distribution by category and type.
-- **Time-Series Insights**: Track your productivity with a 14-day history of note creation (powered by Chart.js).
+### 🛡️ Resilient Backend Architecture  
+- **Redis Caching Strategy**: Implemented a **Write-Through / Cache-Aside** hybrid pattern to optimize performance.  
+    - **Feed Caching**: User notification feeds are cached in Redis Lists (capped at 50 items) for microsecond-level access.  
+    - **Graceful Fallback**: The system automatically detects Redis failures and transparently switches to MongoDB without downtime (Circuit Breaker pattern).  
+- **Scalable Design**: Decoupled notification service allows for easy horizontal scaling.  
 
-### 👤 Profile & Community (Core Networking)
-- **Intelligence Briefing**: Profiles now feature dynamic metrics including **System Level (LVL)**, **Current XP**, and **Neural Sync Status** to visualize technical maturity.
-- **Dynamic Backgrounds**: High-tier architects (Expert/Legendary) unlock specialized background animations (Neural Grids/Overlord effects) upon profile viewing.
-- **Real-time Signal Alerts**: A dedicated tactical notification bell in the navbar that pulses for new follows and interactions.
-- **Interactive Social Graph**: Click on any follower or following count to browse user networks through high-fidelity modals.
-- **Follow System**: Subscribe to other developers to stay updated on their architectural decision records and logic captures.
-- **Interactive Discussions**: Contribute to notes with threaded comments. Edit or delete your own contributions to maintain precise technical discourse.
+### 📊 Professional Analytics & Dashboard  
+- **Dynamic Metrics**: Visualize note distribution, daily activity streaks, and productivity trends with Chart.js.  
+- **Intelligence Briefing**: Profiles feature dynamic stats like **System Level (LVL)**, **Current XP**, and **Neural Sync Status**.  
+- **Admin Console**: Advanced moderation tools to manage users, content, and system health.  
 
-### ⚡ Productivity & Zen Protocols (New)
-- **Tactical Shortcuts**: A global keyboard navigation system to accelerate your workflow.
-    - `Alt + N`: Rapid Record Creation.
-    - `Alt + Z`: Toggle **Zen Mode** (Hides sidebars for deep focus).
-    - `Alt + X`: Launch Playground.
-    - `Alt + C`: Open Global Chat.
-    - `Alt + M`: View Community Feed.
-    - `Alt + I`: Report Issues.
-    - `Alt + T`: Instant Theme Switching.
-    - `?`: Open the Tactical Shortcut Command Map.
-- **Zen Focus**: A distraction-free environment that centers your workspace and maximizes vertical real estate for documentation.
+---  
 
-### 💬 Real-Time Collaboration & Community (New)
-- **Private Encrypted Chat**: Secure, end-to-end like real-time messaging with typing indicators, read receipts, and online status.
-- **Gemini-Style File Sharing**: Modern, compact thumbnail previews for image/video uploads with overlay controls, inspired by leading AI interfaces.
-- **Global Community Stream**: A public channel for all developers to share insights, code snippets, and resources in real-time.
-- **Socket.IO Integration**: Instant message delivery and live updates without refreshing.
+## 💻 Tech Stack  
 
-### 🕹️ DevArcade (Premium Cognitive Training)
-*Gamify your growth with a high-fidelity suite of developer mini-games.*
+- **Frontend**: React.js, Redux Toolkit, Tailwind CSS, Framer Motion, Lucide React, Socket.io-client.  
+- **Backend**: Node.js, Express.js, Socket.io.  
+- **Database**: MongoDB (Primary Persistence), Redis (Caching & Pub/Sub).  
+- **DevOps**: JWT Authentication, Cloudinary (Media Storage), Render/Vercel Deployment.  
 
-- **Professional Tactical UI**: All games now feature enhanced "Cyber-Tactical" cards with real-time metrics like `CORE_POWER`, `SIGNAL_LINK`, and dynamic optimization stats.
-- **Syntax Sprint**: Practice typing accuracy with real patterns. Features real-time error detection and WPM tracking.
-- **Memory Matrix**: Neural recognition training by matching tech stack vectors (Server, DB, CPU).
-- **Hex Hunter**: Pixel-perfect color accuracy test.
-- **Stack Overflow Escape & Firewall Breach**: Advanced algorithm and reflex challenges with tiered difficulty.
-- **Bug Hunter v2.5**: Premium multi-stage debugger simulation with system monitoring and power-ups.
-- **Ranked Badge System**: Maintain daily streaks to promote from **Script Kiddie** to **Elite Architect**.
+---  
 
----
+## 🛠️ Installation & Setup  
 
-## 💻 Tech Stack
+### Prerequisites  
+- Node.js (v18+)  
+- MongoDB (Local or Atlas)  
+- Redis (Optional - for high performance)  
 
-- **Frontend**: React, Redux Toolkit, Tailwind CSS, Lucide React, Chart.js.
-- **Backend**: Node.js, Express, MongoDB (Mongoose), PDF-Parse, Archiver.
-- **Authentication**: JWT (JSON Web Token) with secure cookie storage.
-- **Styling**: Premium Vibrant Indigo & Violet design system with high-contrast accessibility.
+### 1. Clone the repository  
+```bash  
+git clone <repo-url>  
+cd ScriptShelf  
+```  
 
----
+### 2. Backend Setup  
+```bash  
+cd server  
+npm install  
+# Create a .env file with your credentials (MONGO_URI, JWT_SECRET, REDIS_URL, etc.)  
+npm run dev  
+```  
 
-## 🛠️ Installation & Setup
+### 3. Frontend Setup  
+```bash  
+cd client  
+npm install  
+# Create a .env file pointing to your backend (VITE_API_URL)  
+npm run dev  
+```  
 
-1. **Clone the repository**:
-   ```bash
-   git clone <repo-url>
-   cd ScriptShelf
-   ```
+---  
 
-2. **Backend Setup**:
-   ```bash
-   cd server
-   npm install
-   # Create a .env file with:
-   # MONGO_URI, JWT_SECRET, JWT_EXPIRE, COOKIE_EXPIRE
-   npm run dev
-   ```
+## 📱 Mobile Testing (Local Network)  
 
-3. **Frontend Setup**:
-   ```bash
-   cd client
-   npm install
-   npm run dev
-   ```
+To test the application on your mobile phone while it's running on your laptop:  
 
----
+1. **Get your Laptop's IP Address**:  
+   - Run `ipconfig` (Windows) or `ifconfig` (Mac/Linux) to find your local IP (e.g., `192.168.1.5`).  
+2. **Update Client `.env`**:  
+   - Set `VITE_API_URL=http://<YOUR_IP>:5000/api/v1`  
+3. **Run Client with Host Flag**:  
+   - `cd client && npm run dev -- --host`  
+4. **Access on Mobile**:  
+   - Open your mobile browser and go to `http://<YOUR_IP>:5173` (or the port shown in your terminal).  
 
-## 📱 Mobile Testing (Local Network)
+---  
 
-To test the application on your mobile phone while it's running on your laptop:
+## 🚀 Deployment  
 
-1. **Get your Laptop's IP Address**:
-   - Run `ipconfig` (Windows) or `ifconfig` (Mac/Linux) to find your local IP (e.g., `192.168.1.5`).
-2. **Update Client `.env`**:
-   - Set `VITE_API_URL=http://<YOUR_IP>:5000/api/v1`
-3. **Run Client with Host Flag**:
-   - `cd client && npm run dev -- --host`
-4. **Access on Mobile**:
-   - Open your mobile browser and go to `http://<YOUR_IP>:5173` (or the port shown in your terminal).
+### Backend (Render)  
+1. Set **Root Directory** to `server`.  
+2. **Build Command**: `npm install`.  
+3. **Start Command**: `npm start`.  
+4. **Environment Variables**: `NODE_ENV=production`, `MONGO_URI`, `JWT_SECRET`, `REDIS_URL` (optional).  
 
----
+### Frontend (Vercel)  
+1. Connect repository to Vercel.  
+2. **Framework Preset**: `Vite`.  
+3. **Environment Variable**: `VITE_API_URL` (Your deployed backend URL).  
 
-## 🛡️ Enhanced Admin Features
-- **System-Wide Moderation**: Admins have visibility and control over all notes in the system, including private vaults, to ensure platform integrity.
-- **User Role Management**: Promote or demote users to/from admin roles directly from the management console.
-- **Advanced System Stats**: Real-time tracking of total users, system-wide notes, and global categories.
-- **Cleanup Tools**: Remove users and their associated records with one click.
+---  
 
----
-
-Built with ❤️ for the Developer Community.
-
----
-
-## 🚀 Deployment
-
-### Backend (Render)
-1. Set the **Root Directory** to `server`. (Crucial! Render needs to know where `package.json` is).
-2. Set the **Build Command** to `npm install`.
-3. Set the **Start Command** to `npm start`.
-4. Add the following **Environment Variables**:
-   - `NODE_ENV`: `production`
-   - `MONGO_URI`: Your MongoDB Atlas connection string.
-   - `JWT_SECRET`: A long random string.
-   - `CLIENT_URL`: The URL of your deployed frontend.
-
-### Frontend (Vercel)
-1. Connect your repository to Vercel.
-2. The **Framework Preset** should be `Vite`.
-3. Add the following **Environment Variable**:
-   - `VITE_API_URL`: The URL of your deployed backend.
-4. Vercel will automatically use the `vercel.json` provided in the `client` folder for routing.
+Built with ❤️ for the Developer Community.  

@@ -205,6 +205,15 @@ app.use(helmet({ crossOriginResourcePolicy: false }));
 app.use(xss());
 app.use(hpp());
 
+// Root route
+app.get('/', (req, res) => {
+  res.status(200).json({
+    message: 'Welcome to ScriptShelf API',
+    status: 'running',
+    timestamp: new Date().toISOString()
+  });
+});
+
 // Health check
 app.get('/health', (req, res) => res.status(200).json({ status: 'ok', timestamp: new Date().toISOString() }));
 
