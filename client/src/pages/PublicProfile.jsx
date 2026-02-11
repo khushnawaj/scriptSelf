@@ -107,48 +107,49 @@ const PublicProfile = () => {
                     </Link>
                 </div>
 
-                <div className="flex flex-col lg:flex-row gap-10">
+                <div className="flex flex-col lg:flex-row gap-8 lg:gap-10">
                     {/* --- SIDEBAR: Profile Identity --- */}
-                    <aside className="lg:w-72 space-y-6 shrink-0">
-                        <div className="bg-card border border-border rounded-xl p-6 shadow-sm relative group overflow-hidden">
+                    <aside className="lg:w-72 space-y-6 shrink-0 order-1 lg:order-none">
+                        <div className="bg-card border border-border rounded-xl p-5 sm:p-6 shadow-sm relative group overflow-hidden">
                             {/* Dynamic Background Glow */}
                             <div className={`absolute -top-24 -left-24 w-48 h-48 rounded-full blur-[80px] opacity-20 transition-colors duration-1000 ${currentTier.bg.replace('bg-', 'bg-')}`} />
 
-                            <div className="flex flex-col items-center relative z-10">
-                                <div className="relative mb-5">
-                                    <div className={`w-28 h-28 bg-secondary border-2 rounded-2xl overflow-hidden shadow-xl flex items-center justify-center transition-all duration-500 ${currentTier.border}`}>
-                                        {profile.avatar ? (
-                                            <img src={profile.avatar} alt="Profile" className="w-full h-full object-cover" />
-                                        ) : (
-                                            <span className="text-4xl font-black text-muted-foreground">{profile.username.charAt(0).toUpperCase()}</span>
-                                        )}
-                                    </div>
-                                    {/* Tier Badge Overlay */}
-                                    <div className={`absolute -bottom-2 -right-2 px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest border-2 border-card shadow-lg ${currentTier.bg} ${currentTier.color} ${currentTier.border}`}>
-                                        {currentTier.name}
+                            <div className="flex flex-col items-center relative z-10 text-center w-full">
+                                <div className="mb-4 relative">
+                                    {/* The "Neural Ring" - A thick border representing the tier status */}
+                                    <div className={`p-1.5 rounded-[2.5rem] ${currentTier.bg} shadow-2xl transition-all duration-700`}>
+                                        <div className="w-24 h-24 sm:w-28 sm:h-28 bg-card rounded-[2.2rem] overflow-hidden flex items-center justify-center border-2 border-card">
+                                            {profile.avatar ? (
+                                                <img src={profile.avatar} alt="Profile" className="w-full h-full object-cover" />
+                                            ) : (
+                                                <span className="text-3xl sm:text-4xl font-black text-muted-foreground">{profile.username.charAt(0).toUpperCase()}</span>
+                                            )}
+                                        </div>
                                     </div>
                                 </div>
 
-                                <div className="text-center space-y-1 mb-6">
-                                    <h1 className="text-2xl font-black text-foreground tracking-tight whitespace-nowrap overflow-hidden text-ellipsis max-w-full italic">
+                                {/* Tier Name - Now a separate, non-overlapping element */}
+                                <div className={`px-5 py-1.5 rounded-full text-[9px] font-black uppercase tracking-[0.25em] mb-6 shadow-sm border ${currentTier.bg} ${currentTier.color} ${currentTier.border} backdrop-blur-sm`}>
+                                    {currentTier.name}
+                                </div>
+
+                                <div className="space-y-1.5 mb-6 w-full px-2">
+                                    <h1 className="text-xl sm:text-2xl font-black text-foreground tracking-tight whitespace-nowrap overflow-hidden text-ellipsis italic">
                                         {profile.username}
                                     </h1>
-                                    <p className={`text-[10px] font-black uppercase tracking-[0.2em] ${currentTier.color}`}>
-                                        {currentTier.name}
-                                    </p>
                                 </div>
 
-                                <div className="space-y-4 pt-6 border-t border-border/50 mt-4 w-full">
+                                <div className="space-y-4 pt-6 border-t border-border/50 mt-2 w-full">
                                     {/* Intelligence Briefing */}
                                     <div className="flex flex-col items-center gap-4">
                                         <div className="flex justify-between w-full px-1">
                                             <div className="text-left">
-                                                <p className="text-[10px] font-bold text-muted-foreground uppercase opacity-50 tracking-tighter">LVL {systemLevel}</p>
-                                                <p className="text-[12px] font-black text-foreground tracking-tight">{currentLevelXP}/100 XP</p>
+                                                <p className="text-[9px] font-bold text-muted-foreground uppercase opacity-50 tracking-tighter">LVL {systemLevel}</p>
+                                                <p className="text-[11px] sm:text-[12px] font-black text-foreground tracking-tight">{currentLevelXP}/100 XP</p>
                                             </div>
                                             <div className="text-right">
-                                                <p className="text-[10px] font-bold text-muted-foreground uppercase opacity-50 tracking-tighter">Sync Status</p>
-                                                <p className={`text-[10px] font-black uppercase flex items-center gap-1 justify-end ${isSyncActive ? 'text-emerald-500' : 'text-rose-500'}`}>
+                                                <p className="text-[9px] font-bold text-muted-foreground uppercase opacity-50 tracking-tighter">Sync Status</p>
+                                                <p className={`text-[9px] sm:text-[10px] font-black uppercase flex items-center gap-1 justify-end ${isSyncActive ? 'text-emerald-500' : 'text-rose-500'}`}>
                                                     <span className={`w-1.5 h-1.5 rounded-full ${isSyncActive ? 'bg-emerald-500 animate-pulse outline outline-2 outline-emerald-500/30' : 'bg-rose-500'}`} />
                                                     {isSyncActive ? 'Active' : 'Offline'}
                                                 </p>
@@ -160,7 +161,7 @@ const PublicProfile = () => {
                                                 <span className="text-muted-foreground/60 italic">Next Level</span>
                                                 <span className={currentTier.color}>{progress}%</span>
                                             </div>
-                                            <div className="h-1.5 w-full bg-secondary rounded-full overflow-hidden border border-border/30 relative">
+                                            <div className={`${isExperimentB ? 'h-3' : 'h-1.5'} w-full bg-secondary rounded-full overflow-hidden border border-border/30 relative ${isExperimentB ? 'shadow-[0_0_10px_rgba(var(--primary-rgb),0.3)]' : ''}`}>
                                                 <motion.div
                                                     initial={{ width: 0 }}
                                                     animate={{ width: `${progress}%` }}
@@ -264,22 +265,22 @@ const PublicProfile = () => {
                         </div>
 
                         {/* Arcade Progress */}
-                        <div className="bg-card border border-border rounded-xl p-5 space-y-5">
+                        <div className="bg-card border border-border rounded-xl p-5 space-y-5 shadow-sm">
                             <h3 className="text-[11px] font-bold uppercase tracking-widest text-primary flex items-center gap-2">
                                 <Trophy size={14} /> Performance
                             </h3>
-                            <div className="grid grid-cols-2 gap-3">
-                                <div className="bg-muted/50 p-3 rounded-lg border border-border/50 text-center">
-                                    <p className="text-sm font-black text-primary">{profile.arcade?.points || 0}</p>
-                                    <p className="text-[9px] uppercase font-bold text-muted-foreground">Total XP</p>
+                            <div className="grid grid-cols-2 gap-3 sm:gap-4">
+                                <div className="bg-muted/50 p-2.5 sm:p-3 rounded-lg border border-border/50 text-center">
+                                    <p className="text-sm font-black text-primary italic leading-none">{profile.arcade?.points || 0}</p>
+                                    <p className="text-[8px] sm:text-[9px] uppercase font-bold text-muted-foreground mt-1">Total XP</p>
                                 </div>
-                                <div className="bg-muted/50 p-3 rounded-lg border border-border/50 text-center">
-                                    <p className="text-sm font-black text-orange-500">{profile.arcade?.streak || 0}d</p>
-                                    <p className="text-[9px] uppercase font-bold text-muted-foreground">Streak</p>
+                                <div className="bg-muted/50 p-2.5 sm:p-3 rounded-lg border border-border/50 text-center">
+                                    <p className="text-sm font-black text-orange-500 italic leading-none">{profile.arcade?.streak || 0}d</p>
+                                    <p className="text-[8px] sm:text-[9px] uppercase font-bold text-muted-foreground mt-1">Streak</p>
                                 </div>
                             </div>
 
-                            <div className="space-y-2 pt-2">
+                            <div className="space-y-2 pt-1">
                                 {[
                                     { min: 1, label: "Initiator", icon: Flame, color: "text-blue-500" },
                                     { min: 30, label: "Technician", icon: ShieldCheck, color: "text-emerald-500" },
@@ -288,8 +289,8 @@ const PublicProfile = () => {
                                     const isEarned = (profile.arcade?.streak || 0) >= badge.min;
                                     return (
                                         <div key={idx} className={`flex items-center gap-3 p-2 rounded-lg border transition-all ${isEarned ? 'bg-primary/5 border-primary/20' : 'bg-muted/20 border-border/30 opacity-40 grayscale'}`}>
-                                            <badge.icon size={13} className={isEarned ? badge.color : ''} />
-                                            <span className="text-[11px] font-bold">{badge.label}</span>
+                                            <badge.icon size={12} className={isEarned ? badge.color : ''} />
+                                            <span className="text-[10px] sm:text-[11px] font-bold">{badge.label}</span>
                                             {isEarned && <div className="w-1 h-1 bg-primary rounded-full ml-auto" />}
                                         </div>
                                     );
@@ -299,24 +300,26 @@ const PublicProfile = () => {
                     </aside>
 
                     {/* --- MAIN CONTENT --- */}
-                    <main className="flex-1 space-y-8">
+                    <main className="flex-1 space-y-6 lg:space-y-8 order-2 lg:order-none min-w-0">
                         {/* Visual Analytics */}
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                            <div className="bg-card border border-border rounded-xl p-5 shadow-sm">
-                                <p className="text-[10px] font-bold uppercase text-muted-foreground tracking-widest mb-1">Public Scripts</p>
-                                <h4 className="text-2xl font-bold flex items-center gap-2">{recentNotes.length} Archive</h4>
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
+                            <div className="bg-card border border-border rounded-xl p-4 sm:p-5 shadow-sm">
+                                <p className="text-[9px] sm:text-[10px] font-bold uppercase text-muted-foreground tracking-widest mb-1.5 opacity-60">Public Scripts</p>
+                                <h4 className="text-xl sm:text-2xl font-bold flex items-center gap-2">{recentNotes.length} Archive</h4>
                             </div>
-                            <div className="bg-card border border-border rounded-xl p-5 shadow-sm">
-                                <p className="text-[10px] font-bold uppercase text-muted-foreground tracking-widest mb-1">Reputation</p>
-                                <h4 className="text-2xl font-bold flex items-center gap-2">{profile.reputation || 0} Points</h4>
+                            <div className="bg-card border border-border rounded-xl p-4 sm:p-5 shadow-sm">
+                                <p className="text-[9px] sm:text-[10px] font-bold uppercase text-muted-foreground tracking-widest mb-1.5 opacity-60">Reputation</p>
+                                <h4 className="text-xl sm:text-2xl font-bold flex items-center gap-2 text-primary">{profile.reputation || 0} Points</h4>
                             </div>
-                            <div className="bg-card border border-border rounded-xl p-5 shadow-sm">
-                                <p className="text-[10px] font-bold uppercase text-muted-foreground tracking-widest mb-1">Simulations</p>
-                                <h4 className="text-2xl font-bold flex items-center gap-2">{profile.arcade?.gamesPlayed || 0} Completed</h4>
+                            <div className="bg-card border border-border rounded-xl p-4 sm:p-5 shadow-sm">
+                                <p className="text-[9px] sm:text-[10px] font-bold uppercase text-muted-foreground tracking-widest mb-1.5 opacity-60">Simulations</p>
+                                <h4 className="text-xl sm:text-2xl font-bold flex items-center gap-2">{profile.arcade?.gamesPlayed || 0} Completed</h4>
                             </div>
                         </div>
 
-                        <ContributionGraph logs={profile.activityLogs} />
+                        <div className="overflow-hidden">
+                            <ContributionGraph logs={profile.activityLogs} />
+                        </div>
 
                         <section className="space-y-6">
                             <div className="flex items-center justify-between px-1">

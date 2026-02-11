@@ -195,6 +195,7 @@ const Admin = () => {
                         { id: 'notes', label: 'System Notes' },
                         { id: 'categories', label: 'Global Categories' },
                         { id: 'arcade', label: 'Arcade Analytics' },
+                        { id: 'experiments', label: 'Experiments' },
                         { id: 'settings', label: 'Settings' }
                     ].map(tab => (
                         <button
@@ -464,6 +465,129 @@ const Admin = () => {
                                                             </td>
                                                         </tr>
                                                     ))}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </motion.div>
+                        )}
+
+                        {activeTab === 'experiments' && (
+                            <motion.div
+                                key="experiments"
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                exit={{ opacity: 0 }}
+                                className="p-6 space-y-8"
+                            >
+                                {/* Cohort Distribution Summary */}
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div className="bg-card border border-border p-6 rounded-[3px]">
+                                        <h3 className="text-sm font-black uppercase tracking-widest text-muted-foreground mb-4">Cohort Distribution</h3>
+                                        <div className="flex items-center gap-6">
+                                            <div className="flex-1 space-y-2">
+                                                <div className="flex justify-between text-[11px] font-bold">
+                                                    <span>COHORT A</span>
+                                                    <span>{Math.round((users.filter(u => u.experimentGroup === 'A').length / users.length) * 100 || 0)}%</span>
+                                                </div>
+                                                <div className="h-2 bg-muted rounded-full overflow-hidden">
+                                                    <div className="h-full bg-primary" style={{ width: `${(users.filter(u => u.experimentGroup === 'A').length / users.length) * 100}%` }} />
+                                                </div>
+                                                <p className="text-[10px] text-muted-foreground uppercase">{users.filter(u => u.experimentGroup === 'A').length} Users</p>
+                                            </div>
+                                            <div className="flex-1 space-y-2">
+                                                <div className="flex justify-between text-[11px] font-bold">
+                                                    <span>COHORT B</span>
+                                                    <span>{Math.round((users.filter(u => u.experimentGroup === 'B').length / users.length) * 100 || 0)}%</span>
+                                                </div>
+                                                <div className="h-2 bg-muted rounded-full overflow-hidden">
+                                                    <div className="h-full bg-emerald-500" style={{ width: `${(users.filter(u => u.experimentGroup === 'B').length / users.length) * 100}%` }} />
+                                                </div>
+                                                <p className="text-[10px] text-muted-foreground uppercase">{users.filter(u => u.experimentGroup === 'B').length} Users</p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div className="bg-primary/5 border border-primary/20 p-6 rounded-[3px] flex items-center gap-4">
+                                        <ShieldCheck size={32} className="text-primary" />
+                                        <div>
+                                            <h4 className="text-[14px] font-black uppercase tracking-tight">Active Experiment: v2_bars</h4>
+                                            <p className="text-[12px] text-muted-foreground leading-relaxed">
+                                                Testing high-visibility progress metrics for Cohort B. Currently monitoring engagement deltas.
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* User Flag Management */}
+                                <div className="space-y-4">
+                                    <h3 className="text-[19px] font-bold text-foreground">A/B Testing Controls</h3>
+                                    <div className="overflow-x-auto border border-border rounded-[3px]">
+                                        <table className="w-full text-left text-[13px]">
+                                            <thead className="bg-muted/30 text-muted-foreground border-b border-border">
+                                                <tr>
+                                                    <th className="px-6 py-3 font-bold uppercase tracking-wider">Agent</th>
+                                                    <th className="px-6 py-3 font-bold uppercase tracking-wider">Current Cohort</th>
+                                                    <th className="px-6 py-3 font-bold uppercase tracking-wider">Feature Flags</th>
+                                                    <th className="px-6 py-3 font-bold uppercase tracking-wider text-right">Toggle Operations</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody className="divide-y divide-border">
+                                                {filteredUsers.map(u => (
+                                                    <tr key={u._id} className="hover:bg-muted/20 transition-colors">
+                                                        <td className="px-6 py-4 font-bold">{u.username}</td>
+                                                        <td className="px-6 py-4">
+                                                            <span className={`px-2 py-1 rounded-[3px] text-[10px] font-black ${u.experimentGroup === 'B' ? 'bg-emerald-500/10 text-emerald-500' : 'bg-primary/10 text-primary'}`}>
+                                                                GROUP_{u.experimentGroup}
+                                                            </span>
+                                                        </td>
+                                                        <td className="px-6 py-4">
+                                                            <div className="flex gap-2">
+                                                                {u.featureFlags && Object.entries(u.featureFlags).map(([flag, val]) => (
+                                                                    <span key={flag} className={`px-2 py-0.5 rounded-[3px] text-[9px] font-black uppercase ${val ? 'bg-indigo-500/10 text-indigo-500' : 'bg-slate-500/10 text-slate-500'}`}>
+                                                                        {flag}
+                                                                    </span>
+                                                                ))}
+                                                                {(!u.featureFlags || Object.keys(u.featureFlags).length === 0) && (
+                                                                    <span className="text-[10px] text-muted-foreground italic">No manual overrides</span>
+                                                                )}
+                                                            </div>
+                                                        </td>
+                                                        <td className="px-6 py-4 text-right">
+                                                            <div className="flex justify-end gap-2">
+                                                                <button
+                                                                    onClick={async () => {
+                                                                        const newGroup = u.experimentGroup === 'A' ? 'B' : 'A';
+                                                                        try {
+                                                                            await api.put(`/users/${u._id}/group`, { group: newGroup });
+                                                                            setUsers(users.map(user => user._id === u._id ? { ...user, experimentGroup: newGroup } : user));
+                                                                            toast.success(`User moved to GROUP_${newGroup}`);
+                                                                        } catch (e) { toast.error("Failed to update cohort"); }
+                                                                    }}
+                                                                    className="px-3 py-1 bg-muted border border-border rounded-[3px] text-[10px] font-black uppercase hover:bg-muted/80"
+                                                                >
+                                                                    Switch Cohort
+                                                                </button>
+                                                                <button
+                                                                    onClick={async () => {
+                                                                        const flagName = prompt("Enter feature flag name (e.g. v2_bars):");
+                                                                        if (!flagName) return;
+                                                                        const currentVal = u.featureFlags?.[flagName] || false;
+                                                                        try {
+                                                                            const newFlags = { ...u.featureFlags, [flagName]: !currentVal };
+                                                                            await api.put(`/users/${u._id}/flags`, { flags: newFlags });
+                                                                            setUsers(users.map(user => user._id === u._id ? { ...user, featureFlags: newFlags } : user));
+                                                                            toast.success(`Flag ${flagName} updated`);
+                                                                        } catch (e) { toast.error("Failed to update flags"); }
+                                                                    }}
+                                                                    className="px-3 py-1 bg-primary text-white rounded-[3px] text-[10px] font-black uppercase shadow-sm"
+                                                                >
+                                                                    Manage Flags
+                                                                </button>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                ))}
                                             </tbody>
                                         </table>
                                     </div>
