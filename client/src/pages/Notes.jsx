@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
+import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { getNotes, getAllNotes } from '../features/notes/noteSlice';
+import { getNotes, resetNotes } from '../features/notes/noteSlice';
 import { getCategories } from '../features/categories/categorySlice';
 import Spinner from '../components/Spinner';
 import {
@@ -15,12 +16,14 @@ import {
     ChevronDown,
     Tag,
     FolderTree,
-    Pin
+    Pin,
+    ArrowUpRight
 } from 'lucide-react';
-import { Link } from 'react-router-dom';
 
 const Notes = () => {
     const dispatch = useDispatch();
+    const navigate = useNavigate();
+    const location = useLocation();
     const { user } = useSelector((state) => state.auth);
     const { notes, total, pagination, isLoading: notesLoading } = useSelector((state) => state.notes);
     const { categories, isLoading: catsLoading } = useSelector((state) => state.categories);
@@ -33,6 +36,15 @@ const Notes = () => {
     const [sort, setSort] = useState(user ? 'newest' : 'public');
 
     const [page, setPage] = useState(1);
+
+    // Sync search term from URL
+    useEffect(() => {
+        const urlParams = new URLSearchParams(location.search);
+        const searchParam = urlParams.get('search');
+        if (searchParam) {
+            setSearchTerm(decodeURIComponent(searchParam));
+        }
+    }, [location.search]);
 
     // Sync sort state when user login state changes
     useEffect(() => {
@@ -61,12 +73,9 @@ const Notes = () => {
         dispatch(getNotes(params));
         dispatch(getCategories());
 
-        // Handle search query from URL (Wiki-Links)
-        const urlParams = new URLSearchParams(window.location.search);
-        const searchParam = urlParams.get('search');
-        if (searchParam && !searchTerm) {
-            setSearchTerm(decodeURIComponent(searchParam));
-        }
+        return () => {
+            dispatch(resetNotes());
+        };
     }, [dispatch, searchTerm, page, selectedCategory, selectedType, sort, user]);
 
     const handleCategoryClick = (id) => {
@@ -116,7 +125,7 @@ const Notes = () => {
                 <div className="space-y-4">
                     <h3 className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground border-b border-border pb-2 flex items-center justify-between">
                         Record Types
-                        <Tag size={12} className="opacity-50" />
+                        <Filter size={12} className="opacity-50" />
                     </h3>
                     <div className="flex flex-row lg:flex-col gap-1.5 overflow-x-auto pb-2 lg:pb-0 lg:overflow-visible no-scrollbar -mx-4 px-4 lg:mx-0 lg:px-0">
                         {['All', 'Code', 'Doc', 'ADR', 'Pattern', 'CheatSheet'].map(type => (
@@ -126,6 +135,27 @@ const Notes = () => {
                                 className={`flex items-center gap-2 lg:gap-3 px-3 py-1.5 lg:py-2 text-[10px] lg:text-[11px] uppercase tracking-wider font-bold rounded-[4px] border transition-all whitespace-nowrap ${selectedType === type ? 'bg-foreground border-foreground text-background shadow-sm' : 'bg-muted/30 border-transparent text-muted-foreground hover:border-border hover:bg-muted/50'}`}
                             >
                                 {type}
+                            </button>
+                        ))}
+                    </div>
+                </div>
+
+                <div className="space-y-4">
+                    <h3 className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground border-b border-border pb-2 flex items-center justify-between">
+                        Global Tags
+                        <Tag size={12} className="opacity-50" />
+                    </h3>
+                    <div className="flex flex-wrap gap-2">
+                        {['React', 'Node', 'ADR', 'Python', 'Javascript', 'Security', 'Database', 'Architecture'].map(tag => (
+                            <button
+                                key={tag}
+                                onClick={() => {
+                                    setSearchTerm(tag);
+                                    setPage(1);
+                                }}
+                                className={`px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest rounded-full border transition-all ${searchTerm.toLowerCase() === tag.toLowerCase() ? 'bg-primary border-primary text-white' : 'bg-muted/30 border-border/50 text-muted-foreground hover:border-primary/50 hover:text-primary'}`}
+                            >
+                                #{tag}
                             </button>
                         ))}
                     </div>
@@ -141,45 +171,15 @@ const Notes = () => {
 
             {/* Main Content Area */}
             <div className="flex-1 space-y-4">
-                {/* Header Section */}
-                <div className="flex flex-col sm:flex-row justify-between items-start gap-4 mb-2">
-                    <div className="space-y-1">
-                        <h1 className="text-[27px] font-normal text-foreground leading-tight tracking-tight">Technical Library</h1>
-                        <p className="text-[13px] text-muted-foreground">Archive of system logic, patterns, and architectural decisions.</p>
-                    </div>
-                    {user ? (
-                        <Link to="/notes/new" className="so-btn so-btn-primary py-2.5 px-6 shrink-0 shadow-lg shadow-primary/10">
-                            <Plus size={16} className="mr-1" /> Post New Record
-                        </Link>
-                    ) : (
-                        <Link to="/login" className="so-btn border border-primary text-primary hover:bg-primary/5 py-2.5 px-6 shrink-0 transition-all font-bold">
-                            Log in to Contribute
-                        </Link>
-                    )}
-                </div>
-
-                {/* Filter Bar */}
-                <div className="flex flex-col sm:flex-row justify-between items-center py-4 border-b border-border gap-4">
-                    <div className="text-[17px] font-normal text-foreground flex items-center gap-2">
-                        {notesLoading ? (
-                            <div className="flex items-center gap-2">
-                                <div className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin" />
-                                <span className="text-[13px] font-bold uppercase tracking-widest text-primary italic">Syncing...</span>
-                            </div>
-                        ) : (
-                            <>
-                                <span className="font-bold">{total === -1 ? 0 : total}</span> entry pulse detected
-                            </>
-                        )}
-                    </div>
-
-                    <div className="flex items-center gap-4">
-                        <div className="flex border border-border rounded-[3px] overflow-hidden shadow-sm bg-card">
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-border pb-6">
+                    <h1 className="text-2xl sm:text-3xl font-bold text-foreground">Technical Library</h1>
+                    <div className="flex items-center gap-3 w-full sm:w-auto overflow-x-auto no-scrollbar pb-2 sm:pb-0">
+                        <div className="flex border border-border rounded-[3px] overflow-hidden shadow-sm bg-card shrink-0">
                             {(user ? ['Newest', 'Public', 'Private'] : ['Public']).map((tab) => (
                                 <button
                                     key={tab}
                                     onClick={() => setSort(tab.toLowerCase())}
-                                    className={`px-4 py-2 text-[12px] border-r border-border last:border-r-0 transition-all ${sort === tab.toLowerCase()
+                                    className={`px-3 sm:px-4 py-2 text-[11px] sm:text-[12px] border-r border-border last:border-r-0 transition-all ${sort === tab.toLowerCase()
                                         ? 'bg-muted text-foreground font-bold'
                                         : 'bg-transparent text-muted-foreground hover:bg-muted/50'
                                         }`}
@@ -188,6 +188,15 @@ const Notes = () => {
                                 </button>
                             ))}
                         </div>
+                        {user ? (
+                            <Link to="/notes/new" className="so-btn so-btn-primary py-2 px-3 text-[12px] shrink-0">
+                                <Plus size={14} className="sm:mr-1" /> <span className="hidden sm:inline">Add Record</span>
+                            </Link>
+                        ) : (
+                            <Link to="/login" className="so-btn border border-primary text-primary hover:bg-primary/5 py-2 px-3 text-[12px] shrink-0 transition-all font-bold">
+                                Log in
+                            </Link>
+                        )}
                     </div>
                 </div>
 
@@ -203,19 +212,22 @@ const Notes = () => {
                 {/* Note List */}
                 <div className={`flex flex-col transition-opacity duration-300 ${notesLoading ? 'opacity-40 pointer-events-none' : 'opacity-100'}`}>
                     {notes.map((note) => (
-                        <div key={note._id} className="flex p-4 border-b border-border hover:bg-muted/10 transition-colors gap-4 group">
+                        <div key={note._id} className="flex flex-col sm:flex-row p-4 border-b border-border hover:bg-muted/10 transition-colors gap-4 group">
                             {/* Stats Column */}
-                            <div className="flex flex-col items-end gap-3 w-16 shrink-0 pt-1 text-[13px]">
-                                <div className="flex flex-col items-center opacity-40 group-hover:opacity-80 transition-opacity">
+                            <div className="flex flex-row sm:flex-col items-center sm:items-end gap-3 w-full sm:w-16 shrink-0 sm:pt-1 text-[13px] border-b sm:border-none border-border/50 pb-2 sm:pb-0">
+                                <div className="flex flex-col items-center opacity-40 group-hover:opacity-80 transition-opacity min-w-[40px]">
                                     <span className="font-bold text-foreground">{(note.views || 0) + 1}</span>
                                     <span className="text-[10px] text-muted-foreground uppercase tracking-widest font-black">Pulse</span>
                                 </div>
-                                <div className={`flex flex-col items-center border p-1.5 rounded-[3px] min-w-[56px] transition-all shadow-sm ${note.isPublic ? 'border-[#808000]/60 text-[#808000] bg-[#eff1e1] dark:bg-[#3d3d2d] dark:border-[#808000]/30' : 'border-border text-muted-foreground bg-muted/20'
+                                <div className={`flex flex-col items-center border p-1 rounded-[3px] min-w-[50px] sm:min-w-[56px] transition-all shadow-sm ${note.isPublic ? 'border-[#808000]/60 text-[#808000] bg-[#eff1e1] dark:bg-[#3d3d2d] dark:border-[#808000]/30' : 'border-border text-muted-foreground bg-muted/20'
                                     }`}>
-                                    <span className="font-black text-[11px] uppercase tracking-tighter">{note.isPublic ? 'Public' : 'Vault'}</span>
+                                    <span className="font-black text-[10px] sm:text-[11px] uppercase tracking-tighter">{note.isPublic ? 'Public' : 'Vault'}</span>
                                 </div>
-                                <div className="flex items-center gap-1 text-muted-foreground/30 text-[9px] font-black uppercase tracking-[0.1em]">
+                                <div className="hidden sm:flex items-center gap-1 text-muted-foreground/30 text-[9px] font-black uppercase tracking-[0.1em]">
                                     {note.type || 'DOC'}
+                                </div>
+                                <div className="sm:hidden ml-auto text-muted-foreground/50 text-[10px] font-bold">
+                                    {new Date(note.createdAt).toLocaleDateString([], { month: 'short', day: 'numeric' })}
                                 </div>
                             </div>
 
@@ -232,29 +244,39 @@ const Notes = () => {
                                     {note.content.replace(/[#*`\[\]]/g, '').substring(0, 240)}...
                                 </p>
 
-                                <div className="flex flex-wrap items-center justify-between gap-y-3">
+                                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-y-3">
                                     <div className="flex flex-wrap gap-2">
                                         {note.category && (
-                                            <span className="so-tag bg-primary/10 text-primary border-primary/20 flex items-center gap-1.5">
+                                            <span className="so-tag bg-primary/10 text-primary border-primary/20 flex items-center gap-1.5 text-[10px] sm:text-[11px]">
                                                 <FolderTree size={10} />
                                                 {note.category.name}
                                             </span>
                                         )}
-                                        {note.tags?.slice(0, 4).map((tag, i) => (
-                                            <span key={i} className="so-tag text-muted-foreground bg-muted/50 border-transparent">#{tag}</span>
+                                        {note.tags?.slice(0, 3).map((tag, i) => (
+                                            <button
+                                                key={i}
+                                                onClick={(e) => {
+                                                    e.preventDefault();
+                                                    e.stopPropagation();
+                                                    setSearchTerm(tag);
+                                                }}
+                                                className="so-tag text-muted-foreground bg-muted/50 border-transparent hover:bg-primary/10 hover:text-primary transition-all text-[10px] sm:text-[11px]"
+                                            >
+                                                #{tag}
+                                            </button>
                                         ))}
                                     </div>
 
-                                    <div className="flex items-center gap-2.5 ml-auto text-[12px] bg-accent/30 p-2 rounded-[3px] border border-transparent group-hover:border-border transition-all">
-                                        <div className="w-6 h-6 bg-primary rounded-[2px] flex items-center justify-center text-white text-[11px] font-bold shadow-sm">
+                                    <div className="flex items-center gap-2.5 ml-0 sm:ml-auto text-[11px] sm:text-[12px] bg-accent/30 p-1.5 sm:p-2 rounded-[3px] border border-transparent group-hover:border-border transition-all w-fit">
+                                        <div className="w-5 h-5 sm:w-6 sm:h-6 bg-primary rounded-[2px] flex items-center justify-center text-white text-[9px] sm:text-[11px] font-bold shadow-sm">
                                             {note.user?.username?.charAt(0).toUpperCase() || 'U'}
                                         </div>
                                         <div className="flex flex-col">
                                             <span className="text-link font-bold leading-none mb-0.5">
                                                 {note.user?.username || 'User'}
                                             </span>
-                                            <span className="text-[10px] text-muted-foreground/60 font-medium">
-                                                {new Date(note.createdAt).toLocaleDateString()}
+                                            <span className="hidden sm:inline text-[9px] sm:text-[10px] text-muted-foreground/60 font-medium">
+                                                {new Date(note.createdAt).toLocaleDateString([], { month: 'short', day: 'numeric', year: 'numeric' })}
                                             </span>
                                         </div>
                                     </div>

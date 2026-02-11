@@ -220,8 +220,9 @@ exports.getNote = async (req, res, next) => {
     const isPublic = note.isPublic || note.type === 'issue';
     const isOwner = req.user && note.user._id.toString() === req.user.id;
     const isAdmin = req.user && req.user.role === 'admin';
+    const isSharedWithMe = req.user && note.sharedWith?.includes(req.user.id);
 
-    if (!isPublic && !isOwner && !isAdmin) {
+    if (!isPublic && !isOwner && !isAdmin && !isSharedWithMe) {
       return res.status(403).json({ success: false, error: `Not authorized to view this private note` });
     }
 
@@ -665,6 +666,77 @@ exports.togglePin = async (req, res, next) => {
     res.status(200).json({
       success: true,
       data: note
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+// @desc      Share note with users
+// @route     PUT /api/v1/notes/:id/share
+// @access    Private
+exports.shareNote = async (req, res, next) => {
+  try {
+    const note = await Note.findById(req.params.id);
+
+    if (!note) {
+      return res.status(404).json({ success: false, error: 'Note not found' });
+    }
+
+    if (note.user.toString() !== req.user.id && req.user.role !== 'admin') {
+      return res.status(401).json({ success: false, error: 'Not authorized to share this note' });
+    }
+
+    const { userIds } = req.body;
+
+    if (!Array.isArray(userIds)) {
+      return res.status(400).json({ success: false, error: 'Please provide an array of userIds' });
+    }
+
+    note.sharedWith = userIds;
+    await note.save();
+
+    res.status(200).json({
+      success: true,
+      data: note
+    });
+
+    // Notify recipients
+    const Notification = require('../models/Notification');
+    const User = require('../models/User');
+
+    const recipients = await User.find({ _id: { $in: userIds } });
+
+    for (const recipient of recipients) {
+      if (recipient._id.toString() !== req.user.id) {
+        await Notification.create({
+          recipient: recipient._id,
+          sender: req.user.id,
+          type: 'share',
+          message: `${req.user.username} shared a technical record with you: ${note.title}`,
+          link: `/notes/${note._id}`
+        });
+      }
+    }
+  } catch (err) {
+    next(err);
+  }
+};
+
+// @desc      Get notes shared with me
+// @route     GET /api/v1/notes/shared/me
+// @access    Private
+exports.getSharedNotes = async (req, res, next) => {
+  try {
+    const notes = await Note.find({ sharedWith: req.user.id })
+      .populate({ path: 'category', select: 'name' })
+      .populate({ path: 'user', select: 'username avatar' })
+      .sort('-createdAt');
+
+    res.status(200).json({
+      success: true,
+      count: notes.length,
+      data: notes
     });
   } catch (err) {
     next(err);

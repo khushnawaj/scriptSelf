@@ -54,14 +54,14 @@ const Navbar = ({ onMenuClick }) => {
 
     return (
         <nav className="fixed top-0 w-full z-50 glass-morphism bg-background/70 border-b border-border h-[64px] flex items-center transition-all duration-300">
-            <div className="max-w-[1500px] mx-auto w-full px-6 flex items-center gap-6">
+            <div className="max-w-[1500px] mx-auto w-full px-4 sm:px-6 flex items-center gap-2 sm:gap-6">
 
                 {/* Burger Menu for Mobile */}
                 <button
                     onClick={onMenuClick}
-                    className="p-2 md:hidden text-foreground hover:bg-muted/50 rounded-[6px] transition-colors"
+                    className="p-1.5 sm:p-2 md:hidden text-foreground hover:bg-muted/50 rounded-[6px] transition-colors"
                 >
-                    <Menu size={22} />
+                    <Menu className="w-5 h-5 sm:w-[22px] sm:h-[22px]" />
                 </button>
 
                 {/* Logo */}
@@ -70,7 +70,7 @@ const Navbar = ({ onMenuClick }) => {
                         <LogoIcon size={18} className="text-white" />
                     </div>
 
-                    <span className="text-[18px] font-semibold tracking-tight hidden sm:inline text-foreground">
+                    <span className="text-[17px] sm:text-[18px] font-semibold tracking-tight hidden sm:inline text-foreground">
                         script<span className="text-primary">shelf.</span>
                     </span>
                 </Link>
@@ -87,9 +87,9 @@ const Navbar = ({ onMenuClick }) => {
 
                 {/* Search Bar - Premium SO Style */}
                 <div className="flex-1 max-w-[600px] relative group cursor-pointer" onClick={() => window.dispatchEvent(new KeyboardEvent('keydown', { key: 'k', ctrlKey: true }))}>
-                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground group-hover:text-primary transition-colors" size={16} />
-                    <div className="w-full bg-secondary/50 border border-border/50 rounded-[8px] py-2.5 pl-11 pr-4 text-[14px] text-muted-foreground flex justify-between items-center transition-all group-hover:border-primary/50 group-hover:bg-background group-hover:shadow-lg group-hover:shadow-primary/5">
-                        <span className="hidden sm:inline">Search your intelligence...</span>
+                    <Search className="absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 text-muted-foreground group-hover:text-primary transition-colors w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                    <div className="w-full bg-secondary/50 border border-border/50 rounded-[8px] py-2 sm:py-2.5 pl-9 sm:pl-11 pr-2 sm:pr-4 text-[13px] sm:text-[14px] text-muted-foreground flex justify-between items-center transition-all group-hover:border-primary/50 group-hover:bg-background group-hover:shadow-lg group-hover:shadow-primary/5">
+                        <span className="hidden sm:inline">Search intelligence...</span>
                         <span className="sm:hidden">Search...</span>
                         <div className="hidden md:flex items-center gap-1 opacity-50">
                             <kbd className="px-1.5 py-0.5 rounded-[4px] border border-border bg-background text-[9px] font-black">CTRL</kbd>
@@ -99,23 +99,27 @@ const Navbar = ({ onMenuClick }) => {
                 </div>
 
                 {/* Right Actions */}
-                <div className="flex items-center gap-3 ml-auto">
+                <div className="flex items-center gap-1 sm:gap-3 ml-auto shrink-0">
                     <button
                         onClick={toggleTheme}
-                        className="p-2.5 text-muted-foreground hover:text-foreground hover:bg-muted/50 rounded-[8px] transition-all"
+                        className="p-1.5 sm:p-2.5 text-muted-foreground hover:text-foreground hover:bg-muted/50 rounded-[8px] transition-all shrink-0"
                         title="Toggle appearance"
                     >
-                        {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
+                        {theme === 'dark' ? <Sun className="w-[18px] h-[18px] sm:w-5 sm:h-5" /> : <Moon className="w-[18px] h-[18px] sm:w-5 sm:h-5" />}
                     </button>
 
-                    {user && <NotificationBell />}
+                    {user && (
+                        <div className="scale-90 sm:scale-100 shrink-0">
+                            <NotificationBell />
+                        </div>
+                    )}
 
                     {user ? (
-                        <div className="flex items-center gap-2">
-                            <div className="relative" ref={profileRef}>
+                        <div className="flex items-center gap-2 shrink-0">
+                            <div className="relative shrink-0" ref={profileRef}>
                                 <button
                                     onClick={() => setIsProfileOpen(!isProfileOpen)}
-                                    className="flex items-center gap-2 p-1 pl-2 hover:bg-muted/50 rounded-[10px] border border-transparent hover:border-border transition-all"
+                                    className="flex items-center gap-1.5 p-0.5 sm:p-1 sm:pl-2 hover:bg-muted/50 rounded-[10px] border border-transparent hover:border-border transition-all shrink-0"
                                 >
                                     <span className="text-[13px] font-bold text-foreground hidden lg:inline">{user.username}</span>
                                     <div className="w-[32px] h-[32px] bg-primary rounded-[8px] flex items-center justify-center text-white text-[14px] font-bold overflow-hidden shadow-lg shadow-primary/20">

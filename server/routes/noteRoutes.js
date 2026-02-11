@@ -12,7 +12,9 @@ const {
   addComment,
   updateComment,
   deleteComment,
-  togglePin
+  togglePin,
+  shareNote,
+  getSharedNotes
 } = require('../controllers/noteController');
 
 const router = express.Router({ mergeParams: true });
@@ -43,6 +45,10 @@ router.put('/:id/comments/:commentId/solution', protect, require('../controllers
 
 // Pin/Unpin Note (Admin)
 router.put('/:id/pin', protect, authorize('admin'), togglePin);
+
+// Direct Sharing Routes
+router.get('/shared/me', protect, getSharedNotes);
+router.put('/:id/share', protect, shareNote);
 
 router
   .route('/')

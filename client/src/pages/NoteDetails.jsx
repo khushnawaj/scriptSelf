@@ -34,6 +34,7 @@ import Spinner from '../components/Spinner';
 import Mermaid from '../components/Mermaid';
 import { getNote, deleteNote, cloneNote, addComment, deleteComment, updateComment, markSolution, togglePin } from '../features/notes/noteSlice';
 import { followUser, unfollowUser } from '../features/auth/authSlice';
+import ShareNoteModal from '../components/ShareNoteModal';
 
 const NoteDetails = () => {
     const { id } = useParams();
@@ -85,9 +86,15 @@ const NoteDetails = () => {
 
     const isFollowing = user?.following?.includes(note?.user?._id);
 
+    const [isShareModalOpen, setIsShareModalOpen] = useState(false);
+
     const handleShare = () => {
-        navigator.clipboard.writeText(window.location.href);
-        toast.success('Link copied to clipboard');
+        if (user && note?.user?._id === user._id) {
+            setIsShareModalOpen(true);
+        } else {
+            navigator.clipboard.writeText(window.location.href);
+            toast.success('Link copied to clipboard');
+        }
     };
 
     const handleFollow = () => {
@@ -151,12 +158,12 @@ const NoteDetails = () => {
             {/* Header Section */}
             <div className="border-b border-border pb-6 mb-6">
                 {/* ... (keep header content) ... */}
-                <div className="flex flex-col sm:flex-row justify-between items-start gap-4 mb-4">
-                    <h1 className="text-[32px] font-normal text-foreground leading-tight tracking-tight flex flex-wrap items-center gap-3">
-                        {note.isPinned && <Pin className="text-amber-500 fill-amber-500" size={24} />}
+                <div className="flex flex-col sm:flex-row justify-between items-start gap-4 mb-5">
+                    <h1 className="text-[24px] sm:text-[32px] font-normal text-foreground leading-tight tracking-tight flex flex-wrap items-center gap-2 sm:gap-3">
+                        {note.isPinned && <Pin className="text-amber-500 fill-amber-500 w-5 h-5 sm:w-6 sm:h-6" />}
                         {note.title}
                         {note.type === 'issue' && (note.comments?.length || 0) === 0 && (
-                            <span className="bg-amber-500/10 text-amber-500 border border-amber-500/20 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest animate-pulse">
+                            <span className="bg-amber-500/10 text-amber-500 border border-amber-500/20 px-2 sm:px-3 py-0.5 sm:py-1 rounded-full text-[9px] sm:text-[10px] font-black uppercase tracking-widest animate-pulse">
                                 Unanswered
                             </span>
                         )}
@@ -193,45 +200,45 @@ const NoteDetails = () => {
                     </div>
                 </div>
                 {/* ... (keep existing metadata) ... */}
-                <div className="flex flex-wrap gap-6 text-[13px] text-muted-foreground">
-                    <span className="flex items-center gap-1.5 border-r border-border pr-6 last:border-0">
+                <div className="flex flex-wrap gap-x-4 gap-y-3 sm:gap-6 text-[12px] sm:text-[13px] text-muted-foreground">
+                    <span className="flex items-center gap-1.5 border-r border-border pr-4 sm:pr-6 last:border-0 whitespace-nowrap">
                         <span className="font-normal opacity-60">Recorded</span>
                         <span className="text-foreground font-medium">{new Date(note.createdAt).toLocaleDateString()}</span>
                     </span>
-                    <span className="flex items-center gap-1.5 border-r border-border pr-6 last:border-0">
+                    <span className="flex items-center gap-1.5 border-r border-border pr-4 sm:pr-6 last:border-0 whitespace-nowrap">
                         <span className="font-normal opacity-60">Status</span>
-                        <span className="text-primary font-bold uppercase tracking-widest text-[11px]">{note.isPublic ? 'PUBLIC' : 'VAULT'}</span>
+                        <span className="text-primary font-bold uppercase tracking-widest text-[10px] sm:text-[11px]">{note.isPublic ? 'PUBLIC' : 'VAULT'}</span>
                     </span>
                     {note.type === 'adr' && (
-                        <span className="flex items-center gap-1.5 border-r border-border pr-6 last:border-0">
+                        <span className="flex items-center gap-1.5 border-r border-border pr-4 sm:pr-6 last:border-0 whitespace-nowrap">
                             <span className="font-normal opacity-60">Decision</span>
-                            <span className="bg-primary/20 text-primary font-bold uppercase tracking-widest text-[11px] px-2 py-0.5 rounded-[2px]">{note.adrStatus}</span>
+                            <span className="bg-primary/20 text-primary font-bold uppercase tracking-widest text-[10px] sm:text-[11px] px-2 py-0.5 rounded-[2px]">{note.adrStatus}</span>
                         </span>
                     )}
-                    <span className="flex items-center gap-1.5">
+                    <span className="flex items-center gap-1.5 whitespace-nowrap">
                         <span className="font-normal opacity-60">Collection</span>
                         <span className="text-link font-medium">{note.category?.name || 'GENERIC'}</span>
                     </span>
                 </div>
             </div>
 
-            <div className="flex flex-col lg:flex-row gap-8">
-                {/* ... (keep visual metadata column) ... */}
-                <div className="flex lg:flex-col items-center gap-2 pt-1">
-                    <button className="p-3 border border-border rounded-full hover:bg-accent/50 transition-colors text-muted-foreground group">
-                        <ChevronUp size={28} className="group-hover:text-primary transition-colors" />
+            <div className="flex flex-col lg:flex-row gap-6 sm:gap-8">
+                {/* Voting Sidebar */}
+                <div className="flex lg:flex-col items-center justify-center sm:justify-start gap-4 sm:gap-2 pt-1 border-b lg:border-none border-border pb-4 lg:pb-0">
+                    <button className="p-2 sm:p-3 border border-border rounded-full hover:bg-accent/50 transition-colors text-muted-foreground group">
+                        <ChevronUp className="w-5 h-5 sm:w-7 sm:h-7 group-hover:text-primary transition-colors" />
                     </button>
-                    <span className="text-[24px] font-bold text-foreground">1</span>
-                    <button className="p-3 border border-border rounded-full hover:bg-accent/50 transition-colors text-muted-foreground group">
-                        <ChevronDown size={28} className="group-hover:text-primary transition-colors" />
+                    <span className="text-[20px] sm:text-[24px] font-bold text-foreground">1</span>
+                    <button className="p-2 sm:p-3 border border-border rounded-full hover:bg-accent/50 transition-colors text-muted-foreground group">
+                        <ChevronDown className="w-5 h-5 sm:w-7 sm:h-7 group-hover:text-primary transition-colors" />
                     </button>
 
-                    <div className="flex lg:flex-col gap-4 mt-6">
-                        <button className="p-2 text-muted-foreground/30 hover:text-primary transition-all scale-110">
-                            <Bookmark size={20} />
+                    <div className="flex lg:flex-col gap-4 lg:mt-6">
+                        <button className="p-2 text-muted-foreground/30 hover:text-primary transition-all scale-100 sm:scale-110">
+                            <Bookmark className="w-[18px] h-[18px] sm:w-5 sm:h-5" />
                         </button>
-                        <button className="p-2 text-muted-foreground/30 hover:text-muted-foreground transition-all scale-110">
-                            <History size={20} />
+                        <button className="p-2 text-muted-foreground/30 hover:text-muted-foreground transition-all scale-100 sm:scale-110">
+                            <History className="w-[18px] h-[18px] sm:w-5 sm:h-5" />
                         </button>
                     </div>
                 </div>
@@ -424,16 +431,20 @@ const NoteDetails = () => {
                             </span>
                         )}
                         {note.tags?.map((tag, i) => (
-                            <span key={i} className="so-tag py-1.5 px-4 text-[12px] text-muted-foreground bg-accent/30 border-transparent">
+                            <Link
+                                key={i}
+                                to={`/notes?search=${encodeURIComponent(tag)}`}
+                                className="so-tag py-1.5 px-4 text-[12px] text-muted-foreground bg-accent/30 border-transparent hover:bg-primary/10 hover:text-primary hover:border-primary/20 transition-all flex items-center gap-2"
+                            >
                                 <TagIcon size={12} className="opacity-50" />
                                 {tag}
-                            </span>
+                            </Link>
                         ))}
                     </div>
 
-                    {/* Actions & Attribution - UPDATED */}
-                    <div className="flex flex-col sm:flex-row justify-between items-start mt-8 pt-6 gap-6 pb-16 border-t border-border/50">
-                        <div className="flex items-center gap-6 text-[13px] text-muted-foreground">
+                    {/* Actions & Attribution */}
+                    <div className="flex flex-col sm:flex-row justify-between items-start mt-8 pt-6 gap-6 pb-8 sm:pb-16 border-t border-border/50">
+                        <div className="flex flex-wrap items-center gap-4 sm:gap-6 text-[12px] sm:text-[13px] text-muted-foreground w-full sm:w-auto">
                             <button onClick={handleShare} className="hover:text-primary transition-colors flex items-center gap-1.5 border-none bg-transparent cursor-pointer">
                                 <Share2 size={14} /> Share
                             </button>
@@ -453,7 +464,7 @@ const NoteDetails = () => {
                             )}
                         </div>
 
-                        <div className="bg-accent/30 p-4 rounded-[3px] w-[220px] shrink-0 border border-transparent hover:border-primary/20 transition-all shadow-sm">
+                        <div className="bg-accent/30 p-4 rounded-[3px] w-full sm:w-[220px] shrink-0 border border-transparent hover:border-primary/20 transition-all shadow-sm">
                             <p className="text-[12px] text-muted-foreground mb-2">
                                 documented {new Date(note.createdAt).toLocaleDateString()}
                             </p>
@@ -597,7 +608,7 @@ const NoteDetails = () => {
                                         ))}
                                     </div>
 
-                                    <button type="submit" className="so-btn so-btn-primary py-2.5 px-6 shadow-lg shadow-primary/20">
+                                    <button type="submit" className="so-btn so-btn-primary py-2.5 px-6 shadow-lg shadow-primary/20 w-full sm:w-auto">
                                         Post Contribution
                                     </button>
                                 </div>
@@ -623,12 +634,12 @@ const NoteDetails = () => {
                                                 {comment.user?.username?.charAt(0).toUpperCase() || '?'}
                                             </div>
                                             <div className="flex-1">
-                                                <div className="flex items-center justify-between mb-1">
-                                                    <div className="flex items-center gap-2">
+                                                <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-2 gap-2">
+                                                    <div className="flex flex-wrap items-center gap-2">
                                                         <span className="text-[13px] font-bold text-link">{comment.user?.username || 'Unknown User'}</span>
-                                                        <span className="text-[11px] text-muted-foreground">{new Date(comment.createdAt).toLocaleDateString()}</span>
+                                                        <span className="text-[11px] text-muted-foreground">{new Date(comment.createdAt).toLocaleDateString([], { month: 'short', day: 'numeric' })}</span>
                                                         {comment.isSolution && (
-                                                            <span className="flex items-center gap-1 text-[10px] uppercase font-bold text-green-600 bg-green-500/10 px-2 py-0.5 rounded-full border border-green-500/20">
+                                                            <span className="flex items-center gap-1 text-[9px] sm:text-[10px] uppercase font-bold text-green-600 bg-green-500/10 px-2 py-0.5 rounded-full border border-green-500/20">
                                                                 <CheckCircle2 size={10} /> Solution
                                                             </span>
                                                         )}
@@ -638,7 +649,7 @@ const NoteDetails = () => {
                                                         {user && note.type === 'issue' && note.user._id === user._id && !comment.isSolution && (
                                                             <button
                                                                 onClick={() => handleMarkSolution(comment._id)}
-                                                                className="opacity-0 group-hover:opacity-100 transition-opacity text-[10px] font-black uppercase text-green-600 bg-green-500/5 border border-green-500/20 px-3 py-1 rounded hover:bg-green-500 hover:text-white flex items-center gap-1.5"
+                                                                className="opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity text-[10px] font-black uppercase text-green-600 bg-green-500/5 border border-green-500/20 px-3 py-1 rounded hover:bg-green-500 hover:text-white flex items-center gap-1.5"
                                                                 title="Mark as Solution"
                                                             >
                                                                 <CheckCircle2 size={12} /> Mark Best Answer
@@ -646,7 +657,7 @@ const NoteDetails = () => {
                                                         )}
 
                                                         {user && (user._id === comment.user?._id || user.role === 'admin') && (
-                                                            <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity ml-2">
+                                                            <div className="flex gap-2 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity ml-2">
                                                                 <button
                                                                     onClick={() => startEditingComment(comment)}
                                                                     className="text-muted-foreground hover:text-primary"
@@ -729,6 +740,13 @@ const NoteDetails = () => {
                     </div>
                 </div>
             </div>
+
+            <ShareNoteModal
+                isOpen={isShareModalOpen}
+                onClose={() => setIsShareModalOpen(false)}
+                noteId={id}
+                currentSharedWith={note.sharedWith || []}
+            />
         </div>
     );
 };

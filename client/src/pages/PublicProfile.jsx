@@ -109,7 +109,7 @@ const PublicProfile = () => {
 
                 <div className="flex flex-col lg:flex-row gap-8 lg:gap-10">
                     {/* --- SIDEBAR: Profile Identity --- */}
-                    <aside className="lg:w-72 space-y-6 shrink-0 order-1 lg:order-none">
+                    <aside className="w-full lg:w-72 space-y-6 shrink-0">
                         <div className="bg-card border border-border rounded-xl p-5 sm:p-6 shadow-sm relative group overflow-hidden">
                             {/* Dynamic Background Glow */}
                             <div className={`absolute -top-24 -left-24 w-48 h-48 rounded-full blur-[80px] opacity-20 transition-colors duration-1000 ${currentTier.bg.replace('bg-', 'bg-')}`} />
@@ -302,8 +302,8 @@ const PublicProfile = () => {
                     {/* --- MAIN CONTENT --- */}
                     <main className="flex-1 space-y-6 lg:space-y-8 order-2 lg:order-none min-w-0">
                         {/* Visual Analytics */}
-                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
-                            <div className="bg-card border border-border rounded-xl p-4 sm:p-5 shadow-sm">
+                        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-6">
+                            <div className="bg-card border border-border rounded-xl p-4 sm:p-5 shadow-sm col-span-2 sm:col-span-1">
                                 <p className="text-[9px] sm:text-[10px] font-bold uppercase text-muted-foreground tracking-widest mb-1.5 opacity-60">Public Scripts</p>
                                 <h4 className="text-xl sm:text-2xl font-bold flex items-center gap-2">{recentNotes.length} Archive</h4>
                             </div>
@@ -317,8 +317,10 @@ const PublicProfile = () => {
                             </div>
                         </div>
 
-                        <div className="overflow-hidden">
-                            <ContributionGraph logs={profile.activityLogs} />
+                        <div className="overflow-x-auto no-scrollbar -mx-4 px-4 sm:mx-0 sm:px-0">
+                            <div className="min-w-[600px] sm:min-w-0">
+                                <ContributionGraph logs={profile.activityLogs} />
+                            </div>
                         </div>
 
                         <section className="space-y-6">
@@ -343,9 +345,16 @@ const PublicProfile = () => {
                                         <p className="text-[11px] text-muted-foreground line-clamp-2 mb-4 leading-relaxed font-medium italic opacity-80">
                                             {note.content?.replace(/[#*`]/g, '').slice(0, 90)}...
                                         </p>
-                                        <div className="flex items-center gap-1.5 pt-2 border-t border-border/50">
+                                        <div className="flex flex-wrap items-center gap-1.5 pt-2 border-t border-border/50">
                                             {note.tags?.slice(0, 2).map(tag => (
-                                                <span key={tag} className="text-[8px] font-bold text-primary border border-primary/10 bg-primary/5 px-2 py-0.5 rounded uppercase tracking-tighter">{tag}</span>
+                                                <Link
+                                                    key={tag}
+                                                    to={`/notes?search=${encodeURIComponent(tag)}`}
+                                                    onClick={(e) => e.stopPropagation()}
+                                                    className="text-[8px] font-bold text-primary border border-primary/10 bg-primary/5 px-2 py-0.5 rounded uppercase tracking-tighter hover:bg-primary hover:text-white transition-all"
+                                                >
+                                                    {tag}
+                                                </Link>
                                             ))}
                                             <span className="text-[9px] text-muted-foreground ml-auto font-mono">{new Date(note.createdAt).toLocaleDateString()}</span>
                                         </div>

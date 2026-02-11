@@ -116,6 +116,10 @@ const noteSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     },
+    sharedWith: [{
+        type: mongoose.Schema.ObjectId,
+        ref: 'User'
+    }],
     isPinned: {
         type: Boolean,
         default: false

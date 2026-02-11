@@ -1,18 +1,16 @@
 import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { getAllNotes } from '../features/notes/noteSlice';
-import { getCategories } from '../features/categories/categorySlice';
 import {
     Plus,
     Brain,
     Activity,
-    Zap,
     LifeBuoy,
-    Shield,
     Search
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import Spinner from '../components/Spinner';
+import { getAllNotes, getSharedNotes } from '../features/notes/noteSlice';
+import { getCategories } from '../features/categories/categorySlice';
 import EngineeringLanding from '../components/EngineeringLanding';
 import { getReputationTier } from '../utils/reputation';
 import NeuralBackground from '../components/NeuralBackground';
@@ -20,11 +18,12 @@ import NeuralBackground from '../components/NeuralBackground';
 const Dashboard = () => {
     const dispatch = useDispatch();
     const { user } = useSelector((state) => state.auth);
-    const { notes, isLoading: notesLoading } = useSelector((state) => state.notes);
+    const { notes, sharedNotes, isLoading: notesLoading } = useSelector((state) => state.notes);
     const navigate = useNavigate();
 
     useEffect(() => {
         dispatch(getAllNotes());
+        dispatch(getSharedNotes());
         dispatch(getCategories());
     }, [dispatch]);
 
@@ -65,7 +64,7 @@ const Dashboard = () => {
             </header>
 
             {/* Dashboard Content */}
-            <EngineeringLanding notes={userNotes} user={user} />
+            <EngineeringLanding notes={userNotes} sharedNotes={sharedNotes} user={user} />
 
             {/* Simple Footer */}
             <footer className="pt-12 border-t border-border flex flex-col md:flex-row justify-between items-center gap-8">

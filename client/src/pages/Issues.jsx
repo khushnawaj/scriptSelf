@@ -139,17 +139,17 @@ const Issues = () => {
                             to={`/notes/${note._id}`}
                             className="block bg-card border border-border hover:border-primary/50 rounded-[12px] p-5 transition-all hover:shadow-lg hover:shadow-primary/5 group"
                         >
-                            <div className="flex items-start gap-4">
+                            <div className="flex flex-col sm:flex-row items-start gap-4 sm:gap-6">
                                 {/* Vote/Status Column */}
-                                <div className="flex flex-col items-center gap-1 min-w-[60px] text-muted-foreground">
-                                    <div className={`flex flex-col items-center justify-center p-2 rounded-[8px] w-full border ${isSolved ? 'bg-green-500/10 border-green-500/20 text-green-500' : 'bg-secondary/50 border-transparent'}`}>
-                                        <span className="text-lg font-bold">{(note.views || 0) > 99 ? '99+' : (note.views || 0) + 1}</span>
-                                        <span className="text-[9px] uppercase font-black tracking-wider">Views</span>
+                                <div className="flex flex-row sm:flex-col items-center justify-between sm:justify-start gap-3 sm:gap-1 min-w-0 sm:min-w-[60px] text-muted-foreground">
+                                    <div className={`flex flex-col items-center justify-center p-2 rounded-[8px] w-full sm:w-full border ${isSolved ? 'bg-green-500/10 border-green-500/20 text-green-500' : 'bg-secondary/50 border-transparent'}`}>
+                                        <span className="text-base sm:text-lg font-bold">{(note.views || 0) > 99 ? '99+' : (note.views || 0) + 1}</span>
+                                        <span className="text-[8px] sm:text-[9px] uppercase font-black tracking-wider">Views</span>
                                     </div>
                                     {isSolved && (
-                                        <div className="mt-2 text-green-500 flex flex-col items-center">
-                                            <CheckCircle2 size={18} />
-                                            <span className="text-[9px] font-bold uppercase mt-1">Solved</span>
+                                        <div className="flex sm:flex-col items-center gap-1 sm:gap-0 sm:mt-2 text-green-500">
+                                            <CheckCircle2 className="w-4 h-4 sm:w-[18px] sm:h-[18px]" />
+                                            <span className="text-[9px] font-bold uppercase mt-0 sm:mt-1">Solved</span>
                                         </div>
                                     )}
                                 </div>
@@ -163,27 +163,27 @@ const Issues = () => {
                                         {note.content.replace(/[#*`\[\]]/g, '').substring(0, 150)}...
                                     </p>
 
-                                    <div className="flex items-center justify-between text-xs text-muted-foreground">
-                                        <div className="flex items-center gap-4">
+                                    <div className="flex flex-col sm:flex-row sm:items-center justify-between text-[11px] sm:text-xs text-muted-foreground gap-4">
+                                        <div className="flex flex-wrap items-center gap-3 sm:gap-4">
                                             <div className="flex items-center gap-2">
-                                                <div className="w-6 h-6 rounded bg-primary/20 flex items-center justify-center text-primary font-bold text-[10px]">
+                                                <div className="w-5 h-5 sm:w-6 sm:h-6 rounded bg-primary/20 flex items-center justify-center text-primary font-bold text-[9px] sm:text-[10px]">
                                                     {note.user?.username?.charAt(0).toUpperCase()}
                                                 </div>
-                                                <span className="font-medium text-foreground">{note.user?.username}</span>
+                                                <span className="font-medium text-foreground truncate max-w-[80px] sm:max-w-none">{note.user?.username}</span>
                                             </div>
-                                            <span className="flex items-center gap-1">
-                                                <Clock size={12} />
-                                                {new Date(note.createdAt).toLocaleDateString()}
+                                            <span className="flex items-center gap-1 whitespace-nowrap">
+                                                <Clock className="w-[11px] h-[11px] sm:w-3 sm:h-3" />
+                                                {new Date(note.createdAt).toLocaleDateString([], { month: 'short', day: 'numeric' })}
                                             </span>
-                                            <span className="flex items-center gap-1">
-                                                <MessageSquare size={12} />
-                                                {note.comments?.length || 0} answers
+                                            <span className="flex items-center gap-1 whitespace-nowrap">
+                                                <MessageSquare className="w-[11px] h-[11px] sm:w-3 sm:h-3" />
+                                                {note.comments?.length || 0}
                                             </span>
                                         </div>
 
-                                        <div className="flex gap-2">
-                                            {note.tags?.slice(0, 3).map(tag => (
-                                                <span key={tag} className="bg-secondary px-2 py-0.5 rounded text-[10px] uppercase font-bold text-muted-foreground">
+                                        <div className="flex flex-wrap gap-1.5 sm:gap-2">
+                                            {note.tags?.slice(0, 2).map(tag => (
+                                                <span key={tag} className="bg-secondary px-1.5 py-0.5 rounded text-[9px] sm:text-[10px] uppercase font-bold text-muted-foreground whitespace-nowrap">
                                                     {tag}
                                                 </span>
                                             ))}

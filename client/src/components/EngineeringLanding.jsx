@@ -17,7 +17,7 @@ import {
     Activity
 } from 'lucide-react';
 
-const EngineeringLanding = ({ user, notes }) => {
+const EngineeringLanding = ({ user, notes, sharedNotes = [] }) => {
     const navigate = useNavigate();
 
     // Calculate basic counts
@@ -43,17 +43,17 @@ const EngineeringLanding = ({ user, notes }) => {
     return (
         <div className="space-y-10">
             {/* Simple stats cards */}
-            <div className="grid grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
                 {[
                     { label: 'Total Notes', value: stats.total, icon: FileText },
                     { label: 'Public Notes', value: stats.publicNotes, icon: Globe },
                 ].map((stat, i) => (
-                    <div key={i} className="bg-card/50 border border-border p-6 rounded-2xl hover:bg-card transition-all group">
-                        <div className="flex items-center gap-4 mb-3">
-                            <stat.icon size={18} className="text-muted-foreground group-hover:text-primary transition-colors" />
-                            <span className="text-[11px] font-bold text-muted-foreground uppercase tracking-widest leading-none">{stat.label}</span>
+                    <div key={i} className="bg-card/50 border border-border p-4 sm:p-6 rounded-2xl hover:bg-card transition-all group">
+                        <div className="flex items-center gap-3 sm:gap-4 mb-2 sm:mb-3">
+                            <stat.icon className="text-muted-foreground group-hover:text-primary transition-colors w-4 h-4 sm:w-[18px] sm:h-[18px]" />
+                            <span className="text-[10px] sm:text-[11px] font-bold text-muted-foreground uppercase tracking-widest leading-none">{stat.label}</span>
                         </div>
-                        <h3 className="text-3xl font-black tracking-tighter">{stat.value}</h3>
+                        <h3 className="text-2xl sm:text-3xl font-black tracking-tighter">{stat.value}</h3>
                     </div>
                 ))}
             </div>
@@ -91,41 +91,87 @@ const EngineeringLanding = ({ user, notes }) => {
                     {/* Recent Work */}
                     <section>
                         <div className="flex items-center justify-between mb-6">
-                            <h2 className="text-lg font-black tracking-tight">Recent Notes</h2>
+                            <h2 className="text-lg font-black tracking-tight flex items-center gap-3">
+                                <Activity size={20} className="text-primary" /> Recent Records
+                            </h2>
                             <button onClick={() => navigate('/notes')} className="text-[11px] font-black uppercase text-primary hover:underline tracking-widest">
-                                View Library
+                                View Vault
                             </button>
                         </div>
-                        <div className="bg-card border border-border rounded-2xl overflow-hidden divide-y divide-border">
+                        <div className="bg-card border border-border rounded-2xl overflow-hidden divide-y divide-border shadow-sm">
                             {recentNotes.length > 0 ? recentNotes.map((note, i) => (
                                 <div
                                     key={note._id}
                                     onClick={() => navigate(`/notes/${note._id}`)}
-                                    className="p-5 flex items-center justify-between hover:bg-muted/30 transition-all cursor-pointer group"
+                                    className="p-4 sm:p-5 flex items-center justify-between hover:bg-muted/30 transition-all cursor-pointer group"
                                 >
-                                    <div className="flex items-center gap-5 min-w-0">
-                                        <div className="text-[10px] font-black w-10 text-center text-muted-foreground opacity-30 group-hover:opacity-100 group-hover:text-primary transition-all">
-                                            {i + 1}
+                                    <div className="flex items-center gap-3 sm:gap-5 min-w-0">
+                                        <div className="hidden sm:block text-[10px] font-black w-8 sm:w-10 text-center text-muted-foreground opacity-30 group-hover:opacity-100 group-hover:text-primary transition-all">
+                                            {String(i + 1).padStart(2, '0')}
                                         </div>
                                         <div className="min-w-0">
-                                            <h4 className="font-bold text-[15px] text-foreground truncate group-hover:text-primary transition-colors">{note.title}</h4>
-                                            <div className="flex items-center gap-3 mt-1 text-[11px] font-medium">
-                                                <span className="text-primary font-bold uppercase tracking-widest">{note.category?.name || 'General'}</span>
+                                            <h4 className="font-bold text-[14px] sm:text-[15px] text-foreground truncate group-hover:text-primary transition-colors">{note.title}</h4>
+                                            <div className="flex items-center gap-2 sm:gap-3 mt-1 text-[10px] sm:text-[11px] font-medium">
+                                                <span className="text-primary font-bold uppercase tracking-widest truncate max-w-[80px] sm:max-w-none">{note.category?.name || 'General'}</span>
                                                 <span className="text-muted-foreground opacity-30">•</span>
-                                                <span className="text-muted-foreground">Updated {new Date(note.updatedAt).toLocaleDateString()}</span>
+                                                <span className="text-muted-foreground truncate">
+                                                    {new Date(note.updatedAt).toLocaleDateString([], { month: 'short', day: 'numeric' })}
+                                                </span>
                                             </div>
                                         </div>
                                     </div>
-                                    <div className="flex items-center gap-4">
+                                    <div className="flex items-center gap-2 sm:gap-4 shrink-0">
                                         <div className="hidden sm:block text-[9px] font-black bg-muted px-2 py-1 rounded-md text-muted-foreground group-hover:bg-primary/10 group-hover:text-primary transition-all uppercase tracking-widest">
                                             {note.type || 'Note'}
                                         </div>
-                                        <ChevronRight size={18} className="text-muted-foreground group-hover:text-primary transition-all" />
+                                        <ChevronRight className="text-muted-foreground group-hover:text-primary transition-all w-4 h-4 sm:w-[18px] sm:h-[18px]" />
                                     </div>
                                 </div>
                             )) : (
                                 <div className="p-12 text-center text-muted-foreground italic text-sm">
                                     No notes found yet. Click "New Note" to start.
+                                </div>
+                            )}
+                        </div>
+                    </section>
+
+                    {/* Shared with Me */}
+                    <section>
+                        <div className="flex items-center justify-between mb-6">
+                            <h2 className="text-lg font-black tracking-tight flex items-center gap-3">
+                                <Globe size={20} className="text-blue-500" /> Incoming Pulses
+                            </h2>
+                            <span className="text-[10px] font-black uppercase text-muted-foreground tracking-[0.2em] opacity-40">Shared Directly with you</span>
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            {sharedNotes && sharedNotes.length > 0 ? sharedNotes.map((note) => (
+                                <div
+                                    key={note._id}
+                                    onClick={() => navigate(`/notes/${note._id}`)}
+                                    className="p-5 bg-card border border-border rounded-2xl hover:border-blue-500/50 transition-all cursor-pointer group relative overflow-hidden"
+                                >
+                                    <div className="absolute top-0 right-0 p-2 opacity-5">
+                                        <Globe size={40} className="text-blue-500" />
+                                    </div>
+                                    <div className="flex flex-col gap-4 relative z-10">
+                                        <div className="flex items-center gap-3">
+                                            <div className="w-8 h-8 rounded-lg bg-blue-500/10 text-blue-500 flex items-center justify-center text-xs font-black">
+                                                {note.user?.username?.charAt(0).toUpperCase()}
+                                            </div>
+                                            <div>
+                                                <h4 className="font-bold text-[14px] text-foreground group-hover:text-blue-500 transition-colors line-clamp-1">{note.title}</h4>
+                                                <p className="text-[10px] text-muted-foreground font-medium uppercase tracking-widest mt-0.5">FROM {note.user?.username}</p>
+                                            </div>
+                                        </div>
+                                        <div className="flex items-center justify-between mt-2 pt-3 border-t border-border/50">
+                                            <span className="text-[9px] font-black text-blue-500 bg-blue-500/5 px-2 py-1 rounded uppercase tracking-[0.1em]">{note.type || 'Record'}</span>
+                                            <span className="text-[10px] text-muted-foreground opacity-50 font-bold">{new Date(note.createdAt).toLocaleDateString()}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            )) : (
+                                <div className="col-span-full p-10 border border-border border-dashed rounded-2xl text-center">
+                                    <p className="text-xs text-muted-foreground font-medium italic">No direct shares received in your current session.</p>
                                 </div>
                             )}
                         </div>

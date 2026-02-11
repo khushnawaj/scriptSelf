@@ -216,9 +216,39 @@ export const togglePin = createAsyncThunk(
   }
 );
 
+// Share Note
+export const shareNote = createAsyncThunk(
+  'notes/share',
+  async ({ id, userIds }, thunkAPI) => {
+    try {
+      const res = await api.put(`/notes/${id}/share`, { userIds });
+      toast.success('Document shared successfully!');
+      return res.data.data;
+    } catch (error) {
+      const message = error.response?.data?.error || 'Failed to share document';
+      toast.error(message);
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
+// Get Shared Notes
+export const getSharedNotes = createAsyncThunk(
+  'notes/getShared',
+  async (_, thunkAPI) => {
+    try {
+      const res = await api.get('/notes/shared/me');
+      return res.data.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.response?.data?.error);
+    }
+  }
+);
+
 
 const initialState = {
   notes: [],
+  sharedNotes: [],
   total: -1, // Use -1 to indicate initial state (never fetched)
   pagination: {},
   stats: null,
@@ -347,6 +377,24 @@ const noteSlice = createSlice({
         if (index !== -1) {
           state.notes[index] = action.payload;
         }
+      })
+      .addCase(shareNote.fulfilled, (state, action) => {
+        const index = state.notes.findIndex(n => n._id === action.payload._id);
+        if (index !== -1) {
+          state.notes[index] = action.payload;
+        }
+      })
+      .addCase(getSharedNotes.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(getSharedNotes.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.sharedNotes = action.payload;
+      })
+      .addCase(getSharedNotes.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.message = action.payload;
       });
   },
 });
