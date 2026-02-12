@@ -34,7 +34,9 @@ import {
     Sparkles,
     Users,
     FileText,
-    Download
+    Download,
+    FolderTree,
+    CornerDownRight
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
@@ -198,11 +200,51 @@ const Guide = () => {
                     </div>
                 </div>
 
-                {/* 3. Reputation & Reputation Tiers */}
-                <div className="flex flex-col md:flex-row items-start gap-16">
+                {/* 3. Folders & Organization */}
+                <div className="flex flex-col md:flex-row items-start gap-16 border-t border-border/50 pt-16">
                     <div className="flex-1 space-y-6 text-left">
                         <div className="flex items-center gap-3 text-primary font-bold uppercase tracking-widest text-[13px]">
-                            <Trophy size={18} /> Component 03: Reputation Tiers
+                            <FolderTree size={18} /> Component 03: Structured Archives
+                        </div>
+                        <h2 className="text-[32px] font-bold leading-tight">Folder & Mention Protocol</h2>
+                        <p className="text-muted-foreground leading-relaxed">
+                            Reorganize your knowledge into a strict folder hierarchy. Reference other agents directly in your documentation.
+                        </p>
+                        <ul className="space-y-4 text-[14px]">
+                            <li className="flex gap-4">
+                                <div className="w-6 h-6 rounded bg-primary/10 flex items-center justify-center text-primary shrink-0"><Layout size={14} /></div>
+                                <span>**Nested Folders**: Create hierarchies for project-specific documentation.</span>
+                            </li>
+                            <li className="flex gap-4">
+                                <div className="w-6 h-6 rounded bg-primary/10 flex items-center justify-center text-primary shrink-0"><Users size={14} /></div>
+                                <span>**Direct Mentions**: Type `@username` to notify team members.</span>
+                            </li>
+                            <li className="flex gap-4">
+                                <div className="w-6 h-6 rounded bg-primary/10 flex items-center justify-center text-primary shrink-0"><Share2 size={14} /></div>
+                                <span>**Clone & Fork**: Save public records to your personal shelf.</span>
+                            </li>
+                        </ul>
+                    </div>
+                    <div className="flex-1 w-full bg-card border border-border rounded-[3px] p-8 text-left">
+                        <div className="border-l-2 border-primary pl-4 mb-6">
+                            <h4 className="font-bold text-[16px]">Folder Structure</h4>
+                            <div className="mt-4 space-y-2 font-mono text-[12px] text-muted-foreground">
+                                <div className="flex items-center gap-2"><CornerDownRight size={14} className="text-foreground" />  Backend_Systems</div>
+                                <div className="flex items-center gap-2 pl-6"><CornerDownRight size={14} className="opacity-50" />  API_Routes</div>
+                                <div className="flex items-center gap-2 pl-12"><FileText size={14} /> user_model.js</div>
+                            </div>
+                        </div>
+                        <div className="p-4 bg-muted/30 rounded border border-border/50 text-[13px]">
+                            <span className="text-primary font-bold">@alex_dev</span> check the schema in <span className="text-primary underline">[[Auth Flow]]</span>
+                        </div>
+                    </div>
+                </div>
+
+                {/* 4. Reputation & Reputation Tiers */}
+                <div className="flex flex-col md:flex-row items-start gap-16 border-t border-border/50 pt-16">
+                    <div className="flex-1 space-y-6 text-left">
+                        <div className="flex items-center gap-3 text-primary font-bold uppercase tracking-widest text-[13px]">
+                            <Trophy size={18} /> Component 04: Reputation Tiers
                         </div>
                         <h2 className="text-[32px] font-bold leading-tight">Forge your Technical ID</h2>
                         <p className="text-muted-foreground leading-relaxed">

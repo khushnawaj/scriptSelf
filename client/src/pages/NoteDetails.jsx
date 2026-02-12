@@ -35,6 +35,7 @@ import Mermaid from '../components/Mermaid';
 import { getNote, deleteNote, cloneNote, addComment, deleteComment, updateComment, markSolution, togglePin } from '../features/notes/noteSlice';
 import { followUser, unfollowUser } from '../features/auth/authSlice';
 import ShareNoteModal from '../components/ShareNoteModal';
+import SaveToShelfModal from '../components/SaveToShelfModal';
 
 const NoteDetails = () => {
     const { id } = useParams();
@@ -59,16 +60,32 @@ const NoteDetails = () => {
         setTimeout(() => setCopiedIndex(null), 2000);
     };
 
-    const handleClone = async () => {
+    const [isSaveModalOpen, setIsSaveModalOpen] = useState(false);
+
+    const handleSaveConfirm = async (folderId) => {
         setIsCloning(true);
         try {
-            const res = await dispatch(cloneNote(id));
+            const res = await dispatch(cloneNote({ id, folderId }));
             if (!res.error) {
                 navigate(`/notes/${res.payload._id}`);
+                toast.success('Record cloned successfully');
             }
         } finally {
             setIsCloning(false);
+            setIsSaveModalOpen(false);
         }
+    };
+
+    const handleDownload = () => {
+        const element = document.createElement("a");
+        const file = new Blob([note.content], { type: 'text/markdown' });
+        element.href = URL.createObjectURL(file);
+        // Sanitize filename
+        const filename = note.title.replace(/[^a-z0-9]/gi, '_').toLowerCase() + ".md";
+        element.download = filename;
+        document.body.appendChild(element); // Required for this to work in FireFox
+        element.click();
+        document.body.removeChild(element);
     };
 
     const handleDelete = async () => {
@@ -185,13 +202,22 @@ const NoteDetails = () => {
                             </Link>
                         ) : (
                             user && note.isPublic && (
-                                <button
-                                    onClick={handleClone}
-                                    disabled={isCloning}
-                                    className="so-btn border border-primary text-primary hover:bg-primary/5 transition-all font-bold"
-                                >
-                                    <Copy size={14} className="mr-1" /> {isCloning ? 'Cloning...' : 'Clone to My Shelf'}
-                                </button>
+                                <>
+                                    <button
+                                        onClick={() => setIsSaveModalOpen(true)}
+                                        disabled={isCloning}
+                                        className="so-btn border border-primary text-primary hover:bg-primary/5 transition-all font-bold flex items-center gap-2"
+                                    >
+                                        <Copy size={14} /> {isCloning ? 'Cloning...' : 'Clone to My Shelf'}
+                                    </button>
+                                    <button
+                                        onClick={handleDownload}
+                                        className="so-btn border border-border hover:bg-muted/50 text-foreground transition-all"
+                                        title="Download as Markdown"
+                                    >
+                                        <FileDown size={14} />
+                                    </button>
+                                </>
                             )
                         )}
                         <Link to="/notes/new" className="so-btn so-btn-primary py-2.5 px-3">
@@ -753,7 +779,14 @@ const NoteDetails = () => {
                 isOpen={isShareModalOpen}
                 onClose={() => setIsShareModalOpen(false)}
                 noteId={id}
-                currentSharedWith={note.sharedWith || []}
+                currentSharedWith={note.sharedWith}
+            />
+
+            <SaveToShelfModal
+                isOpen={isSaveModalOpen}
+                onClose={() => setIsSaveModalOpen(false)}
+                onConfirm={handleSaveConfirm}
+                isCloning={isCloning}
             />
         </div>
     );

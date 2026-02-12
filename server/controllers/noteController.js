@@ -796,3 +796,44 @@ exports.getSharedNotes = async (req, res, next) => {
     next(err);
   }
 };
+
+// @desc      Clone public note to personal library
+// @route     POST /api/v1/notes/:id/clone
+// @access    Private
+exports.cloneNote = async (req, res, next) => {
+  try {
+    const originalNote = await Note.findById(req.params.id);
+
+    if (!originalNote) {
+      return res.status(404).json({ success: false, error: 'Record not found' });
+    }
+
+    // Check permissions
+    if (!originalNote.isPublic && originalNote.user.toString() !== req.user.id) {
+      return res.status(403).json({ success: false, error: 'Cannot clone private records' });
+    }
+
+    const { folderId } = req.body;
+
+    const noteData = {
+      user: req.user.id,
+      title: `${originalNote.title} (Clone)`,
+      content: originalNote.content,
+      type: originalNote.type,
+      category: originalNote.category,
+      tags: originalNote.tags,
+      isPublic: false,
+      folder: folderId || undefined,
+      videoUrl: originalNote.videoUrl
+    };
+
+    const note = await Note.create(noteData);
+
+    res.status(201).json({
+      success: true,
+      data: note
+    });
+  } catch (err) {
+    next(err);
+  }
+};
