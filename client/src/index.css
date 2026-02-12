@@ -655,6 +655,17 @@ body.zen-mode main.layout-full-width {
   scrollbar-color: hsla(var(--primary-h), var(--primary-s), var(--primary-l), 0.2) transparent;
 }
 
+/* Confetti Celebration Animation */
+@keyframes confetti-fall {
+  0% {
+    transform: translateY(0) rotate(0deg) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(100vh) rotate(720deg) scale(0.5);
+    opacity: 0;
+  }
+}
 
 
 

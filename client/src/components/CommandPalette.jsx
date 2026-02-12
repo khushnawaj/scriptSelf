@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import {
     Search, Hash, FileCode, ArrowRight, Command,
     Plus, HelpCircle, FileText, History, Terminal,
-    User, Shield, LogOut, Moon, Sun, Monitor, Share2, Trophy
+    User, Shield, LogOut, Moon, Sun, Monitor, Share2, Trophy, Users
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
@@ -52,6 +52,7 @@ export default function CommandPalette() {
         else if (action === '/admin') navigate('/admin');
         else if (action === '/network') navigate('/network');
         else if (action === '/levels') navigate('/levels');
+        else if (action === '/explorers') navigate('/explorers');
         else if (action === '/logout') { dispatch(logout()); dispatch(reset()); navigate('/login'); }
         else if (action.startsWith('/theme ')) {
             const v = action.split(' ')[1];
@@ -78,14 +79,15 @@ export default function CommandPalette() {
     }, [query, isOpen]);
 
     const staticActions = [
-        { icon: Plus, label: 'Create New Record', action: () => navigate('/notes/new'), cmd: '/new' },
-        { icon: Terminal, label: 'Toggle Command Mode', action: () => setQuery('/'), cmd: '/' },
-        { icon: User, label: 'Manage Profile', action: () => navigate('/profile'), cmd: '/profile' },
-        { icon: Monitor, label: 'System Dashboard', action: () => navigate('/dashboard'), cmd: '/dashboard' }
+        { icon: Plus, label: 'Create New Record', action: () => { navigate('/notes/new'); setIsOpen(false); }, cmd: '/new' },
+        { icon: Users, label: 'Explore Users', action: () => { navigate('/explorers'); setIsOpen(false); }, cmd: '/explorers' },
+        { icon: User, label: 'Manage Profile', action: () => { navigate('/profile'); setIsOpen(false); }, cmd: '/profile' },
+        { icon: Monitor, label: 'System Dashboard', action: () => { navigate('/dashboard'); setIsOpen(false); }, cmd: '/dashboard' }
     ];
 
     const commands = [
         { icon: Terminal, label: 'New Record', cmd: '/new' },
+        { icon: Users, label: 'Explore Users', cmd: '/explorers' },
         { icon: Moon, label: 'Dark Mode', cmd: '/dark' },
         { icon: Sun, label: 'Light Mode', cmd: '/light' },
         { icon: Shield, label: 'Admin Console', cmd: '/admin' },

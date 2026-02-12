@@ -37,6 +37,7 @@ const ShortcutManager = lazy(() => import('./components/ShortcutManager'));
 const Playground = lazy(() => import('./pages/Playground'));
 const Network = lazy(() => import('./pages/Network'));
 const Levels = lazy(() => import('./pages/Levels'));
+const Explorers = lazy(() => import('./pages/Explorers'));
 
 // Private Route Component
 const PrivateRoute = ({ children }) => {
@@ -153,6 +154,7 @@ function App() {
             <Route path="/playground" element={<Playground />} />
             <Route path="/network" element={<Network />} />
             <Route path="/levels" element={<Levels />} />
+            <Route path="/explorers" element={<Explorers />} />
 
             {/* Validated Access Routes */}
             <Route path="/dashboard" element={<PrivateRoute><Dashboard /></PrivateRoute>} />

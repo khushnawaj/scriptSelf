@@ -20,6 +20,80 @@ exports.getUsers = async (req, res, next) => {
     }
 };
 
+// @desc      Search/filter users for discovery
+// @route     GET /api/v1/users/search
+// @access    Public
+exports.searchUsers = async (req, res, next) => {
+    try {
+        const { q, tier, active, sort = 'reputation' } = req.query;
+
+        let query = {};
+
+        // Search by username or bio
+        if (q) {
+            query.$or = [
+                { username: { $regex: q, $options: 'i' } },
+                { bio: { $regex: q, $options: 'i' } }
+            ];
+        }
+
+        // Filter by reputation tier
+        if (tier) {
+            const tierRanges = {
+                'beginner': { min: 0, max: 99 },
+                'intermediate': { min: 100, max: 499 },
+                'advanced': { min: 500, max: 999 },
+                'expert': { min: 1000, max: 2499 },
+                'legendary': { min: 2500, max: Infinity }
+            };
+
+            const range = tierRanges[tier.toLowerCase()];
+            if (range) {
+                query.reputation = { $gte: range.min, $lte: range.max };
+            }
+        }
+
+        // Filter by active status (played in last 7 days)
+        if (active === 'true') {
+            const sevenDaysAgo = new Date();
+            sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+            query['arcade.lastPlayed'] = { $gte: sevenDaysAgo };
+        }
+
+        // Determine sort order
+        let sortOption = {};
+        switch (sort) {
+            case 'reputation':
+                sortOption = { reputation: -1 };
+                break;
+            case 'streak':
+                sortOption = { 'arcade.streak': -1 };
+                break;
+            case 'newest':
+                sortOption = { createdAt: -1 };
+                break;
+            case 'alphabetical':
+                sortOption = { username: 1 };
+                break;
+            default:
+                sortOption = { reputation: -1 };
+        }
+
+        const users = await User.find(query)
+            .select('username avatar bio reputation arcade.streak arcade.lastPlayed followers following createdAt')
+            .sort(sortOption)
+            .limit(100); // Limit to 100 results
+
+        res.status(200).json({
+            success: true,
+            count: users.length,
+            data: users
+        });
+    } catch (err) {
+        next(err);
+    }
+};
+
 // @desc      Get single user
 // @route     GET /api/v1/users/:id
 // @access    Private/Admin
@@ -341,8 +415,8 @@ exports.updateUserPreferences = async (req, res, next) => {
 };
 
 module.exports = {
-
     getUsers: exports.getUsers,
+    searchUsers: exports.searchUsers,
     getUser: exports.getUser,
     deleteUser: exports.deleteUser,
     updateUserRole: exports.updateUserRole,
@@ -354,6 +428,46 @@ module.exports = {
     getFollowing: exports.getFollowing,
     updateUserFlags: exports.updateUserFlags,
     updateUserGroup: exports.updateUserGroup,
-    updateUserPreferences: exports.updateUserPreferences
+    updateUserPreferences: exports.updateUserPreferences,
+    getArcadeLeaders: exports.getArcadeLeaders
+};
+
+// @desc      Get arcade game leaders (minimal top 3)
+// @route     GET /api/v1/users/arcade/leaders/:gameId
+// @access    Public
+exports.getArcadeLeaders = async (req, res, next) => {
+    try {
+        const { gameId } = req.params;
+        const validGames = ['memory', 'typing', 'escape', 'hunter'];
+
+        if (!validGames.includes(gameId)) {
+            return res.status(400).json({
+                success: false,
+                message: 'Invalid game ID'
+            });
+        }
+
+        // Get top 3 players by total arcade points (more visible than streak)
+        const leaders = await User.find({
+            'arcade.points': { $gt: 0 }
+        })
+            .select('username avatar arcade.points arcade.streak')
+            .sort({ 'arcade.points': -1 })
+            .limit(3);
+
+        const formattedLeaders = leaders.map(user => ({
+            username: user.username,
+            avatar: user.avatar,
+            points: user.arcade.points,
+            streak: user.arcade.streak
+        }));
+
+        res.status(200).json({
+            success: true,
+            data: formattedLeaders
+        });
+    } catch (err) {
+        next(err);
+    }
 };
 

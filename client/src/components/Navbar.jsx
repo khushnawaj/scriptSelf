@@ -79,6 +79,9 @@ const Navbar = ({ onMenuClick }) => {
                     <Link to="/notes" className="px-3 py-2 text-[13px] font-medium text-muted-foreground hover:text-foreground hover:bg-muted/50 rounded-[6px] transition-all">
                         Library
                     </Link>
+                    <Link to="/explorers" className="px-3 py-2 text-[13px] font-medium text-muted-foreground hover:text-foreground hover:bg-muted/50 rounded-[6px] transition-all">
+                        Explorers
+                    </Link>
                     <Link to="/arcade" className="px-3 py-2 text-[13px] font-medium text-muted-foreground hover:text-foreground hover:bg-muted/50 rounded-[6px] transition-all flex items-center gap-2">
                         <Gamepad2 size={16} className="text-primary hidden group-hover:block" /> Arcade
                     </Link>

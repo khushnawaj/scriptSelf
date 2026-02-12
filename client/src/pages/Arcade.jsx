@@ -19,8 +19,6 @@ import {
 ========================= */
 import MemoryGame from "../components/arcade/MemoryGame";
 import TypingGame from "../components/arcade/TypingGame";
-import HexHunter from "../components/arcade/HexHunter";
-import CodeBreaker from "../components/arcade/CodeBreaker";
 import StackOverflowEscape from "../components/arcade/StackOverflowEscape";
 import BugHunter from "../components/arcade/BugHunter";
 
@@ -155,8 +153,6 @@ const Arcade = () => {
                 >
                     <GameCard title="Memory Matrix" desc="Neural Link" icon={<Brain size={28} />} onClick={() => user ? setActiveGame("memory") : navigate('/login')} color="primary" />
                     <GameCard title="Syntax Sprint" desc="Handshake" icon={<Hash size={28} />} onClick={() => user ? setActiveGame("typing") : navigate('/login')} color="emerald" />
-                    <GameCard title="Hex Hunter" desc="Vision" icon={<span className="text-2xl font-black">#</span>} onClick={() => user ? setActiveGame("hex") : navigate('/login')} color="pink" />
-                    <GameCard title="Logic Loop" desc="Algo_Optimizing" icon={<Binary size={28} />} onClick={() => user ? setActiveGame("logic") : navigate('/login')} color="violet" />
                     <GameCard title="Stack Escape" desc="Recursion" icon={<Ghost size={28} />} onClick={() => user ? setActiveGame("escape") : navigate('/login')} color="cyan" />
                     <GameCard title="Bug Hunter" desc="Debug" icon={<Bug size={28} />} onClick={() => user ? setActiveGame("hunter") : navigate('/login')} color="lime" />
                 </div>
@@ -177,8 +173,6 @@ const Arcade = () => {
                     <div className="flex-1 flex flex-col transition-all duration-500">
                         {activeGame === "memory" && <MemoryGame dispatch={dispatch} />}
                         {activeGame === "typing" && <TypingGame dispatch={dispatch} />}
-                        {activeGame === "hex" && <HexHunter dispatch={dispatch} />}
-                        {activeGame === "logic" && <CodeBreaker dispatch={dispatch} />}
                         {activeGame === "escape" && <StackOverflowEscape dispatch={dispatch} />}
                         {activeGame === "hunter" && <BugHunter dispatch={dispatch} />}
                     </div>
