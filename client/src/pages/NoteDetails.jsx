@@ -216,8 +216,16 @@ const NoteDetails = () => {
                         </span>
                     )}
                     <span className="flex items-center gap-1.5 whitespace-nowrap">
-                        <span className="font-normal opacity-60">Collection</span>
-                        <span className="text-link font-medium">{note.category?.name || 'GENERIC'}</span>
+                        <span className="font-normal opacity-60">Path</span>
+                        <span className="text-link font-medium flex items-center gap-1">
+                            {note.category?.name || 'GENERIC'}
+                            {note.folder && (
+                                <>
+                                    <span className="opacity-40">/</span>
+                                    {note.folder.name}
+                                </>
+                            )}
+                        </span>
                     </span>
                 </div>
             </div>

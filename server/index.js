@@ -29,6 +29,7 @@ const notes = require('./routes/noteRoutes');
 const notifications = require('./routes/notificationRoutes');
 const chat = require('./routes/chatRoutes');
 const system = require('./routes/systemRoutes');
+const folders = require('./routes/folderRoutes');
 
 const app = express();
 
@@ -225,6 +226,7 @@ app.use('/api/v1/notes', notes);
 app.use('/api/v1/notifications', notifications);
 app.use('/api/v1/chat', chat);
 app.use('/api/v1/system', system);
+app.use('/api/v1/folders', folders);
 
 // Error middleare
 

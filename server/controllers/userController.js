@@ -414,23 +414,7 @@ exports.updateUserPreferences = async (req, res, next) => {
     }
 };
 
-module.exports = {
-    getUsers: exports.getUsers,
-    searchUsers: exports.searchUsers,
-    getUser: exports.getUser,
-    deleteUser: exports.deleteUser,
-    updateUserRole: exports.updateUserRole,
-    updateArcadeStats: exports.updateArcadeStats,
-    followUser: exports.followUser,
-    unfollowUser: exports.unfollowUser,
-    getPublicUser: exports.getPublicUser,
-    getFollowers: exports.getFollowers,
-    getFollowing: exports.getFollowing,
-    updateUserFlags: exports.updateUserFlags,
-    updateUserGroup: exports.updateUserGroup,
-    updateUserPreferences: exports.updateUserPreferences,
-    getArcadeLeaders: exports.getArcadeLeaders
-};
+
 
 // @desc      Get arcade game leaders (minimal top 3)
 // @route     GET /api/v1/users/arcade/leaders/:gameId

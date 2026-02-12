@@ -107,11 +107,20 @@ const noteSchema = new mongoose.Schema({
         ref: 'Category',
         required: true
     },
+    folder: {
+        type: mongoose.Schema.ObjectId,
+        ref: 'Folder',
+        default: null // null = not in any folder (root level)
+    },
     user: {
         type: mongoose.Schema.ObjectId,
         ref: 'User',
         required: true
     },
+    mentions: [{
+        type: mongoose.Schema.ObjectId,
+        ref: 'User'
+    }],
     isPublic: {
         type: Boolean,
         default: false

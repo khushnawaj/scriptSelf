@@ -1,4 +1,5 @@
 const Note = require('../models/Note');
+const User = require('../models/User');
 const fs = require('fs');
 const logUserActivity = require('../utils/activityLogger');
 const awardReputation = require('../utils/reputationEngine');
@@ -30,6 +31,44 @@ const updateBidirectionalLinks = async (noteId, content, userId) => {
     );
   } catch (err) {
     console.error('Link update failed:', err);
+  }
+};
+
+// Helper: Process Mentions
+const processMentions = async (note, content, senderId) => {
+  try {
+    const mentionRegex = /@(\w+)/g;
+    const matches = [...content.matchAll(mentionRegex)];
+    const usernames = [...new Set(matches.map(m => m[1]))]; // Unique usernames
+
+    if (usernames.length === 0) return [];
+
+    const users = await User.find({ username: { $in: usernames } });
+    const userIds = users.map(u => u._id);
+
+    if (userIds.length > 0) {
+      // Update note mentions
+      await Note.findByIdAndUpdate(note._id, {
+        $addToSet: { mentions: { $each: userIds } }
+      });
+
+      // Send notifications
+      for (const user of users) {
+        if (user._id.toString() !== senderId.toString()) {
+          await notificationService.sendNotification({
+            recipient: user._id,
+            sender: senderId,
+            type: 'mention',
+            message: `${note.user.username || 'Someone'} mentioned you in: ${note.title}`,
+            link: `/notes/${note._id}`
+          });
+        }
+      }
+    }
+    return userIds;
+  } catch (err) {
+    console.error('Mention processing error:', err);
+    return [];
   }
 };
 
@@ -76,6 +115,11 @@ exports.getNotes = async (req, res, next) => {
     // 2. Category Filter
     if (req.query.category) {
       filter.category = req.query.category;
+    }
+
+    // 2.5 Folder Filter
+    if (req.query.folder) {
+      filter.folder = req.query.folder;
     }
 
     // 3. Type Filter
@@ -203,6 +247,8 @@ exports.getNote = async (req, res, next) => {
   try {
     const note = await Note.findById(req.params.id)
       .populate({ path: 'category', select: 'name' })
+      .populate({ path: 'folder', select: 'name' })
+      .populate({ path: 'mentions', select: 'username' })
       .populate({ path: 'relatedNotes', select: 'title' })
       .populate({ path: 'backlinks', select: 'title' })
       .populate({ path: 'user', select: 'username avatar bio socialLinks reputation' })
@@ -272,9 +318,13 @@ exports.createNote = async (req, res, next) => {
 
     const note = await Note.create(req.body);
 
-    // Update bidirectional links
     if (req.body.content) {
       await updateBidirectionalLinks(note._id, req.body.content, req.user.id);
+
+      // Process Mentions
+      // Load user details for notification message
+      const populatedNote = await Note.findById(note._id).populate('user', 'username');
+      await processMentions(populatedNote, req.body.content, req.user.id);
     }
 
     res.status(201).json({
@@ -353,6 +403,10 @@ exports.updateNote = async (req, res, next) => {
     // Update bidirectional links
     if (note && req.body.content) {
       await updateBidirectionalLinks(note._id, req.body.content, req.user.id);
+
+      // Process Mentions
+      const populatedNote = await Note.findById(note._id).populate('user', 'username');
+      await processMentions(populatedNote, req.body.content, req.user.id);
     }
 
     res.status(200).json({

@@ -25,7 +25,8 @@ import {
     Trash2,
     FileCode,
     FileUp,
-    Code2
+    Code2,
+    Folder
 } from 'lucide-react';
 import Editor from '@monaco-editor/react';
 import { useTheme } from '../context/ThemeContext';
@@ -53,12 +54,14 @@ const NoteEditor = () => {
         type: 'doc',
         adrStatus: 'proposed',
         categoryId: '',
+        folderId: '',
         tags: '',
         isPublic: false,
         videoUrl: '',
     });
 
-    const { title, content, type, adrStatus, categoryId, tags, isPublic, videoUrl } = formData;
+    const { title, content, type, adrStatus, categoryId, folderId, tags, isPublic, videoUrl } = formData;
+    const [folders, setFolders] = useState([]);
     const [viewMode, setViewMode] = useState('edit'); // 'edit', 'preview', 'split'
     const [showCategoryModal, setShowCategoryModal] = useState(false);
     const [newCategoryName, setNewCategoryName] = useState('');
@@ -113,10 +116,23 @@ const NoteEditor = () => {
 
     useEffect(() => {
         dispatch(getCategories());
+        fetchFolders();
         if (!notes.length && id) {
             dispatch(getNotes());
         }
     }, [dispatch, id, notes.length]);
+
+    const fetchFolders = async () => {
+        try {
+            const res = await fetch('/api/v1/folders', {
+                headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+            });
+            const data = await res.json();
+            if (data.success) setFolders(data.data);
+        } catch (err) {
+            console.error('Failed to fetch folders', err);
+        }
+    };
 
     const location = useLocation();
 
@@ -130,6 +146,7 @@ const NoteEditor = () => {
                     type: noteToEdit.type || 'doc',
                     adrStatus: noteToEdit.adrStatus || 'proposed',
                     categoryId: noteToEdit.category?._id || noteToEdit.category,
+                    folderId: noteToEdit.folder || '',
                     tags: noteToEdit.tags ? noteToEdit.tags.join(', ') : '',
                     isPublic: noteToEdit.isPublic || false,
                     videoUrl: noteToEdit.videoUrl || '',
@@ -230,7 +247,9 @@ const NoteEditor = () => {
         noteData.append('title', title.trim());
         noteData.append('content', content);
         noteData.append('type', type);
+        noteData.append('type', type);
         noteData.append('category', categoryId);
+        if (folderId) noteData.append('folder', folderId);
         noteData.append('isPublic', String(isPublic));
         noteData.append('adrStatus', adrStatus);
         noteData.append('videoUrl', videoUrl);
@@ -497,6 +516,24 @@ const NoteEditor = () => {
                                         <option key={cat._id} value={cat._id}>{cat.name}</option>
                                     ))}
                                 </select>
+                            </div>
+
+                            <div className="space-y-1.5">
+                                <label className="text-[11px] font-bold text-muted-foreground uppercase">Folder (Optional)</label>
+                                <div className="relative">
+                                    <select
+                                        name="folderId"
+                                        value={folderId}
+                                        onChange={onChange}
+                                        className="w-full border border-border bg-background rounded-[3px] py-2 pl-9 pr-3 text-[13px] text-foreground outline-none focus:border-primary appearance-none"
+                                    >
+                                        <option value="">No Folder (Root)</option>
+                                        {folders.map((folder) => (
+                                            <option key={folder._id} value={folder._id}>{folder.name}</option>
+                                        ))}
+                                    </select>
+                                    <Folder size={14} className="absolute left-3 top-2.5 text-muted-foreground pointer-events-none" />
+                                </div>
                             </div>
 
                             <div className="space-y-1.5">
