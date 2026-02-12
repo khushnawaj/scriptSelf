@@ -1,7 +1,8 @@
 import { useState, useEffect, useRef } from 'react';
-import { useNavigate, useParams, Link, useLocation } from 'react-router-dom';
+import { useNavigate, useParams, Link, useLocation, useSearchParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { createNote, getNotes, updateNote } from '../features/notes/noteSlice';
+import api from '../utils/api';
 import { getCategories, createCategory } from '../features/categories/categorySlice';
 import {
     Plus,
@@ -43,6 +44,8 @@ const NoteEditor = () => {
     const { id } = useParams();
     const navigate = useNavigate();
     const dispatch = useDispatch();
+    const [searchParams] = useSearchParams();
+    const urlFolderId = searchParams.get('folder');
     const editorRef = useRef(null);
 
     const { categories } = useSelector((state) => state.categories);
@@ -65,6 +68,8 @@ const NoteEditor = () => {
     const [viewMode, setViewMode] = useState('edit'); // 'edit', 'preview', 'split'
     const [showCategoryModal, setShowCategoryModal] = useState(false);
     const [newCategoryName, setNewCategoryName] = useState('');
+    const [showFolderModal, setShowFolderModal] = useState(false);
+    const [newFolderName, setNewFolderName] = useState('');
     const [file, setFile] = useState(null);
     const [hasDraft, setHasDraft] = useState(false);
     const [isDirty, setIsDirty] = useState(false);
@@ -124,11 +129,8 @@ const NoteEditor = () => {
 
     const fetchFolders = async () => {
         try {
-            const res = await fetch('/api/v1/folders', {
-                headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
-            });
-            const data = await res.json();
-            if (data.success) setFolders(data.data);
+            const res = await api.get('/folders');
+            if (res.data.success) setFolders(res.data.data);
         } catch (err) {
             console.error('Failed to fetch folders', err);
         }
@@ -164,9 +166,14 @@ const NoteEditor = () => {
                     categoryId: categories.find(c => c.name === 'General')?._id || ''
                 }));
             }
-            setTimeout(() => setIsDirty(false), 500);
         }
-    }, [id, notes, location.state, categories]);
+
+        if (urlFolderId && !id && !formData.folderId) {
+            setFormData(prev => ({ ...prev, folderId: urlFolderId }));
+        }
+
+        setTimeout(() => setIsDirty(false), 500);
+    }, [id, notes, location.state, categories, urlFolderId]);
 
     const onChange = (e) => {
         const { name, value, type: inputType, checked } = e.target;
@@ -237,6 +244,31 @@ const NoteEditor = () => {
         }
     };
 
+    const handleCreateFolder = async (e) => {
+        e.preventDefault();
+        if (!newFolderName.trim()) return;
+
+        try {
+            const res = await api.post('/folders', { name: newFolderName });
+
+            if (res.data.success) {
+                toast.success('Folder created');
+                // Format the new folder object to match existing structure
+                const newFolder = res.data.data;
+                setFolders(prev => [...prev, newFolder]);
+                setFormData(prev => ({ ...prev, folderId: newFolder._id }));
+                setShowFolderModal(false);
+                setNewFolderName('');
+
+                // Notify other components (like Sidebar)
+                window.dispatchEvent(new CustomEvent('folderCreated', { detail: newFolder }));
+            }
+        } catch (err) {
+            const message = err.response?.data?.error || 'Failed to create folder';
+            toast.error(message);
+        }
+    };
+
     const onSubmit = (e) => {
         e.preventDefault();
 
@@ -246,7 +278,6 @@ const NoteEditor = () => {
         const noteData = new FormData();
         noteData.append('title', title.trim());
         noteData.append('content', content);
-        noteData.append('type', type);
         noteData.append('type', type);
         noteData.append('category', categoryId);
         if (folderId) noteData.append('folder', folderId);
@@ -272,7 +303,8 @@ const NoteEditor = () => {
             if (res.meta.requestStatus === 'fulfilled') {
                 toast.success(id ? 'Record Synchronized' : 'Record Created');
                 localStorage.removeItem(draftKey);
-                navigate('/notes');
+                const targetPath = folderId ? `/notes?folder=${folderId}` : '/notes';
+                navigate(targetPath);
             } else {
                 const errorMsg = res.payload?.error || res.payload || 'Sync failed';
                 toast.error(errorMsg);
@@ -283,7 +315,7 @@ const NoteEditor = () => {
     const wordCount = content.trim() ? content.trim().split(/\s+/).length : 0;
 
     return (
-        <div className="max-w-[1400px] mx-auto pb-20 animate-in fade-in duration-300">
+        <div className="max-w-[1400px] mx-auto pb-20 animate-in fade-in duration-300 overflow-x-hidden">
             <div className="flex flex-col sm:flex-row justify-between items-center gap-4 mb-6 border-b border-border pb-4">
                 <div className="flex items-center gap-3">
                     <div className="p-2 bg-primary/10 rounded-[3px] text-primary">
@@ -519,7 +551,16 @@ const NoteEditor = () => {
                             </div>
 
                             <div className="space-y-1.5">
-                                <label className="text-[11px] font-bold text-muted-foreground uppercase">Folder (Optional)</label>
+                                <div className="flex justify-between items-center">
+                                    <label className="text-[11px] font-bold text-muted-foreground uppercase">Folder (Optional)</label>
+                                    <button
+                                        type="button"
+                                        onClick={() => setShowFolderModal(true)}
+                                        className="text-[10px] text-primary hover:underline font-bold"
+                                    >
+                                        + New
+                                    </button>
+                                </div>
                                 <div className="relative">
                                     <select
                                         name="folderId"
@@ -638,6 +679,32 @@ const NoteEditor = () => {
                                 <div className="flex gap-2">
                                     <button type="submit" className="so-btn so-btn-primary flex-1">Create</button>
                                     <button type="button" onClick={() => setShowCategoryModal(false)} className="so-btn bg-transparent hover:bg-muted/50 flex-1">Cancel</button>
+                                </div>
+                            </form>
+                        </motion.div>
+                    </div>
+                )}
+
+                {showFolderModal && (
+                    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.95 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            exit={{ opacity: 0, scale: 0.95 }}
+                            className="glass-frost w-full max-w-sm rounded-[3px] shadow-2xl p-6"
+                        >
+                            <h3 className="text-[17px] font-bold text-foreground mb-4">Quick Create Folder</h3>
+                            <form onSubmit={handleCreateFolder} className="space-y-4">
+                                <input
+                                    autoFocus
+                                    className="w-full border border-border bg-background rounded-[3px] py-2 px-3 text-[14px] text-foreground outline-none focus:border-primary"
+                                    placeholder="e.g. Project Docs"
+                                    value={newFolderName}
+                                    onChange={(e) => setNewFolderName(e.target.value)}
+                                />
+                                <div className="flex gap-2">
+                                    <button type="submit" className="so-btn so-btn-primary flex-1">Create</button>
+                                    <button type="button" onClick={() => setShowFolderModal(false)} className="so-btn bg-transparent hover:bg-muted/50 flex-1">Cancel</button>
                                 </div>
                             </form>
                         </motion.div>

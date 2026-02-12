@@ -156,6 +156,7 @@ noteSchema.pre('save', function (next) {
     }
 
     if (this.type) {
+        if (Array.isArray(this.type)) this.type = this.type[0];
         this.type = String(this.type).toLowerCase().trim();
     }
 

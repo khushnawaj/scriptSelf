@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getNotes, resetNotes } from '../features/notes/noteSlice';
 import { getCategories } from '../features/categories/categorySlice';
 import Spinner from '../components/Spinner';
-import FolderSidebar from '../components/FolderSidebar';
+// import FolderSidebar from '../components/FolderSidebar';
 import {
     Search,
     Filter,
@@ -39,12 +39,18 @@ const Notes = () => {
 
     const [page, setPage] = useState(1);
 
-    // Sync search term from URL
+    // Sync search term and folder from URL
     useEffect(() => {
         const urlParams = new URLSearchParams(location.search);
+
         const searchParam = urlParams.get('search');
         if (searchParam) {
             setSearchTerm(decodeURIComponent(searchParam));
+        }
+
+        const folderParam = urlParams.get('folder');
+        if (folderParam) {
+            setSelectedFolder(folderParam);
         }
     }, [location.search]);
 
@@ -97,20 +103,7 @@ const Notes = () => {
     return (
         <div className="flex min-h-screen">
             {/* Folder Sidebar - Only show for logged in users */}
-            {user && (
-                <FolderSidebar
-                    onSelectFolder={(folderId) => {
-                        setSelectedFolder(folderId);
-                        setPage(1);
-                    }}
-                    selectedFolderId={selectedFolder}
-                    onRefresh={() => {
-                        const params = { page, limit: 10 };
-                        if (selectedFolder) params.folder = selectedFolder;
-                        dispatch(getNotes(params));
-                    }}
-                />
-            )}
+
 
             <div className="flex-1 flex flex-col lg:flex-row gap-8 animate-in fade-in duration-300">
                 {/* Sidebar Filters */}
@@ -226,6 +219,25 @@ const Notes = () => {
                             <Search size={14} className="text-primary" />
                             Filtering by: <span className="font-bold text-foreground">"{searchTerm}"</span>
                             <button onClick={() => setSearchTerm('')} className="ml-auto text-[11px] font-bold uppercase hover:text-primary transition-colors">Clear Filter</button>
+                        </div>
+                    )}
+
+                    {selectedFolder && (
+                        <div className="flex items-center gap-2 text-[13px] text-muted-foreground bg-primary/5 px-3 py-1.5 rounded-[3px] border border-primary/20">
+                            <FolderTree size={14} className="text-primary" />
+                            Active Directory: <span className="font-bold text-foreground">Filtered View</span>
+                            <button
+                                onClick={() => {
+                                    setSelectedFolder(null);
+                                    // Remove 'folder' param from URL without page reload
+                                    const url = new URL(window.location);
+                                    url.searchParams.delete('folder');
+                                    window.history.replaceState({}, '', url);
+                                }}
+                                className="ml-auto text-[11px] font-bold uppercase hover:text-primary transition-colors"
+                            >
+                                Clear Directory
+                            </button>
                         </div>
                     )}
 

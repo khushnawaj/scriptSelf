@@ -6,16 +6,22 @@ const Note = require('../models/Note');
 // @access    Private
 exports.getFolders = async (req, res, next) => {
     try {
-        const folders = await Folder.find({ user: req.user.id })
+        if (!req.user) {
+            return res.status(401).json({ success: false, error: 'User not found in request' });
+        }
+
+        console.log(`[getFolders] DEBUG: Fetching folders for ${req.user._id}`);
+
+        const folders = await Folder.find({ user: req.user._id })
             .sort({ order: 1, createdAt: -1 });
 
         // Get note count for each folder
         const foldersWithCounts = await Promise.all(
             folders.map(async (folder) => {
-                const noteCount = await Note.countDocuments({ folder: folder._id });
+                const count = await Note.countDocuments({ folder: folder._id });
                 return {
                     ...folder.toObject(),
-                    noteCount
+                    noteCount: count
                 };
             })
         );
@@ -26,7 +32,11 @@ exports.getFolders = async (req, res, next) => {
             data: foldersWithCounts
         });
     } catch (err) {
-        next(err);
+        console.error('[getFolders] ERROR:', err);
+        res.status(500).json({
+            success: false,
+            error: err.message || 'Internal Server Error'
+        });
     }
 };
 
@@ -35,7 +45,11 @@ exports.getFolders = async (req, res, next) => {
 // @access    Private
 exports.createFolder = async (req, res, next) => {
     try {
-        req.body.user = req.user.id;
+        if (!req.user) {
+            return res.status(401).json({ success: false, error: 'User not found in request' });
+        }
+
+        req.body.user = req.user._id;
 
         const folder = await Folder.create(req.body);
 
@@ -44,7 +58,8 @@ exports.createFolder = async (req, res, next) => {
             data: folder
         });
     } catch (err) {
-        next(err);
+        console.error('[createFolder] ERROR:', err);
+        res.status(500).json({ success: false, error: err.message || 'Server Error' });
     }
 };
 
@@ -53,6 +68,10 @@ exports.createFolder = async (req, res, next) => {
 // @access    Private
 exports.updateFolder = async (req, res, next) => {
     try {
+        if (!req.user) {
+            return res.status(401).json({ success: false, error: 'User not found' });
+        }
+
         let folder = await Folder.findById(req.params.id);
 
         if (!folder) {
@@ -63,7 +82,7 @@ exports.updateFolder = async (req, res, next) => {
         }
 
         // Make sure user owns folder
-        if (folder.user.toString() !== req.user.id) {
+        if (folder.user.toString() !== req.user._id.toString()) {
             return res.status(403).json({
                 success: false,
                 message: 'Not authorized to update this folder'
@@ -80,7 +99,8 @@ exports.updateFolder = async (req, res, next) => {
             data: folder
         });
     } catch (err) {
-        next(err);
+        console.error('[updateFolder] ERROR:', err);
+        res.status(500).json({ success: false, error: err.message || 'Server Error' });
     }
 };
 

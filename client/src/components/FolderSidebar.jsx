@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Folder, FolderPlus, FolderOpen, Edit2, Trash2, Plus, ChevronRight, ChevronDown } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 
-const FolderSidebar = ({ onSelectFolder, selectedFolderId, onRefresh }) => {
+const FolderSidebar = ({ onSelectFolder, selectedFolderId, onRefresh, className = '' }) => {
     const [folders, setFolders] = useState([]);
     const [isCreating, setIsCreating] = useState(false);
     const [newFolderName, setNewFolderName] = useState('');
@@ -11,6 +11,17 @@ const FolderSidebar = ({ onSelectFolder, selectedFolderId, onRefresh }) => {
 
     useEffect(() => {
         fetchFolders();
+
+        const handleFolderCreated = (e) => {
+            if (e.detail) {
+                setFolders(prev => [...prev, e.detail]);
+            } else {
+                fetchFolders();
+            }
+        };
+
+        window.addEventListener('folderCreated', handleFolderCreated);
+        return () => window.removeEventListener('folderCreated', handleFolderCreated);
     }, []);
 
     const fetchFolders = async () => {
@@ -102,7 +113,7 @@ const FolderSidebar = ({ onSelectFolder, selectedFolderId, onRefresh }) => {
     };
 
     return (
-        <div className="w-60 border-r border-border bg-card/30 flex flex-col h-full">
+        <div className={`flex flex-col h-full bg-card/30 ${className}`}>
             {/* Header */}
             <div className="p-4 border-b border-border">
                 <div className="flex items-center justify-between mb-3">
@@ -216,10 +227,20 @@ const FolderSidebar = ({ onSelectFolder, selectedFolderId, onRefresh }) => {
                 ))}
 
                 {folders.length === 0 && !isCreating && (
-                    <div className="text-center py-8 text-muted-foreground">
-                        <Folder size={32} className="mx-auto mb-2 opacity-30" />
-                        <p className="text-xs">No folders yet</p>
-                        <p className="text-[10px] mt-1">Click + to create one</p>
+                    <div className="flex flex-col items-center justify-center py-12 px-4 text-center animate-in fade-in zoom-in duration-500">
+                        <div className="w-12 h-12 bg-primary/10 rounded-2xl flex items-center justify-center mb-4">
+                            <FolderOpen size={24} className="text-primary opacity-40" />
+                        </div>
+                        <h4 className="text-[13px] font-bold text-foreground mb-1">Architecture Empty</h4>
+                        <p className="text-[11px] text-muted-foreground leading-relaxed max-w-[160px] mx-auto mb-4">
+                            No directories found in your technical library.
+                        </p>
+                        <button
+                            onClick={() => setIsCreating(true)}
+                            className="text-[11px] font-black uppercase tracking-widest text-primary hover:text-primary/80 transition-all flex items-center gap-2"
+                        >
+                            <Plus size={14} /> Initialize Root
+                        </button>
                     </div>
                 )}
             </div>

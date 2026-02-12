@@ -97,10 +97,10 @@ exports.getNotes = async (req, res, next) => {
     } else if (req.query.public === 'false' && req.user) {
       // Explicitly requesting private notes (only mine)
       filter.isPublic = false;
-      filter.user = req.user.id;
+      filter.user = req.user._id;
     } else if (req.user) {
       // Default: My notes (Public + Private)
-      filter.user = req.user.id;
+      filter.user = req.user._id;
     } else {
       // Guest user requesting non- public data -> Return empty
       return res.status(200).json({
@@ -118,15 +118,21 @@ exports.getNotes = async (req, res, next) => {
     }
 
     // 2.5 Folder Filter
-    if (req.query.folder) {
-      filter.folder = req.query.folder;
+    let folderParam = req.query.folder;
+    if (Array.isArray(folderParam)) folderParam = folderParam[0];
+
+    if (folderParam && folderParam !== 'null' && folderParam !== 'undefined') {
+      filter.folder = folderParam;
     }
 
     // 3. Type Filter
-    if (req.query.type === 'issue') {
+    let typeParam = req.query.type;
+    if (Array.isArray(typeParam)) typeParam = typeParam[0];
+
+    if (typeParam === 'issue') {
       filter.type = 'issue';
-    } else if (req.query.type) {
-      filter.type = req.query.type;
+    } else if (typeParam) {
+      filter.type = typeParam;
     } else {
       // Default: Exclude issues from the technical library/general feed
       filter.type = { $ne: 'issue' };
@@ -190,7 +196,11 @@ exports.getNotes = async (req, res, next) => {
       data: notes
     });
   } catch (err) {
-    next(err);
+    console.error('[getNotes] ERROR:', err);
+    res.status(400).json({
+      success: false,
+      error: err.message || 'Notes fetch failed'
+    });
   }
 };
 
@@ -210,6 +220,8 @@ exports.cloneNote = async (req, res, next) => {
       return res.status(403).json({ success: false, error: 'Unauthorized to clone this private record' });
     }
 
+    const { folderId } = req.body;
+
     const clonedNote = await Note.create({
       title: `${originalNote.title} (Clone)`,
       content: originalNote.content,
@@ -218,6 +230,7 @@ exports.cloneNote = async (req, res, next) => {
       tags: originalNote.tags,
       category: originalNote.category,
       user: req.user.id,
+      folder: folderId || undefined,
       isPublic: false, // Clones are private by default
       videoUrl: originalNote.videoUrl,
       attachment: originalNote.attachment,
@@ -311,11 +324,21 @@ exports.createNote = async (req, res, next) => {
 
     // Ensure type is lowercase and trimmed
     if (req.body.type) {
+      if (Array.isArray(req.body.type)) req.body.type = req.body.type[0];
       req.body.type = String(req.body.type).toLowerCase().trim();
+    }
+
+    // Ensure folder is a single string
+    if (req.body.folder) {
+      if (Array.isArray(req.body.folder)) req.body.folder = req.body.folder[0];
+      if (req.body.folder === 'null' || req.body.folder === 'undefined') {
+        req.body.folder = null;
+      }
     }
 
     if (!req.body.title) req.body.title = "Untitled Note";
 
+    console.log(`[API] Creating Note. User: ${req.user.id}, Folder: ${req.body.folder}, Type: ${req.body.type}`);
     const note = await Note.create(req.body);
 
     if (req.body.content) {
@@ -390,7 +413,15 @@ exports.updateNote = async (req, res, next) => {
     }
 
     if (req.body.type) {
+      if (Array.isArray(req.body.type)) req.body.type = req.body.type[0];
       req.body.type = String(req.body.type).toLowerCase().trim();
+    }
+
+    if (req.body.folder) {
+      if (Array.isArray(req.body.folder)) req.body.folder = req.body.folder[0];
+      if (req.body.folder === 'null' || req.body.folder === 'undefined') {
+        req.body.folder = null;
+      }
     }
 
     console.log(`[API-DEBUG] Updating Note ${req.params.id}. New Type: ${req.body.type}`);
@@ -797,43 +828,3 @@ exports.getSharedNotes = async (req, res, next) => {
   }
 };
 
-// @desc      Clone public note to personal library
-// @route     POST /api/v1/notes/:id/clone
-// @access    Private
-exports.cloneNote = async (req, res, next) => {
-  try {
-    const originalNote = await Note.findById(req.params.id);
-
-    if (!originalNote) {
-      return res.status(404).json({ success: false, error: 'Record not found' });
-    }
-
-    // Check permissions
-    if (!originalNote.isPublic && originalNote.user.toString() !== req.user.id) {
-      return res.status(403).json({ success: false, error: 'Cannot clone private records' });
-    }
-
-    const { folderId } = req.body;
-
-    const noteData = {
-      user: req.user.id,
-      title: `${originalNote.title} (Clone)`,
-      content: originalNote.content,
-      type: originalNote.type,
-      category: originalNote.category,
-      tags: originalNote.tags,
-      isPublic: false,
-      folder: folderId || undefined,
-      videoUrl: originalNote.videoUrl
-    };
-
-    const note = await Note.create(noteData);
-
-    res.status(201).json({
-      success: true,
-      data: note
-    });
-  } catch (err) {
-    next(err);
-  }
-};

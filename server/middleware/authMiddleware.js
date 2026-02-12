@@ -27,6 +27,10 @@ exports.protect = async (req, res, next) => {
 
     req.user = await User.findById(decoded.id);
 
+    if (!req.user) {
+      return res.status(401).json({ success: false, error: 'User not found' });
+    }
+
     next();
   } catch (err) {
     return res.status(401).json({ success: false, error: 'Not authorized to access this route' });
@@ -66,9 +70,13 @@ exports.detectUser = async (req, res, next) => {
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     req.user = await User.findById(decoded.id);
+    if (!req.user) {
+      req.user = null;
+    }
     next();
   } catch (err) {
-    // If token is invalid, just proceed as guest
+    console.log('[detectUser] Auth suppressed (Guest mode)', err.message);
+    req.user = null;
     next();
   }
 };

@@ -6,6 +6,7 @@
 @theme {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+
   --color-card: var(--card);
   --color-card-foreground: var(--card-foreground);
   --color-primary: var(--primary);
@@ -664,6 +665,12 @@ body.zen-mode main.layout-full-width {
   100% {
     transform: translateY(100vh) rotate(720deg) scale(0.5);
     opacity: 0;
+  }
+}
+
+@layer base {
+  body {
+    overflow-x: hidden;
   }
 }
 
