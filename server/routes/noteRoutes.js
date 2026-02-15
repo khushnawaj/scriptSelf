@@ -14,7 +14,6 @@ const {
   deleteComment,
   togglePin,
   shareNote,
-  shareNote,
   getSharedNotes,
   getNetworkFeed
 } = require('../controllers/noteController');

@@ -53,6 +53,9 @@ const Profile = () => {
         username: '',
         email: '',
         bio: '',
+        headline: '',
+        experience: [],
+        skills: [],
         avatar: '',
         socialLinks: {
             github: '',
@@ -68,12 +71,18 @@ const Profile = () => {
     const [showKebab, setShowKebab] = useState(false);
     const [modalData, setModalData] = useState({ isOpen: false, type: '', title: '' });
 
+    // UI State for array inputs
+    const [newSkill, setNewSkill] = useState('');
+
     useEffect(() => {
         if (user) {
             setFormData({
                 username: user.username || '',
                 email: user.email || '',
                 bio: user.bio || '',
+                headline: user.headline || '',
+                experience: user.experience || [],
+                skills: user.skills || [],
                 avatar: user.avatar || '',
                 socialLinks: {
                     github: user.socialLinks?.github || '',
@@ -94,6 +103,27 @@ const Profile = () => {
             dispatch(reset());
         }
     }, [isSuccess, isEditing, dispatch]);
+
+    const handleAddSkill = (e) => {
+        e.preventDefault(); // Prevent form submission
+        if (!newSkill.trim()) return;
+        if (formData.skills.some(s => s.name.toLowerCase() === newSkill.trim().toLowerCase())) {
+            toast.error('Skill already exists');
+            return;
+        }
+        setFormData(prev => ({
+            ...prev,
+            skills: [...prev.skills, { name: newSkill.trim(), endorsements: [] }]
+        }));
+        setNewSkill('');
+    };
+
+    const handleRemoveSkill = (skillName) => {
+        setFormData(prev => ({
+            ...prev,
+            skills: prev.skills.filter(s => s.name !== skillName)
+        }));
+    };
 
     const onChange = (e) => {
         const { name, value } = e.target;
@@ -134,6 +164,8 @@ const Profile = () => {
         updateData.append('username', formData.username);
         updateData.append('email', formData.email);
         updateData.append('bio', formData.bio);
+        updateData.append('headline', formData.headline);
+        updateData.append('skills', JSON.stringify(formData.skills));
         updateData.append('socialLinks', JSON.stringify(formData.socialLinks));
         updateData.append('customLinks', JSON.stringify(formData.customLinks));
         if (formData.avatarFile) updateData.append('avatar', formData.avatarFile);
@@ -218,6 +250,9 @@ const Profile = () => {
                                     {user?.username}
                                     {user?.role === 'admin' && <ShieldCheck size={18} className="text-primary" />}
                                 </h1>
+                                {user?.headline && (
+                                    <p className="text-xs text-muted-foreground font-medium italic">{user.headline}</p>
+                                )}
                                 <div className="space-y-2">
                                     <p className="text-[10px] text-primary font-black uppercase tracking-widest flex items-center justify-center gap-1.5">
                                         {user?.reputation >= 1000 ? 'Grandmaster Architect' :
@@ -364,6 +399,29 @@ const Profile = () => {
                             </div>
                         </div>
                     </div>
+                    {/* Skills Repository */}
+                    <div className="bg-card border border-border rounded-xl p-5 space-y-4">
+                        <h3 className="text-[11px] font-bold uppercase tracking-widest text-primary flex items-center gap-2">
+                            <Layers size={14} /> Professional Skills
+                        </h3>
+                        {user?.skills?.length > 0 ? (
+                            <div className="flex flex-wrap gap-2">
+                                {user.skills.map((skill, idx) => (
+                                    <div key={idx} className="group relative bg-secondary/50 border border-border px-3 py-1.5 rounded-lg flex items-center gap-2 hover:border-primary/30 transition-colors">
+                                        <span className="text-xs font-bold text-foreground">{skill.name}</span>
+                                        {skill.endorsements?.length > 0 && (
+                                            <span className="flex items-center gap-1 text-[9px] font-black text-primary bg-primary/10 px-1.5 py-0.5 rounded ml-1">
+                                                <CheckCircle size={8} /> {skill.endorsements.length}
+                                            </span>
+                                        )}
+                                    </div>
+                                ))}
+                            </div>
+                        ) : (
+                            <p className="text-xs text-muted-foreground italic">No skills listed yet.</p>
+                        )}
+                    </div>
+
                     {/* Design System Picker - Minimal & Calm */}
                     <div className="bg-card border border-border rounded-xl p-6 space-y-5 shadow-sm">
                         <div className="flex items-center justify-between">
@@ -446,6 +504,10 @@ const Profile = () => {
                                     <label className="text-[10px] font-bold uppercase text-muted-foreground ml-1">Account Bio</label>
                                     <textarea name="bio" value={formData.bio} onChange={onChange} className="w-full bg-background border border-border rounded-md p-4 text-sm min-h-[140px] outline-none focus:ring-1 focus:ring-primary" placeholder="Describe your technical journey..." />
                                 </div>
+                                <div className="space-y-1.5">
+                                    <label className="text-[10px] font-bold uppercase text-muted-foreground ml-1">Professional Headline</label>
+                                    <input name="headline" value={formData.headline} onChange={onChange} className="w-full bg-background border border-border rounded-md px-4 py-2.5 text-sm outline-none focus:ring-1 focus:ring-primary" placeholder="e.g. Senior Logic Architect" />
+                                </div>
 
                                 <div className="space-y-4 pt-4 border-t border-border">
                                     <h3 className="text-[10px] font-bold uppercase tracking-widest text-primary">External Handles</h3>
@@ -462,6 +524,29 @@ const Profile = () => {
                                             <label className="text-[9px] font-bold uppercase text-muted-foreground ml-1">Twitter Handle</label>
                                             <input name="socialLinks.twitter" value={formData.socialLinks.twitter} onChange={onChange} className="w-full bg-background border border-border rounded-md px-3 py-2 text-xs outline-none focus:ring-1 focus:ring-primary" placeholder="Twitter Username" />
                                         </div>
+                                    </div>
+                                </div>
+
+                                <div className="space-y-4 pt-4 border-t border-border">
+                                    <h3 className="text-[10px] font-bold uppercase tracking-widest text-primary">Core Competencies</h3>
+                                    <div className="flex gap-2">
+                                        <input
+                                            value={newSkill}
+                                            onChange={(e) => setNewSkill(e.target.value)}
+                                            onKeyDown={(e) => e.key === 'Enter' && handleAddSkill(e)}
+                                            className="flex-1 bg-background border border-border rounded-md px-3 py-2 text-xs outline-none focus:ring-1 focus:ring-primary"
+                                            placeholder="Type a skill and press Enter (e.g. React, Node.js)"
+                                        />
+                                        <button type="button" onClick={handleAddSkill} className="px-4 py-2 bg-secondary border border-border rounded-md text-xs font-bold hover:bg-secondary/80"><Plus size={14} /></button>
+                                    </div>
+                                    <div className="flex flex-wrap gap-2 min-h-[40px] p-2 bg-secondary/20 rounded-lg border border-border/50">
+                                        {formData.skills.map((skill, idx) => (
+                                            <div key={idx} className="flex items-center gap-2 bg-background border border-border px-2 py-1 rounded text-xs font-medium shadow-sm group">
+                                                {skill.name}
+                                                <button type="button" onClick={() => handleRemoveSkill(skill.name)} className="text-muted-foreground hover:text-rose-500 opacity-0 group-hover:opacity-100 transition-opacity"><X size={12} /></button>
+                                            </div>
+                                        ))}
+                                        {formData.skills.length === 0 && <span className="text-[10px] text-muted-foreground italic self-center px-2">No skills added</span>}
                                     </div>
                                 </div>
 

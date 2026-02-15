@@ -5,7 +5,7 @@ import api from '../utils/api';
 import {
     Github, Linkedin, Twitter, Globe, ExternalLink,
     Calendar, ChevronRight, ShieldCheck, Mail,
-    ArrowLeft, Trophy, Flame, X
+    ArrowLeft, Trophy, Flame, X, Layers, CheckCircle, Plus
 } from 'lucide-react';
 import { useDispatch, useSelector } from 'react-redux';
 import { followUser, unfollowUser } from '../features/auth/authSlice';
@@ -49,6 +49,30 @@ const PublicProfile = () => {
                     followers: [...prev.profile.followers, currentUser._id]
                 }
             }));
+        }
+    };
+
+    const handleEndorse = async (skillId) => {
+        if (!currentUser) {
+            toast.error("Please login to endorse skills");
+            return;
+        }
+        try {
+            const profileId = data.profile._id;
+            const res = await api.put(`/users/${profileId}/skills/${skillId}/endorse`);
+
+            setData(prev => ({
+                ...prev,
+                profile: {
+                    ...prev.profile,
+                    skills: prev.profile.skills.map(s =>
+                        s._id === skillId ? res.data.data : s
+                    )
+                }
+            }));
+            toast.success("Skill endorsement updated");
+        } catch (err) {
+            toast.error(err.response?.data?.error || "Failed to endorse");
         }
     };
 
@@ -137,6 +161,7 @@ const PublicProfile = () => {
                                     <h1 className="text-xl sm:text-2xl font-black text-foreground tracking-tight whitespace-nowrap overflow-hidden text-ellipsis italic">
                                         {profile.username}
                                     </h1>
+                                    {profile.headline && <p className="text-xs text-muted-foreground font-medium italic">{profile.headline}</p>}
                                 </div>
 
                                 <div className="space-y-4 pt-6 border-t border-border/50 mt-2 w-full">
@@ -264,6 +289,39 @@ const PublicProfile = () => {
                             </div>
                         </div>
 
+                        {/* Skills Repository */}
+                        <div className="bg-card border border-border rounded-xl p-5 space-y-4">
+                            <h3 className="text-[11px] font-bold uppercase tracking-widest text-primary flex items-center gap-2">
+                                <Layers size={14} /> Professional Skills
+                            </h3>
+                            {profile.skills?.length > 0 ? (
+                                <div className="flex flex-wrap gap-2">
+                                    {profile.skills.map((skill) => {
+                                        const isEndorsed = skill.endorsements?.includes(currentUser?._id);
+                                        return (
+                                            <div key={skill._id} className="group relative bg-secondary/50 border border-border px-3 py-1.5 rounded-lg flex items-center gap-2 hover:border-primary/30 transition-colors">
+                                                <span className="text-xs font-bold text-foreground">{skill.name}</span>
+                                                <div className="flex items-center gap-1 border-l border-border/50 pl-2 ml-1">
+                                                    <span className="text-[9px] font-black text-muted-foreground">{skill.endorsements?.length || 0}</span>
+                                                    {currentUser && currentUser._id !== profile._id && (
+                                                        <button
+                                                            onClick={() => handleEndorse(skill._id)}
+                                                            className={`p-0.5 rounded transition-all ${isEndorsed ? 'text-primary' : 'text-muted-foreground hover:text-primary'}`}
+                                                            title={isEndorsed ? "Remove Endorsement" : "Endorse Skill"}
+                                                        >
+                                                            <CheckCircle size={10} className={isEndorsed ? "fill-primary/20" : ""} />
+                                                        </button>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+                            ) : (
+                                <p className="text-xs text-muted-foreground italic">No skills listed yet.</p>
+                            )}
+                        </div>
+
                         {/* Arcade Progress */}
                         <div className="bg-card border border-border rounded-xl p-5 space-y-5 shadow-sm">
                             <h3 className="text-[11px] font-bold uppercase tracking-widest text-primary flex items-center gap-2">
@@ -367,8 +425,8 @@ const PublicProfile = () => {
                             </div>
                         </section>
                     </main>
-                </div>
-            </div>
+                </div >
+            </div >
 
             <UserListModal
                 isOpen={modalData.isOpen}
