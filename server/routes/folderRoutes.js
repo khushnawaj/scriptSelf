@@ -4,7 +4,8 @@ const {
     createFolder,
     updateFolder,
     deleteFolder,
-    moveNoteToFolder
+    moveNoteToFolder,
+    reorderFolders
 } = require('../controllers/folderController');
 
 const router = express.Router();
@@ -17,6 +18,8 @@ router.use(protect);
 router.route('/')
     .get(getFolders)
     .post(createFolder);
+
+router.put('/reorder', reorderFolders);
 
 router.route('/:id')
     .put(updateFolder)

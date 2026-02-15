@@ -10,33 +10,41 @@ exports.getFolders = async (req, res, next) => {
             return res.status(401).json({ success: false, error: 'User not found in request' });
         }
 
-        console.log(`[getFolders] DEBUG: Fetching folders for ${req.user._id}`);
-
         const folders = await Folder.find({ user: req.user._id })
-            .sort({ order: 1, createdAt: -1 });
+            .sort({ order: 1, createdAt: -1 })
+            .populate('noteCount');
 
-        // Get note count for each folder
-        const foldersWithCounts = await Promise.all(
-            folders.map(async (folder) => {
-                const count = await Note.countDocuments({ folder: folder._id });
-                return {
-                    ...folder.toObject(),
-                    noteCount: count
-                };
-            })
-        );
+        // Transform into tree if requested
+        if (req.query.tree === 'true') {
+            const folderMap = {};
+            const tree = [];
+
+            folders.forEach(folder => {
+                folderMap[folder._id] = { ...folder.toObject(), children: [] };
+            });
+
+            folders.forEach(folder => {
+                if (folder.parent && folderMap[folder.parent]) {
+                    folderMap[folder.parent].children.push(folderMap[folder._id]);
+                } else {
+                    tree.push(folderMap[folder._id]);
+                }
+            });
+
+            return res.status(200).json({
+                success: true,
+                count: tree.length,
+                data: tree
+            });
+        }
 
         res.status(200).json({
             success: true,
             count: folders.length,
-            data: foldersWithCounts
+            data: folders
         });
     } catch (err) {
-        console.error('[getFolders] ERROR:', err);
-        res.status(500).json({
-            success: false,
-            error: err.message || 'Internal Server Error'
-        });
+        next(err);
     }
 };
 
@@ -45,11 +53,18 @@ exports.getFolders = async (req, res, next) => {
 // @access    Private
 exports.createFolder = async (req, res, next) => {
     try {
-        if (!req.user) {
-            return res.status(401).json({ success: false, error: 'User not found in request' });
-        }
-
         req.body.user = req.user._id;
+
+        // If parent folder is specified, check if it exists and belongs to user
+        if (req.body.parent) {
+            const parentFolder = await Folder.findById(req.body.parent);
+            if (!parentFolder || parentFolder.user.toString() !== req.user.id) {
+                return res.status(400).json({
+                    success: false,
+                    message: 'Invalid parent folder'
+                });
+            }
+        }
 
         const folder = await Folder.create(req.body);
 
@@ -58,8 +73,7 @@ exports.createFolder = async (req, res, next) => {
             data: folder
         });
     } catch (err) {
-        console.error('[createFolder] ERROR:', err);
-        res.status(500).json({ success: false, error: err.message || 'Server Error' });
+        next(err);
     }
 };
 
@@ -68,10 +82,6 @@ exports.createFolder = async (req, res, next) => {
 // @access    Private
 exports.updateFolder = async (req, res, next) => {
     try {
-        if (!req.user) {
-            return res.status(401).json({ success: false, error: 'User not found' });
-        }
-
         let folder = await Folder.findById(req.params.id);
 
         if (!folder) {
@@ -89,6 +99,14 @@ exports.updateFolder = async (req, res, next) => {
             });
         }
 
+        // Prevent circular dependency if parent is being updated
+        if (req.body.parent && req.body.parent === req.params.id) {
+            return res.status(400).json({
+                success: false,
+                message: 'Folder cannot be its own parent'
+            });
+        }
+
         folder = await Folder.findByIdAndUpdate(req.params.id, req.body, {
             new: true,
             runValidators: true
@@ -99,8 +117,7 @@ exports.updateFolder = async (req, res, next) => {
             data: folder
         });
     } catch (err) {
-        console.error('[updateFolder] ERROR:', err);
-        res.status(500).json({ success: false, error: err.message || 'Server Error' });
+        next(err);
     }
 };
 
@@ -126,10 +143,17 @@ exports.deleteFolder = async (req, res, next) => {
             });
         }
 
-        // Move notes in this folder to root (folder = null)
+        // Handle subfolders - move them to root or delete them?
+        // Let's move them to the parent of this folder
+        await Folder.updateMany(
+            { parent: folder._id },
+            { $set: { parent: folder.parent } }
+        );
+
+        // Move notes in this folder to the parent folder
         await Note.updateMany(
             { folder: folder._id },
-            { $set: { folder: null } }
+            { $set: { folder: folder.parent } }
         );
 
         await folder.deleteOne();
@@ -184,10 +208,43 @@ exports.moveNoteToFolder = async (req, res, next) => {
     }
 };
 
+// @desc      Reorder folders
+// @route     PUT /api/v1/folders/reorder
+// @access    Private
+exports.reorderFolders = async (req, res, next) => {
+    try {
+        const { folderIds } = req.body; // Array of IDs in new order
+
+        if (!Array.isArray(folderIds)) {
+            return res.status(400).json({
+                success: false,
+                message: 'Please provide an array of folder IDs'
+            });
+        }
+
+        const updates = folderIds.map((id, index) => {
+            return Folder.updateOne(
+                { _id: id, user: req.user.id },
+                { $set: { order: index } }
+            );
+        });
+
+        await Promise.all(updates);
+
+        res.status(200).json({
+            success: true,
+            message: 'Folders reordered successfully'
+        });
+    } catch (err) {
+        next(err);
+    }
+};
+
 module.exports = {
     getFolders: exports.getFolders,
     createFolder: exports.createFolder,
     updateFolder: exports.updateFolder,
     deleteFolder: exports.deleteFolder,
-    moveNoteToFolder: exports.moveNoteToFolder
+    moveNoteToFolder: exports.moveNoteToFolder,
+    reorderFolders: exports.reorderFolders
 };

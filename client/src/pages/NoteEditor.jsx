@@ -129,11 +129,31 @@ const NoteEditor = () => {
 
     const fetchFolders = async () => {
         try {
-            const res = await api.get('/folders');
-            if (res.data.success) setFolders(res.data.data);
+            const res = await api.get('/folders?tree=true');
+            if (res.data.success) {
+                const flattened = flattenFolders(res.data.data);
+                setFolders(flattened);
+            }
         } catch (err) {
             console.error('Failed to fetch folders', err);
+            toast.error('Failed to sync folder structure');
         }
+    };
+
+    const flattenFolders = (nodes, depth = 0) => {
+        let flat = [];
+        nodes.forEach(node => {
+            flat.push({
+                _id: node._id,
+                name: node.name,
+                depth,
+                displayText: `${'\u00A0'.repeat(depth * 3)}${depth > 0 ? '↳ ' : ''}${node.name}`
+            });
+            if (node.children && node.children.length > 0) {
+                flat = [...flat, ...flattenFolders(node.children, depth + 1)];
+            }
+        });
+        return flat;
     };
 
     const location = useLocation();
@@ -566,7 +586,9 @@ const NoteEditor = () => {
                                     >
                                         <option value="">No Folder (Root)</option>
                                         {folders.map((folder) => (
-                                            <option key={folder._id} value={folder._id}>{folder.name}</option>
+                                            <option key={folder._id} value={folder._id}>
+                                                {folder.displayText || folder.name}
+                                            </option>
                                         ))}
                                     </select>
                                     <Folder size={14} className="absolute left-3 top-2.5 text-muted-foreground pointer-events-none" />
