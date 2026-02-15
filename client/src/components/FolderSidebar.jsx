@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Folder, FolderPlus, FolderOpen, Edit2, Trash2, Plus, ChevronRight, ChevronDown, MoreVertical } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import { motion, AnimatePresence } from 'framer-motion';
+import api from '../utils/api';
 
 const FolderSidebar = ({ onSelectFolder, selectedFolderId, onRefresh, className = '' }) => {
     const [folders, setFolders] = useState([]);
@@ -16,6 +17,7 @@ const FolderSidebar = ({ onSelectFolder, selectedFolderId, onRefresh, className 
         fetchFolders();
 
         const handleFolderCreated = (e) => {
+            console.log('[FolderSidebar] Syncing folders due to event');
             fetchFolders();
         };
 
@@ -26,20 +28,16 @@ const FolderSidebar = ({ onSelectFolder, selectedFolderId, onRefresh, className 
     const fetchFolders = async () => {
         setIsLoading(true);
         try {
-            const res = await fetch('/api/v1/folders?tree=true', {
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`
-                }
-            });
-            const data = await res.json();
-            if (data.success) {
-                setFolders(data.data);
+            const res = await api.get('/folders?tree=true');
+            if (res.data.success) {
+                setFolders(res.data.data);
             } else {
-                toast.error(data.error || 'Failed to load folders');
+                toast.error(res.data.error || 'Failed to load folders');
             }
         } catch (err) {
             console.error('Failed to fetch folders:', err);
-            toast.error('Connection error while fetching folders');
+            // Don't show toast if it's a routine fetch to avoid spam, unless it's mount
+            if (folders.length === 0) toast.error('Connection error while fetching folders');
         } finally {
             setIsLoading(false);
         }
@@ -147,8 +145,8 @@ const FolderSidebar = ({ onSelectFolder, selectedFolderId, onRefresh, className 
             <div className="flex flex-col">
                 <div
                     className={`group flex items-center gap-1.5 px-2 py-1.5 rounded-md transition-all cursor-pointer ${isSelected
-                            ? 'bg-primary/10 text-primary font-semibold ring-1 ring-primary/20'
-                            : 'hover:bg-accent/50 text-muted-foreground'
+                        ? 'bg-primary/10 text-primary font-semibold ring-1 ring-primary/20'
+                        : 'hover:bg-accent/50 text-muted-foreground'
                         }`}
                     style={{ marginLeft: `${depth * 12}px` }}
                     onClick={() => onSelectFolder(folder._id)}
