@@ -36,6 +36,8 @@ import {
 import { useTheme } from '../context/ThemeContext';
 import { motion } from 'framer-motion';
 
+import Pagination from '../components/Pagination';
+
 const AdminDashboard = () => {
     const { user } = useSelector((state) => state.auth);
     const navigate = useNavigate();
@@ -59,6 +61,13 @@ const AdminDashboard = () => {
     const { toggleDesignSystem, themeAssets } = useTheme();
     const ThemeIcon = themeAssets?.icons?.hero || Shield;
 
+    // Pagination States
+    const [userPage, setUserPage] = useState(1);
+    const [userTotal, setUserTotal] = useState(0);
+    const [notePage, setNotePage] = useState(1);
+    const [noteTotal, setNoteTotal] = useState(0);
+    const limit = 10;
+
 
     useEffect(() => {
         if (!user || user.role !== 'admin') {
@@ -66,9 +75,60 @@ const AdminDashboard = () => {
             navigate('/dashboard');
             return;
         }
-        fetchData();
+        fetchOverviewStats();
         fetchGlobalSettings();
     }, [user, navigate]);
+
+    useEffect(() => {
+        if (activeTab === 'users') fetchUsers();
+        if (activeTab === 'content' || activeTab === 'issues') fetchNotes();
+    }, [userPage, notePage, activeTab]);
+
+    const fetchOverviewStats = async () => {
+        try {
+            const [usersRes, notesRes, statsRes] = await Promise.all([
+                api.get('/users?limit=5'),
+                api.get('/notes/admin/all?limit=5'),
+                api.get('/users/admin/stats')
+            ]);
+            setUsers(usersRes.data.data);
+            setNotes(notesRes.data.data);
+
+            const statsData = statsRes.data.data;
+            setStats({
+                totalUsers: statsData.totalUsers,
+                totalNotes: statsData.totalNotes,
+                totalIssues: statsData.totalIssues,
+                averageReputation: statsData.averageReputation,
+                activeToday: statsData.activeToday,
+                totalMessages: statsData.totalMessages
+            });
+        } catch (error) {
+            console.error('Overview fetch failed', error);
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    const fetchUsers = async () => {
+        try {
+            const { data } = await api.get(`/users?page=${userPage}&limit=${limit}`);
+            setUsers(data.data);
+            setUserTotal(data.total);
+        } catch (error) {
+            toast.error('Failed to load users');
+        }
+    };
+
+    const fetchNotes = async () => {
+        try {
+            const { data } = await api.get(`/notes/admin/all?page=${notePage}&limit=${limit}`);
+            setNotes(data.data);
+            setNoteTotal(data.total);
+        } catch (error) {
+            toast.error('Failed to load content');
+        }
+    };
 
     const fetchGlobalSettings = async () => {
         try {
@@ -95,36 +155,12 @@ const AdminDashboard = () => {
 
 
     const fetchData = useCallback(async () => {
-        try {
-            const [usersRes, notesRes] = await Promise.all([
-                api.get('/users'),
-                api.get('/notes/admin/all')
-            ]);
-
-            setUsers(usersRes.data.data);
-            setNotes(notesRes.data.data);
-
-            // Calculate comprehensive stats
-            const totalRep = usersRes.data.data.reduce((acc, u) => acc + (u.reputation || 0), 0);
-            const issuesCount = notesRes.data.data.filter(n => n.type === 'issue').length;
-
-            setStats({
-                totalUsers: usersRes.data.count,
-                totalNotes: notesRes.data.data.length,
-                totalIssues: issuesCount,
-                averageReputation: Math.floor(totalRep / usersRes.data.count) || 0,
-                activeToday: Math.floor(usersRes.data.count * 0.2),
-                totalMessages: 0 // Can be fetched from chat API
-            });
-
-            // Mock activity logs (can be fetched from backend)
-            setIsLoading(false);
-        } catch (error) {
-            console.error(error);
-            toast.error('Failed to load admin data');
-            setIsLoading(false);
-        }
-    }, [user]);
+        setIsLoading(true);
+        await fetchOverviewStats();
+        if (activeTab === 'users') await fetchUsers();
+        if (activeTab === 'content' || activeTab === 'issues') await fetchNotes();
+        setIsLoading(false);
+    }, [activeTab]);
 
     const handleDeleteUser = useCallback(async (id) => {
         if (window.confirm('Are you sure you want to permanently ban and delete this user?')) {
@@ -495,51 +531,63 @@ const AdminDashboard = () => {
                             </tbody>
                         </table>
                     </div>
+                    <Pagination
+                        currentPage={userPage}
+                        totalPages={Math.ceil(userTotal / limit)}
+                        onPageChange={setUserPage}
+                    />
                 </div>
             )}
 
             {(activeTab === 'content' || activeTab === 'issues') && (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {filteredNotes.map(note => (
-                        <motion.div
-                            key={note._id}
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            className="bg-card border border-border rounded-2xl p-6 hover:shadow-lg transition-all"
-                        >
-                            <div className="flex items-start justify-between mb-4">
-                                <h3 className="font-black text-lg line-clamp-2">{note.title}</h3>
-                                {note.isPinned && (
-                                    <Pin size={16} className="text-primary flex-shrink-0" />
-                                )}
-                            </div>
-                            <p className="text-sm text-muted-foreground mb-4 line-clamp-3">
-                                {note.content?.substring(0, 100)}...
-                            </p>
-                            <div className="flex items-center justify-between">
-                                <span className="text-xs text-muted-foreground">
-                                    By {note.author?.username}
-                                </span>
-                                <div className="flex gap-2">
-                                    <button
-                                        onClick={() => handleTogglePin(note._id)}
-                                        className="p-2 hover:bg-primary/10 text-primary rounded-lg transition-colors"
-                                        title={note.isPinned ? 'Unpin' : 'Pin'}
-                                    >
-                                        <Pin size={14} />
-                                    </button>
-                                    <button
-                                        onClick={() => handleDeleteNote(note._id)}
-                                        className="p-2 hover:bg-red-500/10 text-red-500 rounded-lg transition-colors"
-                                        title="Delete"
-                                    >
-                                        <Trash2 size={14} />
-                                    </button>
+                <>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        {filteredNotes.map(note => (
+                            <motion.div
+                                key={note._id}
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                className="bg-card border border-border rounded-2xl p-6 hover:shadow-lg transition-all"
+                            >
+                                <div className="flex items-start justify-between mb-4">
+                                    <h3 className="font-black text-lg line-clamp-2">{note.title}</h3>
+                                    {note.isPinned && (
+                                        <Pin size={16} className="text-primary flex-shrink-0" />
+                                    )}
                                 </div>
-                            </div>
-                        </motion.div>
-                    ))}
-                </div>
+                                <p className="text-sm text-muted-foreground mb-4 line-clamp-3">
+                                    {note.content?.substring(0, 100)}...
+                                </p>
+                                <div className="flex items-center justify-between">
+                                    <span className="text-xs text-muted-foreground">
+                                        By {note.author?.username}
+                                    </span>
+                                    <div className="flex gap-2">
+                                        <button
+                                            onClick={() => handleTogglePin(note._id)}
+                                            className="p-2 hover:bg-primary/10 text-primary rounded-lg transition-colors"
+                                            title={note.isPinned ? 'Unpin' : 'Pin'}
+                                        >
+                                            <Pin size={14} />
+                                        </button>
+                                        <button
+                                            onClick={() => handleDeleteNote(note._id)}
+                                            className="p-2 hover:bg-red-500/10 text-red-500 rounded-lg transition-colors"
+                                            title="Delete"
+                                        >
+                                            <Trash2 size={14} />
+                                        </button>
+                                    </div>
+                                </div>
+                            </motion.div>
+                        ))}
+                    </div>
+                    <Pagination
+                        currentPage={notePage}
+                        totalPages={Math.ceil(noteTotal / limit)}
+                        onPageChange={setNotePage}
+                    />
+                </>
             )}
 
             {activeTab === 'experiments' && (
@@ -636,90 +684,93 @@ const AdminDashboard = () => {
                         </div>
                     </div>
                 </div>
-            )}
+            )
+            }
 
-            {activeTab === 'system' && (
+            {
+                activeTab === 'system' && (
 
-                <div className="space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-400">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div className="bg-card border border-border rounded-2xl p-8 shadow-sm relative overflow-hidden">
-                            <div className="relative z-10">
-                                <h3 className="text-xl font-bold mb-2 flex items-center gap-3">
-                                    <Zap size={24} className="text-primary" />
-                                    Global Theme Management
+                    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-400">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div className="bg-card border border-border rounded-2xl p-8 shadow-sm relative overflow-hidden">
+                                <div className="relative z-10">
+                                    <h3 className="text-xl font-bold mb-2 flex items-center gap-3">
+                                        <Zap size={24} className="text-primary" />
+                                        Global Theme Management
+                                    </h3>
+                                    <p className="text-sm text-muted-foreground mb-8 max-w-md">
+                                        Switch the entire project design system. Theme V1 uses the original Olive/GitHub aesthetic. Theme V2 introduces a modern Indigo/Slate vibrant design with softer edges.
+                                    </p>
+
+                                    <div className="flex items-center gap-6 p-4 bg-muted/20 border border-border/50 rounded-2xl">
+                                        <div className="flex-1">
+                                            <p className="text-xs font-black uppercase tracking-widest text-muted-foreground mb-1">Active Design System</p>
+                                            <p className="text-lg font-bold text-primary">{globalThemeVersion.toUpperCase()}</p>
+                                        </div>
+                                        <div className="flex gap-2">
+                                            {[
+                                                { id: 'v1', name: 'Script Classic' },
+                                                { id: 'v2', name: 'Shelf Modern' },
+                                                { id: 'v3', name: 'Logic Pro' },
+                                                { id: 'v4', name: 'Learning Lab' },
+                                                { id: 'v5', name: 'Stack Dev' }
+                                            ].map(v => (
+
+                                                <button
+                                                    key={v.id}
+                                                    onClick={() => {
+                                                        const nextVersion = v.id;
+                                                        api.put('/system/settings/theme_version', { value: nextVersion });
+                                                        setGlobalThemeVersion(nextVersion);
+                                                        toggleDesignSystem(nextVersion);
+                                                        toast.success(`System Theme updated to ${v.name}`);
+                                                    }}
+                                                    className={`px-4 py-2 rounded-lg text-[10px] font-black uppercase transition-all ${globalThemeVersion === v.id ? 'bg-primary text-white scale-105' : 'bg-secondary/50 text-muted-foreground hover:bg-secondary'}`}
+                                                >
+                                                    {v.name}
+                                                </button>
+                                            ))}
+                                        </div>
+
+                                    </div>
+
+                                </div>
+                                <div className="absolute -right-10 -bottom-10 opacity-5 pointer-events-none">
+                                    <Zap size={200} />
+                                </div>
+                            </div>
+
+                            <div className="bg-card border border-border rounded-2xl p-8 shadow-sm">
+                                <h3 className="text-xl font-bold mb-6 flex items-center gap-3">
+                                    <Shield size={24} className="text-primary" />
+                                    Security & Infrastructure
                                 </h3>
-                                <p className="text-sm text-muted-foreground mb-8 max-w-md">
-                                    Switch the entire project design system. Theme V1 uses the original Olive/GitHub aesthetic. Theme V2 introduces a modern Indigo/Slate vibrant design with softer edges.
-                                </p>
-
-                                <div className="flex items-center gap-6 p-4 bg-muted/20 border border-border/50 rounded-2xl">
-                                    <div className="flex-1">
-                                        <p className="text-xs font-black uppercase tracking-widest text-muted-foreground mb-1">Active Design System</p>
-                                        <p className="text-lg font-bold text-primary">{globalThemeVersion.toUpperCase()}</p>
+                                <div className="space-y-4">
+                                    <div className="flex items-center justify-between p-3 bg-secondary/30 rounded-xl border border-border/50">
+                                        <span className="text-xs font-bold">API Status</span>
+                                        <span className="px-2 py-0.5 bg-green-500/10 text-green-500 text-[10px] font-black rounded uppercase">Operational</span>
                                     </div>
-                                    <div className="flex gap-2">
-                                        {[
-                                            { id: 'v1', name: 'Script Classic' },
-                                            { id: 'v2', name: 'Shelf Modern' },
-                                            { id: 'v3', name: 'Logic Pro' },
-                                            { id: 'v4', name: 'Learning Lab' },
-                                            { id: 'v5', name: 'Stack Dev' }
-                                        ].map(v => (
-
-                                            <button
-                                                key={v.id}
-                                                onClick={() => {
-                                                    const nextVersion = v.id;
-                                                    api.put('/system/settings/theme_version', { value: nextVersion });
-                                                    setGlobalThemeVersion(nextVersion);
-                                                    toggleDesignSystem(nextVersion);
-                                                    toast.success(`System Theme updated to ${v.name}`);
-                                                }}
-                                                className={`px-4 py-2 rounded-lg text-[10px] font-black uppercase transition-all ${globalThemeVersion === v.id ? 'bg-primary text-white scale-105' : 'bg-secondary/50 text-muted-foreground hover:bg-secondary'}`}
-                                            >
-                                                {v.name}
-                                            </button>
-                                        ))}
+                                    <div className="flex items-center justify-between p-3 bg-secondary/30 rounded-xl border border-border/50">
+                                        <span className="text-xs font-bold">Database Mode</span>
+                                        <span className="px-2 py-0.5 bg-blue-500/10 text-blue-500 text-[10px] font-black rounded uppercase">Encrypted</span>
                                     </div>
-
+                                    <div className="flex items-center justify-between p-3 bg-secondary/30 rounded-xl border border-border/50">
+                                        <span className="text-xs font-bold">Auth Provider</span>
+                                        <span className="px-2 py-0.5 bg-amber-500/10 text-amber-500 text-[10px] font-black rounded uppercase">Passport.js / JWT</span>
+                                    </div>
                                 </div>
-
-                            </div>
-                            <div className="absolute -right-10 -bottom-10 opacity-5 pointer-events-none">
-                                <Zap size={200} />
                             </div>
                         </div>
 
-                        <div className="bg-card border border-border rounded-2xl p-8 shadow-sm">
-                            <h3 className="text-xl font-bold mb-6 flex items-center gap-3">
-                                <Shield size={24} className="text-primary" />
-                                Security & Infrastructure
-                            </h3>
-                            <div className="space-y-4">
-                                <div className="flex items-center justify-between p-3 bg-secondary/30 rounded-xl border border-border/50">
-                                    <span className="text-xs font-bold">API Status</span>
-                                    <span className="px-2 py-0.5 bg-green-500/10 text-green-500 text-[10px] font-black rounded uppercase">Operational</span>
-                                </div>
-                                <div className="flex items-center justify-between p-3 bg-secondary/30 rounded-xl border border-border/50">
-                                    <span className="text-xs font-bold">Database Mode</span>
-                                    <span className="px-2 py-0.5 bg-blue-500/10 text-blue-500 text-[10px] font-black rounded uppercase">Encrypted</span>
-                                </div>
-                                <div className="flex items-center justify-between p-3 bg-secondary/30 rounded-xl border border-border/50">
-                                    <span className="text-xs font-bold">Auth Provider</span>
-                                    <span className="px-2 py-0.5 bg-amber-500/10 text-amber-500 text-[10px] font-black rounded uppercase">Passport.js / JWT</span>
-                                </div>
-                            </div>
+                        <div className="bg-gradient-to-br from-primary/5 to-transparent border border-primary/20 rounded-2xl p-6">
+                            <h4 className="font-black text-[10px] uppercase tracking-[0.3em] mb-4 text-primary">System Notice</h4>
+                            <p className="text-xs text-muted-foreground leading-relaxed">
+                                Theme changes are propagated instantly to all active sessions via the context provider. The Design System flag controls CSS variable injections and layout utility classes. No functional changes are performed during theme hot-swaps.
+                            </p>
                         </div>
                     </div>
-
-                    <div className="bg-gradient-to-br from-primary/5 to-transparent border border-primary/20 rounded-2xl p-6">
-                        <h4 className="font-black text-[10px] uppercase tracking-[0.3em] mb-4 text-primary">System Notice</h4>
-                        <p className="text-xs text-muted-foreground leading-relaxed">
-                            Theme changes are propagated instantly to all active sessions via the context provider. The Design System flag controls CSS variable injections and layout utility classes. No functional changes are performed during theme hot-swaps.
-                        </p>
-                    </div>
-                </div>
-            )}
+                )
+            }
 
 
 

@@ -38,6 +38,8 @@ import ShareNoteModal from '../components/ShareNoteModal';
 import SaveToShelfModal from '../components/SaveToShelfModal';
 import LogicSeal from '../components/LogicSeal';
 
+import { addToRecent } from '../utils/recentTracker';
+
 const NoteDetails = () => {
     const { id } = useParams();
     const navigate = useNavigate();
@@ -53,6 +55,13 @@ const NoteDetails = () => {
     useEffect(() => {
         dispatch(getNote(id));
     }, [id, dispatch]);
+
+    // Track recent access
+    useEffect(() => {
+        if (note) {
+            addToRecent(note);
+        }
+    }, [note]);
 
     const handleCopy = (text, index) => {
         navigator.clipboard.writeText(text);

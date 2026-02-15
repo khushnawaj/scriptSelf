@@ -14,7 +14,8 @@ const {
     updateUserFlags,
     updateUserGroup,
     updateUserPreferences,
-    getArcadeLeaders
+    getArcadeLeaders,
+    getAdminStats
 } = require('../controllers/userController');
 
 
@@ -38,6 +39,9 @@ router.put('/preferences', updateUserPreferences);
 router.post('/:id/follow', followUser);
 
 router.delete('/:id/follow', unfollowUser);
+
+// Admin Stats
+router.get('/admin/stats', authorize('admin'), getAdminStats);
 
 // Admin Routes for specific users
 router.route('/:id')

@@ -11,6 +11,8 @@ import { useTheme } from "../context/ThemeContext";
 import api from '../utils/api';
 import { motion, AnimatePresence } from 'framer-motion';
 
+import { getRecentItems, addToRecent } from "../utils/recentTracker";
+
 export default function CommandPalette() {
     const [isOpen, setIsOpen] = useState(false);
     const [query, setQuery] = useState("");
@@ -21,17 +23,20 @@ export default function CommandPalette() {
     const { theme, toggleTheme, saveDesignSystem, themeAssets } = useTheme();
     const { user } = useSelector((state) => state.auth);
 
-    // Initialize Recent Items from localStorage
-    useEffect(() => {
-        const saved = JSON.parse(localStorage.getItem('recent_vault_items') || '[]');
-        setRecentItems(saved);
-    }, [isOpen]);
+    // Sync Recent Items
+    const syncRecent = useCallback(() => {
+        setRecentItems(getRecentItems());
+    }, []);
 
-    const addToRecent = useCallback((item) => {
-        const newItem = { id: item._id, title: item.title, category: item.category?.name || 'GENERIC', type: 'note' };
-        const updated = [newItem, ...recentItems.filter(r => r.id !== item._id)].slice(0, 5);
-        localStorage.setItem('recent_vault_items', JSON.stringify(updated));
-    }, [recentItems]);
+    useEffect(() => {
+        syncRecent();
+        window.addEventListener('recent_items_updated', syncRecent);
+        return () => window.removeEventListener('recent_items_updated', syncRecent);
+    }, [syncRecent]);
+
+    useEffect(() => {
+        if (isOpen) syncRecent();
+    }, [isOpen, syncRecent]);
 
     useEffect(() => {
         const handleKeyDown = (e) => {

@@ -714,14 +714,31 @@ exports.markSolution = async (req, res, next) => {
 // @access    Private/Admin
 exports.adminGetNotes = async (req, res, next) => {
   try {
+    const page = parseInt(req.query.page, 10) || 1;
+    const limit = parseInt(req.query.limit, 10) || 10;
+    const startIndex = (page - 1) * limit;
+
+    const total = await Note.countDocuments();
     const notes = await Note.find()
       .populate({ path: 'category', select: 'name' })
       .populate({ path: 'user', select: 'username email avatar' })
-      .sort('-createdAt');
+      .sort('-createdAt')
+      .skip(startIndex)
+      .limit(limit);
+
+    const pagination = {};
+    if (startIndex + notes.length < total) {
+      pagination.next = { page: page + 1, limit };
+    }
+    if (startIndex > 0) {
+      pagination.previous = { page: page - 1, limit };
+    }
 
     res.status(200).json({
       success: true,
       count: notes.length,
+      total,
+      pagination,
       data: notes
     });
   } catch (err) {

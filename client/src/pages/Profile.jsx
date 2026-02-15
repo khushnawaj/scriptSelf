@@ -35,6 +35,9 @@ import Spinner from '../components/Spinner';
 import ContributionGraph from '../components/profile/ContributionGraph';
 import UserListModal from '../components/UserListModal';
 
+import { getNotes, resetNotes } from '../features/notes/noteSlice';
+import Pagination from '../components/Pagination';
+
 const Profile = () => {
     const dispatch = useDispatch();
     const { designSystem, saveDesignSystem, allThemes } = useTheme();
@@ -42,8 +45,10 @@ const Profile = () => {
     const isExperimentB = useFeature('v2_bars', { abTest: 'B' });
 
     const { user, isLoading, isSuccess } = useSelector((state) => state.auth);
-    const { notes } = useSelector((state) => state.notes);
+    const { notes, total, pagination } = useSelector((state) => state.notes);
 
+    const [page, setPage] = useState(1);
+    const limit = 6;
     const [formData, setFormData] = useState({
         username: '',
         email: '',
@@ -79,8 +84,9 @@ const Profile = () => {
                 },
                 customLinks: user.customLinks || []
             });
+            dispatch(getNotes({ page, limit }));
         }
-    }, [user]);
+    }, [user, page, dispatch]);
 
     useEffect(() => {
         if (isSuccess && isEditing) {
@@ -133,11 +139,10 @@ const Profile = () => {
         if (formData.avatarFile) updateData.append('avatar', formData.avatarFile);
         dispatch(updateProfile(updateData));
     };
-
     if (isLoading && !isEditing) return <Spinner fullPage message="Synching Profile..." />;
 
-    const currentUserNotes = notes.filter(n => (n.user?._id || n.user) === user?._id);
-    const userNotesCount = currentUserNotes.length;
+    const userNotesCount = total;
+    const currentUserNotes = notes;
 
     // Derived Data
     const topSkills = Object.entries(
@@ -538,6 +543,11 @@ const Profile = () => {
                                         </Link>
                                     ))}
                                 </div>
+                                <Pagination
+                                    currentPage={page}
+                                    totalPages={Math.ceil(userNotesCount / limit)}
+                                    onPageChange={setPage}
+                                />
                             </section>
                         </div>
                     )}

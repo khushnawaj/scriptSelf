@@ -11,11 +11,15 @@ import { useSelector, useDispatch } from 'react-redux';
 import { followUser, unfollowUser } from '../features/auth/authSlice';
 import { getReputationTier } from '../utils/reputation';
 import { toast } from 'react-hot-toast';
+import Pagination from '../components/Pagination';
 
 export default function Explorers() {
     const dispatch = useDispatch();
     const { user: currentUser } = useSelector((state) => state.auth);
     const [users, setUsers] = useState([]);
+    const [page, setPage] = useState(1);
+    const [total, setTotal] = useState(0);
+    const limit = 10;
     const [loading, setLoading] = useState(true);
     const [searchQuery, setSearchQuery] = useState('');
     const [filters, setFilters] = useState({
@@ -39,9 +43,12 @@ export default function Explorers() {
             if (filters.tier) params.append('tier', filters.tier);
             if (filters.active) params.append('active', 'true');
             params.append('sort', filters.sort);
+            params.append('page', page);
+            params.append('limit', limit);
 
             const res = await api.get(`/users/search?${params.toString()}`);
             setUsers(res.data.data || []);
+            setTotal(res.data.total || 0);
         } catch (err) {
             console.error('Failed to fetch users');
             toast.error('Failed to load users');
@@ -55,6 +62,11 @@ export default function Explorers() {
             fetchUsers();
         }, 300);
         return () => clearTimeout(debounce);
+    }, [searchQuery, filters, page]);
+
+    // Reset page when search or filters change
+    useEffect(() => {
+        setPage(1);
     }, [searchQuery, filters]);
 
     const handleFollow = async (userId) => {
@@ -274,101 +286,108 @@ export default function Explorers() {
                             </p>
                         </div>
                     ) : users.length > 0 ? (
-                        <motion.div
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            className="grid grid-cols-1 md:grid-cols-2 gap-4"
-                        >
-                            {users.map((user) => {
-                                const tier = getReputationTier(user.reputation || 0);
-                                const isFollowing = localFollowing.has(user._id);
-                                const isCurrentUser = currentUser?._id === user._id;
+                        <>
+                            <motion.div
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                className="grid grid-cols-1 md:grid-cols-2 gap-4"
+                            >
+                                {users.map((user) => {
+                                    const tier = getReputationTier(user.reputation || 0);
+                                    const isFollowing = localFollowing.has(user._id);
+                                    const isCurrentUser = currentUser?._id === user._id;
 
-                                return (
-                                    <motion.div
-                                        key={user._id}
-                                        initial={{ opacity: 0, y: 20 }}
-                                        animate={{ opacity: 1, y: 0 }}
-                                        className="bg-card border border-border rounded-xl p-5 shadow-sm hover:border-primary/40 transition-all group"
-                                    >
-                                        <div className="flex items-start gap-4">
-                                            {/* Avatar */}
-                                            <Link to={`/u/${user.username}`} className="shrink-0">
-                                                <div className={`p-1 rounded-2xl ${tier.bg} shadow-lg`}>
-                                                    <div className="w-16 h-16 bg-card rounded-xl overflow-hidden flex items-center justify-center border border-card">
-                                                        {user.avatar ? (
-                                                            <img src={user.avatar} alt={user.username} className="w-full h-full object-cover" />
-                                                        ) : (
-                                                            <span className="text-2xl font-black text-muted-foreground">
-                                                                {user.username.charAt(0).toUpperCase()}
+                                    return (
+                                        <motion.div
+                                            key={user._id}
+                                            initial={{ opacity: 0, y: 20 }}
+                                            animate={{ opacity: 1, y: 0 }}
+                                            className="bg-card border border-border rounded-xl p-5 shadow-sm hover:border-primary/40 transition-all group"
+                                        >
+                                            <div className="flex items-start gap-4">
+                                                {/* Avatar */}
+                                                <Link to={`/u/${user.username}`} className="shrink-0">
+                                                    <div className={`p-1 rounded-2xl ${tier.bg} shadow-lg`}>
+                                                        <div className="w-16 h-16 bg-card rounded-xl overflow-hidden flex items-center justify-center border border-card">
+                                                            {user.avatar ? (
+                                                                <img src={user.avatar} alt={user.username} className="w-full h-full object-cover" />
+                                                            ) : (
+                                                                <span className="text-2xl font-black text-muted-foreground">
+                                                                    {user.username.charAt(0).toUpperCase()}
+                                                                </span>
+                                                            )}
+                                                        </div>
+                                                    </div>
+                                                </Link>
+
+                                                {/* Info */}
+                                                <div className="flex-1 min-w-0 space-y-2">
+                                                    <div>
+                                                        <Link to={`/u/${user.username}`} className="group/name">
+                                                            <h3 className="text-base font-black text-foreground truncate group-hover/name:text-primary transition-colors italic">
+                                                                {user.username}
+                                                            </h3>
+                                                        </Link>
+                                                        <div className={`inline-flex items-center px-2 py-0.5 rounded-full text-[8px] font-black uppercase tracking-wider ${tier.bg} ${tier.color} ${tier.border} border mt-1`}>
+                                                            {tier.name}
+                                                        </div>
+                                                    </div>
+
+                                                    <p className="text-[11px] text-muted-foreground line-clamp-2 leading-relaxed italic">
+                                                        {user.bio || 'ScriptShelf Architect'}
+                                                    </p>
+
+                                                    {/* Stats */}
+                                                    <div className="flex items-center gap-4 pt-2">
+                                                        <div className="flex items-center gap-1.5">
+                                                            <Trophy size={12} className="text-primary" />
+                                                            <span className="text-[10px] font-bold text-foreground">{user.reputation || 0}</span>
+                                                        </div>
+                                                        <div className="flex items-center gap-1.5">
+                                                            <Flame size={12} className="text-orange-500" />
+                                                            <span className="text-[10px] font-bold text-foreground">{user.arcade?.streak || 0}d</span>
+                                                        </div>
+                                                        <div className="flex items-center gap-1.5">
+                                                            <Users size={12} className="text-muted-foreground" />
+                                                            <span className="text-[10px] font-medium text-muted-foreground">
+                                                                {user.followers?.length || 0} followers
                                                             </span>
-                                                        )}
-                                                    </div>
-                                                </div>
-                                            </Link>
-
-                                            {/* Info */}
-                                            <div className="flex-1 min-w-0 space-y-2">
-                                                <div>
-                                                    <Link to={`/u/${user.username}`} className="group/name">
-                                                        <h3 className="text-base font-black text-foreground truncate group-hover/name:text-primary transition-colors italic">
-                                                            {user.username}
-                                                        </h3>
-                                                    </Link>
-                                                    <div className={`inline-flex items-center px-2 py-0.5 rounded-full text-[8px] font-black uppercase tracking-wider ${tier.bg} ${tier.color} ${tier.border} border mt-1`}>
-                                                        {tier.name}
+                                                        </div>
                                                     </div>
                                                 </div>
 
-                                                <p className="text-[11px] text-muted-foreground line-clamp-2 leading-relaxed italic">
-                                                    {user.bio || 'ScriptShelf Architect'}
-                                                </p>
-
-                                                {/* Stats */}
-                                                <div className="flex items-center gap-4 pt-2">
-                                                    <div className="flex items-center gap-1.5">
-                                                        <Trophy size={12} className="text-primary" />
-                                                        <span className="text-[10px] font-bold text-foreground">{user.reputation || 0}</span>
-                                                    </div>
-                                                    <div className="flex items-center gap-1.5">
-                                                        <Flame size={12} className="text-orange-500" />
-                                                        <span className="text-[10px] font-bold text-foreground">{user.arcade?.streak || 0}d</span>
-                                                    </div>
-                                                    <div className="flex items-center gap-1.5">
-                                                        <Users size={12} className="text-muted-foreground" />
-                                                        <span className="text-[10px] font-medium text-muted-foreground">
-                                                            {user.followers?.length || 0} followers
-                                                        </span>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            {/* Action Button */}
-                                            {!isCurrentUser && currentUser && (
-                                                <button
-                                                    onClick={() => handleFollow(user._id)}
-                                                    className={`shrink-0 p-2.5 rounded-lg border transition-all ${isFollowing
+                                                {/* Action Button */}
+                                                {!isCurrentUser && currentUser && (
+                                                    <button
+                                                        onClick={() => handleFollow(user._id)}
+                                                        className={`shrink-0 p-2.5 rounded-lg border transition-all ${isFollowing
                                                             ? 'border-border bg-secondary text-muted-foreground hover:text-rose-500 hover:border-rose-500/50'
                                                             : 'border-primary/20 bg-primary/10 text-primary hover:bg-primary hover:text-white shadow-sm'
-                                                        }`}
-                                                >
-                                                    {isFollowing ? <UserCheck size={16} /> : <UserPlus size={16} />}
-                                                </button>
-                                            )}
-                                        </div>
+                                                            }`}
+                                                    >
+                                                        {isFollowing ? <UserCheck size={16} /> : <UserPlus size={16} />}
+                                                    </button>
+                                                )}
+                                            </div>
 
-                                        {/* View Profile Link */}
-                                        <Link
-                                            to={`/u/${user.username}`}
-                                            className="mt-4 flex items-center justify-center gap-2 py-2 border-t border-border/50 text-[10px] font-bold uppercase tracking-widest text-primary hover:text-primary/80 transition-colors group/link"
-                                        >
-                                            View Profile
-                                            <ChevronRight size={12} className="group-hover/link:translate-x-0.5 transition-transform" />
-                                        </Link>
-                                    </motion.div>
-                                );
-                            })}
-                        </motion.div>
+                                            {/* View Profile Link */}
+                                            <Link
+                                                to={`/u/${user.username}`}
+                                                className="mt-4 flex items-center justify-center gap-2 py-2 border-t border-border/50 text-[10px] font-bold uppercase tracking-widest text-primary hover:text-primary/80 transition-colors group/link"
+                                            >
+                                                View Profile
+                                                <ChevronRight size={12} className="group-hover/link:translate-x-0.5 transition-transform" />
+                                            </Link>
+                                        </motion.div>
+                                    );
+                                })}
+                            </motion.div>
+                            <Pagination
+                                currentPage={page}
+                                totalPages={Math.ceil(total / limit)}
+                                onPageChange={setPage}
+                            />
+                        </>
                     ) : (
                         <div className="py-20 text-center border border-dashed border-border rounded-xl bg-muted/10">
                             <Users size={48} className="mx-auto text-muted-foreground opacity-20 mb-4" />
@@ -382,6 +401,6 @@ export default function Explorers() {
                     )}
                 </main>
             </div>
-        </div>
+        </div >
     );
 }

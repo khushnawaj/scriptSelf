@@ -8,11 +8,29 @@ const notificationService = require('../services/notificationService');
 // @access    Private/Admin
 exports.getUsers = async (req, res, next) => {
     try {
-        const users = await User.find();
+        const page = parseInt(req.query.page, 10) || 1;
+        const limit = parseInt(req.query.limit, 10) || 10;
+        const startIndex = (page - 1) * limit;
+
+        const total = await User.countDocuments();
+        const users = await User.find()
+            .sort('-createdAt')
+            .skip(startIndex)
+            .limit(limit);
+
+        const pagination = {};
+        if (startIndex + users.length < total) {
+            pagination.next = { page: page + 1, limit };
+        }
+        if (startIndex > 0) {
+            pagination.previous = { page: page - 1, limit };
+        }
 
         res.status(200).json({
             success: true,
             count: users.length,
+            total,
+            pagination,
             data: users
         });
     } catch (err) {
@@ -79,14 +97,30 @@ exports.searchUsers = async (req, res, next) => {
                 sortOption = { reputation: -1 };
         }
 
+        const page = parseInt(req.query.page, 10) || 1;
+        const limit = parseInt(req.query.limit, 10) || 10;
+        const startIndex = (page - 1) * limit;
+
+        const total = await User.countDocuments(query);
         const users = await User.find(query)
             .select('username avatar bio reputation arcade.streak arcade.lastPlayed followers following createdAt')
             .sort(sortOption)
-            .limit(100); // Limit to 100 results
+            .skip(startIndex)
+            .limit(limit);
+
+        const pagination = {};
+        if (startIndex + users.length < total) {
+            pagination.next = { page: page + 1, limit };
+        }
+        if (startIndex > 0) {
+            pagination.previous = { page: page - 1, limit };
+        }
 
         res.status(200).json({
             success: true,
             count: users.length,
+            total,
+            pagination,
             data: users
         });
     } catch (err) {
@@ -449,6 +483,44 @@ exports.getArcadeLeaders = async (req, res, next) => {
         res.status(200).json({
             success: true,
             data: formattedLeaders
+        });
+    } catch (err) {
+        next(err);
+    }
+};
+
+// @desc      Get system wide stats for admin dashboard
+// @route     GET /api/v1/users/admin/stats
+// @access    Private/Admin
+exports.getAdminStats = async (req, res, next) => {
+    try {
+        const [totalUsers, totalNotes, totalReputation] = await Promise.all([
+            User.countDocuments(),
+            Note.countDocuments(),
+            User.aggregate([{ $group: { _id: null, total: { $sum: '$reputation' } } }])
+        ]);
+
+        const averageReputation = totalUsers > 0
+            ? Math.floor((totalReputation[0]?.total || 0) / totalUsers)
+            : 0;
+
+        // Active users (updated in last 24h)
+        const activeToday = await User.countDocuments({
+            updatedAt: { $gte: new Date(new Date().setHours(0, 0, 0, 0)) }
+        });
+
+        const issuesCount = await Note.countDocuments({ type: 'issue' });
+
+        res.status(200).json({
+            success: true,
+            data: {
+                totalUsers,
+                totalNotes,
+                averageReputation,
+                activeToday,
+                totalIssues: issuesCount,
+                totalMessages: 0
+            }
         });
     } catch (err) {
         next(err);

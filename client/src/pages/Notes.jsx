@@ -5,6 +5,7 @@ import { getNotes, resetNotes } from '../features/notes/noteSlice';
 import { getCategories } from '../features/categories/categorySlice';
 import Spinner from '../components/Spinner';
 import LogicSeal from '../components/LogicSeal';
+import Pagination from '../components/Pagination';
 import {
     Search,
     Filter,
@@ -348,29 +349,11 @@ const Notes = () => {
                 </div>
 
                 {/* Pagination Controls */}
-                {total > 10 && (
-                    <div className="flex items-center justify-between pt-12 pb-20 mt-8 border-t border-border">
-                        <div className="text-[13px] text-muted-foreground">
-                            Frame <span className="font-bold text-foreground">{page}</span> of <span className="font-bold text-foreground">{Math.ceil(total / 10)}</span>
-                        </div>
-                        <div className="flex border border-border rounded-[3px] shadow-sm bg-card overflow-hidden">
-                            <button
-                                onClick={() => setPage(page - 1)}
-                                disabled={!pagination.previous}
-                                className="px-4 py-2 text-[12px] font-bold uppercase tracking-widest bg-transparent hover:bg-muted disabled:opacity-30 disabled:cursor-not-allowed border-r border-border transition-all"
-                            >
-                                Prev
-                            </button>
-                            <button
-                                onClick={() => setPage(page + 1)}
-                                disabled={!pagination.next}
-                                className="px-4 py-2 text-[12px] font-bold uppercase tracking-widest bg-transparent hover:bg-muted disabled:opacity-30 disabled:cursor-not-allowed transition-all"
-                            >
-                                Next
-                            </button>
-                        </div>
-                    </div>
-                )}
+                <Pagination
+                    currentPage={page}
+                    totalPages={Math.ceil(total / 10)}
+                    onPageChange={setPage}
+                />
             </div>
         </div>
     );
