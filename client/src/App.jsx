@@ -76,6 +76,17 @@ function App() {
 
     // Global Error & Rejection Toasting Setup
     const handleGlobalError = (event) => {
+      // Chunk Load Error Recovery:
+      // If a lazy-loaded module fails because the server hash changed after a deploy, 
+      // detect it and force a full page reload to get the new index.html/mapping.
+      if (
+        event.message?.includes('Failed to fetch dynamically imported module') ||
+        event.message?.includes('error loading dynamically imported module')
+      ) {
+        window.location.reload();
+        return;
+      }
+
       // Filter out safe/expected errors
       if (
         event.message?.includes('401') ||
