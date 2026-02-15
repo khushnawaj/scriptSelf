@@ -247,6 +247,20 @@ export const getSharedNotes = createAsyncThunk(
 );
 
 
+// Like Note
+export const likeNote = createAsyncThunk(
+  'notes/like',
+  async (id, thunkAPI) => {
+    try {
+      const res = await api.put(`/notes/${id}/like`);
+      // toast.success('Liked!'); // Optional: Can be too noisy
+      return res.data.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.response?.data?.error);
+    }
+  }
+);
+
 const initialState = {
   notes: [],
   sharedNotes: [],
@@ -396,9 +410,13 @@ const noteSlice = createSlice({
         state.isLoading = false;
         state.isError = true;
         state.message = action.payload;
+      })
+      .addCase(likeNote.fulfilled, (state, action) => {
+        const index = state.notes.findIndex(n => n._id === action.payload._id);
+        if (index !== -1) {
+          state.notes[index] = action.payload;
+        }
       });
-  },
-});
 
-export const { reset: resetNotes } = noteSlice.actions;
-export default noteSlice.reducer;
+    export const { reset: resetNotes } = noteSlice.actions;
+    export default noteSlice.reducer;

@@ -59,6 +59,32 @@ export default function Network() {
         fetchFeed();
     }, [page, user]);
 
+    // Like Functionality
+    const handleLike = async (noteId) => {
+        if (!user) return;
+
+        // Optimistic update
+        setFeedItems(prev => prev.map(note => {
+            if (note._id === noteId) {
+                const isLiked = note.likes?.includes(user._id);
+                return {
+                    ...note,
+                    likes: isLiked
+                        ? note.likes.filter(id => id !== user._id)
+                        : [...(note.likes || []), user._id]
+                };
+            }
+            return note;
+        }));
+
+        try {
+            await api.put(`/notes/${noteId}/like`);
+        } catch (err) {
+            console.error("Failed to like/unlike");
+            // Revert on error could be added here
+        }
+    };
+
     if (loading && activeTab === 'graph') return <Spinner fullPage message="Mapping Intelligence Web..." />;
 
     return (
@@ -168,62 +194,67 @@ export default function Network() {
                                                     </p>
                                                 </Link>
 
-                                                <div className="flex items-center gap-4 mt-4 pt-3 border-t border-border/50">
-                                                    <div className="flex items-center gap-1.5 text-muted-foreground text-xs font-medium hover:text-primary transition-colors cursor-pointer">
-                                                        <ThumbsUp size={14} /> Like
-                                                    </div>
-                                                    <Link to={`/notes/${note._id}#comments`} className="flex items-center gap-1.5 text-muted-foreground text-xs font-medium hover:text-primary transition-colors">
-                                                        <MessageSquare size={14} /> Comment
-                                                    </Link>
+                                                <button
+                                                    onClick={() => handleLike(note._id)}
+                                                    className={`flex items-center gap-1.5 text-xs font-medium transition-colors cursor-pointer ${note.likes?.includes(user._id) ? 'text-primary' : 'text-muted-foreground hover:text-primary'}`}
+                                                >
+                                                    <ThumbsUp size={14} className={note.likes?.includes(user._id) ? 'fill-primary' : ''} />
+                                                    {note.likes?.length > 0 ? note.likes.length : 'Like'}
+                                                </button>
+                                                <Link to={`/notes/${note._id}#comments`} className="flex items-center gap-1.5 text-muted-foreground text-xs font-medium hover:text-primary transition-colors">
+                                                    <MessageSquare size={14} /> Comment
+                                                </Link>
 
-                                                    <div className="ml-auto flex gap-2">
-                                                        {note.tags?.slice(0, 3).map(tag => (
-                                                            <span key={tag} className="text-[9px] text-primary/80 bg-primary/5 px-1.5 py-0.5 rounded border border-primary/10">#{tag}</span>
-                                                        ))}
-                                                    </div>
+                                                <div className="ml-auto flex gap-2">
+                                                    {note.tags?.slice(0, 3).map(tag => (
+                                                        <span key={tag} className="text-[9px] text-primary/80 bg-primary/5 px-1.5 py-0.5 rounded border border-primary/10">#{tag}</span>
+                                                    ))}
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                ))}
-                                <Pagination
-                                    currentPage={page}
-                                    totalPages={Math.ceil(total / limit)}
-                                    onPageChange={setPage}
-                                />
-                            </div>
-                        )}
-                    </motion.div>
-                ) : (
-                    <motion.div
-                        key="graph"
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        className="bg-card border border-border rounded-[24px] p-2 shadow-2xl relative"
-                    >
-                        <div className="absolute inset-0 bg-primary/5 rounded-[24px] blur-3xl opacity-20 pointer-events-none" />
-                        <NeuralGraph data={notes} />
-                    </motion.div>
+                                    </div>
+                        ))}
+                        <Pagination
+                            currentPage={page}
+                            totalPages={Math.ceil(total / limit)}
+                            onPageChange={setPage}
+                        />
+                    </div>
                 )}
-            </AnimatePresence>
+            </motion.div>
+            ) : (
+            <motion.div
+                key="graph"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="bg-card border border-border rounded-[24px] p-2 shadow-2xl relative"
+            >
+                <div className="absolute inset-0 bg-primary/5 rounded-[24px] blur-3xl opacity-20 pointer-events-none" />
+                <NeuralGraph data={notes} />
+            </motion.div>
+                )}
+        </AnimatePresence>
 
-            {activeTab === 'graph' && (
-                <footer className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div className="p-6 bg-card border border-border rounded-2xl space-y-2">
-                        <h4 className="text-[11px] font-black uppercase tracking-widest text-primary">Interconnectivity</h4>
-                        <p className="text-[12px] text-muted-foreground leading-relaxed font-medium">Nodes are linked based on shared semantic tags and categorical alignment. Stronger connections represent higher thematic synergy.</p>
-                    </div>
-                    <div className="p-6 bg-card border border-border rounded-2xl space-y-2">
-                        <h4 className="text-[11px] font-black uppercase tracking-widest text-primary">Navigation Protocol</h4>
-                        <p className="text-[12px] text-muted-foreground leading-relaxed font-medium">Use the scroll wheel to zoom into specific clusters. Click and drag to move through the network. Individual nodes can be accessed via direct link.</p>
-                    </div>
-                    <div className="p-6 bg-card border border-border rounded-2xl space-y-2">
-                        <h4 className="text-[11px] font-black uppercase tracking-widest text-primary">System Intelligence</h4>
-                        <p className="text-[12px] text-muted-foreground leading-relaxed font-medium">The graph view is synchronized with the live archive database. New records are integrated as cold-storage nodes before establishing neural links.</p>
-                    </div>
-                </footer>
-            )}
-        </div>
+            {
+        activeTab === 'graph' && (
+            <footer className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="p-6 bg-card border border-border rounded-2xl space-y-2">
+                    <h4 className="text-[11px] font-black uppercase tracking-widest text-primary">Interconnectivity</h4>
+                    <p className="text-[12px] text-muted-foreground leading-relaxed font-medium">Nodes are linked based on shared semantic tags and categorical alignment. Stronger connections represent higher thematic synergy.</p>
+                </div>
+                <div className="p-6 bg-card border border-border rounded-2xl space-y-2">
+                    <h4 className="text-[11px] font-black uppercase tracking-widest text-primary">Navigation Protocol</h4>
+                    <p className="text-[12px] text-muted-foreground leading-relaxed font-medium">Use the scroll wheel to zoom into specific clusters. Click and drag to move through the network. Individual nodes can be accessed via direct link.</p>
+                </div>
+                <div className="p-6 bg-card border border-border rounded-2xl space-y-2">
+                    <h4 className="text-[11px] font-black uppercase tracking-widest text-primary">System Intelligence</h4>
+                    <p className="text-[12px] text-muted-foreground leading-relaxed font-medium">The graph view is synchronized with the live archive database. New records are integrated as cold-storage nodes before establishing neural links.</p>
+                </div>
+            </footer>
+        )
+    }
+        </div >
     );
 }
