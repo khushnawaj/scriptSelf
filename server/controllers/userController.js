@@ -571,12 +571,12 @@ exports.endorseSkill = async (req, res, next) => {
     }
 };
 
-// @desc      Broadcast Email to All Users
+// @desc      Broadcast Email to All Users or Specific User
 // @route     POST /api/v1/users/admin/broadcast
 // @access    Private/Admin
 exports.broadcastEmail = async (req, res, next) => {
     try {
-        const { subject, message } = req.body;
+        const { subject, message, recipientEmail } = req.body;
 
         if (!subject || !message) {
             return res.status(400).json({
@@ -585,7 +585,46 @@ exports.broadcastEmail = async (req, res, next) => {
             });
         }
 
-        // Get all users with verified emails
+        const sendEmail = require('../services/emailService');
+
+        // If recipientEmail is provided, send to specific user only
+        if (recipientEmail) {
+            const user = await User.findOne({ email: recipientEmail }).select('email username');
+
+            if (!user) {
+                return res.status(404).json({
+                    success: false,
+                    error: 'User not found'
+                });
+            }
+
+            await sendEmail({
+                email: user.email,
+                subject: subject,
+                message: `Hi ${user.username},\n\n${message}\n\nBest regards,\nScriptShelf Team`
+            });
+
+            // Also create in-app notification
+            await notificationService.createNotification({
+                recipient: user._id,
+                type: 'announcement',
+                title: subject,
+                message: message,
+                metadata: {
+                    source: 'admin_broadcast'
+                }
+            });
+
+            return res.status(200).json({
+                success: true,
+                data: {
+                    totalUsers: 1,
+                    message: `Email and notification sent to ${user.username}`
+                }
+            });
+        }
+
+        // Otherwise, send to all users
         const users = await User.find({ email: { $exists: true, $ne: null } }).select('email username');
 
         if (users.length === 0) {
@@ -596,7 +635,6 @@ exports.broadcastEmail = async (req, res, next) => {
         }
 
         // Send emails using the email service
-        const sendEmail = require('../utils/sendEmail');
         const emailPromises = users.map(user =>
             sendEmail({
                 email: user.email,
@@ -610,11 +648,29 @@ exports.broadcastEmail = async (req, res, next) => {
 
         await Promise.allSettled(emailPromises);
 
+        // Also create in-app notifications for all users
+        const notificationPromises = users.map(user =>
+            notificationService.createNotification({
+                recipient: user._id,
+                type: 'announcement',
+                title: subject,
+                message: message,
+                metadata: {
+                    source: 'admin_broadcast'
+                }
+            }).catch(err => {
+                console.error(`Failed to create notification for ${user.username}:`, err.message);
+                return null;
+            })
+        );
+
+        await Promise.allSettled(notificationPromises);
+
         res.status(200).json({
             success: true,
             data: {
                 totalUsers: users.length,
-                message: 'Broadcast email sent successfully'
+                message: 'Broadcast email and notifications sent successfully'
             }
         });
     } catch (err) {

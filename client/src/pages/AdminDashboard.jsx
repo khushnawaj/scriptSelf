@@ -68,6 +68,39 @@ const AdminDashboard = () => {
     const [noteTotal, setNoteTotal] = useState(0);
     const limit = 10;
 
+    // Broadcast States
+    const [broadcastForm, setBroadcastForm] = useState({ subject: '', message: '', recipientType: 'all', specificUserId: '' });
+    const [isSending, setIsSending] = useState(false);
+
+    // Email Templates
+    const emailTemplates = [
+        {
+            name: '🚀 New Feature',
+            subject: 'Exciting New Feature Launch!',
+            message: 'We\'re thrilled to announce a new feature that will enhance your ScriptShelf experience.\n\n[Describe the feature here]\n\nTry it out today and let us know what you think!'
+        },
+        {
+            name: '🔧 Maintenance',
+            subject: 'Scheduled Maintenance Notice',
+            message: 'We will be performing scheduled maintenance on [DATE] at [TIME].\n\nExpected downtime: [DURATION]\n\nWe apologize for any inconvenience this may cause.'
+        },
+        {
+            name: '🎉 Update',
+            subject: 'Platform Updates & Improvements',
+            message: 'We\'ve made some improvements to make your experience better:\n\n• [Update 1]\n• [Update 2]\n• [Update 3]\n\nThank you for being part of our community!'
+        },
+        {
+            name: '📢 Announcement',
+            subject: 'Important Announcement',
+            message: 'We have an important update to share with you.\n\n[Your announcement here]\n\nIf you have any questions, feel free to reach out.'
+        },
+        {
+            name: '⚠️ Security Alert',
+            subject: 'Security Update Required',
+            message: 'We\'ve detected a security concern that requires your attention.\n\n[Details here]\n\nPlease update your password and review your account settings.'
+        }
+    ];
+
 
     useEffect(() => {
         if (!user || user.role !== 'admin') {
@@ -195,6 +228,44 @@ const AdminDashboard = () => {
             toast.error('Failed to toggle pin state');
         }
     }, [notes]);
+
+    const handleBroadcast = async (e) => {
+        e.preventDefault();
+        if (!broadcastForm.subject || !broadcastForm.message) {
+            toast.error('Please fill in both subject and message');
+            return;
+        }
+
+        if (broadcastForm.recipientType === 'single' && !broadcastForm.specificUserId) {
+            toast.error('Please select a user');
+            return;
+        }
+
+        setIsSending(true);
+        try {
+            if (broadcastForm.recipientType === 'all') {
+                const { data } = await api.post('/users/admin/broadcast', {
+                    subject: broadcastForm.subject,
+                    message: broadcastForm.message
+                });
+                toast.success(`Email sent to ${data.data.totalUsers} users!`);
+            } else {
+                // Send to single user
+                const selectedUser = users.find(u => u._id === broadcastForm.specificUserId);
+                await api.post('/users/admin/broadcast', {
+                    subject: broadcastForm.subject,
+                    message: broadcastForm.message,
+                    recipientEmail: selectedUser.email
+                });
+                toast.success(`Email sent to ${selectedUser.username}!`);
+            }
+            setBroadcastForm({ subject: '', message: '', recipientType: 'all', specificUserId: '' });
+        } catch (error) {
+            toast.error(error.response?.data?.error || 'Failed to send email');
+        } finally {
+            setIsSending(false);
+        }
+    };
 
     const handleRoleUpdate = useCallback(async (id, newRole) => {
         try {
@@ -328,7 +399,7 @@ const AdminDashboard = () => {
 
             {/* Tab Navigation */}
             <div className="flex gap-2 mb-6 overflow-x-auto no-scrollbar border-b border-border pb-2">
-                {['overview', 'users', 'content', 'issues', 'experiments', 'system'].map(tab => (
+                {['overview', 'users', 'content', 'issues', 'experiments', 'broadcast', 'system'].map(tab => (
 
                     <button
                         key={tab}
@@ -685,6 +756,181 @@ const AdminDashboard = () => {
                     </div>
                 </div>
             )
+            }
+
+            {
+                activeTab === 'broadcast' && (
+                    <motion.div
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="space-y-6 max-w-3xl mx-auto animate-in fade-in slide-in-from-bottom-2 duration-400"
+                    >
+                        <div className="bg-card border border-border rounded-2xl p-8 shadow-sm">
+                            <div className="space-y-2 mb-6">
+                                <h3 className="text-2xl font-bold text-foreground flex items-center gap-3">
+                                    <Mail size={28} className="text-primary" />
+                                    Email Broadcast
+                                </h3>
+                                <p className="text-[13px] text-muted-foreground">
+                                    Send important updates, announcements, or information to all registered users.
+                                </p>
+                            </div>
+
+                            <div className="bg-amber-500/10 border border-amber-500/20 p-4 rounded-xl mb-6">
+                                <p className="text-[11px] text-amber-600 dark:text-amber-400 font-bold uppercase mb-1 flex items-center gap-2">
+                                    <AlertTriangle size={14} /> Warning
+                                </p>
+                                <p className="text-[12px] text-muted-foreground">
+                                    This will send an email to ALL users with registered email addresses. Use responsibly.
+                                </p>
+                            </div>
+
+                            {/* Quick Templates */}
+                            <div className="mb-6">
+                                <label className="block text-[13px] font-bold mb-3 text-foreground">Quick Templates</label>
+                                <div className="flex flex-wrap gap-2">
+                                    {emailTemplates.map((template, index) => (
+                                        <button
+                                            key={index}
+                                            type="button"
+                                            onClick={() => setBroadcastForm(prev => ({
+                                                ...prev,
+                                                subject: template.subject,
+                                                message: template.message
+                                            }))}
+                                            className="px-3 py-1.5 text-xs font-bold bg-secondary/50 hover:bg-secondary border border-border rounded-lg transition-all hover:scale-105"
+                                        >
+                                            {template.name}
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+
+                            {/* Recipient Selection */}
+                            <div className="mb-6 p-4 bg-muted/20 border border-border rounded-xl">
+                                <label className="block text-[13px] font-bold mb-3 text-foreground">Send To</label>
+                                <div className="flex gap-4 mb-4">
+                                    <label className="flex items-center gap-2 cursor-pointer">
+                                        <input
+                                            type="radio"
+                                            name="recipientType"
+                                            value="all"
+                                            checked={broadcastForm.recipientType === 'all'}
+                                            onChange={(e) => setBroadcastForm({ ...broadcastForm, recipientType: e.target.value, specificUserId: '' })}
+                                            className="w-4 h-4"
+                                        />
+                                        <span className="text-sm font-medium">All Users ({stats.totalUsers})</span>
+                                    </label>
+                                    <label className="flex items-center gap-2 cursor-pointer">
+                                        <input
+                                            type="radio"
+                                            name="recipientType"
+                                            value="single"
+                                            checked={broadcastForm.recipientType === 'single'}
+                                            onChange={(e) => setBroadcastForm({ ...broadcastForm, recipientType: e.target.value })}
+                                            className="w-4 h-4"
+                                        />
+                                        <span className="text-sm font-medium">Specific User</span>
+                                    </label>
+                                </div>
+
+                                {broadcastForm.recipientType === 'single' && (
+                                    <select
+                                        value={broadcastForm.specificUserId}
+                                        onChange={(e) => setBroadcastForm({ ...broadcastForm, specificUserId: e.target.value })}
+                                        className="w-full border border-border bg-background rounded-xl py-2.5 px-4 text-[13px] outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
+                                        required={broadcastForm.recipientType === 'single'}
+                                    >
+                                        <option value="">Select a user...</option>
+                                        {users.map(user => (
+                                            <option key={user._id} value={user._id}>
+                                                {user.username} ({user.email})
+                                            </option>
+                                        ))}
+                                    </select>
+                                )}
+                            </div>
+
+                            <form onSubmit={handleBroadcast} className="space-y-5">
+                                <div>
+                                    <label className="block text-[13px] font-bold mb-2 text-foreground">Email Subject</label>
+                                    <input
+                                        type="text"
+                                        className="w-full border border-border bg-background rounded-xl py-3 px-4 text-[13px] outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
+                                        placeholder="e.g., New Feature Launch: Dark Mode"
+                                        value={broadcastForm.subject}
+                                        onChange={(e) => setBroadcastForm({ ...broadcastForm, subject: e.target.value })}
+                                        required
+                                    />
+                                </div>
+
+                                <div>
+                                    <label className="block text-[13px] font-bold mb-2 text-foreground">Message Body</label>
+                                    <textarea
+                                        className="w-full border border-border bg-background rounded-xl py-3 px-4 text-[13px] min-h-[200px] outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all font-mono"
+                                        placeholder="Write your message here..."
+                                        value={broadcastForm.message}
+                                        onChange={(e) => setBroadcastForm({ ...broadcastForm, message: e.target.value })}
+                                        required
+                                    />
+                                    <p className="text-[11px] text-muted-foreground mt-2">
+                                        The message will be automatically formatted with a greeting and signature.
+                                    </p>
+                                </div>
+
+                                <div className="flex gap-3 pt-2">
+                                    <button
+                                        type="submit"
+                                        disabled={isSending}
+                                        className="px-6 py-3 bg-primary text-white rounded-xl font-bold text-sm uppercase tracking-wider hover:scale-105 transition-all shadow-lg shadow-primary/20 flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+                                    >
+                                        {isSending ? (
+                                            <>
+                                                <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent" />
+                                                Sending...
+                                            </>
+                                        ) : (
+                                            <>
+                                                {broadcastForm.recipientType === 'all' ? (
+                                                    <>
+                                                        <Users size={16} />
+                                                        Send to All Users ({stats.totalUsers})
+                                                    </>
+                                                ) : (
+                                                    <>
+                                                        <Mail size={16} />
+                                                        {broadcastForm.specificUserId
+                                                            ? `Send to ${users.find(u => u._id === broadcastForm.specificUserId)?.username || 'User'}`
+                                                            : 'Send to User'
+                                                        }
+                                                    </>
+                                                )}
+                                            </>
+                                        )}
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={() => setBroadcastForm({ subject: '', message: '' })}
+                                        className="px-4 py-3 border border-border hover:bg-muted/50 rounded-xl font-bold text-sm uppercase tracking-wider transition-all"
+                                    >
+                                        Clear
+                                    </button>
+                                </div>
+                            </form>
+
+                            <div className="p-4 bg-primary/5 border border-primary/20 rounded-xl mt-6">
+                                <p className="text-[11px] text-primary font-bold uppercase mb-2 flex items-center gap-2">
+                                    <Mail size={14} /> Email Preview
+                                </p>
+                                <div className="text-[12px] text-muted-foreground space-y-1 font-mono bg-background p-4 rounded-lg border border-border">
+                                    <p className="font-bold">Hi [username],</p>
+                                    <p className="pl-4 whitespace-pre-wrap">{broadcastForm.message || '(Your message will appear here)'}</p>
+                                    <p className="mt-3 font-bold">Best regards,<br />ScriptShelf Team</p>
+                                </div>
+                            </div>
+                        </div>
+                    </motion.div>
+                )
             }
 
             {
