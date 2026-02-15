@@ -36,6 +36,7 @@ import { getNote, deleteNote, cloneNote, addComment, deleteComment, updateCommen
 import { followUser, unfollowUser } from '../features/auth/authSlice';
 import ShareNoteModal from '../components/ShareNoteModal';
 import SaveToShelfModal from '../components/SaveToShelfModal';
+import LogicSeal from '../components/LogicSeal';
 
 const NoteDetails = () => {
     const { id } = useParams();
@@ -176,9 +177,12 @@ const NoteDetails = () => {
             <div className="border-b border-border pb-6 mb-6">
                 {/* ... (keep header content) ... */}
                 <div className="flex flex-col sm:flex-row justify-between items-start gap-4 mb-5">
-                    <h1 className="text-[24px] sm:text-[32px] font-normal text-foreground leading-tight tracking-tight flex flex-wrap items-center gap-2 sm:gap-3">
-                        {note.isPinned && <Pin className="text-amber-500 fill-amber-500 w-5 h-5 sm:w-6 sm:h-6" />}
-                        {note.title}
+                    <h1 className="text-[24px] sm:text-[32px] font-normal text-foreground leading-tight tracking-tight flex flex-wrap items-center gap-2 sm:gap-4">
+                        <LogicSeal content={note.content} id={note._id} size={60} className="rounded-2xl border-primary/20 shadow-xl shadow-primary/5" />
+                        <div className="flex items-center gap-2 sm:gap-3">
+                            {note.isPinned && <Pin className="text-amber-500 fill-amber-500 w-5 h-5 sm:w-6 sm:h-6" />}
+                            {note.title}
+                        </div>
                         {note.type === 'issue' && (note.comments?.length || 0) === 0 && (
                             <span className="bg-amber-500/10 text-amber-500 border border-amber-500/20 px-2 sm:px-3 py-0.5 sm:py-1 rounded-full text-[9px] sm:text-[10px] font-black uppercase tracking-widest animate-pulse">
                                 Unanswered
@@ -195,7 +199,6 @@ const NoteDetails = () => {
                                 <Pin size={14} className={note.isPinned ? 'fill-amber-500' : ''} />
                             </button>
                         )}
-                        {/* ... (keep existing buttons) ... */}
                         {user && note.user?._id === user._id ? (
                             <Link to={`/notes/edit/${id}`} className="so-btn border border-border hover:bg-muted/50 text-foreground transition-all">
                                 <Edit size={14} /> Edit

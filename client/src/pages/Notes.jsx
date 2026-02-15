@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getNotes, resetNotes } from '../features/notes/noteSlice';
 import { getCategories } from '../features/categories/categorySlice';
 import Spinner from '../components/Spinner';
-// import FolderSidebar from '../components/FolderSidebar';
+import LogicSeal from '../components/LogicSeal';
 import {
     Search,
     Filter,
@@ -253,6 +253,7 @@ const Notes = () => {
                                     </div>
                                     <div className={`flex flex-col items-center border p-1 rounded-[3px] min-w-[50px] sm:min-w-[56px] transition-all shadow-sm ${note.isPublic ? 'border-[#808000]/60 text-[#808000] bg-[#eff1e1] dark:bg-[#3d3d2d] dark:border-[#808000]/30' : 'border-border text-muted-foreground bg-muted/20'
                                         }`}>
+                                        <LogicSeal content={note.content} id={note._id} size={40} className="mb-1 border-none bg-transparent opacity-60" />
                                         <span className="font-black text-[10px] sm:text-[11px] uppercase tracking-tighter">{note.isPublic ? 'Public' : 'Vault'}</span>
                                     </div>
                                     <div className="hidden sm:flex items-center gap-1 text-muted-foreground/30 text-[9px] font-black uppercase tracking-[0.1em]">

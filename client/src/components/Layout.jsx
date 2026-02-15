@@ -19,12 +19,26 @@ import {
 } from 'lucide-react';
 import { useSelector } from 'react-redux';
 import { motion, AnimatePresence } from 'framer-motion';
+import TerminalConsole from './TerminalConsole';
 
 const Layout = () => {
     const location = useLocation();
     const { user } = useSelector((state) => state.auth);
     const { notes } = useSelector((state) => state.notes);
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+    const [isTerminalOpen, setIsTerminalOpen] = useState(false);
+
+    // Global Terminal Hotkey
+    useEffect(() => {
+        const handleKeyDown = (e) => {
+            if (e.altKey && e.key === 'Enter') {
+                e.preventDefault();
+                setIsTerminalOpen(prev => !prev);
+            }
+        };
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, []);
 
     // Close sidebar on route change (mobile)
     useEffect(() => {
@@ -189,10 +203,15 @@ const Layout = () => {
                                 <span>New Record</span>
                                 <kbd className="px-2 py-0.5 bg-background border border-border rounded-[4px] text-[10px] font-bold shadow-sm">ALT+N</kbd>
                             </li>
+                            <li className="flex items-center justify-between group cursor-pointer" onClick={() => setIsTerminalOpen(true)}>
+                                <span className="text-primary font-bold group-hover:underline">Launch Console</span>
+                                <kbd className="px-2 py-0.5 bg-primary/10 border border-primary/20 text-primary rounded-[4px] text-[10px] font-bold shadow-sm">ALT+⏎</kbd>
+                            </li>
                         </ul>
                     </div>
                 </aside>
             </div>
+            <TerminalConsole isOpen={isTerminalOpen} onClose={() => setIsTerminalOpen(false)} />
         </div>
     );
 };
