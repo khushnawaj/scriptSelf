@@ -210,7 +210,7 @@ const Admin = () => {
             {/* Main Management Area */}
             <div className="glass-frost rounded-[3px] shadow-sm overflow-hidden">
                 {/* Tabs - No Icons as requested */}
-                <div className="flex border-b border-border bg-muted/20">
+                <div className="flex border-b border-border bg-muted/20 overflow-x-auto">
                     {[
                         { id: 'users', label: 'User Management' },
                         { id: 'notes', label: 'System Notes' },
@@ -223,7 +223,7 @@ const Admin = () => {
                         <button
                             key={tab.id}
                             onClick={() => setActiveTab(tab.id)}
-                            className={`px-6 py-4 text-[13px] font-bold transition-all border-b-2 ${activeTab === tab.id
+                            className={`px-6 py-4 text-[13px] font-bold transition-all border-b-2 whitespace-nowrap ${activeTab === tab.id
                                 ? 'border-primary text-primary bg-background'
                                 : 'border-transparent text-muted-foreground hover:text-foreground hover:bg-muted/30'
                                 }`}
