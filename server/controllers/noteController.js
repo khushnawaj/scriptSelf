@@ -845,3 +845,53 @@ exports.getSharedNotes = async (req, res, next) => {
   }
 };
 
+// @desc      Get network feed (notes from followed users)
+// @route     GET /api/v1/notes/feed
+// @access    Private
+exports.getNetworkFeed = async (req, res, next) => {
+  try {
+    const user = await User.findById(req.user.id);
+    const following = user.following;
+
+    // Add self to feed? Maybe. Let's include self for now so the feed isn't empty for new users.
+    const authors = [...following, req.user.id];
+
+    const page = parseInt(req.query.page, 10) || 1;
+    const limit = parseInt(req.query.limit, 10) || 10;
+    const startIndex = (page - 1) * limit;
+
+    const query = {
+      user: { $in: authors },
+      $or: [
+        { isPublic: true },
+        { user: req.user.id } // Private notes only from self
+      ]
+    };
+
+    const total = await Note.countDocuments(query);
+    const notes = await Note.find(query)
+      .populate('user', 'username avatar headline') // Include headline
+      .populate('category', 'name color') // Include category color
+      .sort('-createdAt')
+      .skip(startIndex)
+      .limit(limit);
+
+    const pagination = {};
+    if (startIndex + notes.length < total) {
+      pagination.next = { page: page + 1, limit };
+    }
+    if (startIndex > 0) {
+      pagination.previous = { page: page - 1, limit };
+    }
+
+    res.status(200).json({
+      success: true,
+      count: notes.length,
+      total,
+      pagination,
+      data: notes
+    });
+  } catch (err) {
+    next(err);
+  }
+};

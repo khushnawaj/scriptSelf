@@ -14,13 +14,18 @@ const {
   deleteComment,
   togglePin,
   shareNote,
-  getSharedNotes
+  shareNote,
+  getSharedNotes,
+  getNetworkFeed
 } = require('../controllers/noteController');
 
 const router = express.Router({ mergeParams: true });
 
 const { protect, authorize, detectUser } = require('../middleware/authMiddleware');
 const upload = require('../middleware/uploadMiddleware');
+
+// Get Network Feed (LinkedIn Style)
+router.get('/feed', protect, getNetworkFeed);
 
 // Dashboard Stats
 router.get('/stats', protect, async (req, res, next) => {

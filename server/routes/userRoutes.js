@@ -15,7 +15,8 @@ const {
     updateUserGroup,
     updateUserPreferences,
     getArcadeLeaders,
-    getAdminStats
+    getAdminStats,
+    endorseSkill
 } = require('../controllers/userController');
 
 
@@ -42,6 +43,9 @@ router.delete('/:id/follow', unfollowUser);
 
 // Admin Stats
 router.get('/admin/stats', authorize('admin'), getAdminStats);
+
+// Endorse Skill
+router.put('/:id/skills/:skillId/endorse', endorseSkill);
 
 // Admin Routes for specific users
 router.route('/:id')

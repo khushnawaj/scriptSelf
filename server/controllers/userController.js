@@ -337,7 +337,7 @@ exports.unfollowUser = async (req, res, next) => {
 exports.getPublicUser = async (req, res, next) => {
     try {
         const user = await User.findOne({ username: req.params.username })
-            .select('username avatar bio socialLinks customLinks followers following arcade activityLogs createdAt');
+            .select('username avatar bio headline experience skills socialLinks customLinks followers following arcade activityLogs createdAt reputation experimentGroup featureFlags');
 
         if (!user) {
             return res.status(404).json({ success: false, error: 'User not found' });
@@ -527,3 +527,46 @@ exports.getAdminStats = async (req, res, next) => {
     }
 };
 
+// @desc      Endorse a user skill (Toggle)
+// @route     PUT /api/v1/users/:id/skills/:skillId/endorse
+// @access    Private
+exports.endorseSkill = async (req, res, next) => {
+    try {
+        const user = await User.findById(req.params.id);
+
+        if (!user) {
+            return res.status(404).json({ success: false, error: 'User not found' });
+        }
+
+        if (user._id.toString() === req.user.id) {
+            return res.status(400).json({ success: false, error: 'Cannot endorse own skills' });
+        }
+
+        const skill = user.skills.id(req.params.skillId); // Mongoose subdoc method
+
+        if (!skill) {
+            return res.status(404).json({ success: false, error: 'Skill not found' });
+        }
+
+        const endorsementIndex = skill.endorsements.indexOf(req.user.id);
+
+        if (endorsementIndex > -1) {
+            // Un-endorse
+            skill.endorsements.splice(endorsementIndex, 1);
+        } else {
+            // Endorse
+            skill.endorsements.push(req.user.id);
+            // Optional: Add reputation points?
+            // user.reputation += 1; 
+        }
+
+        await user.save();
+
+        res.status(200).json({
+            success: true,
+            data: skill
+        });
+    } catch (err) {
+        next(err);
+    }
+};

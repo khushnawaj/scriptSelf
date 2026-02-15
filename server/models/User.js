@@ -37,6 +37,27 @@ const userSchema = new mongoose.Schema({
         maxlength: [200, 'Bio cannot be more than 200 characters'],
         default: 'Technical logic enthusiast.'
     },
+    headline: {
+        type: String,
+        maxlength: [60, 'Headline cannot be more than 60 characters'],
+        default: ''
+    },
+    experience: [{
+        title: { type: String, required: true },
+        company: { type: String, required: true },
+        location: String,
+        from: { type: Date, required: true },
+        to: { type: Date },
+        current: { type: Boolean, default: false },
+        description: String
+    }],
+    skills: [{
+        name: { type: String, required: true },
+        endorsements: [{
+            type: mongoose.Schema.ObjectId,
+            ref: 'User'
+        }]
+    }],
     website: {
         type: String,
         match: [

@@ -93,26 +93,46 @@ const safeParse = (str) => {
 
 exports.updateDetails = async (req, res, next) => {
   try {
-    const fieldsToUpdate = {
-      username: req.body.username,
-      email: req.body.email,
-      bio: req.body.bio,
-      socialLinks: safeParse(req.body.socialLinks),
-      customLinks: safeParse(req.body.customLinks)
-    };
+    const user = await User.findById(req.user.id);
 
-    if (req.file) {
-      // Cloudinary storage provides the secure URL in req.file.path
-      fieldsToUpdate.avatar = req.file.path;
-    } else if (req.body.avatar) {
-      // Allow manual URL update if provided and no file
-      fieldsToUpdate.avatar = req.body.avatar;
+    if (!user) {
+      return res.status(404).json({ success: false, error: 'User not found' });
     }
 
-    const user = await User.findByIdAndUpdate(req.user.id, fieldsToUpdate, {
-      new: true,
-      runValidators: true
-    });
+    // Simple fields
+    if (req.body.username) user.username = req.body.username;
+    if (req.body.email) user.email = req.body.email;
+    if (req.body.bio) user.bio = req.body.bio;
+    if (req.body.headline) user.headline = req.body.headline;
+
+    // Complex fields
+    if (req.body.socialLinks) user.socialLinks = safeParse(req.body.socialLinks);
+    if (req.body.customLinks) user.customLinks = safeParse(req.body.customLinks);
+    if (req.body.experience) user.experience = safeParse(req.body.experience);
+
+    // Smart Skills Update (Preserve endorsements)
+    if (req.body.skills) {
+      const newSkillsList = safeParse(req.body.skills); // Expecting array of strings or objects {name}
+      if (Array.isArray(newSkillsList)) {
+        const existingSkillsMap = new Map(user.skills.map(s => [s.name, s]));
+
+        user.skills = newSkillsList.map(item => {
+          const skillName = typeof item === 'string' ? item : item.name;
+          if (existingSkillsMap.has(skillName)) {
+            return existingSkillsMap.get(skillName); // Keep existing with endorsements
+          }
+          return { name: skillName, endorsements: [] }; // New skill
+        });
+      }
+    }
+
+    if (req.file) {
+      user.avatar = req.file.path;
+    } else if (req.body.avatar) {
+      user.avatar = req.body.avatar;
+    }
+
+    await user.save();
 
     res.status(200).json({
       success: true,
