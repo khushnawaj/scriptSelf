@@ -172,7 +172,7 @@ export default function Network() {
                                                     <div className="flex items-center gap-1.5 text-muted-foreground text-xs font-medium hover:text-primary transition-colors cursor-pointer">
                                                         <ThumbsUp size={14} /> Like
                                                     </div>
-                                                    <Link to={`/notes/${note._id}`} className="flex items-center gap-1.5 text-muted-foreground text-xs font-medium hover:text-primary transition-colors">
+                                                    <Link to={`/notes/${note._id}#comments`} className="flex items-center gap-1.5 text-muted-foreground text-xs font-medium hover:text-primary transition-colors">
                                                         <MessageSquare size={14} /> Comment
                                                     </Link>
 

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useParams, useNavigate, Link } from 'react-router-dom';
+import { useParams, useNavigate, Link, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 
 import ReactMarkdown from 'react-markdown';
@@ -52,9 +52,21 @@ const NoteDetails = () => {
     const [copiedIndex, setCopiedIndex] = useState(null);
     const [isCloning, setIsCloning] = useState(false);
 
+    const location = useLocation();
+
     useEffect(() => {
         dispatch(getNote(id));
     }, [id, dispatch]);
+
+    useEffect(() => {
+        if (location.hash === '#comments') {
+            setTimeout(() => {
+                const element = document.getElementById('comments');
+                if (element) element.scrollIntoView({ behavior: 'smooth' });
+            }, 500); // Small delay to ensure render
+        }
+    }, [location.hash, note]);
+
 
     // Track recent access
     useEffect(() => {
@@ -584,7 +596,7 @@ const NoteDetails = () => {
                     )}
 
                     {/* Community Discussion Layer */}
-                    <div className="mt-12 pt-10 border-t border-border">
+                    <div id="comments" className="mt-12 pt-10 border-t border-border">
                         <h3 className="text-[19px] font-normal mb-6 text-foreground flex items-center gap-3">
                             <MessageSquare size={20} className="text-primary" /> {note.type === 'issue' ? 'Answers & Solutions' : 'Discussion & Contributions'}
                         </h3>
