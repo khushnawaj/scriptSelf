@@ -33,11 +33,11 @@ const Notes = () => {
     const [selectedCategory, setSelectedCategory] = useState('All');
     const [selectedType, setSelectedType] = useState('All');
     const [selectedFolder, setSelectedFolder] = useState(null);
-
-    // Default to 'public' sort if user is not logged in, otherwise 'newest'
     const [sort, setSort] = useState(user ? 'newest' : 'public');
-
     const [page, setPage] = useState(1);
+    const [showMoreCategories, setShowMoreCategories] = useState(false);
+    const [showMoreTypes, setShowMoreTypes] = useState(false);
+    const [showMoreTags, setShowMoreTags] = useState(false);
 
     // Sync search term and folder from URL
     useEffect(() => {
@@ -113,7 +113,7 @@ const Notes = () => {
                             Collections
                             <FolderTree size={12} className="opacity-50" />
                         </h3>
-                        <div className="flex lg:flex-col gap-1.5 overflow-x-auto pb-2 lg:pb-0 lg:overflow-visible no-scrollbar -mx-4 px-4 lg:mx-0 lg:px-0">
+                        <div className="flex lg:flex-col gap-1.5 overflow-x-auto lg:overflow-visible no-scrollbar pb-2 lg:pb-0 -mx-4 px-4 lg:mx-0 lg:px-0">
                             <button
                                 onClick={() => handleCategoryClick('All')}
                                 className={`group flex items-center gap-2 lg:gap-3 px-3 py-2 lg:py-2.5 text-[12px] lg:text-[13px] rounded-[4px] border transition-all whitespace-nowrap lg:whitespace-normal ${selectedCategory === 'All' ? 'bg-primary border-primary text-white font-bold shadow-md shadow-primary/20' : 'bg-transparent border-transparent text-muted-foreground hover:bg-muted/50 hover:text-foreground'}`}
@@ -121,7 +121,7 @@ const Notes = () => {
                                 <div className={`w-1.5 h-1.5 rounded-full shrink-0 ${selectedCategory === 'All' ? 'bg-white' : 'bg-muted-foreground/30 group-hover:bg-primary'}`} />
                                 All Records
                             </button>
-                            {categories.map(cat => (
+                            {(showMoreCategories ? categories : categories.slice(0, 5)).map(cat => (
                                 <button
                                     key={cat._id}
                                     onClick={() => handleCategoryClick(cat._id)}
@@ -132,6 +132,15 @@ const Notes = () => {
                                     <span className="truncate">{cat.name}</span>
                                 </button>
                             ))}
+                            {categories.length > 5 && (
+                                <button
+                                    onClick={() => setShowMoreCategories(!showMoreCategories)}
+                                    className="text-[11px] font-bold text-primary hover:underline px-3 py-1 flex items-center gap-1 mt-1 shrink-0"
+                                >
+                                    {showMoreCategories ? 'Show Less' : 'Show More'}
+                                    <ChevronDown size={12} className={`transition-transform ${showMoreCategories ? 'rotate-180' : ''}`} />
+                                </button>
+                            )}
                         </div>
                     </div>
 
@@ -140,8 +149,8 @@ const Notes = () => {
                             Record Types
                             <Filter size={12} className="opacity-50" />
                         </h3>
-                        <div className="flex flex-row lg:flex-col gap-1.5 overflow-x-auto pb-2 lg:pb-0 lg:overflow-visible no-scrollbar -mx-4 px-4 lg:mx-0 lg:px-0">
-                            {['All', 'Code', 'Doc', 'ADR', 'Pattern', 'CheatSheet'].map(type => (
+                        <div className="flex flex-row lg:flex-col gap-1.5 overflow-x-auto lg:overflow-visible no-scrollbar pb-2 lg:pb-0 -mx-4 px-4 lg:mx-0 lg:px-0">
+                            {['All', 'Code', 'Doc', 'ADR', 'Pattern', 'CheatSheet'].slice(0, showMoreTypes ? undefined : 4).map(type => (
                                 <button
                                     key={type}
                                     onClick={() => handleTypeClick(type)}
@@ -150,6 +159,13 @@ const Notes = () => {
                                     {type}
                                 </button>
                             ))}
+                            <button
+                                onClick={() => setShowMoreTypes(!showMoreTypes)}
+                                className="text-[11px] font-bold text-primary hover:underline px-3 py-1 flex items-center gap-1 mt-1 shrink-0"
+                            >
+                                {showMoreTypes ? 'Show Less' : 'Show More'}
+                                <ChevronDown size={12} className={`transition-transform ${showMoreTypes ? 'rotate-180' : ''}`} />
+                            </button>
                         </div>
                     </div>
 
@@ -159,7 +175,7 @@ const Notes = () => {
                             <Tag size={12} className="opacity-50" />
                         </h3>
                         <div className="flex flex-wrap gap-2">
-                            {['React', 'Node', 'ADR', 'Python', 'Javascript', 'Security', 'Database', 'Architecture'].map(tag => (
+                            {['React', 'Node', 'ADR', 'Python', 'Javascript', 'Security', 'Database', 'Architecture'].slice(0, showMoreTags ? undefined : 6).map(tag => (
                                 <button
                                     key={tag}
                                     onClick={() => {
@@ -171,6 +187,13 @@ const Notes = () => {
                                     #{tag}
                                 </button>
                             ))}
+                            <button
+                                onClick={() => setShowMoreTags(!showMoreTags)}
+                                className="text-[11px] font-bold text-primary hover:underline px-3 py-1 flex items-center gap-1 mt-1 shrink-0"
+                            >
+                                {showMoreTags ? 'Show Less' : 'Show More'}
+                                <ChevronDown size={12} className={`transition-transform ${showMoreTags ? 'rotate-180' : ''}`} />
+                            </button>
                         </div>
                     </div>
 
