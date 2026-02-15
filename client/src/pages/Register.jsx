@@ -32,10 +32,6 @@ const Register = () => {
     );
 
     useEffect(() => {
-        if (isError) {
-            toast.error(message);
-        }
-
         if (isSuccess || user) {
             navigate('/dashboard');
         }

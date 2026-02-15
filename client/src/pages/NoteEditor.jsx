@@ -301,13 +301,9 @@ const NoteEditor = () => {
         dispatch(action).then((res) => {
             setIsSaving(false);
             if (res.meta.requestStatus === 'fulfilled') {
-                toast.success(id ? 'Record Synchronized' : 'Record Created');
                 localStorage.removeItem(draftKey);
                 const targetPath = folderId ? `/notes?folder=${folderId}` : '/notes';
                 navigate(targetPath);
-            } else {
-                const errorMsg = res.payload?.error || res.payload || 'Sync failed';
-                toast.error(errorMsg);
             }
         });
     };

@@ -84,7 +84,6 @@ const Profile = () => {
 
     useEffect(() => {
         if (isSuccess && isEditing) {
-            toast.success('Profile updated');
             setIsEditing(false);
             dispatch(reset());
         }

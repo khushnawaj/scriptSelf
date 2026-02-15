@@ -270,7 +270,7 @@ const Notes = () => {
                                     <span className="font-bold text-foreground">{(note.views || 0) + 1}</span>
                                     <span className="text-[10px] text-muted-foreground uppercase tracking-widest font-black">Pulse</span>
                                 </div>
-                                <div className={`flex flex-col items-center border p-1 rounded-[3px] min-w-[50px] sm:min-w-[56px] transition-all shadow-sm ${note.isPublic ? 'border-[#808000]/60 text-[#808000] bg-[#eff1e1] dark:bg-[#3d3d2d] dark:border-[#808000]/30' : 'border-border text-muted-foreground bg-muted/20'
+                                <div className={`flex flex-col items-center border p-1 rounded-[3px] min-w-[50px] sm:min-w-[56px] transition-all shadow-sm ${note.isPublic ? 'border-primary/60 text-primary bg-primary/10' : 'border-border text-muted-foreground bg-muted/20'
                                     }`}>
                                     <LogicSeal content={note.content} id={note._id} size={40} className="mb-1 border-none bg-transparent opacity-60" />
                                     <span className="font-black text-[10px] sm:text-[11px] uppercase tracking-tighter">{note.isPublic ? 'Public' : 'Vault'}</span>
@@ -289,7 +289,7 @@ const Notes = () => {
                                     to={`/notes/${note._id}`}
                                     className="text-[18px] font-normal text-link hover:text-link-hover mb-1 line-clamp-2 leading-snug transition-colors group-hover:underline flex items-center gap-2"
                                 >
-                                    {note.isPinned && <Pin size={16} className="text-amber-500 fill-amber-500 shrink-0" />}
+                                    {note.isPinned && <Pin size={16} className="text-primary fill-primary shrink-0" />}
                                     {note.title}
                                 </Link>
                                 <p className="text-[14px] text-muted-foreground line-clamp-2 mt-1 mb-4 font-normal leading-relaxed">

@@ -132,6 +132,7 @@ function App() {
       </Suspense>
       <Toaster
         position="bottom-right"
+        limit={1}
         toastOptions={{
           style: {
             background: 'var(--card)',

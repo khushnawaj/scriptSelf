@@ -1,8 +1,10 @@
 
 import { useEffect, useRef } from 'react';
+import { useTheme } from '../context/ThemeContext';
 
 export default function NeuralBackground({ variant = 'grid', density = 30 }) {
     const canvasRef = useRef(null);
+    const { themeAssets } = useTheme();
 
     useEffect(() => {
         const canvas = canvasRef.current;
@@ -27,11 +29,22 @@ export default function NeuralBackground({ variant = 'grid', density = 30 }) {
             size: Math.random() * 2 + 1
         }));
 
+        const themeColor = themeAssets?.color || '#3b82f6';
+
+        // Convert hex to rgb for rgba usage
+        const hexToRgb = (hex) => {
+            const r = parseInt(hex.slice(1, 3), 16);
+            const g = parseInt(hex.slice(3, 5), 16);
+            const b = parseInt(hex.slice(5, 7), 16);
+            return `${r}, ${g}, ${b}`;
+        };
+        const rgbColor = hexToRgb(themeColor);
+
         const draw = () => {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
             if (variant === 'grid') {
-                ctx.strokeStyle = 'rgba(59, 130, 246, 0.05)';
+                ctx.strokeStyle = `rgba(${rgbColor}, 0.05)`;
                 ctx.lineWidth = 1;
 
                 particles.forEach((p, i) => {
@@ -45,7 +58,7 @@ export default function NeuralBackground({ variant = 'grid', density = 30 }) {
 
                     ctx.beginPath();
                     ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-                    ctx.fillStyle = 'rgba(59, 130, 246, 0.1)';
+                    ctx.fillStyle = `rgba(${rgbColor}, 0.1)`;
                     ctx.fill();
 
                     // Connect particles
@@ -75,7 +88,7 @@ export default function NeuralBackground({ variant = 'grid', density = 30 }) {
                     ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
                     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-                    ctx.fillStyle = 'rgba(244, 63, 94, 0.15)'; // Rose color for Overlord
+                    ctx.fillStyle = `rgba(${rgbColor}, 0.15)`; // Use theme color for Overlord too
                     drops.forEach((y, i) => {
                         const text = chars[Math.floor(Math.random() * chars.length)];
                         ctx.fillText(text, i * 20, y);
@@ -97,7 +110,7 @@ export default function NeuralBackground({ variant = 'grid', density = 30 }) {
             window.removeEventListener('resize', resize);
             cancelAnimationFrame(animationFrame);
         };
-    }, [variant, density]);
+    }, [variant, density, themeAssets]);
 
     return (
         <canvas

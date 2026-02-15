@@ -1,10 +1,12 @@
 import React, { useMemo } from 'react';
+import { useTheme } from '../context/ThemeContext';
 
 /**
  * LogicSeal: Procedurally generated SVG patterns representing a document's "Neural Fingerprint".
  * It hashes the content and id to create a unique geometric seal.
  */
 const LogicSeal = ({ content = "", id = "", size = 100, className = "" }) => {
+    const { themeAssets } = useTheme();
 
     const sealData = useMemo(() => {
         // Simple hashing function
@@ -20,7 +22,26 @@ const LogicSeal = ({ content = "", id = "", size = 100, className = "" }) => {
         // Derive visual parameters from hash
         const getVal = (offset, range) => (absHash >> offset) % range;
 
-        const primaryHue = getVal(0, 360);
+        // Extract hue from theme color if possible, otherwise use randomized
+        // themeAssets.color is a hex normally (e.g. #0d9488)
+        const getThemeHue = (hex) => {
+            if (!hex || hex.charAt(0) !== '#') return 200;
+            const r = parseInt(hex.slice(1, 3), 16) / 255;
+            const g = parseInt(hex.slice(3, 5), 16) / 255;
+            const b = parseInt(hex.slice(5, 7), 16) / 255;
+            const max = Math.max(r, g, b), min = Math.min(r, g, b);
+            let h;
+            if (max === min) h = 0;
+            else if (max === r) h = (g - b) / (max - min) + (g < b ? 6 : 0);
+            else if (max === g) h = (b - r) / (max - min) + 2;
+            else h = (r - g) / (max - min) + 4;
+            return Math.round(h * 60);
+        };
+
+        const themeHue = getThemeHue(themeAssets?.color);
+        // Mix theme hue with hash hue (bias towards theme while keeping uniqueness)
+        const hashHue = getVal(0, 360);
+        const primaryHue = (themeHue + (hashHue % 60) - 30 + 360) % 360;
         const secondaryHue = (primaryHue + 40) % 360;
 
         const shapes = [];
@@ -39,7 +60,7 @@ const LogicSeal = ({ content = "", id = "", size = 100, className = "" }) => {
         }
 
         return { primaryHue, secondaryHue, shapes };
-    }, [content, id]);
+    }, [content, id, themeAssets]);
 
     return (
         <div

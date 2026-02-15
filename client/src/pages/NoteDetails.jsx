@@ -69,7 +69,6 @@ const NoteDetails = () => {
             const res = await dispatch(cloneNote({ id, folderId }));
             if (!res.error) {
                 navigate(`/notes/${res.payload._id}`);
-                toast.success('Record cloned successfully');
             }
         } finally {
             setIsCloning(false);
@@ -92,7 +91,6 @@ const NoteDetails = () => {
     const handleDelete = async () => {
         if (window.confirm('Are you sure you want to delete this record?')) {
             await dispatch(deleteNote(id));
-            toast.success('Record deleted');
             navigate('/notes');
         }
     };
@@ -180,7 +178,7 @@ const NoteDetails = () => {
                     <h1 className="text-[24px] sm:text-[32px] font-normal text-foreground leading-tight tracking-tight flex flex-wrap items-center gap-2 sm:gap-4">
                         <LogicSeal content={note.content} id={note._id} size={60} className="rounded-2xl border-primary/20 shadow-xl shadow-primary/5" />
                         <div className="flex items-center gap-2 sm:gap-3">
-                            {note.isPinned && <Pin className="text-amber-500 fill-amber-500 w-5 h-5 sm:w-6 sm:h-6" />}
+                            {note.isPinned && <Pin className="text-primary fill-primary w-5 h-5 sm:w-6 sm:h-6" />}
                             {note.title}
                         </div>
                         {note.type === 'issue' && (note.comments?.length || 0) === 0 && (
@@ -193,10 +191,10 @@ const NoteDetails = () => {
                         {user && user.role === 'admin' && (
                             <button
                                 onClick={handlePin}
-                                className={`so-btn border transition-all font-bold flex items-center gap-2 ${note.isPinned ? 'border-amber-500 text-amber-500 hover:bg-amber-500/10' : 'border-border text-muted-foreground hover:text-foreground'}`}
+                                className={`so-btn border transition-all font-bold flex items-center gap-2 ${note.isPinned ? 'border-primary text-primary hover:bg-primary/10' : 'border-border text-muted-foreground hover:text-foreground'}`}
                                 title={note.isPinned ? 'Unpin Post' : 'Pin Post to Top'}
                             >
-                                <Pin size={14} className={note.isPinned ? 'fill-amber-500' : ''} />
+                                <Pin size={14} className={note.isPinned ? 'fill-primary' : ''} />
                             </button>
                         )}
                         {user && note.user?._id === user._id ? (
