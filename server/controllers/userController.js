@@ -570,3 +570,54 @@ exports.endorseSkill = async (req, res, next) => {
         next(err);
     }
 };
+
+// @desc      Broadcast Email to All Users
+// @route     POST /api/v1/users/admin/broadcast
+// @access    Private/Admin
+exports.broadcastEmail = async (req, res, next) => {
+    try {
+        const { subject, message } = req.body;
+
+        if (!subject || !message) {
+            return res.status(400).json({
+                success: false,
+                error: 'Please provide both subject and message'
+            });
+        }
+
+        // Get all users with verified emails
+        const users = await User.find({ email: { $exists: true, $ne: null } }).select('email username');
+
+        if (users.length === 0) {
+            return res.status(404).json({
+                success: false,
+                error: 'No users found with email addresses'
+            });
+        }
+
+        // Send emails using the email service
+        const sendEmail = require('../utils/sendEmail');
+        const emailPromises = users.map(user =>
+            sendEmail({
+                email: user.email,
+                subject: subject,
+                message: `Hi ${user.username},\n\n${message}\n\nBest regards,\nScriptShelf Team`
+            }).catch(err => {
+                console.error(`Failed to send email to ${user.email}:`, err.message);
+                return null; // Don't fail the entire operation
+            })
+        );
+
+        await Promise.allSettled(emailPromises);
+
+        res.status(200).json({
+            success: true,
+            data: {
+                totalUsers: users.length,
+                message: 'Broadcast email sent successfully'
+            }
+        });
+    } catch (err) {
+        next(err);
+    }
+};

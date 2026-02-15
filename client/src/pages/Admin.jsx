@@ -35,6 +35,8 @@ const Admin = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [showCategoryModal, setShowCategoryModal] = useState(false);
     const [newCategory, setNewCategory] = useState({ name: '', description: '', isGlobal: true });
+    const [broadcastForm, setBroadcastForm] = useState({ subject: '', message: '' });
+    const [isSending, setIsSending] = useState(false);
 
     // If not admin, redirect
     if (user?.role !== 'admin') {
@@ -129,6 +131,25 @@ const Admin = () => {
         }
     };
 
+    const handleBroadcast = async (e) => {
+        e.preventDefault();
+        if (!broadcastForm.subject || !broadcastForm.message) {
+            toast.error('Please fill in both subject and message');
+            return;
+        }
+
+        setIsSending(true);
+        try {
+            const { data } = await api.post('/users/admin/broadcast', broadcastForm);
+            toast.success(`Email sent to ${data.data.totalUsers} users!`);
+            setBroadcastForm({ subject: '', message: '' });
+        } catch (error) {
+            toast.error(error.response?.data?.error || 'Failed to send broadcast email');
+        } finally {
+            setIsSending(false);
+        }
+    };
+
     const filteredUsers = users.filter(u =>
         u.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
         u.email.toLowerCase().includes(searchTerm.toLowerCase())
@@ -196,6 +217,7 @@ const Admin = () => {
                         { id: 'categories', label: 'Global Categories' },
                         { id: 'arcade', label: 'Arcade Analytics' },
                         { id: 'experiments', label: 'Experiments' },
+                        { id: 'broadcast', label: 'Broadcast' },
                         { id: 'settings', label: 'Settings' }
                     ].map(tab => (
                         <button
@@ -590,6 +612,94 @@ const Admin = () => {
                                                 ))}
                                             </tbody>
                                         </table>
+                                    </div>
+                                </div>
+                            </motion.div>
+                        )}
+
+                        {activeTab === 'broadcast' && (
+                            <motion.div
+                                key="broadcast"
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                exit={{ opacity: 0 }}
+                                className="p-6 max-w-3xl mx-auto space-y-6"
+                            >
+                                <div className="space-y-2">
+                                    <h3 className="text-[21px] font-bold text-foreground">Email Broadcast</h3>
+                                    <p className="text-[13px] text-muted-foreground">
+                                        Send important updates, announcements, or information to all registered users.
+                                    </p>
+                                </div>
+
+                                <div className="bg-amber-500/10 border border-amber-500/20 p-4 rounded-[3px]">
+                                    <p className="text-[11px] text-amber-600 dark:text-amber-400 font-bold uppercase mb-1">⚠️ Warning</p>
+                                    <p className="text-[12px] text-muted-foreground">
+                                        This will send an email to ALL users with registered email addresses. Use responsibly.
+                                    </p>
+                                </div>
+
+                                <form onSubmit={handleBroadcast} className="space-y-5">
+                                    <div>
+                                        <label className="block text-[13px] font-bold mb-2 text-foreground">Email Subject</label>
+                                        <input
+                                            type="text"
+                                            className="w-full border border-border bg-background rounded-[3px] py-2.5 px-4 text-[13px] outline-none focus:border-primary transition-colors"
+                                            placeholder="e.g., New Feature Launch: Dark Mode"
+                                            value={broadcastForm.subject}
+                                            onChange={(e) => setBroadcastForm({ ...broadcastForm, subject: e.target.value })}
+                                            required
+                                        />
+                                    </div>
+
+                                    <div>
+                                        <label className="block text-[13px] font-bold mb-2 text-foreground">Message Body</label>
+                                        <textarea
+                                            className="w-full border border-border bg-background rounded-[3px] py-2.5 px-4 text-[13px] min-h-[200px] outline-none focus:border-primary transition-colors font-mono"
+                                            placeholder="Write your message here..."
+                                            value={broadcastForm.message}
+                                            onChange={(e) => setBroadcastForm({ ...broadcastForm, message: e.target.value })}
+                                            required
+                                        />
+                                        <p className="text-[11px] text-muted-foreground mt-2">
+                                            The message will be automatically formatted with a greeting and signature.
+                                        </p>
+                                    </div>
+
+                                    <div className="flex gap-3 pt-2">
+                                        <button
+                                            type="submit"
+                                            disabled={isSending}
+                                            className="so-btn so-btn-primary px-6 py-3 flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                                        >
+                                            {isSending ? (
+                                                <>
+                                                    <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent" />
+                                                    Sending...
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <Users size={16} />
+                                                    Send to All Users ({users.length})
+                                                </>
+                                            )}
+                                        </button>
+                                        <button
+                                            type="button"
+                                            onClick={() => setBroadcastForm({ subject: '', message: '' })}
+                                            className="so-btn border border-border hover:bg-muted/50 px-4"
+                                        >
+                                            Clear
+                                        </button>
+                                    </div>
+                                </form>
+
+                                <div className="p-4 bg-primary/5 border border-primary/20 rounded-[3px]">
+                                    <p className="text-[11px] text-primary font-bold uppercase mb-1">📧 Email Preview</p>
+                                    <div className="text-[12px] text-muted-foreground space-y-1 font-mono">
+                                        <p>Hi [username],</p>
+                                        <p className="pl-4">{broadcastForm.message || '(Your message will appear here)'}</p>
+                                        <p className="mt-2">Best regards,<br />ScriptShelf Team</p>
                                     </div>
                                 </div>
                             </motion.div>

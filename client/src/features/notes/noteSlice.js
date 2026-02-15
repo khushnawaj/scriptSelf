@@ -406,17 +406,14 @@ const noteSlice = createSlice({
         state.isLoading = false;
         state.sharedNotes = action.payload;
       })
-      .addCase(getSharedNotes.rejected, (state, action) => {
-        state.isLoading = false;
-        state.isError = true;
-        state.message = action.payload;
-      })
       .addCase(likeNote.fulfilled, (state, action) => {
         const index = state.notes.findIndex(n => n._id === action.payload._id);
         if (index !== -1) {
           state.notes[index] = action.payload;
         }
       });
+  },
+});
 
-    export const { reset: resetNotes } = noteSlice.actions;
-    export default noteSlice.reducer;
+export const { reset: resetNotes } = noteSlice.actions;
+export default noteSlice.reducer;

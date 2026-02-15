@@ -646,23 +646,25 @@ const NoteDetails = () => {
                                 )}
 
                                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-                                    {/* Quick Context Buttons */}
-                                    <div className="flex flex-wrap gap-2">
-                                        {[
-                                            { label: 'Step/Steps?', text: 'Can you provide the step-by-step instructions to reproduce this?' },
-                                            { label: 'Environment?', text: 'What is your current OS/Browser and version?' },
-                                            { label: 'Check Logs', text: 'Please check your console/terminal logs and paste the error here.' }
-                                        ].map((btn, i) => (
-                                            <button
-                                                key={i}
-                                                type="button"
-                                                onClick={() => handleQuickAction(btn.text)}
-                                                className="text-[10px] font-bold text-primary bg-primary/5 border border-primary/10 px-2 py-1 rounded hover:bg-primary/20 transition-all uppercase"
-                                            >
-                                                + {btn.label}
-                                            </button>
-                                        ))}
-                                    </div>
+                                    {/* Quick Context Buttons - Only for Issues */}
+                                    {note.type === 'issue' && (
+                                        <div className="flex flex-wrap gap-2">
+                                            {[
+                                                { label: 'Step/Steps?', text: 'Can you provide the step-by-step instructions to reproduce this?' },
+                                                { label: 'Environment?', text: 'What is your current OS/Browser and version?' },
+                                                { label: 'Check Logs', text: 'Please check your console/terminal logs and paste the error here.' }
+                                            ].map((btn, i) => (
+                                                <button
+                                                    key={i}
+                                                    type="button"
+                                                    onClick={() => handleQuickAction(btn.text)}
+                                                    className="text-[10px] font-bold text-primary bg-primary/5 border border-primary/10 px-2 py-1 rounded hover:bg-primary/20 transition-all uppercase"
+                                                >
+                                                    + {btn.label}
+                                                </button>
+                                            ))}
+                                        </div>
+                                    )}
 
                                     <button type="submit" className="so-btn so-btn-primary py-2.5 px-6 shadow-lg shadow-primary/20 w-full sm:w-auto">
                                         Post Contribution
