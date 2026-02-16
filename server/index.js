@@ -6,7 +6,7 @@ const colors = require('colors');
 const cookieParser = require('cookie-parser');
 const mongoSanitize = require('express-mongo-sanitize');
 const helmet = require('helmet');
-const xss = require('xss-clean');
+// const xss = require('xss-clean');
 const hpp = require('hpp');
 const cors = require('cors');
 const compression = require('compression');
@@ -176,6 +176,12 @@ const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: process.env.NODE_ENV === 'development' ? 1000 : 100,
   message: 'Too many requests from this IP',
+  handler: (req, res, next, options) => {
+    res.status(options.statusCode).json({
+      success: false,
+      error: options.message
+    });
+  },
   standardHeaders: true,
   legacyHeaders: false,
 });
@@ -184,6 +190,12 @@ const authLimiter = rateLimit({
   windowMs: 60 * 60 * 1000,
   max: process.env.NODE_ENV === 'development' ? 200 : 20,
   message: 'Too many auth attempts.',
+  handler: (req, res, next, options) => {
+    res.status(options.statusCode).json({
+      success: false,
+      error: options.message
+    });
+  },
   standardHeaders: true,
   legacyHeaders: false,
 });
