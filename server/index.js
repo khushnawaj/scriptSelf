@@ -165,6 +165,12 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.options('*', cors(corsOptions));
 
+// Debug middleware to log CORS requests
+app.use((req, res, next) => {
+  console.log(`📨 ${req.method} ${req.path} from origin: ${req.headers.origin || 'no-origin'}`);
+  next();
+});
+
 // Trust proxy
 app.set('trust proxy', 1);
 
@@ -205,7 +211,11 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Security
 app.use(mongoSanitize());
-app.use(helmet({ crossOriginResourcePolicy: false }));
+app.use(helmet({
+  crossOriginResourcePolicy: false,
+  crossOriginEmbedderPolicy: false,
+  contentSecurityPolicy: false, // Disable CSP to prevent CORS blocking
+}));
 app.use(xss());
 app.use(hpp());
 
