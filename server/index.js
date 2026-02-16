@@ -195,7 +195,9 @@ app.use('/api/v1/auth/register', authLimiter);
 // CORS removed from here and moved to top
 
 // Body parser
-app.use(express.json());
+// Body parser (Increased limit for large notes)
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 app.use(cookieParser());
 app.use(morgan('dev'));
 
