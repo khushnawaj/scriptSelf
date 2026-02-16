@@ -212,7 +212,6 @@ app.use(helmet({
   crossOriginEmbedderPolicy: false,
   contentSecurityPolicy: false, // Disable CSP to prevent CORS blocking
 }));
-app.use(xss());
 app.use(hpp());
 
 // Root route
