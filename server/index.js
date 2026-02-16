@@ -137,25 +137,34 @@ io.on('connection', (socket) => {
 
 
 
-const corsOptions = {
-  // "origin: true" means express-cors will look at the request's "Origin" header 
-  // and set "Access-Control-Allow-Origin" to that value.
-  // This solves issues with matching logic and env vars.
-  origin: true,
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'Origin'],
-  exposedHeaders: ['Set-Cookie']
-};
-
-app.use(cors(corsOptions));
-app.options('*', cors(corsOptions));
-
-// Debug middleware to log CORS requests
+// MANUAL CORS MIDDLEWARE - The Nuclear Option
 app.use((req, res, next) => {
-  console.log(`📨 ${req.method} ${req.path} from origin: ${req.headers.origin || 'no-origin'}`);
+  const origin = req.headers.origin;
+
+  // Allow any origin that comes in (Reflect Origin)
+  if (origin) {
+    res.setHeader('Access-Control-Allow-Origin', origin);
+  } else {
+    // Fallback for non-browser tools
+    res.setHeader('Access-Control-Allow-Origin', '*');
+  }
+
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS, PATCH');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, Accept, Origin');
+  res.setHeader('Access-Control-Allow-Credentials', 'true');
+  res.setHeader('Access-Control-Expose-Headers', 'Set-Cookie');
+
+  console.log(`🛡️ CORS: ${req.method} ${req.path} | Origin: ${origin || 'None'}`);
+
+  // Handle Preflight directly
+  if (req.method === 'OPTIONS') {
+    return res.status(204).end();
+  }
+
   next();
 });
+
+
 
 // Trust proxy
 app.set('trust proxy', 1);
