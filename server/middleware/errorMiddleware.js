@@ -23,6 +23,12 @@ const errorHandler = (err, req, res, next) => {
     error = { message, statusCode: 400 };
   }
 
+  // Body Parser Payload Too Large
+  if (err.type === 'entity.too.large') {
+    const message = 'The note is too large to save. Please reduce content size or attachment.';
+    error = { message, statusCode: 413 };
+  }
+
   res.status(error.statusCode || 500).json({
     success: false,
     error: error.message || 'Server Error'
