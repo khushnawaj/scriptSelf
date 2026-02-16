@@ -135,27 +135,13 @@ io.on('connection', (socket) => {
   });
 });
 
-// Stricter CORS
-const allowedOrigins = [
-  'https://script-self-two.vercel.app',
-  'http://localhost:3000',
-  'http://localhost:5173',
-  process.env.CLIENT_URL
-].filter(Boolean);
+
 
 const corsOptions = {
-  origin: function (origin, callback) {
-    // Allow requests with no origin (like mobile apps, Postman, or server-to-server)
-    if (!origin) return callback(null, true);
-
-    // Check if origin is in allowed list
-    if (allowedOrigins.some(allowed => origin === allowed || origin.startsWith(allowed))) {
-      callback(null, true);
-    } else {
-      console.log(`❌ CORS blocked origin: ${origin}`);
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
+  // "origin: true" means express-cors will look at the request's "Origin" header 
+  // and set "Access-Control-Allow-Origin" to that value.
+  // This solves issues with matching logic and env vars.
+  origin: true,
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'Origin'],
