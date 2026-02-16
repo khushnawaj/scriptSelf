@@ -346,13 +346,14 @@ exports.createNote = async (req, res, next) => {
     console.log(`[API] Creating Note. User: ${req.user.id}, Folder: ${req.body.folder}, Type: ${req.body.type}`);
     const note = await Note.create(req.body);
 
+    // Background Processing (Non-blocking)
     if (req.body.content) {
-      await updateBidirectionalLinks(note._id, req.body.content, req.user.id);
+      updateBidirectionalLinks(note._id, req.body.content, req.user.id).catch(err => console.error('Link update failed:', err));
 
       // Process Mentions
-      // Load user details for notification message
-      const populatedNote = await Note.findById(note._id).populate('user', 'username');
-      await processMentions(populatedNote, req.body.content, req.user.id);
+      Note.findById(note._id).populate('user', 'username')
+        .then(populated => processMentions(populated, req.body.content, req.user.id))
+        .catch(err => console.error('Mention processing failed:', err));
     }
 
     res.status(201).json({
@@ -360,9 +361,9 @@ exports.createNote = async (req, res, next) => {
       data: note
     });
 
-    // Log activity & Award Points
-    await logUserActivity(req.user.id);
-    await awardReputation(req.user.id, 'create_note');
+    // Log activity & Award Points in background
+    logUserActivity(req.user.id).catch(err => console.error('Activity Log Error:', err));
+    awardReputation(req.user.id, 'create_note').catch(err => console.error('Reputation Error:', err));
   } catch (err) {
     next(err);
   }
@@ -436,13 +437,14 @@ exports.updateNote = async (req, res, next) => {
       runValidators: false // Force success during migration
     });
 
-    // Update bidirectional links
+    // Background Processing (Non-blocking)
     if (note && req.body.content) {
-      await updateBidirectionalLinks(note._id, req.body.content, req.user.id);
+      updateBidirectionalLinks(note._id, req.body.content, req.user.id).catch(err => console.error('Link update failed:', err));
 
       // Process Mentions
-      const populatedNote = await Note.findById(note._id).populate('user', 'username');
-      await processMentions(populatedNote, req.body.content, req.user.id);
+      Note.findById(note._id).populate('user', 'username')
+        .then(populated => processMentions(populated, req.body.content, req.user.id))
+        .catch(err => console.error('Mention processing failed:', err));
     }
 
     res.status(200).json({
