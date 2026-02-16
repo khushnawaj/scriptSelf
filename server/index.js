@@ -33,6 +33,34 @@ const folders = require('./routes/folderRoutes');
 
 const app = express();
 
+
+// MANUAL CORS MIDDLEWARE - The Nuclear Option
+app.use((req, res, next) => {
+  const origin = req.headers.origin;
+
+  // Allow any origin that comes in (Reflect Origin)
+  if (origin) {
+    res.setHeader('Access-Control-Allow-Origin', origin);
+  } else {
+    // Fallback for non-browser tools
+    res.setHeader('Access-Control-Allow-Origin', '*');
+  }
+
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS, PATCH');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, Accept, Origin');
+  res.setHeader('Access-Control-Allow-Credentials', 'true');
+  res.setHeader('Access-Control-Expose-Headers', 'Set-Cookie');
+
+  console.log(`🛡️ CORS: ${req.method} ${req.path} | Origin: ${origin || 'None'}`);
+
+  // Handle Preflight directly
+  if (req.method === 'OPTIONS') {
+    return res.status(204).end();
+  }
+
+  next();
+});
+
 const server = require('http').createServer(app);
 const io = require('socket.io')(server, {
   cors: {
@@ -133,35 +161,6 @@ io.on('connection', (socket) => {
   socket.on('disconnect', () => {
     console.log('Client disconnected');
   });
-});
-
-
-
-// MANUAL CORS MIDDLEWARE - The Nuclear Option
-app.use((req, res, next) => {
-  const origin = req.headers.origin;
-
-  // Allow any origin that comes in (Reflect Origin)
-  if (origin) {
-    res.setHeader('Access-Control-Allow-Origin', origin);
-  } else {
-    // Fallback for non-browser tools
-    res.setHeader('Access-Control-Allow-Origin', '*');
-  }
-
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS, PATCH');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, Accept, Origin');
-  res.setHeader('Access-Control-Allow-Credentials', 'true');
-  res.setHeader('Access-Control-Expose-Headers', 'Set-Cookie');
-
-  console.log(`🛡️ CORS: ${req.method} ${req.path} | Origin: ${origin || 'None'}`);
-
-  // Handle Preflight directly
-  if (req.method === 'OPTIONS') {
-    return res.status(204).end();
-  }
-
-  next();
 });
 
 
