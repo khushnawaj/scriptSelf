@@ -88,9 +88,20 @@ exports.getNotes = async (req, res, next) => {
     const filter = {};
 
     // 1. Access Level & Scope
+    // 1. Access Level & Scope
     if (req.query.type === 'issue') {
-      // Issues are a global public board
+      // Issues are a global public board, but PRIVATE drafts/issues should not be visible
       filter.type = 'issue';
+
+      // Allow if Public OR Owned by current user
+      if (req.user) {
+        filter.$or = [
+          { isPublic: true },
+          { user: req.user._id }
+        ];
+      } else {
+        filter.isPublic = true;
+      }
     } else if (req.query.public === 'true') {
       // Explicitly requesting public notes (from everyone)
       filter.isPublic = true;
@@ -102,14 +113,8 @@ exports.getNotes = async (req, res, next) => {
       // Default: My notes (Public + Private)
       filter.user = req.user._id;
     } else {
-      // Guest user requesting non- public data -> Return empty
-      return res.status(200).json({
-        success: true,
-        count: 0,
-        total: 0,
-        pagination: {},
-        data: []
-      });
+      // Guest user requesting non-public data -> Default to public feed (safe)
+      filter.isPublic = true;
     }
 
     // 2. Category Filter
