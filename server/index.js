@@ -218,12 +218,12 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Security
-app.use(mongoSanitize());
-app.use(helmet({
-  crossOriginResourcePolicy: false,
-  crossOriginEmbedderPolicy: false,
-  contentSecurityPolicy: false, // Disable CSP to prevent CORS blocking
-}));
+// app.use(mongoSanitize());
+// app.use(helmet({
+//   crossOriginResourcePolicy: false,
+//   crossOriginEmbedderPolicy: false,
+//   contentSecurityPolicy: false, // Disable CSP to prevent CORS blocking
+// }));
 app.use(hpp());
 
 // Root route
