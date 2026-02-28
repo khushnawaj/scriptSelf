@@ -282,7 +282,12 @@ const noteSlice = createSlice({
   name: 'notes',
   initialState,
   reducers: {
-    reset: (state) => initialState,
+    reset: (state) => {
+      state.isError = false;
+      state.message = '';
+      state.isLoading = false;
+    },
+    hardReset: (state) => initialState,
   },
   extraReducers: (builder) => {
     builder
@@ -321,6 +326,9 @@ const noteSlice = createSlice({
         state.total = action.payload.total;
         state.pagination = action.payload.pagination;
       })
+      .addCase(getNote.pending, (state) => {
+        state.isLoading = true;
+      })
       .addCase(getNote.fulfilled, (state, action) => {
         state.isLoading = false;
         const index = state.notes.findIndex(n => n._id === action.payload._id);
@@ -329,6 +337,11 @@ const noteSlice = createSlice({
         } else {
           state.notes.push(action.payload);
         }
+      })
+      .addCase(getNote.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.message = action.payload;
       })
       .addCase(getNotes.rejected, (state, action) => {
         state.isLoading = false;

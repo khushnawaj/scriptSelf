@@ -225,8 +225,24 @@ const NoteDetails = () => {
         setCommentText(prev => prev ? `${prev}\n\n${text}` : text);
     };
 
-    if (isLoading || !note) {
+    if (isLoading) {
         return <Spinner />;
+    }
+
+    if (!note) {
+        return (
+            <div className="flex flex-col items-center justify-center py-20 gap-4">
+                <Brain className="w-16 h-16 text-muted-foreground opacity-20" />
+                <h2 className="text-xl font-bold text-foreground italic">Restricted Neural Link</h2>
+                <p className="text-sm text-muted-foreground text-center max-w-md">
+                    Access to this record is either restricted or the link has expired.
+                    Ensure you have the correct bypass token.
+                </p>
+                <Link to="/notes" className="px-6 py-2 bg-primary text-white rounded-xl text-xs font-black uppercase tracking-widest hover:scale-105 active:scale-95 transition-all mt-4">
+                    Return to Library
+                </Link>
+            </div>
+        );
     }
 
     return (
