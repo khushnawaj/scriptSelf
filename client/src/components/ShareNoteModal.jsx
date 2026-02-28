@@ -130,14 +130,15 @@ const ShareNoteModal = ({ isOpen, onClose, noteId, currentSharedWith = [], share
                         <div className="flex gap-2">
                             <input
                                 readOnly
-                                value={getShareLink()}
+                                value={shareToken ? getShareLink() : 'Generating bypass token...'}
                                 className="flex-1 bg-background border border-border rounded-xl px-3 py-2 text-[12px] text-muted-foreground outline-none ring-primary/20 focus:ring-2 font-mono"
                             />
                             <button
                                 onClick={copyShareLink}
-                                className="px-4 py-2 bg-primary text-white rounded-xl text-[11px] font-black uppercase tracking-widest hover:scale-105 active:scale-95 transition-all shadow-lg shadow-primary/10"
+                                disabled={!shareToken}
+                                className="px-4 py-2 bg-primary text-white rounded-xl text-[11px] font-black uppercase tracking-widest hover:scale-105 active:scale-95 transition-all shadow-lg shadow-primary/10 disabled:opacity-50"
                             >
-                                {isCopied ? 'Copied' : 'Copy'}
+                                {isCopied ? 'Copied' : shareToken ? 'Copy' : 'WAIT'}
                             </button>
                         </div>
                         <p className="text-[10px] text-muted-foreground mt-3 italic">Anyone with this link can bypass private encryption. Share with caution.</p>

@@ -278,6 +278,12 @@ exports.getNote = async (req, res, next) => {
       return res.status(404).json({ success: false, error: `No note found with id ${req.params.id}` });
     }
 
+    // Ensure shareToken exists for old notes
+    if (!note.shareToken) {
+      note.shareToken = require('crypto').randomBytes(16).toString('hex');
+      await note.save().catch(e => console.error('Token Generation Failed:', e));
+    }
+
     // Access Rules:
     // 1. Note is Public -> Allow
     // 2. Note is Type 'issue' -> Allow
