@@ -14,7 +14,8 @@ const awardReputation = async (userId, activityType, isDeduction = false) => {
             'clone_note': 25,
             'receive_comment': 5,
             'arcade_game': 15,
-            'mark_solution': 100
+            'mark_solution': 100,
+            'quiz_complete': 50
         };
 
         let points = pointsMap[activityType] || 0;

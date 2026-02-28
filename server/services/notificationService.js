@@ -1,5 +1,7 @@
 const Notification = require('../models/Notification');
+const User = require('../models/User'); // Required for email lookups
 const redis = require('../config/redis');
+const sendEmail = require('./emailService');
 
 let io;
 
@@ -8,20 +10,28 @@ exports.setIO = (ioInstance) => {
 };
 
 // @desc push notification to Redis and DB, and emit socket event
-exports.sendNotification = async ({ recipient, sender, type, message, link }) => {
+exports.sendNotification = async ({ recipient, sender, type, message, link, title, metadata, skipEmail = false }) => {
     try {
         // 1. Save to DB
-        const notification = await Notification.create({
+        const notificationInput = {
             recipient,
-            sender,
+            sender: sender || null, // Allow system notifications (no sender)
             type,
-            message,
-            link
-        });
+            message: message || title,
+            link,
+            metadata: metadata || {}
+        };
 
-        // Populate sender info for frontend
-        const populatedNotification = await Notification.findById(notification._id)
-            .populate('sender', 'username avatar');
+        const notification = await Notification.create(notificationInput);
+
+        // Populate sender info for frontend (if exists)
+        let populatedNotification;
+        if (sender) {
+            populatedNotification = await Notification.findById(notification._id)
+                .populate('sender', 'username avatar');
+        } else {
+            populatedNotification = notification.toObject();
+        }
 
         // 2. Cache in Redis (Prepend to list)
         const cacheKey = `notifications:${recipient}`;
@@ -36,11 +46,34 @@ exports.sendNotification = async ({ recipient, sender, type, message, link }) =>
             io.to(recipient.toString()).emit('notification', populatedNotification);
         }
 
+        // 4. Send Email Notification
+        if (!skipEmail) {
+            const user = await User.findById(recipient).select('email username');
+            if (user && user.email) {
+                const subjectMap = {
+                    'share': 'New Technical Record Shared with You',
+                    'mention': 'You were mentioned in a script',
+                    'comment': 'New feedback on your record',
+                    'follow': 'New follower on ScriptShelf',
+                    'announcement': title || subjectMap[type] || 'ScriptShelf System Update'
+                };
+
+                await sendEmail({
+                    email: user.email,
+                    subject: subjectMap[type] || 'ScriptShelf Notification',
+                    message: `Hi ${user.username},\n\n${notificationInput.message}\n\nView here: ${process.env.CLIENT_URL || 'http://localhost:5173'}${link || ''}\n\nBest regards,\nScriptShelf Intelligence.`
+                }).catch(e => console.error('Email Dispatch Failed:', e.message));
+            }
+        }
+
         return populatedNotification;
     } catch (err) {
         console.error('Notification Service Error:', err);
     }
 };
+
+// Alias for backwards compatibility
+exports.createNotification = exports.sendNotification;
 
 // @desc Get notifications with Redis caching
 exports.getNotifications = async (userId) => {

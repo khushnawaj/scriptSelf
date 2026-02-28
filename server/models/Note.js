@@ -133,12 +133,25 @@ const noteSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     },
+    shareToken: {
+        type: String,
+        unique: true,
+        sparse: true // Only exist if generated
+    },
     views: {
         type: Number,
         default: 0
     }
 }, {
     timestamps: true
+});
+
+// Generate share token if missing
+noteSchema.pre('save', function (next) {
+    if (!this.shareToken) {
+        this.shareToken = require('crypto').randomBytes(16).toString('hex');
+    }
+    next();
 });
 
 // Create text index for search

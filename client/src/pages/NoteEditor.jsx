@@ -195,15 +195,58 @@ const NoteEditor = () => {
         setTimeout(() => setIsDirty(false), 500);
     }, [id, notes, location.state, categories, urlFolderId]);
 
+    const ADR_TEMPLATE = `## Context and Problem Statement
+[Describe the issue that needs a decision.]
+
+## Decision Drivers
+* [Driver 1]
+* [Driver 2]
+
+## Considered Options
+1. [Option 1]
+2. [Option 2]
+
+## Decision Outcome
+Chosen option: "[Option Name]", because [justification].
+
+### Consequences
+* **Good:** [Positive outcome]
+* **Bad:** [Negative trade-off]`;
+
+    const PATTERN_TEMPLATE = `## Pattern Purpose
+[What problem does this logic solve?]
+
+## Implementation Logic
+\`\`\`javascript
+// Your core logic implementation here
+\`\`\`
+
+## Edge Cases to Consider
+* [Scenario 1]
+* [Scenario 2]
+
+## Performance Considerations
+[Memory/Time complexity details]`;
+
     const onChange = (e) => {
         const { name, value, type: inputType, checked } = e.target;
         setIsDirty(true);
 
-        if (name === 'type' && value === 'issue' && !formData.content) {
+        if (name === 'type') {
+            let newContent = content;
+            if (!content.trim() || content === ADR_TEMPLATE || content === PATTERN_TEMPLATE || content.startsWith('### Problem Description')) {
+                if (value === 'issue') {
+                    newContent = `### Problem Description\n\n\n### Expected Behavior\n\n\n### Context / Environment\n- OS:\n- Browser:\n- Version:\n\n### Reproducible Steps\n1. \n2. \n3. `;
+                } else if (value === 'adr') {
+                    newContent = ADR_TEMPLATE;
+                } else if (value === 'pattern') {
+                    newContent = PATTERN_TEMPLATE;
+                }
+            }
             setFormData(prev => ({
                 ...prev,
                 type: value,
-                content: `### Problem Description\n\n\n### Expected Behavior\n\n\n### Context / Environment\n- OS:\n- Browser:\n- Version:\n\n### Reproducible Steps\n1. \n2. \n3. `
+                content: newContent
             }));
         } else {
             setFormData(prev => ({
@@ -212,6 +255,7 @@ const NoteEditor = () => {
             }));
         }
     };
+
 
     const handleEditorDidMount = (editor) => {
         editorRef.current = editor;

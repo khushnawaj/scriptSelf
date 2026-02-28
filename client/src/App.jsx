@@ -38,6 +38,11 @@ const Playground = lazy(() => import('./pages/Playground'));
 const Network = lazy(() => import('./pages/Network'));
 const Levels = lazy(() => import('./pages/Levels'));
 const Explorers = lazy(() => import('./pages/Explorers'));
+const Roadmap = lazy(() => import('./pages/Roadmap'));
+
+
+
+
 
 // Private Route Component
 const PrivateRoute = ({ children }) => {
@@ -165,13 +170,16 @@ function App() {
             <Route path="/community" element={<Community />} />
             <Route path="/playground" element={<Playground />} />
             <Route path="/network" element={<Network />} />
+
             <Route path="/levels" element={<Levels />} />
+
             <Route path="/explorers" element={<Explorers />} />
 
             {/* Validated Access Routes */}
             <Route path="/dashboard" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
             <Route path="/profile" element={<PrivateRoute><Profile /></PrivateRoute>} />
             <Route path="/chat" element={<PrivateRoute><Chat /></PrivateRoute>} />
+            <Route path="/roadmap" element={<PrivateRoute><Roadmap /></PrivateRoute>} />
             <Route path="/notes/new" element={<PrivateRoute><NoteEditor /></PrivateRoute>} />
             <Route path="/notes/edit/:id" element={<PrivateRoute><NoteEditor /></PrivateRoute>} />
 

@@ -4,6 +4,8 @@ const fs = require('fs');
 const logUserActivity = require('../utils/activityLogger');
 const awardReputation = require('../utils/reputationEngine');
 const notificationService = require('../services/notificationService');
+const aiService = require('../services/aiService');
+
 
 // Helper for Bidirectional Linking
 const updateBidirectionalLinks = async (noteId, content, userId) => {
@@ -286,8 +288,9 @@ exports.getNote = async (req, res, next) => {
     const isOwner = req.user && note.user._id.toString() === req.user.id;
     const isAdmin = req.user && req.user.role === 'admin';
     const isSharedWithMe = req.user && note.sharedWith?.includes(req.user.id);
+    const hasValidToken = req.query.token && note.shareToken === req.query.token;
 
-    if (!isPublic && !isOwner && !isAdmin && !isSharedWithMe) {
+    if (!isPublic && !isOwner && !isAdmin && !isSharedWithMe && !hasValidToken) {
       return res.status(403).json({ success: false, error: `Not authorized to view this private note` });
     }
 
@@ -902,3 +905,135 @@ exports.getNetworkFeed = async (req, res, next) => {
     next(err);
   }
 };
+// @desc      Generate a quiz for a note
+// @route     GET /api/v1/notes/:id/quiz
+// @access    Private
+exports.generateNoteQuiz = async (req, res, next) => {
+  try {
+    const note = await Note.findById(req.params.id);
+
+    if (!note) {
+      return res.status(404).json({ success: false, error: 'Note not found' });
+    }
+
+    const quiz = await aiService.generateQuiz(note.content);
+
+    res.status(200).json({
+      success: true,
+      data: quiz
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+// @desc      Record quiz completion
+// @route     PUT /api/v1/notes/:id/quiz/complete
+// @access    Private
+exports.completeNoteQuiz = async (req, res, next) => {
+  try {
+    const note = await Note.findById(req.params.id);
+
+    if (!note) {
+      return res.status(404).json({ success: false, error: 'Note not found' });
+    }
+
+    // Award reputation for deep learning
+    await awardReputation(req.user.id, 'quiz_complete');
+
+    // Log the synchronization activity
+    await logUserActivity(req.user.id, 'quiz_complete', {
+      noteId: note._id,
+      title: note.title
+    });
+
+    res.status(200).json({
+      success: true,
+      data: { score: req.body.score }
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+// @desc      Get graph data for notes
+// @route     GET /api/v1/notes/roadmap
+// @access    Private
+exports.getNoteGraph = async (req, res, next) => {
+  try {
+    const notes = await Note.find({ user: req.user.id })
+      .select('title type relatedNotes backlinks tags');
+
+    const nodes = notes.map(note => ({
+      id: note._id.toString(),
+      name: note.title,
+      type: note.type,
+      val: 10 + (note.backlinks?.length || 0) * 5 // Size based on popularity/backlinks
+    }));
+
+    const links = [];
+    notes.forEach(note => {
+      // 1. Explicit links
+      if (note.relatedNotes) {
+        note.relatedNotes.forEach(relatedId => {
+          links.push({
+            source: note._id.toString(),
+            target: relatedId.toString()
+          });
+        });
+      }
+
+      // 2. Implicit links (Common Tags)
+      if (note.tags && note.tags.length > 0) {
+        notes.forEach(otherNote => {
+          if (note._id.toString() === otherNote._id.toString()) return;
+          if (otherNote.tags && otherNote.tags.some(tag => note.tags.includes(tag))) {
+            // Check if link already exists to avoid duplicates
+            const exists = links.some(l =>
+              (l.source === note._id.toString() && l.target === otherNote._id.toString()) ||
+              (l.source === otherNote._id.toString() && l.target === note._id.toString())
+            );
+            if (!exists) {
+              links.push({
+                source: note._id.toString(),
+                target: otherNote._id.toString(),
+                type: 'implicit'
+              });
+            }
+          }
+        });
+      }
+    });
+
+    res.status(200).json({
+      success: true,
+      data: { nodes, links }
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+// @desc      Get interview prep data
+// @route     GET /api/v1/notes/:id/interview
+// @access    Private
+exports.getInterviewPrep = async (req, res, next) => {
+  try {
+    const note = await Note.findById(req.params.id);
+
+    if (!note) {
+      return res.status(404).json({ success: false, error: 'Note not found' });
+    }
+
+    const prep = await aiService.generateInterviewPrep(note.content);
+
+    res.status(200).json({
+      success: true,
+      data: prep
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+

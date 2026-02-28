@@ -9,16 +9,21 @@ const notificationSchema = new mongoose.Schema({
     sender: {
         type: mongoose.Schema.ObjectId,
         ref: 'User',
-        required: true
+        required: false // Allow null for system notifications
     },
     type: {
         type: String,
-        enum: ['follow', 'like', 'comment', 'system'],
+        enum: ['follow', 'like', 'comment', 'system', 'mention', 'share', 'announcement'],
         required: true
     },
     message: {
         type: String,
         required: true
+    },
+    metadata: {
+        type: Map,
+        of: mongoose.Schema.Types.Mixed,
+        default: {}
     },
     link: {
         type: String // URL to redirect when clicked

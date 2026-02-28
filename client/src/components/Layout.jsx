@@ -15,8 +15,11 @@ import {
     X,
     BookOpen,
     Gamepad2,
-    MessageCircle
+    MessageCircle,
+    Network,
+    Rss
 } from 'lucide-react';
+
 import { useSelector } from 'react-redux';
 import { motion, AnimatePresence } from 'framer-motion';
 import TerminalConsole from './TerminalConsole';
@@ -72,7 +75,9 @@ const Layout = () => {
             <NavItem to="/notes" label="All Notes" icon={FileText} />
             {user && <NavItem to="/notes/new" label="New Note" icon={Zap} />}
             <NavItem to="/categories" label="Tags" icon={BookOpen} />
+            <NavItem to="/roadmap" label="Roadmap" icon={Network} />
             <NavItem to="/issues" label="Issues" icon={Flag} />
+
 
             <div className="mt-3 mb-1 px-2 text-[10px] font-black uppercase text-muted-foreground/40 tracking-[0.2em]">
                 Studio
@@ -80,10 +85,13 @@ const Layout = () => {
             <NavItem to="/playground" label="Playground" icon={Terminal} />
             <NavItem to="/arcade" label="Arcade" icon={Gamepad2} />
 
+
+
             <div className="mt-3 mb-1 px-2 text-[10px] font-black uppercase text-muted-foreground/40 tracking-[0.2em]">
                 Connect
             </div>
             <NavItem to="/community" label="Community" icon={Globe} />
+            <NavItem to="/network" label="Pulse Feed" icon={Rss} />
             {user && <NavItem to="/chat" label="Messages" icon={MessageCircle} />}
 
             <div className="mt-3 mb-1 px-2 text-[10px] font-black uppercase text-muted-foreground/40 tracking-[0.2em]">
@@ -143,6 +151,8 @@ const Layout = () => {
 
                 {/* Main Content Area */}
                 <main className={`flex-1 p-4 sm:p-8 border-l border-border/10 min-w-0 bg-background/30 backdrop-blur-3xl ${location.pathname === '/playground' ? 'layout-full-width' : ''}`}>
+
+
                     <Outlet />
                 </main>
 

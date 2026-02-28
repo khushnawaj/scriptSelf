@@ -610,6 +610,7 @@ exports.broadcastEmail = async (req, res, next) => {
                 type: 'announcement',
                 title: subject,
                 message: message,
+                skipEmail: true,
                 metadata: {
                     source: 'admin_broadcast'
                 }
@@ -655,6 +656,7 @@ exports.broadcastEmail = async (req, res, next) => {
                 type: 'announcement',
                 title: subject,
                 message: message,
+                skipEmail: true,
                 metadata: {
                     source: 'admin_broadcast'
                 }

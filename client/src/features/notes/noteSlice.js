@@ -60,9 +60,15 @@ export const getNotes = createAsyncThunk(
 // Get single note
 export const getNote = createAsyncThunk(
   'notes/getOne',
-  async (id, thunkAPI) => {
+  async (data, thunkAPI) => {
     try {
-      const res = await api.get(`/notes/${id}`);
+      const id = typeof data === 'object' ? data.id : data;
+      const token = typeof data === 'object' ? data.token : null;
+
+      let url = `/notes/${id}`;
+      if (token) url += `?token=${token}`;
+
+      const res = await api.get(url);
       return res.data.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.response?.data?.error);

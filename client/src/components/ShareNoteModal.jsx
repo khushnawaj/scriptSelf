@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Search, Check, Send } from 'lucide-react';
+import { X, Search, Check, Send, Link as LinkIcon } from 'lucide-react';
 import { createPortal } from 'react-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { shareNote } from '../features/notes/noteSlice';
@@ -8,7 +8,7 @@ import api from '../utils/api';
 import Spinner from './Spinner';
 import { toast } from 'react-hot-toast';
 
-const ShareNoteModal = ({ isOpen, onClose, noteId, currentSharedWith = [] }) => {
+const ShareNoteModal = ({ isOpen, onClose, noteId, currentSharedWith = [], shareToken }) => {
     const dispatch = useDispatch();
     const { user } = useSelector((state) => state.auth);
     const [connections, setConnections] = useState([]);
@@ -16,6 +16,18 @@ const ShareNoteModal = ({ isOpen, onClose, noteId, currentSharedWith = [] }) => 
     const [loading, setLoading] = useState(true);
     const [search, setSearch] = useState('');
     const [isSharing, setIsSharing] = useState(false);
+    const [isCopied, setIsCopied] = useState(false);
+
+    const getShareLink = () => {
+        const baseUrl = window.location.origin;
+        return `${baseUrl}/notes/${noteId}?token=${shareToken}`;
+    };
+
+    const copyShareLink = () => {
+        navigator.clipboard.writeText(getShareLink());
+        setIsCopied(true);
+        setTimeout(() => setIsCopied(false), 2000);
+    };
 
     useEffect(() => {
         if (isOpen && user) {
@@ -105,6 +117,30 @@ const ShareNoteModal = ({ isOpen, onClose, noteId, currentSharedWith = [] }) => 
                         <button onClick={onClose} className="p-2 hover:bg-secondary rounded-lg transition-all text-muted-foreground hover:text-foreground">
                             <X size={20} />
                         </button>
+                    </div>
+
+                    {/* Secret Share Link */}
+                    <div className="px-6 py-4 border-b border-border bg-primary/5">
+                        <div className="flex items-center justify-between mb-3">
+                            <h4 className="text-[11px] font-black text-primary uppercase tracking-[0.2em] flex items-center gap-2">
+                                <LinkIcon size={14} /> Secret Pulse Link
+                            </h4>
+                            <span className="text-[10px] text-muted-foreground font-bold p-1 bg-background border border-border rounded">PUBLIC ACCESS BYPASS</span>
+                        </div>
+                        <div className="flex gap-2">
+                            <input
+                                readOnly
+                                value={getShareLink()}
+                                className="flex-1 bg-background border border-border rounded-xl px-3 py-2 text-[12px] text-muted-foreground outline-none ring-primary/20 focus:ring-2 font-mono"
+                            />
+                            <button
+                                onClick={copyShareLink}
+                                className="px-4 py-2 bg-primary text-white rounded-xl text-[11px] font-black uppercase tracking-widest hover:scale-105 active:scale-95 transition-all shadow-lg shadow-primary/10"
+                            >
+                                {isCopied ? 'Copied' : 'Copy'}
+                            </button>
+                        </div>
+                        <p className="text-[10px] text-muted-foreground mt-3 italic">Anyone with this link can bypass private encryption. Share with caution.</p>
                     </div>
 
                     {/* Search Bar */}

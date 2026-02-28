@@ -15,8 +15,15 @@ const {
   togglePin,
   shareNote,
   getSharedNotes,
-  getNetworkFeed
+  getNetworkFeed,
+  generateNoteQuiz,
+  getNoteGraph,
+  getInterviewPrep,
+  completeNoteQuiz
 } = require('../controllers/noteController');
+
+
+
 
 const router = express.Router({ mergeParams: true });
 
@@ -60,7 +67,14 @@ router
   .post(protect, upload.single('file'), createNote);
 
 router.post('/:id/clone', protect, cloneNote);
+router.get('/roadmap', protect, getNoteGraph);
+router.get('/:id/quiz', protect, generateNoteQuiz);
+router.put('/:id/quiz/complete', protect, completeNoteQuiz);
+router.get('/:id/interview', protect, getInterviewPrep);
+
+
 router.post('/:id/comments', protect, addComment);
+
 router.route('/:id/comments/:commentId')
   .put(protect, updateComment)
   .delete(protect, deleteComment);
