@@ -7,6 +7,90 @@ const notificationService = require('../services/notificationService');
 const aiService = require('../services/aiService');
 
 
+const canAccessNote = (note, req) => {
+  const isPublic = note.isPublic || note.type === 'issue';
+  const isOwner = req.user && note.user.toString() === req.user.id;
+  const isAdmin = req.user && req.user.role === 'admin';
+  const isSharedWithMe = req.user && Array.isArray(note.sharedWith) &&
+    note.sharedWith.some((id) => id.toString() === req.user.id);
+  const hasValidToken = req.query.token && note.shareToken === req.query.token;
+
+  return isPublic || isOwner || isAdmin || isSharedWithMe || hasValidToken;
+};
+
+const getAuthorizedNoteForAI = async (req, res) => {
+  const note = await Note.findById(req.params.id).select('title content codeSnippet type isPublic user sharedWith shareToken');
+
+  if (!note) {
+    res.status(404).json({ success: false, error: 'Note not found' });
+    return null;
+  }
+
+  if (!canAccessNote(note, req)) {
+    res.status(403).json({ success: false, error: 'Not authorized to access this note' });
+    return null;
+  }
+
+  return note;
+};
+
+const validateQuizPayload = (quiz) => {
+  if (!quiz || typeof quiz !== 'object' || !Array.isArray(quiz.questions) || quiz.questions.length === 0) {
+    return null;
+  }
+
+  const questions = quiz.questions.filter((q) => {
+    return q &&
+      typeof q.question === 'string' &&
+      Array.isArray(q.options) &&
+      q.options.length === 4 &&
+      q.options.every((opt) => typeof opt === 'string') &&
+      Number.isInteger(q.correctIndex) &&
+      q.correctIndex >= 0 &&
+      q.correctIndex < q.options.length &&
+      typeof q.explanation === 'string';
+  });
+
+  return questions.length ? { questions } : null;
+};
+
+const validateInterviewPayload = (prep) => {
+  if (!prep || typeof prep !== 'object' || !Array.isArray(prep.talkingPoints) || !Array.isArray(prep.questions)) {
+    return null;
+  }
+
+  const talkingPoints = prep.talkingPoints.filter((p) => typeof p === 'string' && p.trim().length > 0);
+  const questions = prep.questions.filter((q) => q && typeof q.q === 'string' && typeof q.a === 'string');
+
+  if (!talkingPoints.length || !questions.length) return null;
+  return { talkingPoints, questions };
+};
+
+const validateAnalysisPayload = (analysis) => {
+  if (!analysis || typeof analysis !== 'object') return null;
+
+  const tags = Array.isArray(analysis.tags)
+    ? analysis.tags.filter((t) => typeof t === 'string' && t.trim().length > 0)
+    : [];
+
+  if (
+    typeof analysis.title !== 'string' ||
+    typeof analysis.complexity !== 'string' ||
+    typeof analysis.explanation !== 'string' ||
+    typeof analysis.refactoredCode !== 'string'
+  ) {
+    return null;
+  }
+
+  return {
+    title: analysis.title,
+    tags,
+    complexity: analysis.complexity,
+    explanation: analysis.explanation,
+    refactoredCode: analysis.refactoredCode
+  };
+};
+
 // Helper for Bidirectional Linking
 const updateBidirectionalLinks = async (noteId, content, userId) => {
   try {
@@ -916,13 +1000,13 @@ exports.getNetworkFeed = async (req, res, next) => {
 // @access    Private
 exports.generateNoteQuiz = async (req, res, next) => {
   try {
-    const note = await Note.findById(req.params.id);
+    const note = await getAuthorizedNoteForAI(req, res);
+    if (!note) return;
+    const quiz = validateQuizPayload(await aiService.generateQuiz(note.content));
 
-    if (!note) {
-      return res.status(404).json({ success: false, error: 'Note not found' });
+    if (!quiz) {
+      return res.status(502).json({ success: false, error: 'AI returned an invalid quiz format. Please try again.' });
     }
-
-    const quiz = await aiService.generateQuiz(note.content);
 
     res.status(200).json({
       success: true,
@@ -1025,17 +1109,47 @@ exports.getNoteGraph = async (req, res, next) => {
 // @access    Private
 exports.getInterviewPrep = async (req, res, next) => {
   try {
-    const note = await Note.findById(req.params.id);
+    const note = await getAuthorizedNoteForAI(req, res);
+    if (!note) return;
+    const prep = validateInterviewPayload(await aiService.generateInterviewPrep(note.content));
 
-    if (!note) {
-      return res.status(404).json({ success: false, error: 'Note not found' });
+    if (!prep) {
+      return res.status(502).json({ success: false, error: 'AI returned an invalid interview format. Please try again.' });
     }
-
-    const prep = await aiService.generateInterviewPrep(note.content);
 
     res.status(200).json({
       success: true,
       data: prep
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+// @desc      Analyze/refactor note code with AI
+// @route     POST /api/v1/notes/:id/analyze
+// @access    Private (authorized note viewers)
+exports.analyzeNote = async (req, res, next) => {
+  try {
+    const note = await getAuthorizedNoteForAI(req, res);
+    if (!note) return;
+
+    const sourceCode = note.codeSnippet || note.content || '';
+    if (!sourceCode.trim()) {
+      return res.status(400).json({ success: false, error: 'No note content available for analysis' });
+    }
+
+    const analysis = validateAnalysisPayload(
+      await aiService.analyzeCode(note.content || '', note.codeSnippet || '')
+    );
+
+    if (!analysis) {
+      return res.status(502).json({ success: false, error: 'AI returned an invalid analysis format. Please try again.' });
+    }
+
+    res.status(200).json({
+      success: true,
+      data: analysis
     });
   } catch (err) {
     next(err);

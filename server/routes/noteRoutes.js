@@ -19,7 +19,8 @@ const {
   generateNoteQuiz,
   getNoteGraph,
   getInterviewPrep,
-  completeNoteQuiz
+  completeNoteQuiz,
+  analyzeNote
 } = require('../controllers/noteController');
 
 
@@ -71,6 +72,7 @@ router.get('/roadmap', protect, getNoteGraph);
 router.get('/:id/quiz', protect, generateNoteQuiz);
 router.put('/:id/quiz/complete', protect, completeNoteQuiz);
 router.get('/:id/interview', protect, getInterviewPrep);
+router.post('/:id/analyze', protect, analyzeNote);
 
 
 router.post('/:id/comments', protect, addComment);
