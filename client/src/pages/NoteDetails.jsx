@@ -49,6 +49,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 
 import { addToRecent } from '../utils/recentTracker';
+import { getCoverGradientStyle } from '../utils/noteCover';
 
 const NoteDetails = () => {
     const { id } = useParams();
@@ -248,6 +249,23 @@ const NoteDetails = () => {
     return (
         <>
             <div className="space-y-4 max-w-[1100px] mx-auto pb-20 animate-in fade-in duration-300">
+                {(note.coverImageUrl || note.coverGradient) && (
+                    <div className="relative w-full h-44 sm:h-56 rounded-2xl overflow-hidden border border-border/80 shadow-lg shadow-black/5">
+                        {note.coverImageUrl ? (
+                            <img
+                                src={note.coverImageUrl}
+                                alt=""
+                                className="absolute inset-0 w-full h-full object-cover"
+                            />
+                        ) : (
+                            <div
+                                className="absolute inset-0"
+                                style={getCoverGradientStyle(note.coverGradient) || undefined}
+                            />
+                        )}
+                        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/30 to-transparent pointer-events-none" />
+                    </div>
+                )}
                 {/* Header Section */}
                 <div className="border-b border-border pb-6 mb-6">
                     {/* ... (keep header content) ... */}
@@ -718,7 +736,7 @@ const NoteDetails = () => {
                                         {note.attachment?.originalName || 'Download Documentation'}
                                     </p>
                                     <a
-                                        href={note.attachmentUrl.startsWith('http') ? note.attachmentUrl : `http://localhost:5000/${note.attachmentUrl}`}
+                                        href={note.attachmentUrl.startsWith('http') ? note.attachmentUrl : `http://localhost:5005/${note.attachmentUrl}`}
                                         target="_blank"
                                         rel="noopener noreferrer"
                                         className="so-btn so-btn-primary px-6 flex items-center gap-2"

@@ -141,6 +141,18 @@ const noteSchema = new mongoose.Schema({
     views: {
         type: Number,
         default: 0
+    },
+    /** Optional hero image (e.g. Cloudinary URL) for shelf / card view */
+    coverImageUrl: {
+        type: String,
+        default: ''
+    },
+    /** Preset gradient id when no cover image (see client `noteCover.js`) */
+    coverGradient: {
+        type: String,
+        default: '',
+        trim: true,
+        lowercase: true
     }
 }, {
     timestamps: true

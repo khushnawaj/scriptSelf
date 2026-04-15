@@ -19,8 +19,11 @@ import {
     Tag,
     FolderTree,
     Pin,
-    ArrowUpRight
+    ArrowUpRight,
+    LayoutGrid,
+    LayoutList
 } from 'lucide-react';
+import { getCoverGradientStyle } from '../utils/noteCover';
 
 const Notes = () => {
     const dispatch = useDispatch();
@@ -39,6 +42,19 @@ const Notes = () => {
     const [showMoreCategories, setShowMoreCategories] = useState(false);
     const [showMoreTypes, setShowMoreTypes] = useState(false);
     const [showMoreTags, setShowMoreTags] = useState(false);
+    const [libraryView, setLibraryView] = useState(() => {
+        try {
+            return localStorage.getItem('ss_notes_view') === 'shelf' ? 'shelf' : 'list';
+        } catch {
+            return 'list';
+        }
+    });
+
+    useEffect(() => {
+        try {
+            localStorage.setItem('ss_notes_view', libraryView);
+        } catch { /* ignore */ }
+    }, [libraryView]);
 
     // Sync search term and folder from URL
     useEffect(() => {
@@ -207,6 +223,26 @@ const Notes = () => {
                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-border pb-6">
                     <h1 className="text-2xl sm:text-3xl font-bold text-foreground">Technical Library</h1>
                     <div className="flex items-center gap-3 w-full sm:w-auto overflow-x-auto no-scrollbar pb-2 sm:pb-0">
+                        <div className="flex border border-border rounded-[3px] overflow-hidden shadow-sm bg-card shrink-0" title="Library layout">
+                            <button
+                                type="button"
+                                onClick={() => setLibraryView('list')}
+                                className={`px-2.5 py-2 border-r border-border transition-all ${libraryView === 'list' ? 'bg-muted text-foreground' : 'text-muted-foreground hover:bg-muted/50'}`}
+                                aria-pressed={libraryView === 'list'}
+                                aria-label="List view"
+                            >
+                                <LayoutList size={16} />
+                            </button>
+                            <button
+                                type="button"
+                                onClick={() => setLibraryView('shelf')}
+                                className={`px-2.5 py-2 transition-all ${libraryView === 'shelf' ? 'bg-muted text-foreground' : 'text-muted-foreground hover:bg-muted/50'}`}
+                                aria-pressed={libraryView === 'shelf'}
+                                aria-label="Shelf view"
+                            >
+                                <LayoutGrid size={16} />
+                            </button>
+                        </div>
                         <div className="flex border border-border rounded-[3px] overflow-hidden shadow-sm bg-card shrink-0">
                             {(user ? ['Newest', 'Public', 'Private'] : ['Public']).map((tab) => (
                                 <button
@@ -261,8 +297,95 @@ const Notes = () => {
                     </div>
                 )}
 
-                {/* Note List */}
-                <div className={`flex flex-col transition-opacity duration-300 ${notesLoading ? 'opacity-40 pointer-events-none' : 'opacity-100'}`}>
+                {/* Note List / Shelf */}
+                <div className={`transition-opacity duration-300 ${notesLoading ? 'opacity-40 pointer-events-none' : 'opacity-100'}`}>
+                    {libraryView === 'shelf' ? (
+                        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-5">
+                            {notes.map((note) => (
+                                <Link
+                                    key={note._id}
+                                    to={`/notes/${note._id}`}
+                                    className="group flex flex-col rounded-2xl border border-border/80 bg-card overflow-hidden shadow-sm hover:shadow-xl hover:shadow-primary/5 hover:border-primary/25 transition-all duration-300 hover:-translate-y-1"
+                                >
+                                    <div className="relative h-40 sm:h-44 overflow-hidden shrink-0">
+                                        {note.coverImageUrl ? (
+                                            <img
+                                                src={note.coverImageUrl}
+                                                alt=""
+                                                className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                                            />
+                                        ) : note.coverGradient ? (
+                                            <div
+                                                className="absolute inset-0"
+                                                style={getCoverGradientStyle(note.coverGradient) || undefined}
+                                            />
+                                        ) : (
+                                            <div className="absolute inset-0 bg-muted/35 flex items-center justify-center p-6">
+                                                <LogicSeal content={note.content} id={note._id} size={80} className="opacity-75 border-primary/10" />
+                                            </div>
+                                        )}
+                                        <div className="absolute inset-0 bg-gradient-to-t from-card via-card/20 to-transparent pointer-events-none" />
+                                        <div className="absolute top-2 left-2 flex items-center gap-1.5">
+                                            <span className={`text-[9px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full border backdrop-blur-sm ${note.isPublic ? 'bg-primary/20 border-primary/30 text-primary' : 'bg-background/70 border-border text-muted-foreground'}`}>
+                                                {note.isPublic ? 'Public' : 'Vault'}
+                                            </span>
+                                            {note.isPinned && <Pin size={14} className="text-primary fill-primary drop-shadow-md" />}
+                                        </div>
+                                        <span className="absolute bottom-2 right-2 text-[9px] font-black uppercase tracking-wider text-muted-foreground/90 bg-background/60 backdrop-blur px-2 py-0.5 rounded border border-border/50">
+                                            {note.type || 'doc'}
+                                        </span>
+                                    </div>
+                                    <div className="p-4 flex flex-col flex-1 gap-3 min-h-0">
+                                        <h3 className="text-[16px] font-semibold text-foreground leading-snug line-clamp-2 group-hover:text-primary transition-colors">
+                                            {note.title}
+                                        </h3>
+                                        <p className="text-[13px] text-muted-foreground line-clamp-3 leading-relaxed flex-1">
+                                            {note.content.replace(/[#*`\[\]]/g, '').substring(0, 200)}
+                                            {note.content.length > 200 ? '…' : ''}
+                                        </p>
+                                        <div className="flex flex-wrap gap-1.5 pt-1 border-t border-border/50">
+                                            {note.category && (
+                                                <span className="text-[10px] font-bold text-primary bg-primary/10 px-2 py-0.5 rounded-full border border-primary/15 flex items-center gap-1">
+                                                    <FolderTree size={10} /> {note.category.name}
+                                                </span>
+                                            )}
+                                            {note.tags?.slice(0, 3).map((tag, i) => (
+                                                <span
+                                                    key={i}
+                                                    role="button"
+                                                    tabIndex={0}
+                                                    onClick={(e) => {
+                                                        e.preventDefault();
+                                                        e.stopPropagation();
+                                                        setSearchTerm(tag);
+                                                        setPage(1);
+                                                    }}
+                                                    onKeyDown={(e) => {
+                                                        if (e.key === 'Enter') {
+                                                            e.preventDefault();
+                                                            setSearchTerm(tag);
+                                                            setPage(1);
+                                                        }
+                                                    }}
+                                                    className="text-[10px] font-bold text-muted-foreground bg-muted/50 px-2 py-0.5 rounded-full cursor-pointer hover:bg-primary/10 hover:text-primary transition-colors"
+                                                >
+                                                    #{tag}
+                                                </span>
+                                            ))}
+                                        </div>
+                                        <div className="flex items-center gap-2 text-[11px] text-muted-foreground">
+                                            <div className="w-6 h-6 bg-primary rounded-md flex items-center justify-center text-white text-[10px] font-bold">
+                                                {note.user?.username?.charAt(0).toUpperCase() || 'U'}
+                                            </div>
+                                            <span className="font-semibold text-foreground/90 truncate">{note.user?.username || 'User'}</span>
+                                            <span className="ml-auto shrink-0 opacity-70">{(note.views || 0) + 1} pulse</span>
+                                        </div>
+                                    </div>
+                                </Link>
+                            ))}
+                        </div>
+                    ) : (
+                    <div className="flex flex-col">
                     {notes.map((note) => (
                         <div key={note._id} className="flex flex-col sm:flex-row p-4 border-b border-border hover:bg-muted/10 transition-colors gap-4 group">
                             {/* Stats Column */}
@@ -337,6 +460,8 @@ const Notes = () => {
                             </div>
                         </div>
                     ))}
+                    </div>
+                    )}
 
                     {notes.length === 0 && (
                         <div className="py-32 text-center bg-muted/10 rounded-[4px] border border-dashed border-border mt-4">

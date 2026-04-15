@@ -38,6 +38,7 @@ import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus, prism } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import Mermaid from '../components/Mermaid';
 import { motion, AnimatePresence } from 'framer-motion';
+import { COVER_GRADIENT_PRESETS } from '../utils/noteCover';
 
 const NoteEditor = () => {
     const { theme } = useTheme();
@@ -61,9 +62,10 @@ const NoteEditor = () => {
         tags: '',
         isPublic: false,
         videoUrl: '',
+        coverGradient: '',
     });
 
-    const { title, content, type, adrStatus, categoryId, folderId, tags, isPublic, videoUrl } = formData;
+    const { title, content, type, adrStatus, categoryId, folderId, tags, isPublic, videoUrl, coverGradient } = formData;
     const [folders, setFolders] = useState([]);
     const [viewMode, setViewMode] = useState('edit'); // 'edit', 'preview', 'split'
     const [showCategoryModal, setShowCategoryModal] = useState(false);
@@ -71,6 +73,20 @@ const NoteEditor = () => {
     const [showFolderModal, setShowFolderModal] = useState(false);
     const [newFolderName, setNewFolderName] = useState('');
     const [file, setFile] = useState(null);
+    const [coverFile, setCoverFile] = useState(null);
+    const [coverObjectUrl, setCoverObjectUrl] = useState(null);
+    const [existingCoverUrl, setExistingCoverUrl] = useState('');
+    const [removeCoverImage, setRemoveCoverImage] = useState(false);
+
+    useEffect(() => {
+        if (!coverFile) {
+            setCoverObjectUrl(null);
+            return;
+        }
+        const u = URL.createObjectURL(coverFile);
+        setCoverObjectUrl(u);
+        return () => URL.revokeObjectURL(u);
+    }, [coverFile]);
     const [hasDraft, setHasDraft] = useState(false);
     const [isDirty, setIsDirty] = useState(false);
     const [isSaving, setIsSaving] = useState(false);
@@ -172,7 +188,11 @@ const NoteEditor = () => {
                     tags: noteToEdit.tags ? noteToEdit.tags.join(', ') : '',
                     isPublic: noteToEdit.isPublic || false,
                     videoUrl: noteToEdit.videoUrl || '',
+                    coverGradient: noteToEdit.coverGradient || '',
                 });
+                setExistingCoverUrl(noteToEdit.coverImageUrl || '');
+                setCoverFile(null);
+                setRemoveCoverImage(false);
                 setTimeout(() => setIsDirty(false), 500);
             }
         } else if (!id) {
@@ -348,6 +368,14 @@ Chosen option: "[Option Name]", because [justification].
         noteData.append('isPublic', String(isPublic));
         noteData.append('adrStatus', adrStatus);
         noteData.append('videoUrl', videoUrl);
+        noteData.append('coverGradient', coverGradient || '');
+
+        if (coverFile) {
+            noteData.append('cover', coverFile);
+        }
+        if (id && removeCoverImage) {
+            noteData.append('coverClear', 'true');
+        }
 
         // Explicitly cast tags to string to avoid nested array corruption
         const rawTagsString = String(tags || '');
@@ -670,6 +698,74 @@ Chosen option: "[Option Name]", because [justification].
                                         </div>
                                     )}
                                 </div>
+                            </div>
+
+                            <div className="space-y-1.5 pt-2 border-t border-border/60">
+                                <label className="text-[11px] font-bold text-muted-foreground uppercase flex items-center gap-2">
+                                    <ImageIcon size={12} className="text-primary" /> Shelf cover
+                                </label>
+                                <p className="text-[10px] text-muted-foreground leading-relaxed mb-2">
+                                    Image or gradient for the Technical Library card view.
+                                </p>
+                                <select
+                                    name="coverGradient"
+                                    value={coverGradient}
+                                    onChange={(e) => {
+                                        setIsDirty(true);
+                                        setFormData(prev => ({ ...prev, coverGradient: e.target.value }));
+                                    }}
+                                    className="w-full border border-border bg-background rounded-[3px] py-2 px-3 text-[13px] text-foreground outline-none focus:border-primary"
+                                >
+                                    {COVER_GRADIENT_PRESETS.map((p) => (
+                                        <option key={p.id || 'none'} value={p.id}>{p.label}</option>
+                                    ))}
+                                </select>
+                                <div className="border border-border border-dashed rounded-[3px] p-3 text-center hover:bg-muted/10 transition-colors relative mt-2">
+                                    <input
+                                        type="file"
+                                        accept="image/*"
+                                        onChange={(e) => {
+                                            const f = e.target.files?.[0];
+                                            if (f) {
+                                                setCoverFile(f);
+                                                setRemoveCoverImage(false);
+                                                setIsDirty(true);
+                                            }
+                                        }}
+                                        className="absolute inset-0 opacity-0 cursor-pointer"
+                                    />
+                                    {coverFile ? (
+                                        <span className="text-[12px] text-primary font-bold truncate block">{coverFile.name}</span>
+                                    ) : existingCoverUrl && !removeCoverImage ? (
+                                        <span className="text-[11px] text-muted-foreground">Replace cover image…</span>
+                                    ) : (
+                                        <span className="text-[11px] text-muted-foreground">Optional cover image</span>
+                                    )}
+                                </div>
+                                {(existingCoverUrl || coverFile) && (
+                                    <div className="mt-2 flex gap-2 items-center flex-wrap">
+                                        <div className="h-14 w-24 rounded-md overflow-hidden border border-border bg-muted/30 shrink-0">
+                                            {coverFile && coverObjectUrl ? (
+                                                <img src={coverObjectUrl} alt="" className="h-full w-full object-cover" />
+                                            ) : existingCoverUrl && !removeCoverImage ? (
+                                                <img src={existingCoverUrl} alt="" className="h-full w-full object-cover" />
+                                            ) : null}
+                                        </div>
+                                        {id && existingCoverUrl && (
+                                            <button
+                                                type="button"
+                                                onClick={() => {
+                                                    setRemoveCoverImage(true);
+                                                    setCoverFile(null);
+                                                    setIsDirty(true);
+                                                }}
+                                                className="text-[10px] font-bold uppercase text-destructive hover:underline"
+                                            >
+                                                Remove image
+                                            </button>
+                                        )}
+                                    </div>
+                                )}
                             </div>
 
                             <div className="pt-4 space-y-3">

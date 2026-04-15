@@ -6,6 +6,22 @@ const awardReputation = require('../utils/reputationEngine');
 const notificationService = require('../services/notificationService');
 const aiService = require('../services/aiService');
 
+const ALLOWED_COVER_GRADIENTS = new Set([
+  '', 'indigo', 'rose', 'emerald', 'amber', 'midnight', 'ocean', 'sunset', 'forest'
+]);
+
+const normalizeCoverGradient = (v) => {
+  if (v == null || v === '' || v === 'none') return '';
+  const s = String(v).toLowerCase().trim();
+  return ALLOWED_COVER_GRADIENTS.has(s) ? s : '';
+};
+
+const getNoteUploadFiles = (req) => {
+  const files = req.files;
+  const mainFile = files && files.file && files.file[0];
+  const coverFile = files && files.cover && files.cover[0];
+  return { mainFile, coverFile };
+};
 
 const canAccessNote = (note, req) => {
   const isPublic = note.isPublic || note.type === 'issue';
@@ -326,7 +342,9 @@ exports.cloneNote = async (req, res, next) => {
       videoUrl: originalNote.videoUrl,
       attachment: originalNote.attachment,
       attachmentUrl: originalNote.attachmentUrl,
-      adrStatus: originalNote.adrStatus
+      adrStatus: originalNote.adrStatus,
+      coverImageUrl: originalNote.coverImageUrl || '',
+      coverGradient: originalNote.coverGradient || ''
     });
 
     res.status(201).json({
@@ -401,14 +419,21 @@ exports.createNote = async (req, res, next) => {
 
     if (req.params.categoryId) req.body.category = req.params.categoryId;
 
-    if (req.file) {
+    const { mainFile, coverFile } = getNoteUploadFiles(req);
+    if (mainFile) {
       req.body.attachment = {
-        path: req.file.path, // Cloudinary URL
-        originalName: req.file.originalname,
-        mimeType: req.file.mimetype
+        path: mainFile.path,
+        originalName: mainFile.originalname,
+        mimeType: mainFile.mimetype
       };
-      req.body.attachmentUrl = req.file.path;
+      req.body.attachmentUrl = mainFile.path;
     }
+    if (coverFile) {
+      req.body.coverImageUrl = coverFile.path;
+      console.log(`[UPLOAD] Cover Image Path: ${coverFile.path}`);
+    }
+
+    req.body.coverGradient = normalizeCoverGradient(req.body.coverGradient);
 
     // --- DATA SANITIZATION ---
     // Ensure tags is a clean array of strings (flatten nested arrays if any)
@@ -493,13 +518,24 @@ exports.updateNote = async (req, res, next) => {
       }
     }
 
-    if (req.file) {
+    const { mainFile, coverFile } = getNoteUploadFiles(req);
+    if (mainFile) {
       req.body.attachment = {
-        path: req.file.path, // Cloudinary URL
-        originalName: req.file.originalname,
-        mimeType: req.file.mimetype
+        path: mainFile.path,
+        originalName: mainFile.originalname,
+        mimeType: mainFile.mimetype
       };
-      req.body.attachmentUrl = req.file.path;
+      req.body.attachmentUrl = mainFile.path;
+    }
+    if (coverFile) {
+      req.body.coverImageUrl = coverFile.path;
+      console.log(`[UPLOAD] Update Cover Image Path: ${coverFile.path}`);
+    }
+    if (req.body.coverClear === 'true' || req.body.coverClear === true) {
+      req.body.coverImageUrl = '';
+    }
+    if (req.body.coverGradient !== undefined) {
+      req.body.coverGradient = normalizeCoverGradient(req.body.coverGradient);
     }
 
     // --- DATA SANITIZATION ---
@@ -1002,7 +1038,13 @@ exports.generateNoteQuiz = async (req, res, next) => {
   try {
     const note = await getAuthorizedNoteForAI(req, res);
     if (!note) return;
-    const quiz = validateQuizPayload(await aiService.generateQuiz(note.content));
+    const quizRaw = await aiService.generateQuiz(note.content);
+    
+    if (quizRaw.error) {
+      return res.status(502).json({ success: false, error: `AI Engine Error: ${quizRaw.error}` });
+    }
+
+    const quiz = validateQuizPayload(quizRaw);
 
     if (!quiz) {
       return res.status(502).json({ success: false, error: 'AI returned an invalid quiz format. Please try again.' });
@@ -1111,7 +1153,11 @@ exports.getInterviewPrep = async (req, res, next) => {
   try {
     const note = await getAuthorizedNoteForAI(req, res);
     if (!note) return;
-    const prep = validateInterviewPayload(await aiService.generateInterviewPrep(note.content));
+    const prepRaw = await aiService.generateInterviewPrep(note.content);
+    if (prepRaw.error) {
+      return res.status(502).json({ success: false, error: `AI Engine Error: ${prepRaw.error}` });
+    }
+    const prep = validateInterviewPayload(prepRaw);
 
     if (!prep) {
       return res.status(502).json({ success: false, error: 'AI returned an invalid interview format. Please try again.' });
@@ -1139,9 +1185,11 @@ exports.analyzeNote = async (req, res, next) => {
       return res.status(400).json({ success: false, error: 'No note content available for analysis' });
     }
 
-    const analysis = validateAnalysisPayload(
-      await aiService.analyzeCode(note.content || '', note.codeSnippet || '')
-    );
+    const analysisRaw = await aiService.analyzeCode(note.content || '', note.codeSnippet || '');
+    if (analysisRaw.error) {
+        return res.status(502).json({ success: false, error: `AI Engine Error: ${analysisRaw.error}` });
+    }
+    const analysis = validateAnalysisPayload(analysisRaw);
 
     if (!analysis) {
       return res.status(502).json({ success: false, error: 'AI returned an invalid analysis format. Please try again.' });

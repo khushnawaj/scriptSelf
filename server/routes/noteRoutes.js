@@ -31,6 +31,11 @@ const router = express.Router({ mergeParams: true });
 const { protect, authorize, detectUser } = require('../middleware/authMiddleware');
 const upload = require('../middleware/uploadMiddleware');
 
+const noteUpload = upload.fields([
+  { name: 'file', maxCount: 1 },
+  { name: 'cover', maxCount: 1 }
+]);
+
 // Get Network Feed (LinkedIn Style)
 router.get('/feed', protect, getNetworkFeed);
 
@@ -65,7 +70,7 @@ router.put('/:id/share', protect, shareNote);
 router
   .route('/')
   .get(detectUser, getNotes)
-  .post(protect, upload.single('file'), createNote);
+  .post(protect, noteUpload, createNote);
 
 router.post('/:id/clone', protect, cloneNote);
 router.get('/roadmap', protect, getNoteGraph);
@@ -84,7 +89,7 @@ router.route('/:id/comments/:commentId')
 router
   .route('/:id')
   .get(detectUser, getNote)
-  .put(protect, upload.single('file'), updateNote)
+  .put(protect, noteUpload, updateNote)
   .delete(protect, deleteNote);
 
 module.exports = router;

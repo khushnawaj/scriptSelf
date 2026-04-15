@@ -8,7 +8,7 @@ const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 exports.analyzeCode = async (content, codeSnippet = "") => {
     try {
         const model = genAI.getGenerativeModel({
-            model: "gemini-2.0-flash",
+            model: "gemini-1.5-flash",
             systemInstruction: "You are the ScriptShelf AI engine. Analyze input and return STRICT JSON. Schema: { \"title\": string, \"tags\": string[], \"complexity\": string, \"explanation\": string, \"refactoredCode\": string }"
         });
 
@@ -36,7 +36,7 @@ exports.analyzeCode = async (content, codeSnippet = "") => {
 exports.generateQuiz = async (content) => {
     try {
         const model = genAI.getGenerativeModel({
-            model: "gemini-2.0-flash",
+            model: "gemini-1.5-flash",
             systemInstruction: "You are the ScriptShelf Study Engine. Generate a technical quiz based on provided content. Return STRICT JSON. Schema: { \"questions\": [ { \"question\": string, \"options\": [string, string, string, string], \"correctIndex\": number, \"explanation\": string } ] }"
         });
 
@@ -61,7 +61,7 @@ exports.generateQuiz = async (content) => {
 exports.generateInterviewPrep = async (content) => {
     try {
         const model = genAI.getGenerativeModel({
-            model: "gemini-2.0-flash",
+            model: "gemini-1.5-flash",
             systemInstruction: "You are the ScriptShelf Interview Coach. Distill the provided documentation into key talking points, potential interview questions, and concise answers. Return STRICT JSON. Schema: { \"talkingPoints\": string[], \"questions\": [ { \"q\": string, \"a\": string } ] }"
         });
 
