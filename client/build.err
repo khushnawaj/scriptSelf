@@ -1,0 +1,96 @@
+﻿
+> client@0.0.0 build
+> vite build
+
+[36mvite v7.3.1 [32mbuilding client environment for production...[36m[39m
+transforming...
+[32mΓ£ô[39m 1050 modules transformed.
+node.exe : [31mΓ£ù[39m 
+Build failed in 3.98s
+At line:1 char:1
++ & "C:\Program 
+Files\nodejs/node.exe" 
+"C:\Program 
+Files\nodejs/node_mo ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo        
+      : NotSpecified: (  
+  [31mΓ£ù[39m Build fa   
+ iled in 3.98s:String)    
+ [], RemoteException
+    + FullyQualifiedError 
+   Id : NativeCommandErr  
+  or
+ 
+[31merror during build:
+[31m[vite]: Rollup 
+failed to resolve import 
+"react-force-graph" from "
+C:/Users/asus/OneDrive/Des
+ktop/ScriptShelf/client/sr
+c/pages/Roadmap.jsx".
+This is most likely 
+unintended because it can 
+break your application at 
+runtime.
+If you do want to 
+externalize this module 
+explicitly add it to
+`build.rollupOptions.exter
+nal`[31m
+    at viteLog (file:///C:
+/Users/asus/OneDrive/Deskt
+op/ScriptShelf/client/node
+_modules/vite/dist/node/ch
+unks/config.js:33635:57)
+    at file:///C:/Users/as
+us/OneDrive/Desktop/Script
+Shelf/client/node_modules/
+vite/dist/node/chunks/conf
+ig.js:33669:73
+    at onwarn (file:///C:/
+Users/asus/OneDrive/Deskto
+p/ScriptShelf/client/node_
+modules/@vitejs/plugin-rea
+ct/dist/index.js:76:7)
+    at file:///C:/Users/as
+us/OneDrive/Desktop/Script
+Shelf/client/node_modules/
+vite/dist/node/chunks/conf
+ig.js:33669:28
+    at onRollupLog (file:/
+//C:/Users/asus/OneDrive/D
+esktop/ScriptShelf/client/
+node_modules/vite/dist/nod
+e/chunks/config.js:33664:6
+3)
+    at onLog (file:///C:/U
+sers/asus/OneDrive/Desktop
+/ScriptShelf/client/node_m
+odules/vite/dist/node/chun
+ks/config.js:33467:4)
+    at file:///C:/Users/as
+us/OneDrive/Desktop/Script
+Shelf/client/node_modules/
+rollup/dist/es/shared/node
+-entry.js:20958:32
+    at Object.logger [as 
+onLog] (file:///C:/Users/a
+sus/OneDrive/Desktop/Scrip
+tShelf/client/node_modules
+/rollup/dist/es/shared/nod
+e-entry.js:22945:9)
+    at ModuleLoader.handle
+InvalidResolvedId (file://
+/C:/Users/asus/OneDrive/De
+sktop/ScriptShelf/client/n
+ode_modules/rollup/dist/es
+/shared/node-entry.js:2168
+9:26)
+    at file:///C:/Users/as
+us/OneDrive/Desktop/Script
+Shelf/client/node_modules/
+rollup/dist/es/shared/node
+-entry.js:21647:26[39m

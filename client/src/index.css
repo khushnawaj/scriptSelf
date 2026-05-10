@@ -354,6 +354,59 @@
     --glass-border: rgba(255, 0, 55, 0.2);
   }
 }
+/* THEME V7 - Cyber Citrus (High-Contrast Tech) */
+.theme-v7 {
+  --radius-lg-val: 0.5rem;
+  --radius-md-val: 0.25rem;
+  --radius-sm-val: 0rem;
+  --font-main: 'Space Grotesk', 'Inter', sans-serif;
+
+  &.light, [data-theme='light'] {
+    --background: #fdfaf0; /* Soft Bone/Cream */
+    --foreground: #1a1122; /* Deep Ink Purple */
+    --card: #ffffff;
+    --card-foreground: #1a1122;
+    --primary: #84cc16; /* Citrus Lime */
+    --primary-foreground: #1a1122;
+    --secondary: #f3f4f6;
+    --secondary-foreground: #4b5563;
+    --muted: #f9fafb;
+    --muted-foreground: #9ca3af;
+    --accent: #ecfdf5;
+    --accent-foreground: #10b981;
+    --destructive: #ef4444;
+    --destructive-foreground: #ffffff;
+    --border: #1a1122; /* Bold Ink Borders */
+    --input: #ffffff;
+    --ring: #84cc16;
+    --link: #65a30d;
+    --link-hover: #84cc16;
+    --glass-bg: rgba(253, 250, 240, 0.8);
+    --glass-border: rgba(132, 204, 22, 0.2);
+  }
+
+  &.dark, [data-theme='dark'] {
+    --background: #110d1a; /* Deep Ink Space */
+    --foreground: #d9ff00; /* Neon Lime Text */
+    --card: #1a1526;
+    --card-foreground: #ffffff;
+    --primary: #d9ff00; /* Neon Lime */
+    --primary-foreground: #110d1a;
+    --secondary: #251d36;
+    --secondary-foreground: #a78bfa;
+    --muted: #110d1a;
+    --muted-foreground: #6d5d8a;
+    --accent: #2d1b4d;
+    --accent-foreground: #d9ff00;
+    --border: #d9ff00; /* Neon Borders */
+    --input: #110d1a;
+    --ring: #d9ff00;
+    --link: #d9ff00;
+    --link-hover: #ffffff;
+    --glass-bg: rgba(17, 13, 26, 0.9);
+    --glass-border: rgba(217, 255, 0, 0.3);
+  }
+}
 /* --- THEME-SPECIFIC ANIMATIONS --- */
 
 /* Script Classic: Standard Fade */
@@ -386,6 +439,11 @@
   animation: theme-noir-reveal 1s cubic-bezier(0.2, 0, 0, 1) forwards;
 }
 
+/* Cyber Citrus: Glitch Warp Scan */
+.theme-v7 .animate-theme-entry {
+  animation: theme-warp-reveal 1.2s cubic-bezier(0.8, 0, 0.2, 1) forwards;
+}
+
 @keyframes theme-fade-in {
   from { opacity: 0; }
   to { opacity: 1; }
@@ -416,6 +474,12 @@
 @keyframes theme-noir-reveal {
   0% { opacity: 0; transform: scale(1.1); filter: grayscale(1) contrast(1.5); }
   100% { opacity: 1; transform: scale(1); filter: grayscale(0) contrast(1); }
+}
+
+@keyframes theme-warp-reveal {
+  0% { opacity: 0; transform: skewX(10deg) scaleY(0); filter: brightness(3); }
+  50% { opacity: 0.5; transform: skewX(-5deg) scaleY(1.1); }
+  100% { opacity: 1; transform: skewX(0) scaleY(1); filter: brightness(1); }
 }
 
 

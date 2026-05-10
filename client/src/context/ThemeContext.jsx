@@ -65,7 +65,7 @@ export const ThemeProvider = ({ children }) => {
 
     useEffect(() => {
         const root = window.document.documentElement;
-        root.classList.remove('light', 'dark', 'theme-v1', 'theme-v2', 'theme-v3', 'theme-v4', 'theme-v5', 'theme-v6');
+        root.classList.remove('light', 'dark', 'theme-v1', 'theme-v2', 'theme-v3', 'theme-v4', 'theme-v5', 'theme-v6', 'theme-v7');
         root.classList.add(theme);
         root.classList.add(`theme-${designSystem}`);
         root.setAttribute('data-theme', theme);
@@ -90,8 +90,14 @@ export const ThemeProvider = ({ children }) => {
     };
 
     const saveDesignSystem = async (v) => {
-        setDesignSystem(v);
+        // Play Theme Switch Sound
+        try {
+            const audio = new Audio('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+            audio.volume = 0.2;
+            audio.play();
+        } catch (e) { console.log("Audio play blocked"); }
 
+        setDesignSystem(v);
         localStorage.setItem('designSystem', v);
         try {
             const token = localStorage.getItem('token');
@@ -152,6 +158,13 @@ export const ThemeProvider = ({ children }) => {
             accent: 'red',
             font: 'Noir Crimson (Premium)',
             icons: { hero: ShieldCheck, brand: Terminal, active: Activity }
+        },
+        v7: {
+            id: 'v7', name: 'Cyber Citrus', color: '#d9ff00',
+            animation: 'animate-theme-entry',
+            accent: 'lime',
+            font: 'Cyber Citrus (Space Grotesk)',
+            icons: { hero: Cpu, brand: Zap, active: Activity }
         }
     };
 

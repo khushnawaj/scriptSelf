@@ -462,7 +462,9 @@ const Profile = () => {
                                                 {t.id === 'v1' ? 'Classic Protocol' :
                                                     t.id === 'v2' ? 'Modern Interface' :
                                                         t.id === 'v3' ? 'Technical Logic' :
-                                                            t.id === 'v4' ? 'Guided Learning' : 'Tech Noir Mode'}
+                                                            t.id === 'v4' ? 'Guided Learning' :
+                                                        t.id === 'v5' ? 'Tech Noir Mode' :
+                                                            t.id === 'v6' ? 'Premium Neo-Noir' : 'Cyber Citrus Protocol'}
                                             </p>
                                         </div>
                                     </button>
