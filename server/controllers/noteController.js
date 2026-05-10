@@ -1039,7 +1039,7 @@ exports.generateNoteQuiz = async (req, res, next) => {
     const note = await getAuthorizedNoteForAI(req, res);
     if (!note) return;
     const quizRaw = await aiService.generateQuiz(note.content);
-    
+
     if (quizRaw.error) {
       return res.status(502).json({ success: false, error: `AI Engine Error: ${quizRaw.error}` });
     }
@@ -1187,7 +1187,7 @@ exports.analyzeNote = async (req, res, next) => {
 
     const analysisRaw = await aiService.analyzeCode(note.content || '', note.codeSnippet || '');
     if (analysisRaw.error) {
-        return res.status(502).json({ success: false, error: `AI Engine Error: ${analysisRaw.error}` });
+      return res.status(502).json({ success: false, error: `AI Engine Error: ${analysisRaw.error}` });
     }
     const analysis = validateAnalysisPayload(analysisRaw);
 

@@ -121,7 +121,7 @@ const userSchema = new mongoose.Schema({
     preferences: {
         designSystem: {
             type: String,
-            enum: ['v1', 'v2', 'v3', 'v4', 'v5'],
+            enum: ['v1', 'v2', 'v3', 'v4', 'v5', 'v6'],
             default: 'v1'
         }
     },

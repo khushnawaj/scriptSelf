@@ -301,6 +301,59 @@
     --glass-border: rgba(251, 146, 60, 0.2);
   }
 }
+/* THEME V6 - Noir Crimson (Elegance & Power) */
+.theme-v6 {
+  --radius-lg-val: 0rem; /* Ultra sharp for luxury feel */
+  --radius-md-val: 0rem;
+  --radius-sm-val: 0rem;
+  --font-main: 'Inter', 'Cinzel', serif;
+
+  &.light, [data-theme='light'] {
+    --background: #ffffff;
+    --foreground: #000000;
+    --card: #f8f8f8;
+    --card-foreground: #000000;
+    --primary: #e11d48; /* Deep Crimson */
+    --primary-foreground: #ffffff;
+    --secondary: #f3f4f6;
+    --secondary-foreground: #111827;
+    --muted: #f9fafb;
+    --muted-foreground: #6b7280;
+    --accent: #fff1f2;
+    --accent-foreground: #be123c;
+    --destructive: #991b1b;
+    --destructive-foreground: #ffffff;
+    --border: #000000; /* Sharp black borders */
+    --input: #ffffff;
+    --ring: #e11d48;
+    --link: #e11d48;
+    --link-hover: #fb7185;
+    --glass-bg: rgba(255, 255, 255, 0.9);
+    --glass-border: rgba(0, 0, 0, 0.2);
+  }
+
+  &.dark, [data-theme='dark'] {
+    --background: #000000; /* Pure Pitch Black */
+    --foreground: #ffffff;
+    --card: #0a0a0a;
+    --card-foreground: #ffffff;
+    --primary: #e11d48;
+    --primary-foreground: #ffffff;
+    --secondary: #171717;
+    --secondary-foreground: #d4d4d4;
+    --muted: #0a0a0a;
+    --muted-foreground: #737373;
+    --accent: #450a0a;
+    --accent-foreground: #fda4af;
+    --border: #262626;
+    --input: #000000;
+    --ring: #e11d48;
+    --link: #fb7185;
+    --link-hover: #fff1f2;
+    --glass-bg: rgba(0, 0, 0, 0.95);
+    --glass-border: rgba(225, 29, 72, 0.3);
+  }
+}
 /* --- THEME-SPECIFIC ANIMATIONS --- */
 
 /* Script Classic: Standard Fade */
@@ -328,6 +381,11 @@
   animation: theme-glow-fade 0.7s ease-in-out forwards;
 }
 
+/* Noir Crimson: Dramatic Flash & Scale */
+.theme-v6 .animate-theme-entry {
+  animation: theme-noir-reveal 1s cubic-bezier(0.2, 0, 0, 1) forwards;
+}
+
 @keyframes theme-fade-in {
   from { opacity: 0; }
   to { opacity: 1; }
@@ -353,6 +411,11 @@
   0% { opacity: 0; box-shadow: 0 0 0 rgba(249, 115, 22, 0); }
   50% { box-shadow: 0 0 30px rgba(249, 115, 22, 0.2); }
   100% { opacity: 1; box-shadow: 0 0 0 rgba(249, 115, 22, 0); }
+}
+
+@keyframes theme-noir-reveal {
+  0% { opacity: 0; transform: scale(1.1); filter: grayscale(1) contrast(1.5); }
+  100% { opacity: 1; transform: scale(1); filter: grayscale(0) contrast(1); }
 }
 
 

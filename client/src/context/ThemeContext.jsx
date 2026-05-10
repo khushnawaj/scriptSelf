@@ -65,7 +65,7 @@ export const ThemeProvider = ({ children }) => {
 
     useEffect(() => {
         const root = window.document.documentElement;
-        root.classList.remove('light', 'dark', 'theme-v1', 'theme-v2', 'theme-v3', 'theme-v4', 'theme-v5');
+        root.classList.remove('light', 'dark', 'theme-v1', 'theme-v2', 'theme-v3', 'theme-v4', 'theme-v5', 'theme-v6');
         root.classList.add(theme);
         root.classList.add(`theme-${designSystem}`);
         root.setAttribute('data-theme', theme);
@@ -145,6 +145,13 @@ export const ThemeProvider = ({ children }) => {
             accent: 'orange',
             font: 'Stack Dev (Noir)',
             icons: { hero: Zap, brand: Command, active: Flame }
+        },
+        v6: {
+            id: 'v6', name: 'Noir Crimson', color: '#e11d48',
+            animation: 'animate-theme-entry',
+            accent: 'red',
+            font: 'Noir Crimson (Premium)',
+            icons: { hero: ShieldCheck, brand: Terminal, active: Activity }
         }
     };
 
