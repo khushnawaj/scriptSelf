@@ -2,7 +2,8 @@ import { createContext, useContext, useEffect, useState } from 'react';
 import {
     Zap, Terminal, Flame, ShieldCheck,
     Book, Coffee, Lightbulb, Rocket,
-    Cpu, Command, Activity, Gauge
+    Cpu, Command, Activity, Gauge,
+    Layers, CheckCircle
 } from 'lucide-react';
 
 const ThemeContext = createContext();
