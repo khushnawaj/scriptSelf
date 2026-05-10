@@ -354,57 +354,57 @@
     --glass-border: rgba(255, 0, 55, 0.2);
   }
 }
-/* THEME V7 - Cyber Citrus (High-Contrast Tech) */
+/* THEME V7 - Nebula Violet (Premium Cosmic) */
 .theme-v7 {
-  --radius-lg-val: 0.5rem;
-  --radius-md-val: 0.25rem;
-  --radius-sm-val: 0rem;
-  --font-main: 'Space Grotesk', 'Inter', sans-serif;
+  --radius-lg-val: 1.25rem;
+  --radius-md-val: 0.75rem;
+  --radius-sm-val: 0.5rem;
+  --font-main: 'Plus Jakarta Sans', 'Inter', sans-serif;
 
   &.light, [data-theme='light'] {
-    --background: #fdfaf0; /* Soft Bone/Cream */
-    --foreground: #1a1122; /* Deep Ink Purple */
+    --background: #fbfaff; /* Snow Silk */
+    --foreground: #0f172a; /* Navy Ink */
     --card: #ffffff;
-    --card-foreground: #1a1122;
-    --primary: #84cc16; /* Citrus Lime */
-    --primary-foreground: #1a1122;
-    --secondary: #f3f4f6;
-    --secondary-foreground: #4b5563;
-    --muted: #f9fafb;
-    --muted-foreground: #9ca3af;
-    --accent: #ecfdf5;
-    --accent-foreground: #10b981;
+    --card-foreground: #0f172a;
+    --primary: #8b5cf6; /* Electric Violet */
+    --primary-foreground: #ffffff;
+    --secondary: #f1f5f9;
+    --secondary-foreground: #64748b;
+    --muted: #f8fafc;
+    --muted-foreground: #94a3b8;
+    --accent: #f5f3ff;
+    --accent-foreground: #7c3aed;
     --destructive: #ef4444;
     --destructive-foreground: #ffffff;
-    --border: #1a1122; /* Bold Ink Borders */
+    --border: #e2e8f0;
     --input: #ffffff;
-    --ring: #84cc16;
-    --link: #65a30d;
-    --link-hover: #84cc16;
-    --glass-bg: rgba(253, 250, 240, 0.8);
-    --glass-border: rgba(132, 204, 22, 0.2);
+    --ring: #8b5cf6;
+    --link: #7c3aed;
+    --link-hover: #8b5cf6;
+    --glass-bg: rgba(251, 250, 255, 0.85);
+    --glass-border: rgba(139, 92, 246, 0.15);
   }
 
   &.dark, [data-theme='dark'] {
-    --background: #110d1a; /* Deep Ink Space */
-    --foreground: #d9ff00; /* Neon Lime Text */
-    --card: #1a1526;
-    --card-foreground: #ffffff;
-    --primary: #d9ff00; /* Neon Lime */
-    --primary-foreground: #110d1a;
-    --secondary: #251d36;
-    --secondary-foreground: #a78bfa;
-    --muted: #110d1a;
-    --muted-foreground: #6d5d8a;
-    --accent: #2d1b4d;
-    --accent-foreground: #d9ff00;
-    --border: #d9ff00; /* Neon Borders */
-    --input: #110d1a;
-    --ring: #d9ff00;
-    --link: #d9ff00;
+    --background: #030014; /* Deep Space */
+    --foreground: #f8fafc;
+    --card: #0c071d; /* Nebula Glow Card */
+    --card-foreground: #f8fafc;
+    --primary: #a78bfa; /* Soft Glow Violet */
+    --primary-foreground: #ffffff;
+    --secondary: #161229;
+    --secondary-foreground: #cbd5e1;
+    --muted: #030014;
+    --muted-foreground: #64748b;
+    --accent: #1e1b4b;
+    --accent-foreground: #ddd6fe;
+    --border: #2e2a4d;
+    --input: #030014;
+    --ring: #a78bfa;
+    --link: #ddd6fe;
     --link-hover: #ffffff;
-    --glass-bg: rgba(17, 13, 26, 0.9);
-    --glass-border: rgba(217, 255, 0, 0.3);
+    --glass-bg: rgba(3, 0, 20, 0.9);
+    --glass-border: rgba(167, 139, 250, 0.25);
   }
 }
 /* --- THEME-SPECIFIC ANIMATIONS --- */
@@ -441,7 +441,7 @@
 
 /* Cyber Citrus: Glitch Warp Scan */
 .theme-v7 .animate-theme-entry {
-  animation: theme-warp-reveal 1.2s cubic-bezier(0.8, 0, 0.2, 1) forwards;
+  animation: theme-nebula-reveal 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 @keyframes theme-fade-in {
@@ -476,10 +476,9 @@
   100% { opacity: 1; transform: scale(1); filter: grayscale(0) contrast(1); }
 }
 
-@keyframes theme-warp-reveal {
-  0% { opacity: 0; transform: skewX(10deg) scaleY(0); filter: brightness(3); }
-  50% { opacity: 0.5; transform: skewX(-5deg) scaleY(1.1); }
-  100% { opacity: 1; transform: skewX(0) scaleY(1); filter: brightness(1); }
+@keyframes theme-nebula-reveal {
+  0% { opacity: 0; transform: scale(1.05); filter: blur(20px) hue-rotate(-30deg); }
+  100% { opacity: 1; transform: scale(1); filter: blur(0) hue-rotate(0deg); }
 }
 
 

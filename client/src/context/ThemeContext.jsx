@@ -160,11 +160,11 @@ export const ThemeProvider = ({ children }) => {
             icons: { hero: ShieldCheck, brand: Terminal, active: Activity }
         },
         v7: {
-            id: 'v7', name: 'Cyber Citrus', color: '#d9ff00',
+            id: 'v7', name: 'Nebula Violet', color: '#8b5cf6',
             animation: 'animate-theme-entry',
-            accent: 'lime',
-            font: 'Cyber Citrus (Space Grotesk)',
-            icons: { hero: Cpu, brand: Zap, active: Activity }
+            accent: 'violet',
+            font: 'Nebula Violet (Jakarta Sans)',
+            icons: { hero: Activity, brand: Zap, active: Activity }
         }
     };
 

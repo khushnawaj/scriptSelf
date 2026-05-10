@@ -14,3 +14,14 @@ server/uploads/
 *.md
 !README.md
 *.pdf
+# Debug & Logs
+*.err
+*_log.txt
+*_results.txt
+*_out.txt
+*_output.txt
+server/test*.js
+server/debug*.js
+server/restTest.js
+server/listModels.js
+server/verify_output.txt
