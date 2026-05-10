@@ -464,7 +464,7 @@ const Profile = () => {
                                                         t.id === 'v3' ? 'Technical Logic' :
                                                             t.id === 'v4' ? 'Guided Learning' :
                                                         t.id === 'v5' ? 'Tech Noir Mode' :
-                                                            t.id === 'v6' ? 'Premium Neo-Noir' : 'Nebula Violet Mode'}
+                                                            t.id === 'v6' ? 'Premium Neo-Noir' : 'Obsidian Drift Mode'}
                                             </p>
                                         </div>
                                     </button>

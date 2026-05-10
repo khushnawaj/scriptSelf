@@ -160,11 +160,11 @@ export const ThemeProvider = ({ children }) => {
             icons: { hero: ShieldCheck, brand: Terminal, active: Activity }
         },
         v7: {
-            id: 'v7', name: 'Nebula Violet', color: '#8b5cf6',
+            id: 'v7', name: 'Obsidian Drift', color: '#a3ff00',
             animation: 'animate-theme-entry',
-            accent: 'violet',
-            font: 'Nebula Violet (Jakarta Sans)',
-            icons: { hero: Activity, brand: Zap, active: Activity }
+            accent: 'lime',
+            font: 'Obsidian Drift (Minimal)',
+            icons: { hero: Zap, brand: Activity, active: ShieldCheck }
         }
     };
 
