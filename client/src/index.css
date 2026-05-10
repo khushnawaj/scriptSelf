@@ -386,25 +386,25 @@
   }
 
   &.dark, [data-theme='dark'] {
-    --background: #12100e; /* Roasted Bean Black */
+    --background: #000000; /* Pure Midnight Black */
     --foreground: #f3f4f6; /* Soft Off-White */
-    --card: #1c1917; /* Mocha Stone */
+    --card: #0a0a0a; /* Deep Mocha Glass */
     --card-foreground: #f3f4f6;
     --primary: #c2a381; /* Caramel Foam */
-    --primary-foreground: #12100e;
-    --secondary: #292524;
+    --primary-foreground: #000000;
+    --secondary: #171717;
     --secondary-foreground: #d6d3d1;
-    --muted: #12100e;
+    --muted: #000000;
     --muted-foreground: #78716c;
     --accent: #452a1e; /* Deep Coffee Glow */
     --accent-foreground: #fde68a;
-    --border: #2e2a27;
-    --input: #12100e;
+    --border: #1a1715; /* Subtle coffee-tinted border */
+    --input: #000000;
     --ring: #c2a381;
     --link: #fde68a;
     --link-hover: #ffffff;
-    --glass-bg: rgba(18, 16, 14, 0.9);
-    --glass-border: rgba(194, 163, 129, 0.2);
+    --glass-bg: rgba(0, 0, 0, 0.95);
+    --glass-border: rgba(194, 163, 129, 0.15);
   }
 }
 /* --- THEME-SPECIFIC ANIMATIONS --- */
