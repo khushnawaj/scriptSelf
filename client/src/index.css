@@ -354,57 +354,57 @@
     --glass-border: rgba(255, 0, 55, 0.2);
   }
 }
-/* THEME V7 - Obsidian Drift (Minimalist Cyber-Noir) */
+/* THEME V7 - Espresso Roast (Warm & Low-Contrast) */
 .theme-v7 {
-  --radius-lg-val: 0.75rem; /* Clean, modern radius */
-  --radius-md-val: 0.5rem;
-  --radius-sm-val: 0.25rem;
-  --font-main: 'Geist Sans', 'Inter', sans-serif;
+  --radius-lg-val: 1.25rem;
+  --radius-md-val: 0.75rem;
+  --radius-sm-val: 0.5rem;
+  --font-main: 'Outfit', 'Inter', sans-serif;
 
   &.light, [data-theme='light'] {
-    --background: #ffffff;
-    --foreground: #000000;
-    --card: #f8fafc;
-    --card-foreground: #000000;
-    --primary: #a3ff00; /* Electric Lime */
-    --primary-foreground: #000000;
-    --secondary: #f1f5f9;
-    --secondary-foreground: #64748b;
-    --muted: #f8fafc;
-    --muted-foreground: #94a3b8;
-    --accent: #f0fdf4;
-    --accent-foreground: #16a34a;
-    --destructive: #ef4444;
+    --background: #fdf8f5; /* Creamy Latte */
+    --foreground: #2d2424; /* Espresso Black */
+    --card: #ffffff;
+    --card-foreground: #2d2424;
+    --primary: #92400e; /* Deep Caramel */
+    --primary-foreground: #ffffff;
+    --secondary: #fef3c7;
+    --secondary-foreground: #92400e;
+    --muted: #faf7f5;
+    --muted-foreground: #9ca3af;
+    --accent: #fdf2f2;
+    --accent-foreground: #991b1b;
+    --destructive: #b91c1c;
     --destructive-foreground: #ffffff;
-    --border: #e2e8f0;
+    --border: #e7e5e4;
     --input: #ffffff;
-    --ring: #a3ff00;
-    --link: #0d9488;
-    --link-hover: #a3ff00;
-    --glass-bg: rgba(255, 255, 255, 0.8);
-    --glass-border: rgba(163, 255, 0, 0.2);
+    --ring: #d97706;
+    --link: #92400e;
+    --link-hover: #b45309;
+    --glass-bg: rgba(253, 248, 245, 0.85);
+    --glass-border: rgba(146, 64, 14, 0.1);
   }
 
   &.dark, [data-theme='dark'] {
-    --background: #000000; /* Pure Obsidian Black */
-    --foreground: #ffffff;
-    --card: #0a0a0a; /* Sleek Dark Glass */
-    --card-foreground: #ffffff;
-    --primary: #a3ff00; /* Electric Lime */
-    --primary-foreground: #000000;
-    --secondary: #171717;
-    --secondary-foreground: #a1a1aa;
-    --muted: #000000;
-    --muted-foreground: #52525b;
-    --accent: #2dd4bf; /* TimeDrift Teal Accent */
-    --accent-foreground: #ffffff;
-    --border: rgba(255, 255, 255, 0.08); /* Ultra-thin "Geist" borders */
-    --input: #000000;
-    --ring: #a3ff00;
-    --link: #2dd4bf;
-    --link-hover: #a3ff00;
-    --glass-bg: rgba(0, 0, 0, 0.85);
-    --glass-border: rgba(255, 255, 255, 0.1);
+    --background: #12100e; /* Roasted Bean Black */
+    --foreground: #f3f4f6; /* Soft Off-White */
+    --card: #1c1917; /* Mocha Stone */
+    --card-foreground: #f3f4f6;
+    --primary: #c2a381; /* Caramel Foam */
+    --primary-foreground: #12100e;
+    --secondary: #292524;
+    --secondary-foreground: #d6d3d1;
+    --muted: #12100e;
+    --muted-foreground: #78716c;
+    --accent: #452a1e; /* Deep Coffee Glow */
+    --accent-foreground: #fde68a;
+    --border: #2e2a27;
+    --input: #12100e;
+    --ring: #c2a381;
+    --link: #fde68a;
+    --link-hover: #ffffff;
+    --glass-bg: rgba(18, 16, 14, 0.9);
+    --glass-border: rgba(194, 163, 129, 0.2);
   }
 }
 /* --- THEME-SPECIFIC ANIMATIONS --- */
@@ -439,9 +439,9 @@
   animation: theme-noir-reveal 1s cubic-bezier(0.2, 0, 0, 1) forwards;
 }
 
-/* Obsidian Drift: Sharp Focus Shift */
+/* Espresso Roast: Soft Steam Reveal */
 .theme-v7 .animate-theme-entry {
-  animation: theme-drift-reveal 0.8s cubic-bezier(0.2, 1, 0.3, 1) forwards;
+  animation: theme-steam-reveal 1.2s ease-in-out forwards;
 }
 
 @keyframes theme-fade-in {
@@ -476,9 +476,9 @@
   100% { opacity: 1; transform: scale(1); filter: grayscale(0) contrast(1); }
 }
 
-@keyframes theme-drift-reveal {
-  0% { opacity: 0; transform: translateY(10px); filter: blur(10px) brightness(1.5); }
-  100% { opacity: 1; transform: translateY(0); filter: blur(0) brightness(1); }
+@keyframes theme-steam-reveal {
+  0% { opacity: 0; filter: blur(8px); transform: translateY(5px); }
+  100% { opacity: 1; filter: blur(0); transform: translateY(0); }
 }
 
 

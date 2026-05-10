@@ -160,11 +160,11 @@ export const ThemeProvider = ({ children }) => {
             icons: { hero: ShieldCheck, brand: Terminal, active: Activity }
         },
         v7: {
-            id: 'v7', name: 'Obsidian Drift', color: '#a3ff00',
+            id: 'v7', name: 'Espresso Roast', color: '#c2a381',
             animation: 'animate-theme-entry',
-            accent: 'lime',
-            font: 'Obsidian Drift (Minimal)',
-            icons: { hero: Zap, brand: Activity, active: ShieldCheck }
+            accent: 'amber',
+            font: 'Espresso Roast (Warm)',
+            icons: { hero: Coffee, brand: Layers, active: CheckCircle }
         }
     };
 
