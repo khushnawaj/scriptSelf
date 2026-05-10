@@ -52,7 +52,7 @@ const FeatureCard = ({ icon: Icon, title, desc, delay = 0 }) => (
             </div>
             <h3 className="font-bold text-xl mb-3 text-foreground group-hover:text-primary transition-colors">{title}</h3>
             <p className="text-muted-foreground text-[15px] leading-relaxed">{desc}</p>
-            <div className="mt-6 flex items-center gap-2 text-[12px] font-black text-primary uppercase tracking-[0.2em] opacity-0 group-hover:opacity-100 transition-all">
+            <div className="mt-6 flex items-center gap-2 text-[12px] font-bold text-primary  tracking-[0.2em] opacity-0 group-hover:opacity-100 transition-all">
                 Learn More <ChevronRight size={14} />
             </div>
         </div>
@@ -69,7 +69,7 @@ const Home = () => {
         <div className="min-h-screen bg-background text-foreground overflow-x-hidden selection:bg-primary/30 selection:text-primary">
             {/* Background */}
             <div className="fixed inset-0 pointer-events-none -z-10 bg-background">
-                <div className="absolute top-[-20%] left-[-10%] w-[70%] h-[60%] bg-primary/20 blur-[150px] rounded-full opacity-40 animate-pulse" />
+                <div className="absolute top-[-20%] left-[-10%] w-[70%] h-[60%] bg-primary/20 blur-[150px] rounded-full opacity-40 " />
                 <div className="absolute bottom-[-10%] right-[-10%] w-[60%] h-[50%] bg-blue-500/10 blur-[120px] rounded-full opacity-30" />
             </div>
 
@@ -87,7 +87,7 @@ const Home = () => {
                                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
                                 <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
                             </span>
-                            <span className="text-[10px] md:text-[11px] font-black tracking-[0.3em] uppercase text-muted-foreground">
+                            <span className="text-[10px] md:text-[11px] font-bold tracking-[0.3em]  text-muted-foreground">
                                 Your Secure Code Vault
                             </span>
                         </div>
@@ -95,7 +95,7 @@ const Home = () => {
 
                     <motion.h1
                         variants={fadeInUp}
-                        className="font-black leading-[1.05] tracking-tight text-[clamp(2.5rem,8vw,6.5rem)] text-foreground"
+                        className="font-bold leading-[1.05] tracking-tight text-[clamp(2.5rem,8vw,6.5rem)] text-foreground"
                     >
                         Store your <br className="hidden md:block" />
                         <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-blue-400 to-cyan-400 italic">best ideas</span>
@@ -141,7 +141,7 @@ const Home = () => {
                                     <span className="w-2.5 h-2.5 bg-yellow-400/80 rounded-full" />
                                     <span className="w-2.5 h-2.5 bg-green-400/80 rounded-full" />
                                 </div>
-                                <div className="text-[9px] md:text-[10px] font-black tracking-[0.2em] text-muted-foreground uppercase">Preview Mode // console.sh</div>
+                                <div className="text-[9px] md:text-[10px] font-bold tracking-[0.2em] text-muted-foreground ">Preview Mode // console.sh</div>
                             </div>
 
                             <div className="grid grid-cols-12 h-full">
@@ -158,7 +158,7 @@ const Home = () => {
                                     ))}
                                     <div className="pt-10">
                                         <div className="h-1 w-full bg-secondary rounded-full overflow-hidden">
-                                            <div className="h-full bg-primary w-[65%] animate-pulse" />
+                                            <div className="h-full bg-primary w-[65%] " />
                                         </div>
                                         <div className="text-[8px] text-muted-foreground mt-2 text-left">SYNCING DATA... 65%</div>
                                     </div>
@@ -173,19 +173,19 @@ const Home = () => {
                                         <p>$ scriptshelf --start --sync-all</p>
                                         <div className="flex items-center gap-2">
                                             <span className="text-primary font-bold">{">>"}</span>
-                                            <span className="animate-pulse">Fetching your notes... [12,482 items]</span>
+                                            <span className="">Fetching your notes... [12,482 items]</span>
                                         </div>
                                         <p className="pt-4">Everything is ready. Your vault is safe.</p>
                                         <p className="text-muted-foreground">Security check: <span className="text-primary font-bold">PASSED</span></p>
                                     </div>
                                     <div className="pt-8 grid grid-cols-2 gap-4">
                                         <div className="bg-card border border-border rounded-2xl p-4">
-                                            <div className="text-[10px] text-muted-foreground font-bold uppercase tracking-wider mb-1">Search Speed</div>
-                                            <div className="text-2xl font-black text-foreground italic">0.01s</div>
+                                            <div className="text-[10px] text-muted-foreground font-bold  tracking-wider mb-1">Search Speed</div>
+                                            <div className="text-2xl font-bold text-foreground italic">0.01s</div>
                                         </div>
                                         <div className="bg-card border border-border rounded-2xl p-4">
-                                            <div className="text-[10px] text-muted-foreground font-bold uppercase tracking-wider mb-1">Total Vaults</div>
-                                            <div className="text-2xl font-black text-primary italic">10GB+</div>
+                                            <div className="text-[10px] text-muted-foreground font-bold  tracking-wider mb-1">Total Vaults</div>
+                                            <div className="text-2xl font-bold text-primary italic">10GB+</div>
                                         </div>
                                     </div>
                                 </div>
@@ -205,7 +205,7 @@ const Home = () => {
                         viewport={{ once: true }}
                         className="text-center space-y-4"
                     >
-                        <h2 className="font-black text-[clamp(2rem,5vw,3.5rem)] tracking-tight text-foreground">What you can do</h2>
+                        <h2 className="font-bold text-[clamp(2rem,5vw,3.5rem)] tracking-tight text-foreground">What you can do</h2>
                         <div className="h-1.5 w-24 bg-primary mx-auto rounded-full" />
                     </motion.div>
                     <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 text-left">
@@ -229,10 +229,10 @@ const Home = () => {
                         className="relative rounded-[2rem] md:rounded-[3rem] bg-gradient-to-br from-primary/10 via-card to-background border border-border p-10 md:p-24 overflow-hidden text-center backdrop-blur-3xl"
                     >
                         <div className="relative z-10 space-y-10">
-                            <h2 className="font-black text-[clamp(2.5rem,6vw,4.5rem)] leading-tight tracking-tighter text-foreground">Build your <br /><span className="text-primary italic">digital legacy</span></h2>
+                            <h2 className="font-bold text-[clamp(2.5rem,6vw,4.5rem)] leading-tight tracking-tighter text-foreground">Build your <br /><span className="text-primary italic">digital legacy</span></h2>
                             <p className="max-w-xl mx-auto text-muted-foreground text-lg md:text-xl font-light">Your ideas deserve a permanent home. Join a community of developers building the future of knowledge.</p>
                             <div className="pt-6">
-                                <Link to="/register" className="inline-flex h-16 px-12 rounded-2xl bg-foreground text-background font-black text-lg items-center justify-center hover:scale-110 shadow-2xl transition-all">
+                                <Link to="/register" className="inline-flex h-16 px-12 rounded-2xl bg-foreground text-background font-bold text-lg items-center justify-center hover:scale-110 shadow-2xl transition-all">
                                     Join Now <Zap className="ml-3 text-primary" size={20} />
                                 </Link>
                             </div>
@@ -247,15 +247,15 @@ const Home = () => {
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-24 text-left">
                         <div className="sm:col-span-2 space-y-8 text-left">
                             <div className="flex items-center gap-3">
-                                <div className="w-10 h-10 bg-primary/20 rounded-xl flex items-center justify-center font-black text-xl shadow-lg text-primary">S</div>
-                                <span className="text-2xl font-black tracking-tighter">ScriptShelf<span className="text-primary">.</span></span>
+                                <div className="w-10 h-10 bg-primary/20 rounded-xl flex items-center justify-center font-bold text-xl shadow-lg text-primary">S</div>
+                                <span className="text-2xl font-bold tracking-tighter">ScriptShelf<span className="text-primary">.</span></span>
                             </div>
                             <p className="text-muted-foreground max-w-sm leading-relaxed text-[16px] text-left">
                                 The best place to store and organize your code. Built for developers who want to keep their knowledge safe and easy to find.
                             </p>
                         </div>
                         <div className="space-y-6 text-left">
-                            <h4 className="text-[12px] font-black uppercase tracking-[0.3em] text-foreground text-left">Quick Links</h4>
+                            <h4 className="text-[12px] font-bold  tracking-[0.3em] text-foreground text-left">Quick Links</h4>
                             <ul className="space-y-4 text-[15px] text-muted-foreground text-left">
                                 <li><Link to="/guide" className="hover:text-primary transition-colors">How it works</Link></li>
                                 <li><Link to="/notes" className="hover:text-primary transition-colors">Archive</Link></li>
@@ -263,7 +263,7 @@ const Home = () => {
                             </ul>
                         </div>
                         <div className="space-y-6 text-left">
-                            <h4 className="text-[12px] font-black uppercase tracking-[0.3em] text-foreground text-left">Company</h4>
+                            <h4 className="text-[12px] font-bold  tracking-[0.3em] text-foreground text-left">Company</h4>
                             <ul className="space-y-4 text-[15px] text-muted-foreground text-left">
                                 <li><Link to="/terms" className="hover:text-primary transition-colors">Terms</Link></li>
                                 <li><Link to="/terms" className="hover:text-primary transition-colors">Privacy</Link></li>
@@ -274,7 +274,7 @@ const Home = () => {
                     <div className="pt-10 border-t border-border flex flex-col sm:flex-row justify-between items-center gap-6 text-[12px] text-muted-foreground font-medium">
                         <p>© 2026 ScriptShelf. All your code is safe.</p>
                         <div className="flex items-center gap-8 font-mono">
-                            <span className="flex items-center gap-2"><span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />SYSTEM: READY</span>
+                            <span className="flex items-center gap-2"><span className="w-1.5 h-1.5 rounded-full bg-emerald-500 " />SYSTEM: READY</span>
                             <span className="flex items-center gap-2"><Terminal size={14} /> SCRIPTSHELF_V2</span>
                         </div>
                     </div>

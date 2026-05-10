@@ -82,7 +82,7 @@ const Issues = () => {
             {/* Header */}
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-10 border-b border-border pb-8">
                 <div>
-                    <h1 className="text-3xl font-bold text-foreground flex items-center gap-3">
+                    <h1 className="text-xl font-bold text-foreground flex items-center gap-3">
                         <HelpCircle size={32} className="text-primary" /> Community Support
                     </h1>
                     <p className="text-muted-foreground mt-2 max-w-2xl">
@@ -116,7 +116,7 @@ const Issues = () => {
                         <button
                             key={f}
                             onClick={() => setFilter(f.toLowerCase())}
-                            className={`px-4 py-1.5 text-xs font-bold uppercase tracking-wider rounded-[6px] transition-all ${filter === f.toLowerCase()
+                            className={`px-4 py-1.5 text-xs font-bold  tracking-wider rounded-[6px] transition-all ${filter === f.toLowerCase()
                                 ? 'bg-background text-foreground shadow-sm'
                                 : 'text-muted-foreground hover:text-foreground'
                                 }`}
@@ -144,12 +144,12 @@ const Issues = () => {
                                 <div className="flex flex-row sm:flex-col items-center justify-between sm:justify-start gap-3 sm:gap-1 min-w-0 sm:min-w-[60px] text-muted-foreground">
                                     <div className={`flex flex-col items-center justify-center p-2 rounded-[8px] w-full sm:w-full border ${isSolved ? 'bg-green-500/10 border-green-500/20 text-green-500' : 'bg-secondary/50 border-transparent'}`}>
                                         <span className="text-base sm:text-lg font-bold">{(note.views || 0) > 99 ? '99+' : (note.views || 0) + 1}</span>
-                                        <span className="text-[8px] sm:text-[9px] uppercase font-black tracking-wider">Views</span>
+                                        <span className="text-[8px] sm:text-[9px]  font-bold tracking-wider">Views</span>
                                     </div>
                                     {isSolved && (
                                         <div className="flex sm:flex-col items-center gap-1 sm:gap-0 sm:mt-2 text-green-500">
                                             <CheckCircle2 className="w-4 h-4 sm:w-[18px] sm:h-[18px]" />
-                                            <span className="text-[9px] font-bold uppercase mt-0 sm:mt-1">Solved</span>
+                                            <span className="text-[9px] font-bold  mt-0 sm:mt-1">Solved</span>
                                         </div>
                                     )}
                                 </div>
@@ -183,7 +183,7 @@ const Issues = () => {
 
                                         <div className="flex flex-wrap gap-1.5 sm:gap-2">
                                             {note.tags?.slice(0, 2).map(tag => (
-                                                <span key={tag} className="bg-secondary px-1.5 py-0.5 rounded text-[9px] sm:text-[10px] uppercase font-bold text-muted-foreground whitespace-nowrap">
+                                                <span key={tag} className="bg-secondary px-1.5 py-0.5 rounded text-[9px] sm:text-[10px]  font-bold text-muted-foreground whitespace-nowrap">
                                                     {tag}
                                                 </span>
                                             ))}

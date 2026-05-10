@@ -487,7 +487,7 @@
 
 @layer base {
   html {
-     font-size: 13px; /* Smaller base for technical density */
+     font-size: 13px; /* Optimized base for high-density technical UI */
      scroll-behavior: smooth;
   }
   body {
@@ -651,9 +651,10 @@
     border-radius: 6px !important;
 }
 
-/* Scrollbar */
+/* Custom Scrollbar */
 ::-webkit-scrollbar {
-  width: 10px;
+  width: 4px;
+  height: 4px;
 }
 ::-webkit-scrollbar-track {
   background: transparent;
@@ -661,9 +662,10 @@
 ::-webkit-scrollbar-thumb {
   background: var(--border);
   border-radius: 10px;
+  transition: background 0.2s ease;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--muted-foreground);
+  background: var(--primary);
 }
 
 .no-scrollbar::-webkit-scrollbar {
@@ -702,37 +704,9 @@ main.layout-full-width {
     padding: 0 !important; /* Force no padding for immersive views */
 }
 
-/* High-Fidelity Blueprint Utilities */
-.blueprint-grid {
-    background-image: 
-        linear-gradient(rgba(0, 160, 255, 0.05) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0, 160, 255, 0.05) 1px, transparent 1px);
-    background-size: 40px 40px;
-}
-
-.blueprint-grid-fine {
-    background-image: 
-        linear-gradient(rgba(0, 160, 255, 0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0, 160, 255, 0.03) 1px, transparent 1px);
-    background-size: 8px 8px;
-}
-
-@keyframes blueprint-pulse {
-    0%, 100% { opacity: 0.3; }
-    50% { opacity: 1; }
-}
-
-@keyframes spin-slow {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
-}
-
-.animate-spin-slow {
-    animation: spin-slow 8s linear infinite;
-}
-
-.animate-blueprint-pulse {
-    animation: blueprint-pulse 4s ease-in-out infinite;
+/* High-Fidelity Blueprint Utilities - DISABLED BY USER REQUEST */
+.blueprint-grid, .blueprint-grid-fine, .scanline, .blueprint-pulse {
+    display: none !important;
 }
 
 .custom-scrollbar::-webkit-scrollbar {
@@ -768,11 +742,11 @@ body.zen-mode main.layout-full-width {
   box-shadow: 0 0 0 2px var(--background), 0 0 0 4px var(--primary);
 }
 
-/* --- THEME-SPECIFIC SCROLLBARS --- */
+/* --- PREMIUM SCROLLBARS --- */
 
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 4px;
+  height: 4px;
 }
 
 ::-webkit-scrollbar-track {
@@ -780,18 +754,18 @@ body.zen-mode main.layout-full-width {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: hsla(var(--primary-h), var(--primary-s), var(--primary-l), 0.2);
+  background: var(--border);
   border-radius: 20px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: hsla(var(--primary-h), var(--primary-s), var(--primary-l), 0.4);
+  background: var(--primary);
 }
 
 /* Firefox */
 * {
   scrollbar-width: thin;
-  scrollbar-color: hsla(var(--primary-h), var(--primary-s), var(--primary-l), 0.2) transparent;
+  scrollbar-color: var(--border) transparent;
 }
 
 /* Confetti Celebration Animation */

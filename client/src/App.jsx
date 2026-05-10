@@ -81,25 +81,33 @@ function App() {
 
     // Global Error & Rejection Toasting Setup
     const handleGlobalError = (event) => {
+      const errorMessage = event.message || (event.error && event.error.message) || '';
+      
       // Chunk Load Error Recovery:
-      // If a lazy-loaded module fails because the server hash changed after a deploy, 
-      // detect it and force a full page reload to get the new index.html/mapping.
-      if (
-        event.message?.includes('Failed to fetch dynamically imported module') ||
-        event.message?.includes('error loading dynamically imported module')
-      ) {
-        window.location.reload();
-        return;
+      const chunkErrorStrings = [
+          'Failed to fetch dynamically imported module',
+          'error loading dynamically imported module',
+          'Load chunk',
+          'Loading chunk'
+      ];
+      
+      const isChunkError = chunkErrorStrings.some(str => errorMessage.includes(str));
+
+      if (isChunkError) {
+          console.warn('Recovering from chunk error...', errorMessage);
+          window.location.reload();
+          return;
       }
 
-      // Filter out safe/expected errors
+      // Filter out safe/expected errors or noise
       if (
-        event.message?.includes('401') ||
-        event.message?.includes('Unauthorized') ||
-        event.message?.includes('Insights')
+        errorMessage.includes('401') ||
+        errorMessage.includes('Unauthorized') ||
+        errorMessage.includes('ResizeObserver loop') ||
+        errorMessage.includes('Insights')
       ) return;
 
-      toast.error(`System Signal Error: ${event.message || 'Unknown Execution Fault'}`, {
+      toast.error(`System Signal Error: ${errorMessage || 'Unknown Execution Fault'}`, {
         icon: '⚠️',
         duration: 4000
       });

@@ -413,7 +413,7 @@ Chosen option: "[Option Name]", because [justification].
                         <h1 className="text-[24px] font-bold text-foreground">
                             {id ? 'Edit Record' : type === 'issue' ? 'Ask a Question' : 'Create New Note'}
                         </h1>
-                        <p className="text-[12px] text-muted-foreground uppercase tracking-widest font-bold">Workspace / Library</p>
+                        <p className="text-[12px] text-muted-foreground  tracking-widest font-bold">Workspace / Library</p>
                     </div>
                 </div>
 
@@ -426,7 +426,7 @@ Chosen option: "[Option Name]", because [justification].
                                 exit={{ opacity: 0, scale: 0.9 }}
                                 className="flex items-center gap-3 bg-primary/10 border border-primary/20 px-4 py-2 rounded-[6px]"
                             >
-                                <span className="text-[12px] font-bold text-primary uppercase tracking-wider">Unsaved Progress</span>
+                                <span className="text-[12px] font-bold text-primary  tracking-wider">Unsaved Progress</span>
                                 <div className="flex gap-3">
                                     <button onClick={restoreDraft} className="text-[12px] font-bold text-foreground hover:text-primary transition-colors">Restore</button>
                                     <button onClick={discardDraft} className="text-[12px] font-bold text-muted-foreground hover:text-foreground">Discard</button>
@@ -559,14 +559,14 @@ Chosen option: "[Option Name]", because [justification].
                             )}
                         </div>
 
-                        <div className="flex items-center justify-between px-4 py-1.5 bg-muted/20 border-t border-border text-[11px] text-muted-foreground font-mono uppercase">
+                        <div className="flex items-center justify-between px-4 py-1.5 bg-muted/20 border-t border-border text-[11px] text-muted-foreground font-mono ">
                             <div className="flex gap-4">
                                 <span>Markdown Format</span>
                                 <span>{wordCount} Words</span>
                                 {lastSaved && <span className="text-primary/70">Internal Draft: {lastSaved}</span>}
                             </div>
                             <div className="flex items-center gap-2">
-                                <div className={`w-2 h-2 rounded-full ${isDirty ? 'bg-amber-500 animate-pulse' : 'bg-primary'}`} />
+                                <div className={`w-2 h-2 rounded-full ${isDirty ? 'bg-amber-500 ' : 'bg-primary'}`} />
                                 <span>{isDirty ? 'Unsaved Changes' : 'Synced to Cache'}</span>
                             </div>
                         </div>
@@ -575,13 +575,13 @@ Chosen option: "[Option Name]", because [justification].
 
                 <div className="space-y-6">
                     <div className="glass-frost p-5 rounded-[3px] shadow-sm">
-                        <h3 className="text-[13px] font-bold text-foreground mb-4 flex items-center gap-2 uppercase tracking-wider">
+                        <h3 className="text-[13px] font-bold text-foreground mb-4 flex items-center gap-2  tracking-wider">
                             <Layout size={14} className="text-primary" /> Configuration
                         </h3>
 
                         <div className="space-y-4">
                             <div className="space-y-1.5">
-                                <label className="text-[11px] font-bold text-muted-foreground uppercase">Note Classification</label>
+                                <label className="text-[11px] font-bold text-muted-foreground ">Note Classification</label>
                                 <select
                                     name="type"
                                     value={type}
@@ -599,7 +599,7 @@ Chosen option: "[Option Name]", because [justification].
 
                             {type === 'adr' && (
                                 <div className="space-y-1.5 animate-in slide-in-from-top-2 duration-300">
-                                    <label className="text-[11px] font-bold text-muted-foreground uppercase">ADR Status</label>
+                                    <label className="text-[11px] font-bold text-muted-foreground ">ADR Status</label>
                                     <select
                                         name="adrStatus"
                                         value={adrStatus}
@@ -616,7 +616,7 @@ Chosen option: "[Option Name]", because [justification].
 
                             <div className="space-y-1.5">
                                 <div className="flex justify-between items-center">
-                                    <label className="text-[11px] font-bold text-muted-foreground uppercase">Tag Category</label>
+                                    <label className="text-[11px] font-bold text-muted-foreground ">Tag Category</label>
                                     <button
                                         type="button"
                                         onClick={() => setShowCategoryModal(true)}
@@ -640,7 +640,7 @@ Chosen option: "[Option Name]", because [justification].
 
                             <div className="space-y-1.5">
                                 <div className="flex justify-between items-center">
-                                    <label className="text-[11px] font-bold text-muted-foreground uppercase">Folder (Optional)</label>
+                                    <label className="text-[11px] font-bold text-muted-foreground ">Folder (Optional)</label>
                                     <button
                                         type="button"
                                         onClick={() => setShowFolderModal(true)}
@@ -668,7 +668,7 @@ Chosen option: "[Option Name]", because [justification].
                             </div>
 
                             <div className="space-y-1.5">
-                                <label className="text-[11px] font-bold text-muted-foreground uppercase">Search Tags</label>
+                                <label className="text-[11px] font-bold text-muted-foreground ">Search Tags</label>
                                 <input
                                     name="tags"
                                     value={tags}
@@ -679,7 +679,7 @@ Chosen option: "[Option Name]", because [justification].
                             </div>
 
                             <div className="space-y-1.5">
-                                <label className="text-[11px] font-bold text-muted-foreground uppercase">Research Resource (PDF)</label>
+                                <label className="text-[11px] font-bold text-muted-foreground ">Research Resource (PDF)</label>
                                 <div className="border border-border border-dashed rounded-[3px] p-4 text-center hover:bg-muted/10 transition-colors cursor-pointer relative group">
                                     <input
                                         type="file"
@@ -701,7 +701,7 @@ Chosen option: "[Option Name]", because [justification].
                             </div>
 
                             <div className="space-y-1.5 pt-2 border-t border-border/60">
-                                <label className="text-[11px] font-bold text-muted-foreground uppercase flex items-center gap-2">
+                                <label className="text-[11px] font-bold text-muted-foreground  flex items-center gap-2">
                                     <ImageIcon size={12} className="text-primary" /> Shelf cover
                                 </label>
                                 <p className="text-[10px] text-muted-foreground leading-relaxed mb-2">
@@ -759,7 +759,7 @@ Chosen option: "[Option Name]", because [justification].
                                                     setCoverFile(null);
                                                     setIsDirty(true);
                                                 }}
-                                                className="text-[10px] font-bold uppercase text-destructive hover:underline"
+                                                className="text-[10px] font-bold  text-destructive hover:underline"
                                             >
                                                 Remove image
                                             </button>

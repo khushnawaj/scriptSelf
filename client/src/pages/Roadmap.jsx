@@ -58,7 +58,7 @@ const Roadmap = () => {
                     </div>
                     <div>
                         <h2 className="text-[14px] font-bold text-foreground mb-0">Neural Roadmap</h2>
-                        <p className="text-[10px] text-muted-foreground uppercase font-black tracking-widest leading-none">Global Knowledge Connection</p>
+                        <p className="text-[10px] text-muted-foreground  font-bold tracking-widest leading-none">Global Knowledge Connection</p>
                     </div>
                 </div>
 
@@ -137,7 +137,7 @@ const Roadmap = () => {
                     >
                         <div className="p-6 space-y-6 flex-1 overflow-y-auto">
                             <div className="flex justify-between items-start">
-                                <span className={`px-2 py-1 rounded-[4px] text-[9px] font-black uppercase tracking-widest ${selectedNode.type === 'adr' ? 'bg-green-500/10 text-green-500' :
+                                <span className={`px-2 py-1 rounded-[4px] text-[9px] font-bold  tracking-widest ${selectedNode.type === 'adr' ? 'bg-green-500/10 text-green-500' :
                                     selectedNode.type === 'issue' ? 'bg-amber-500/10 text-amber-500' :
                                         'bg-primary/10 text-primary'
                                     }`}>
@@ -155,7 +155,7 @@ const Roadmap = () => {
                             </div>
 
                             <div className="p-4 bg-muted/30 rounded-2xl border border-border">
-                                <h4 className="text-[11px] font-black text-muted-foreground uppercase tracking-widest mb-3 flex items-center gap-2">
+                                <h4 className="text-[11px] font-bold text-muted-foreground  tracking-widest mb-3 flex items-center gap-2">
                                     <Info size={12} /> Neural Status
                                 </h4>
                                 <div className="space-y-3">
@@ -192,7 +192,7 @@ const Roadmap = () => {
                         exit={{ opacity: 0, scale: 0.95 }}
                         className="absolute top-24 right-6 w-64 bg-background/95 backdrop-blur-2xl border border-border rounded-2xl shadow-xl z-30 p-4"
                     >
-                        <h4 className="text-[11px] font-black text-muted-foreground uppercase tracking-widest mb-4">Display Protocol</h4>
+                        <h4 className="text-[11px] font-bold text-muted-foreground  tracking-widest mb-4">Display Protocol</h4>
                         <div className="space-y-4">
                             <div className="flex items-center justify-between">
                                 <span className="text-[13px] text-foreground">Particle Flow</span>

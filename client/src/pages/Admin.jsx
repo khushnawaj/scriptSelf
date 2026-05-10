@@ -176,7 +176,7 @@ const Admin = () => {
                     </div>
                     <div>
                         <h1 className="text-[27px] font-normal text-foreground">Admin Center</h1>
-                        <p className="text-[12px] text-muted-foreground uppercase tracking-wider font-bold">
+                        <p className="text-[12px] text-muted-foreground  tracking-wider font-bold">
                             System Management Console
                         </p>
                     </div>
@@ -184,7 +184,7 @@ const Admin = () => {
                 <div className="flex gap-4">
                     <div className="text-right hidden sm:block">
                         <p className="text-[13px] font-bold text-foreground">User: {user.username}</p>
-                        <p className="text-[11px] text-primary font-bold uppercase">Super Admin Privileges</p>
+                        <p className="text-[11px] text-primary font-bold ">Super Admin Privileges</p>
                     </div>
                 </div>
             </div>
@@ -202,7 +202,7 @@ const Admin = () => {
                             <stat.icon size={20} className={stat.color} />
                             <span className="text-[21px] font-bold text-foreground">{stat.value}</span>
                         </div>
-                        <p className="text-[11px] text-muted-foreground uppercase tracking-wider font-bold mt-2">{stat.label}</p>
+                        <p className="text-[11px] text-muted-foreground  tracking-wider font-bold mt-2">{stat.label}</p>
                     </div>
                 ))}
             </div>
@@ -266,11 +266,11 @@ const Admin = () => {
                                 <table className="w-full text-left text-[13px]">
                                     <thead className="bg-muted/30 text-muted-foreground border-b border-border">
                                         <tr>
-                                            <th className="px-6 py-3 font-bold uppercase tracking-wider">User</th>
-                                            <th className="px-6 py-3 font-bold uppercase tracking-wider">Email</th>
-                                            <th className="px-6 py-3 font-bold uppercase tracking-wider">Role</th>
-                                            <th className="px-6 py-3 font-bold uppercase tracking-wider">Joined</th>
-                                            <th className="px-6 py-3 font-bold uppercase tracking-wider text-right">Actions</th>
+                                            <th className="px-6 py-3 font-bold  tracking-wider">User</th>
+                                            <th className="px-6 py-3 font-bold  tracking-wider">Email</th>
+                                            <th className="px-6 py-3 font-bold  tracking-wider">Role</th>
+                                            <th className="px-6 py-3 font-bold  tracking-wider">Joined</th>
+                                            <th className="px-6 py-3 font-bold  tracking-wider text-right">Actions</th>
                                         </tr>
                                     </thead>
                                     <tbody className="divide-y divide-border">
@@ -288,7 +288,7 @@ const Admin = () => {
                                                 <td className="px-6 py-4">
                                                     <button
                                                         onClick={() => handleToggleRole(u._id, u.role)}
-                                                        className={`px-2 py-1 rounded-[3px] text-[10px] font-bold uppercase flex items-center gap-1 ${u.role === 'admin' ? 'bg-rose-500/10 text-rose-500' : 'bg-indigo-500/10 text-indigo-500'
+                                                        className={`px-2 py-1 rounded-[3px] text-[10px] font-bold  flex items-center gap-1 ${u.role === 'admin' ? 'bg-rose-500/10 text-rose-500' : 'bg-indigo-500/10 text-indigo-500'
                                                             }`}
                                                     >
                                                         {u.role} <UserCog size={10} />
@@ -324,11 +324,11 @@ const Admin = () => {
                                 <table className="w-full text-left text-[13px]">
                                     <thead className="bg-muted/30 text-muted-foreground border-b border-border">
                                         <tr>
-                                            <th className="px-6 py-3 font-bold uppercase tracking-wider">Title</th>
-                                            <th className="px-6 py-3 font-bold uppercase tracking-wider">Author</th>
-                                            <th className="px-6 py-3 font-bold uppercase tracking-wider">Category</th>
-                                            <th className="px-6 py-3 font-bold uppercase tracking-wider">Status</th>
-                                            <th className="px-6 py-3 font-bold uppercase tracking-wider text-right">Actions</th>
+                                            <th className="px-6 py-3 font-bold  tracking-wider">Title</th>
+                                            <th className="px-6 py-3 font-bold  tracking-wider">Author</th>
+                                            <th className="px-6 py-3 font-bold  tracking-wider">Category</th>
+                                            <th className="px-6 py-3 font-bold  tracking-wider">Status</th>
+                                            <th className="px-6 py-3 font-bold  tracking-wider text-right">Actions</th>
                                         </tr>
                                     </thead>
                                     <tbody className="divide-y divide-border">
@@ -343,7 +343,7 @@ const Admin = () => {
                                                     <span className="so-tag">{n.category?.name || 'Uncategorized'}</span>
                                                 </td>
                                                 <td className="px-6 py-4">
-                                                    <span className={`px-2 py-0.5 rounded-[3px] text-[10px] font-bold uppercase ${n.isPublic ? 'bg-emerald-500/10 text-emerald-500' : 'bg-slate-500/10 text-slate-500'}`}>
+                                                    <span className={`px-2 py-0.5 rounded-[3px] text-[10px] font-bold  ${n.isPublic ? 'bg-emerald-500/10 text-emerald-500' : 'bg-slate-500/10 text-slate-500'}`}>
                                                         {n.isPublic ? 'Public' : 'Private'}
                                                     </span>
                                                 </td>
@@ -393,7 +393,7 @@ const Admin = () => {
                                             </div>
                                         </div>
                                         <p className="text-[12px] text-muted-foreground line-clamp-2">{cat.description || 'No description provided.'}</p>
-                                        <div className="mt-4 pt-3 border-t border-border flex justify-between items-center text-[11px] font-bold uppercase tracking-wider">
+                                        <div className="mt-4 pt-3 border-t border-border flex justify-between items-center text-[11px] font-bold  tracking-wider">
                                             <span className={cat.isGlobal ? 'text-primary' : 'text-muted-foreground'}>
                                                 {cat.isGlobal ? 'Global Access' : 'Private Tag'}
                                             </span>
@@ -420,7 +420,7 @@ const Admin = () => {
                                                 {users.reduce((acc, current) => acc + (current.arcade?.points || 0), 0).toLocaleString()}
                                             </span>
                                         </div>
-                                        <p className="text-[11px] text-muted-foreground uppercase tracking-widest font-black">Global XP Pool</p>
+                                        <p className="text-[11px] text-muted-foreground  tracking-widest font-bold">Global XP Pool</p>
                                     </div>
                                     <div className="bg-slate-900 border border-border p-6 rounded-[3px] shadow-sm">
                                         <div className="flex justify-between items-start mb-4">
@@ -429,7 +429,7 @@ const Admin = () => {
                                                 {Math.max(...users.map(u => u.arcade?.streak || 0), 0)}
                                             </span>
                                         </div>
-                                        <p className="text-[11px] text-muted-foreground uppercase tracking-widest font-black">Record Daily Streak</p>
+                                        <p className="text-[11px] text-muted-foreground  tracking-widest font-bold">Record Daily Streak</p>
                                     </div>
                                     <div className="bg-slate-900 border border-border p-6 rounded-[3px] shadow-sm">
                                         <div className="flex justify-between items-start mb-4">
@@ -438,7 +438,7 @@ const Admin = () => {
                                                 {users.filter(u => u.arcade?.points > 0).length}
                                             </span>
                                         </div>
-                                        <p className="text-[11px] text-muted-foreground uppercase tracking-widest font-black">Active Players</p>
+                                        <p className="text-[11px] text-muted-foreground  tracking-widest font-bold">Active Players</p>
                                     </div>
                                 </div>
 
@@ -450,11 +450,11 @@ const Admin = () => {
                                         <table className="w-full text-left text-[13px]">
                                             <thead className="bg-muted/30 text-muted-foreground border-b border-border">
                                                 <tr>
-                                                    <th className="px-6 py-3 font-bold uppercase tracking-wider">Agent</th>
-                                                    <th className="px-6 py-3 font-bold uppercase tracking-wider">Total XP</th>
-                                                    <th className="px-6 py-3 font-bold uppercase tracking-wider">Streak</th>
-                                                    <th className="px-6 py-3 font-bold uppercase tracking-wider">Last Deploy</th>
-                                                    <th className="px-6 py-3 font-bold uppercase tracking-wider">Efficiency</th>
+                                                    <th className="px-6 py-3 font-bold  tracking-wider">Agent</th>
+                                                    <th className="px-6 py-3 font-bold  tracking-wider">Total XP</th>
+                                                    <th className="px-6 py-3 font-bold  tracking-wider">Streak</th>
+                                                    <th className="px-6 py-3 font-bold  tracking-wider">Last Deploy</th>
+                                                    <th className="px-6 py-3 font-bold  tracking-wider">Efficiency</th>
                                                 </tr>
                                             </thead>
                                             <tbody className="divide-y divide-border">
@@ -505,7 +505,7 @@ const Admin = () => {
                                 {/* Cohort Distribution Summary */}
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     <div className="bg-card border border-border p-6 rounded-[3px]">
-                                        <h3 className="text-sm font-black uppercase tracking-widest text-muted-foreground mb-4">Cohort Distribution</h3>
+                                        <h3 className="text-sm font-bold  tracking-widest text-muted-foreground mb-4">Cohort Distribution</h3>
                                         <div className="flex items-center gap-6">
                                             <div className="flex-1 space-y-2">
                                                 <div className="flex justify-between text-[11px] font-bold">
@@ -515,7 +515,7 @@ const Admin = () => {
                                                 <div className="h-2 bg-muted rounded-full overflow-hidden">
                                                     <div className="h-full bg-primary" style={{ width: `${(users.filter(u => u.experimentGroup === 'A').length / users.length) * 100}%` }} />
                                                 </div>
-                                                <p className="text-[10px] text-muted-foreground uppercase">{users.filter(u => u.experimentGroup === 'A').length} Users</p>
+                                                <p className="text-[10px] text-muted-foreground ">{users.filter(u => u.experimentGroup === 'A').length} Users</p>
                                             </div>
                                             <div className="flex-1 space-y-2">
                                                 <div className="flex justify-between text-[11px] font-bold">
@@ -525,7 +525,7 @@ const Admin = () => {
                                                 <div className="h-2 bg-muted rounded-full overflow-hidden">
                                                     <div className="h-full bg-emerald-500" style={{ width: `${(users.filter(u => u.experimentGroup === 'B').length / users.length) * 100}%` }} />
                                                 </div>
-                                                <p className="text-[10px] text-muted-foreground uppercase">{users.filter(u => u.experimentGroup === 'B').length} Users</p>
+                                                <p className="text-[10px] text-muted-foreground ">{users.filter(u => u.experimentGroup === 'B').length} Users</p>
                                             </div>
                                         </div>
                                     </div>
@@ -533,7 +533,7 @@ const Admin = () => {
                                     <div className="bg-primary/5 border border-primary/20 p-6 rounded-[3px] flex items-center gap-4">
                                         <ShieldCheck size={32} className="text-primary" />
                                         <div>
-                                            <h4 className="text-[14px] font-black uppercase tracking-tight">Active Experiment: v2_bars</h4>
+                                            <h4 className="text-[14px] font-bold  tracking-tight">Active Experiment: v2_bars</h4>
                                             <p className="text-[12px] text-muted-foreground leading-relaxed">
                                                 Testing high-visibility progress metrics for Cohort B. Currently monitoring engagement deltas.
                                             </p>
@@ -548,10 +548,10 @@ const Admin = () => {
                                         <table className="w-full text-left text-[13px]">
                                             <thead className="bg-muted/30 text-muted-foreground border-b border-border">
                                                 <tr>
-                                                    <th className="px-6 py-3 font-bold uppercase tracking-wider">Agent</th>
-                                                    <th className="px-6 py-3 font-bold uppercase tracking-wider">Current Cohort</th>
-                                                    <th className="px-6 py-3 font-bold uppercase tracking-wider">Feature Flags</th>
-                                                    <th className="px-6 py-3 font-bold uppercase tracking-wider text-right">Toggle Operations</th>
+                                                    <th className="px-6 py-3 font-bold  tracking-wider">Agent</th>
+                                                    <th className="px-6 py-3 font-bold  tracking-wider">Current Cohort</th>
+                                                    <th className="px-6 py-3 font-bold  tracking-wider">Feature Flags</th>
+                                                    <th className="px-6 py-3 font-bold  tracking-wider text-right">Toggle Operations</th>
                                                 </tr>
                                             </thead>
                                             <tbody className="divide-y divide-border">
@@ -559,14 +559,14 @@ const Admin = () => {
                                                     <tr key={u._id} className="hover:bg-muted/20 transition-colors">
                                                         <td className="px-6 py-4 font-bold">{u.username}</td>
                                                         <td className="px-6 py-4">
-                                                            <span className={`px-2 py-1 rounded-[3px] text-[10px] font-black ${u.experimentGroup === 'B' ? 'bg-emerald-500/10 text-emerald-500' : 'bg-primary/10 text-primary'}`}>
+                                                            <span className={`px-2 py-1 rounded-[3px] text-[10px] font-bold ${u.experimentGroup === 'B' ? 'bg-emerald-500/10 text-emerald-500' : 'bg-primary/10 text-primary'}`}>
                                                                 GROUP_{u.experimentGroup}
                                                             </span>
                                                         </td>
                                                         <td className="px-6 py-4">
                                                             <div className="flex gap-2">
                                                                 {u.featureFlags && Object.entries(u.featureFlags).map(([flag, val]) => (
-                                                                    <span key={flag} className={`px-2 py-0.5 rounded-[3px] text-[9px] font-black uppercase ${val ? 'bg-indigo-500/10 text-indigo-500' : 'bg-slate-500/10 text-slate-500'}`}>
+                                                                    <span key={flag} className={`px-2 py-0.5 rounded-[3px] text-[9px] font-bold  ${val ? 'bg-indigo-500/10 text-indigo-500' : 'bg-slate-500/10 text-slate-500'}`}>
                                                                         {flag}
                                                                     </span>
                                                                 ))}
@@ -586,7 +586,7 @@ const Admin = () => {
                                                                             toast.success(`User moved to GROUP_${newGroup}`);
                                                                         } catch (e) { toast.error("Failed to update cohort"); }
                                                                     }}
-                                                                    className="px-3 py-1 bg-muted border border-border rounded-[3px] text-[10px] font-black uppercase hover:bg-muted/80"
+                                                                    className="px-3 py-1 bg-muted border border-border rounded-[3px] text-[10px] font-bold  hover:bg-muted/80"
                                                                 >
                                                                     Switch Cohort
                                                                 </button>
@@ -602,7 +602,7 @@ const Admin = () => {
                                                                             toast.success(`Flag ${flagName} updated`);
                                                                         } catch (e) { toast.error("Failed to update flags"); }
                                                                     }}
-                                                                    className="px-3 py-1 bg-primary text-white rounded-[3px] text-[10px] font-black uppercase shadow-sm"
+                                                                    className="px-3 py-1 bg-primary text-white rounded-[3px] text-[10px] font-bold  shadow-sm"
                                                                 >
                                                                     Manage Flags
                                                                 </button>
@@ -633,7 +633,7 @@ const Admin = () => {
                                 </div>
 
                                 <div className="bg-amber-500/10 border border-amber-500/20 p-4 rounded-[3px]">
-                                    <p className="text-[11px] text-amber-600 dark:text-amber-400 font-bold uppercase mb-1">⚠️ Warning</p>
+                                    <p className="text-[11px] text-amber-600 dark:text-amber-400 font-bold  mb-1">⚠️ Warning</p>
                                     <p className="text-[12px] text-muted-foreground">
                                         This will send an email to ALL users with registered email addresses. Use responsibly.
                                     </p>
@@ -695,7 +695,7 @@ const Admin = () => {
                                 </form>
 
                                 <div className="p-4 bg-primary/5 border border-primary/20 rounded-[3px]">
-                                    <p className="text-[11px] text-primary font-bold uppercase mb-1">📧 Email Preview</p>
+                                    <p className="text-[11px] text-primary font-bold  mb-1">📧 Email Preview</p>
                                     <div className="text-[12px] text-muted-foreground space-y-1 font-mono">
                                         <p>Hi [username],</p>
                                         <p className="pl-4">{broadcastForm.message || '(Your message will appear here)'}</p>
@@ -745,7 +745,7 @@ const Admin = () => {
                                     </div>
 
                                     <div className="p-4 bg-primary/5 border border-primary/20 rounded-[3px] text-left">
-                                        <p className="text-[11px] text-primary font-bold uppercase mb-1">Architecture Note</p>
+                                        <p className="text-[11px] text-primary font-bold  mb-1">Architecture Note</p>
                                         <p className="text-[12px] text-muted-foreground">
                                             The export contains clean Markdown files with YAML frontmatter, preserving your technical patterns across local editors.
                                         </p>
@@ -796,7 +796,7 @@ const Admin = () => {
                                     />
                                 </div>
                                 <div className="p-3 bg-primary/5 border border-primary/20 rounded-[3px]">
-                                    <p className="text-[11px] text-primary font-bold uppercase flex items-center gap-1">
+                                    <p className="text-[11px] text-primary font-bold  flex items-center gap-1">
                                         Pro Tip
                                     </p>
                                     <p className="text-[12px] text-muted-foreground mt-1">

@@ -29,7 +29,7 @@ const Mermaid = ({ chart }) => {
                 ref.current.innerHTML = `
                     <div class="flex flex-col items-center justify-center gap-2 py-10 opacity-50">
                         <div class="w-5 h-5 border-2 border-primary/30 border-t-primary rounded-full animate-spin"></div>
-                        <div class="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground">Synthesizing Logic_</div>
+                        <div class="text-[10px] font-bold  tracking-[0.2em] text-muted-foreground">Synthesizing Logic_</div>
                     </div>
                 `;
             }
@@ -59,9 +59,9 @@ const Mermaid = ({ chart }) => {
                                         <div class="w-2.5 h-2.5 rounded-full bg-rose-500/20"></div>
                                         <div class="w-2.5 h-2.5 rounded-full bg-rose-500/20"></div>
                                     </div>
-                                    <span class="text-[10px] font-black uppercase tracking-[0.2em] text-rose-500">System_Failure_Detected (x00)</span>
+                                    <span class="text-[10px] font-bold  tracking-[0.2em] text-rose-500">System_Failure_Detected (x00)</span>
                                 </div>
-                                <span class="bg-rose-500 text-white text-[9px] px-1.5 py-0.5 rounded font-black tracking-widest">PARSE_ERR</span>
+                                <span class="bg-rose-500 text-white text-[9px] px-1.5 py-0.5 rounded font-bold tracking-widest">PARSE_ERR</span>
                             </div>
 
                             <!-- Body Content -->
@@ -81,7 +81,7 @@ const Mermaid = ({ chart }) => {
                                 <div class="flex items-center gap-4 pt-2">
                                     <button 
                                         onclick="navigator.clipboard.writeText('${(error.message || error).replace(/'/g, "\\'")}')"
-                                        class="text-[10px] font-black uppercase tracking-[0.2em] px-3 py-1.5 rounded border border-rose-500/20 hover:bg-rose-500/10 transition-all text-rose-500"
+                                        class="text-[10px] font-bold  tracking-[0.2em] px-3 py-1.5 rounded border border-rose-500/20 hover:bg-rose-500/10 transition-all text-rose-500"
                                     >
                                         Copy Debug Trace
                                     </button>
@@ -105,7 +105,7 @@ const Mermaid = ({ chart }) => {
             ref={ref}
             className="mermaid-container bg-slate-900/50 p-6 my-8 rounded-[3px] border border-border flex justify-center overflow-x-auto shadow-inner"
         >
-            <div className="animate-pulse text-muted-foreground text-[12px]">Generating diagram...</div>
+            <div className=" text-muted-foreground text-[12px]">Generating diagram...</div>
         </div>
     );
 };

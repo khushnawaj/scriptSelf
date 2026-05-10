@@ -86,19 +86,19 @@ const HexHunter = ({ dispatch }) => {
         return (
             <div className="max-w-[340px] mx-auto text-center p-6 glass-frost rounded-2xl animate-in zoom-in duration-300 border border-pink-500/20">
                 <Trophy size={40} className="mx-auto text-pink-500 mb-3 drop-shadow-[0_0_12px_rgba(236,72,153,0.4)]" />
-                <h2 className="text-[20px] font-black tracking-tighter mb-1 uppercase">Calibration Finalized</h2>
+                <h2 className="text-[20px] font-bold tracking-tighter mb-1 ">Calibration Finalized</h2>
                 <p className="text-[11px] text-muted-foreground mb-4 font-bold opacity-60">Neural Sensors: Stable</p>
                 <div className="grid grid-cols-2 gap-3 mb-6">
                     <div className="bg-background/40 p-2.5 rounded-xl border border-white/5">
-                        <div className="text-[8px] text-muted-foreground uppercase font-black tracking-widest mb-0.5">Efficiency</div>
-                        <div className="font-black text-lg tabular-nums">{score}</div>
+                        <div className="text-[8px] text-muted-foreground  font-bold tracking-widest mb-0.5">Efficiency</div>
+                        <div className="font-bold text-lg tabular-nums">{score}</div>
                     </div>
                     <div className="bg-background/40 p-2.5 rounded-xl border border-white/5">
-                        <div className="text-[8px] text-muted-foreground uppercase font-black tracking-widest mb-0.5">Uptime</div>
-                        <div className="font-black text-lg">10/10</div>
+                        <div className="text-[8px] text-muted-foreground  font-bold tracking-widest mb-0.5">Uptime</div>
+                        <div className="font-bold text-lg">10/10</div>
                     </div>
                 </div>
-                <button onClick={restartGame} className="w-full py-3 bg-pink-500 hover:bg-pink-600 text-white font-black uppercase tracking-widest text-[11px] rounded-xl shadow-lg transition-all active:scale-95">Recalibrate_Sensors</button>
+                <button onClick={restartGame} className="w-full py-3 bg-pink-500 hover:bg-pink-600 text-white font-bold  tracking-widest text-[11px] rounded-xl shadow-lg transition-all active:scale-95">Recalibrate_Sensors</button>
             </div>
         );
     }
@@ -107,7 +107,7 @@ const HexHunter = ({ dispatch }) => {
         <div className="w-full max-w-2xl mx-auto space-y-6 px-4 flex flex-col items-center animate-in fade-in duration-700">
             {/* Mission Brief */}
             <div className="w-full bg-pink-500/5 border border-pink-500/20 p-4 rounded-xl animate-in slide-in-from-top-4 shadow-sm text-center">
-                <h4 className="text-[11px] font-black text-pink-500 mb-1 flex items-center justify-center gap-2 uppercase tracking-widest">
+                <h4 className="text-[11px] font-bold text-pink-500 mb-1 flex items-center justify-center gap-2  tracking-widest">
                     <Hash size={14} /> Color_Decompiler
                 </h4>
                 <p className="text-[10px] text-muted-foreground leading-relaxed font-medium opacity-80">
@@ -116,11 +116,11 @@ const HexHunter = ({ dispatch }) => {
             </div>
 
             <div className="w-full flex justify-between items-center bg-card border border-border p-3 rounded-xl shadow-sm">
-                <span className="font-black text-muted-foreground text-[10px] uppercase tracking-widest">CYCLE {round}_10</span>
-                <span className="font-black text-foreground text-[14px] tracking-tight">{score} XP</span>
+                <span className="font-bold text-muted-foreground text-[10px]  tracking-widest">CYCLE {round}_10</span>
+                <span className="font-bold text-foreground text-[14px] tracking-tight">{score} XP</span>
                 <div className="flex items-center gap-1.5 min-w-[40px] justify-end">
-                    <Flame size={12} className={streak > 1 ? "fill-orange-500 text-orange-500 animate-pulse" : "text-slate-400 dark:text-slate-800 opacity-20"} />
-                    <span className={`font-mono text-[12px] font-black ${streak > 1 ? "text-orange-500" : "text-slate-400 dark:text-slate-800 opacity-20"}`}>x{streak}</span>
+                    <Flame size={12} className={streak > 1 ? "fill-orange-500 text-orange-500 " : "text-slate-400 dark:text-slate-800 opacity-20"} />
+                    <span className={`font-mono text-[12px] font-bold ${streak > 1 ? "text-orange-500" : "text-slate-400 dark:text-slate-800 opacity-20"}`}>x{streak}</span>
                 </div>
             </div>
 
@@ -138,7 +138,7 @@ const HexHunter = ({ dispatch }) => {
 
                 <div className="grid grid-cols-1 gap-2.5 w-full max-w-[280px] mx-auto">
                     {options.map((hex, idx) => {
-                        let btnClass = "py-3.5 bg-white dark:bg-card/60 backdrop-blur-md border border-border dark:border-white/5 hover:border-pink-500/50 hover:bg-pink-500/5 rounded-xl font-mono text-[16px] transition-all font-black tracking-widest relative overflow-hidden active:scale-95 text-foreground";
+                        let btnClass = "py-3.5 bg-white dark:bg-card/60 backdrop-blur-md border border-border dark:border-white/5 hover:border-pink-500/50 hover:bg-pink-500/5 rounded-xl font-mono text-[16px] transition-all font-bold tracking-widest relative overflow-hidden active:scale-95 text-foreground";
 
                         if (feedback?.idx === idx) {
                             if (feedback.type === 'correct') btnClass = "py-3.5 bg-emerald-500 text-white border-emerald-400 shadow-[0_0_12px_rgba(16,185,129,0.4)] scale-105 z-10";

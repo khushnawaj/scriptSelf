@@ -155,44 +155,53 @@ setTimeout(() => {
     const clearOutput = () => setOutput([]);
 
     return (
-        <div className="h-full flex flex-col bg-background text-foreground animate-in fade-in duration-300">
-            {/* Header */}
-            <div className="h-14 shrink-0 border-b border-border flex items-center justify-between px-4 sm:px-6 bg-card/50 backdrop-blur-md">
-                <div className="flex items-center gap-2.5">
-                    <div className="p-2 bg-primary/10 rounded-lg">
-                        <TerminalIcon className="text-primary w-5 h-5" />
+        <div className="h-full flex flex-col bg-background text-foreground animate-in fade-in duration-1000 overflow-hidden">
+            {/* Header / Command Strip */}
+            <div className="h-16 shrink-0 border-b border-border/50 flex items-center justify-between px-6 bg-card/20 backdrop-blur-3xl relative overflow-hidden">
+                
+                
+                <div className="flex items-center gap-4 relative z-10">
+                    <div className="p-3 bg-primary shadow-2xl shadow-primary/20 rounded-xl border border-white/10">
+                        <TerminalIcon className="text-white w-5 h-5" />
                     </div>
                     <div>
-                        <h1 className="font-bold text-sm tracking-tight text-foreground">Playground</h1>
-                        <p className="text-[10px] text-muted-foreground font-medium hidden sm:block">Live JS Environment</p>
+                        <h1 className="font-bold text-[10px]  tracking-[0.4em] text-foreground leading-none mb-1">Code Playground</h1>
+                        <div className="flex items-center gap-2">
+                            <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]" />
+                            <p className="text-[9px] font-bold  tracking-[0.2em] text-muted-foreground/60">System Ready // Status: Idle</p>
+                        </div>
                     </div>
                 </div>
 
-                <div className="flex items-center gap-2 sm:gap-3">
+                <div className="flex items-center gap-4 relative z-10">
                     <button
                         onClick={clearOutput}
-                        className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-muted-foreground hover:text-destructive transition-colors rounded-lg hover:bg-destructive/10"
+                        className="h-10 px-4 text-[9px] font-bold  tracking-[0.2em] text-muted-foreground hover:text-rose-500 transition-all flex items-center gap-2 bg-background/30 border border-border/50 rounded-xl"
                         title="Clear console"
                     >
-                        <Eraser size={14} /> <span className="hidden sm:inline">Clear</span>
+                        <Eraser size={14} strokeWidth={3} /> <span className="hidden sm:inline">Clear Console</span>
                     </button>
                     <button
                         onClick={runCode}
                         disabled={isRunning}
-                        className="flex items-center gap-2 px-3 sm:px-4 py-1.5 bg-primary hover:bg-primary/90 text-primary-foreground text-xs font-bold uppercase tracking-wider rounded-lg shadow-lg shadow-primary/20 hover:scale-105 active:scale-95 transition-all disabled:opacity-50 disabled:pointer-events-none"
+                        className="h-10 px-6 bg-primary text-white text-[10px] font-bold  tracking-[0.3em] rounded-xl shadow-xl shadow-primary/20 hover:scale-105 active:scale-95 transition-all disabled:opacity-50 flex items-center gap-3 group relative overflow-hidden"
                     >
-                        <PlayCircle size={15} className={isRunning ? "animate-pulse" : "fill-current"} />
-                        <span className="hidden sm:inline">{isRunning ? 'Running...' : 'Run Code'}</span>
-                        <span className="inline sm:hidden">{isRunning ? '...' : 'Run'}</span>
+                        
+                        <PlayCircle size={16} strokeWidth={3} className={isRunning ? "animate-spin" : "group-hover:rotate-12 transition-transform"} />
+                        <span>{isRunning ? 'RUNNING...' : 'Run Code'}</span>
                     </button>
                 </div>
             </div>
 
-            {/* Main Split View - Responsive: Column on Mobile, Row on Desktop */}
-            <div className="flex-1 flex flex-col md:flex-row overflow-hidden">
+            {/* Main Environment */}
+            <div className="flex-1 flex flex-col md:flex-row overflow-hidden relative">
+                
 
                 {/* Editor Pane */}
-                <div className="flex-1 min-w-0 border-b md:border-b-0 md:border-r border-border relative h-[50%] md:h-full min-h-[300px]">
+                <div className="flex-1 min-w-0 border-b md:border-b-0 md:border-r border-border/50 relative h-[50%] md:h-full min-h-[300px] group">
+                    <div className="absolute top-4 right-6 z-20 pointer-events-none opacity-20 group-hover:opacity-40 transition-opacity">
+                        <span className="text-[10px] font-bold  tracking-[0.4em] text-primary">SRC_MODULE</span>
+                    </div>
                     <Editor
                         height="100%"
                         language="javascript"
@@ -207,51 +216,56 @@ setTimeout(() => {
                             scrollBeyondLastLine: false,
                             automaticLayout: true,
                             tabSize: 2,
-                            padding: { top: 20, bottom: 20 },
+                            padding: { top: 30, bottom: 30 },
                             fontFamily: "'JetBrains Mono', 'Fira Code', monospace",
                             fontLigatures: true,
                             smoothScrolling: true,
                             cursorBlinking: 'smooth',
-                            wordWrap: 'on', // Better for mobile
+                            wordWrap: 'on',
+                            backgroundColor: 'transparent'
                         }}
                     />
                 </div>
 
                 {/* Output Pane */}
-                <div className={`w-full md:w-[35%] md:min-w-[300px] h-[50%] md:h-full shrink-0 flex flex-col border-t md:border-t-0 md:border-l shadow-2xl z-10 transition-colors duration-300 ${theme === 'dark' ? 'bg-[#0d1117] border-white/5' : 'bg-secondary/30 border-border'
-                    }`}>
-                    <div className={`h-10 shrink-0 border-b flex items-center justify-between px-4 ${theme === 'dark' ? 'bg-[#161b22] border-white/5' : 'bg-muted border-border'
-                        }`}>
-                        <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/70">Console Output</span>
-                        <div className="flex gap-1.5 grayscale opacity-50">
-                            <span className="w-2 h-2 rounded-full bg-red-500"></span>
-                            <span className="w-2 h-2 rounded-full bg-yellow-500"></span>
-                            <span className="w-2 h-2 rounded-full bg-green-500"></span>
+                <div className={`w-full md:w-[35%] md:min-w-[350px] h-[50%] md:h-full shrink-0 flex flex-col border-t md:border-t-0 md:border-l border-border/50 shadow-2xl z-10 transition-all duration-700 ${
+                    theme === 'dark' ? 'bg-card/20 backdrop-blur-3xl' : 'bg-secondary/30'
+                }`}>
+                    <div className="h-12 shrink-0 border-b border-border/50 flex items-center justify-between px-6 bg-background/40 relative">
+                        <div className="flex items-center gap-3">
+                            <div className="w-1.5 h-1.5 rounded-full bg-primary  shadow-[0_0_8px_rgba(var(--primary),0.5)]" />
+                            <span className="text-[10px] font-bold  tracking-[0.3em] text-foreground">Output Console</span>
+                        </div>
+                        <div className="flex gap-2 opacity-30">
+                            {[1, 2, 3].map(i => <div key={i} className="w-1.5 h-1.5 rounded-full bg-muted-foreground" />)}
                         </div>
                     </div>
 
                     <div
                         ref={outputRef}
-                        className={`flex-1 overflow-auto p-4 font-mono text-[11px] space-y-1.5 scrollbar-thin ${theme === 'dark' ? 'scrollbar-thumb-white/10' : 'scrollbar-thumb-black/10'
-                            } scrollbar-track-transparent`}
+                        className="flex-1 overflow-auto p-6 font-mono text-[12px] space-y-3 scrollbar-thin scrollbar-thumb-primary/10 scrollbar-track-transparent"
                     >
                         {output.length === 0 ? (
-                            <div className="flex flex-col items-center justify-center h-full text-muted-foreground/20 gap-2">
-                                <TerminalIcon size={32} strokeWidth={1.5} />
-                                <span className="font-medium text-[10px] tracking-tight">Ready to execute...</span>
+                            <div className="flex flex-col items-center justify-center h-full text-muted-foreground/20 gap-4 opacity-50">
+                                <div className="p-5 bg-background/50 rounded-2xl border border-border/50">
+                                    <TerminalIcon size={40} strokeWidth={1} />
+                                </div>
+                                <span className="font-bold text-[10px] tracking-[0.4em] ">Waiting for input</span>
                             </div>
                         ) : (
                             output.map((log, i) => (
-                                <div key={i} className={`flex gap-2 group p-1.5 rounded transition-all break-words ${log.type === 'error' ? 'text-red-500 bg-red-500/5' :
-                                        log.type === 'warn' ? 'text-yellow-600 bg-yellow-500/5' :
-                                            theme === 'dark' ? 'text-slate-300 hover:bg-white/5' : 'text-slate-600 hover:bg-black/5'
-                                    }`}>
-                                    <span className="opacity-30 select-none w-14 shrink-0 font-light text-[9px] pt-0.5 hidden sm:block">{log.timestamp}</span>
-                                    <pre className="whitespace-pre-wrap font-inherit break-all flex-1">{log.content}</pre>
+                                <div key={i} className={`flex gap-4 group p-4 rounded-2xl transition-all relative overflow-hidden border ${
+                                    log.type === 'error' ? 'text-rose-500 bg-rose-500/5 border-rose-500/20' :
+                                    log.type === 'warn' ? 'text-amber-500 bg-amber-500/5 border-amber-500/20' :
+                                    'text-foreground/80 bg-background/40 border-border/50 hover:border-primary/30'
+                                }`}>
+                                    
+                                    <span className="opacity-30 select-none w-16 shrink-0 font-bold text-[9px] pt-1 hidden lg:block tracking-tighter">{log.timestamp}</span>
+                                    <pre className="whitespace-pre-wrap font-inherit break-all flex-1 relative z-10 leading-relaxed italic">{log.content}</pre>
                                 </div>
                             ))
                         )}
-                        <div className="h-4" /> {/* Spacer */}
+                        <div className="h-6" />
                     </div>
                 </div>
             </div>

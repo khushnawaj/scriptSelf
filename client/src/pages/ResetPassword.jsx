@@ -38,7 +38,7 @@ const ResetPassword = () => {
 
             <form onSubmit={onSubmit} className="space-y-6">
                 <div>
-                    <label htmlFor="password" className="block text-[13px] font-bold text-foreground mb-2 uppercase tracking-wide">
+                    <label htmlFor="password" className="block text-[13px] font-bold text-foreground mb-2  tracking-wide">
                         New Password
                     </label>
                     <input
@@ -54,7 +54,7 @@ const ResetPassword = () => {
                     />
                 </div>
                 <div>
-                    <label htmlFor="confirmPassword" className="block text-[13px] font-bold text-foreground mb-2 uppercase tracking-wide">
+                    <label htmlFor="confirmPassword" className="block text-[13px] font-bold text-foreground mb-2  tracking-wide">
                         Confirm New Password
                     </label>
                     <input

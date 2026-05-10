@@ -349,8 +349,8 @@ const AdminDashboard = () => {
                         <ThemeIcon size={32} className="text-primary" />
                     </div>
                     <div>
-                        <h1 className="text-3xl font-bold text-foreground tracking-tight">System Administration</h1>
-                        <p className="text-muted-foreground mt-1 text-sm font-medium uppercase tracking-widest">
+                        <h1 className="text-xl font-bold text-foreground tracking-tight">System Administration</h1>
+                        <p className="text-muted-foreground mt-1 text-sm font-medium  tracking-widest">
                             Security Level: Omega // Authorized Personnel Only
                         </p>
                     </div>
@@ -404,7 +404,7 @@ const AdminDashboard = () => {
                     <button
                         key={tab}
                         onClick={() => setActiveTab(tab)}
-                        className={`px-6 py-2.5 rounded-2xl text-[13px] font-bold uppercase tracking-wider transition-all whitespace-nowrap border ${activeTab === tab
+                        className={`px-6 py-2.5 rounded-2xl text-[13px] font-bold  tracking-wider transition-all whitespace-nowrap border ${activeTab === tab
                             ? 'bg-primary text-primary-foreground border-primary shadow-lg shadow-primary/20'
                             : 'bg-secondary/50 text-muted-foreground border-transparent hover:bg-secondary hover:text-foreground'
                             }`}
@@ -454,11 +454,11 @@ const AdminDashboard = () => {
                                     </div>
                                     <div className="flex-1">
                                         <p className="text-sm font-bold">{u.username}</p>
-                                        <p className="text-[10px] text-muted-foreground uppercase tracking-wider">
+                                        <p className="text-[10px] text-muted-foreground  tracking-wider">
                                             Joined {new Date(u.createdAt).toLocaleDateString()}
                                         </p>
                                     </div>
-                                    <div className="text-[10px] font-bold bg-secondary px-2 py-1 rounded text-muted-foreground uppercase">
+                                    <div className="text-[10px] font-bold bg-secondary px-2 py-1 rounded text-muted-foreground ">
                                         {u.role}
                                     </div>
                                 </div>
@@ -480,7 +480,7 @@ const AdminDashboard = () => {
                                     </div>
                                     <div className="flex-1 min-w-0">
                                         <p className="text-sm font-bold truncate">{n.title}</p>
-                                        <p className="text-[10px] text-muted-foreground uppercase tracking-wider">
+                                        <p className="text-[10px] text-muted-foreground  tracking-wider">
                                             By {n.author?.username || 'Unknown'}
                                         </p>
                                     </div>
@@ -500,12 +500,12 @@ const AdminDashboard = () => {
                         <table className="w-full">
                             <thead className="bg-muted/50 border-b border-border">
                                 <tr>
-                                    <th className="text-left p-4 text-xs font-bold uppercase tracking-wider text-muted-foreground">User</th>
-                                    <th className="text-left p-4 text-xs font-bold uppercase tracking-wider text-muted-foreground">Email</th>
-                                    <th className="text-left p-4 text-xs font-bold uppercase tracking-wider text-muted-foreground">Role</th>
-                                    <th className="text-left p-4 text-xs font-bold uppercase tracking-wider text-muted-foreground">Reputation</th>
-                                    <th className="text-left p-4 text-xs font-bold uppercase tracking-wider text-muted-foreground">Group</th>
-                                    <th className="text-right p-4 text-xs font-bold uppercase tracking-wider text-muted-foreground">Actions</th>
+                                    <th className="text-left p-4 text-xs font-bold  tracking-wider text-muted-foreground">User</th>
+                                    <th className="text-left p-4 text-xs font-bold  tracking-wider text-muted-foreground">Email</th>
+                                    <th className="text-left p-4 text-xs font-bold  tracking-wider text-muted-foreground">Role</th>
+                                    <th className="text-left p-4 text-xs font-bold  tracking-wider text-muted-foreground">Reputation</th>
+                                    <th className="text-left p-4 text-xs font-bold  tracking-wider text-muted-foreground">Group</th>
+                                    <th className="text-right p-4 text-xs font-bold  tracking-wider text-muted-foreground">Actions</th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-border">
@@ -514,7 +514,7 @@ const AdminDashboard = () => {
                                         <tr className="hover:bg-muted/30 transition-colors">
                                             <td className="p-4">
                                                 <div className="flex items-center gap-3">
-                                                    <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center font-black text-primary text-xs">
+                                                    <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center font-bold text-primary text-xs">
                                                         {u.username[0].toUpperCase()}
                                                     </div>
                                                     <span className="font-bold text-sm">{u.username}</span>
@@ -532,12 +532,12 @@ const AdminDashboard = () => {
                                                 </select>
                                             </td>
                                             <td className="p-4">
-                                                <span className="px-3 py-1 bg-amber-500/10 text-amber-600 dark:text-amber-400 rounded-full text-[10px] font-black">
+                                                <span className="px-3 py-1 bg-amber-500/10 text-amber-600 dark:text-amber-400 rounded-full text-[10px] font-bold">
                                                     {u.reputation || 0}
                                                 </span>
                                             </td>
                                             <td className="p-4">
-                                                <div className={`text-[10px] font-black w-6 h-6 flex items-center justify-center rounded-md border ${u.experimentGroup === 'A' ? 'bg-primary/10 text-primary border-primary/20' : 'bg-blue-500/10 text-blue-500 border-blue-500/20'}`}>
+                                                <div className={`text-[10px] font-bold w-6 h-6 flex items-center justify-center rounded-md border ${u.experimentGroup === 'A' ? 'bg-primary/10 text-primary border-primary/20' : 'bg-blue-500/10 text-blue-500 border-blue-500/20'}`}>
                                                     {u.experimentGroup || 'A'}
                                                 </div>
                                             </td>
@@ -565,7 +565,7 @@ const AdminDashboard = () => {
                                                 <td colSpan="6" className="p-4 border-b border-border/50">
                                                     <div className="flex flex-col gap-4 animate-in slide-in-from-top-2 duration-300">
                                                         <div className="flex items-center justify-between">
-                                                            <h4 className="text-[10px] font-black uppercase tracking-widest text-muted-foreground flex items-center gap-2">
+                                                            <h4 className="text-[10px] font-bold  tracking-widest text-muted-foreground flex items-center gap-2">
                                                                 <Zap size={10} className="text-primary" /> User Settings Override
                                                             </h4>
                                                             <div className="flex items-center gap-2">
@@ -573,7 +573,7 @@ const AdminDashboard = () => {
                                                                 <select
                                                                     value={u.experimentGroup || 'A'}
                                                                     onChange={(e) => handleGroupUpdate(u._id, e.target.value)}
-                                                                    className="bg-background border border-border rounded px-2 py-1 text-[10px] font-black outline-none focus:border-primary/50"
+                                                                    className="bg-background border border-border rounded px-2 py-1 text-[10px] font-bold outline-none focus:border-primary/50"
                                                                 >
                                                                     <option value="A">Group_Alpha</option>
                                                                     <option value="B">Group_Beta</option>
@@ -583,7 +583,7 @@ const AdminDashboard = () => {
                                                         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                                                             {['v2_bars', 'dark_mode_experimental', 'new_editor', 'global_chat'].map(flag => (
                                                                 <div key={flag} className="flex items-center justify-between p-2 bg-background border border-border/50 rounded-lg">
-                                                                    <span className="text-[9px] font-mono font-bold truncate pr-2 text-muted-foreground uppercase">{flag.replace(/_/g, ' ')}</span>
+                                                                    <span className="text-[9px] font-mono font-bold truncate pr-2 text-muted-foreground ">{flag.replace(/_/g, ' ')}</span>
                                                                     <button
                                                                         onClick={() => handleFlagUpdate(u._id, flag, !u.featureFlags?.[flag])}
                                                                         className={`w-7 h-3.5 rounded-full relative transition-all ${u.featureFlags?.[flag] ? 'bg-primary' : 'bg-muted'}`}
@@ -621,7 +621,7 @@ const AdminDashboard = () => {
                                 className="bg-card border border-border rounded-2xl p-6 hover:shadow-lg transition-all"
                             >
                                 <div className="flex items-start justify-between mb-4">
-                                    <h3 className="font-black text-lg line-clamp-2">{note.title}</h3>
+                                    <h3 className="font-bold text-lg line-clamp-2">{note.title}</h3>
                                     {note.isPinned && (
                                         <Pin size={16} className="text-primary flex-shrink-0" />
                                     )}
@@ -667,11 +667,11 @@ const AdminDashboard = () => {
                         <div className="bg-card border border-border rounded-2xl p-6 shadow-sm">
                             <div className="flex items-center gap-3 mb-6">
                                 <div className="p-2.5 bg-primary/10 text-primary rounded-xl"><FlaskConical size={20} /></div>
-                                <h3 className="font-black text-sm uppercase tracking-wider">Cohort Distribution</h3>
+                                <h3 className="font-bold text-sm  tracking-wider">Cohort Distribution</h3>
                             </div>
                             <div className="space-y-6">
                                 <div>
-                                    <div className="flex justify-between text-[11px] font-black uppercase tracking-tighter mb-2">
+                                    <div className="flex justify-between text-[11px] font-bold  tracking-tighter mb-2">
                                         <span className="text-muted-foreground">Group_Alpha</span>
                                         <span className="text-primary">{users.filter(u => u.experimentGroup === 'A' || !u.experimentGroup).length} Units</span>
                                     </div>
@@ -684,7 +684,7 @@ const AdminDashboard = () => {
                                     </div>
                                 </div>
                                 <div>
-                                    <div className="flex justify-between text-[11px] font-black uppercase tracking-tighter mb-2">
+                                    <div className="flex justify-between text-[11px] font-bold  tracking-tighter mb-2">
                                         <span className="text-muted-foreground">Group_Beta</span>
                                         <span className="text-blue-500">{users.filter(u => u.experimentGroup === 'B').length} Units</span>
                                     </div>
@@ -702,7 +702,7 @@ const AdminDashboard = () => {
                         <div className="bg-card border border-border rounded-2xl p-6 shadow-sm">
                             <div className="flex items-center gap-3 mb-6">
                                 <div className="p-2.5 bg-amber-500/10 text-amber-500 rounded-xl"><Zap size={20} /></div>
-                                <h3 className="font-black text-sm uppercase tracking-wider">Active Experiment Status</h3>
+                                <h3 className="font-bold text-sm  tracking-wider">Active Experiment Status</h3>
                             </div>
                             <div className="space-y-3">
                                 {[
@@ -711,8 +711,8 @@ const AdminDashboard = () => {
                                     { name: 'GLOBAL_CHAT', status: 'ARCHIVED', color: 'text-muted-foreground bg-muted/50' }
                                 ].map((exp, idx) => (
                                     <div key={idx} className="flex items-center justify-between p-3 bg-muted/20 border border-border/50 rounded-xl">
-                                        <span className="text-[10px] font-black tracking-widest">{exp.name}</span>
-                                        <span className={`text-[9px] font-black px-2 py-0.5 rounded ${exp.color}`}>{exp.status}</span>
+                                        <span className="text-[10px] font-bold tracking-widest">{exp.name}</span>
+                                        <span className={`text-[9px] font-bold px-2 py-0.5 rounded ${exp.color}`}>{exp.status}</span>
                                     </div>
                                 ))}
                             </div>
@@ -722,12 +722,12 @@ const AdminDashboard = () => {
                             <div className="relative z-10 h-full flex flex-col">
                                 <div className="flex items-center gap-3 mb-4">
                                     <div className="p-2.5 bg-blue-500/10 text-blue-500 rounded-xl"><BarChart3 size={20} /></div>
-                                    <h3 className="font-black text-sm uppercase tracking-wider">Telemetry</h3>
+                                    <h3 className="font-bold text-sm  tracking-wider">Telemetry</h3>
                                 </div>
                                 <p className="text-[11px] text-muted-foreground font-medium leading-relaxed mb-4">
                                     Real-time engagement metrics are being aggregated. Beta cohort shows 12% higher interaction on XP visualization sub-modules.
                                 </p>
-                                <button className="mt-auto w-full py-2 bg-secondary/50 text-muted-foreground text-[10px] font-black uppercase tracking-widest rounded-lg hover:bg-primary hover:text-white transition-all">
+                                <button className="mt-auto w-full py-2 bg-secondary/50 text-muted-foreground text-[10px] font-bold  tracking-widest rounded-lg hover:bg-primary hover:text-white transition-all">
                                     View Detailed Analytics
                                 </button>
                             </div>
@@ -743,7 +743,7 @@ const AdminDashboard = () => {
 
                     <div className="bg-card border border-border rounded-2xl p-6 border-l-4 border-l-primary/50 relative overflow-hidden">
                         <div className="relative z-10">
-                            <h3 className="font-black text-sm uppercase tracking-widest mb-4 flex items-center gap-2">
+                            <h3 className="font-bold text-sm  tracking-widest mb-4 flex items-center gap-2">
                                 <Settings2 size={18} className="text-primary" /> Master System Protocol
                             </h3>
                             <p className="text-xs text-muted-foreground leading-relaxed max-w-4xl">
@@ -777,7 +777,7 @@ const AdminDashboard = () => {
                             </div>
 
                             <div className="bg-amber-500/10 border border-amber-500/20 p-4 rounded-xl mb-6">
-                                <p className="text-[11px] text-amber-600 dark:text-amber-400 font-bold uppercase mb-1 flex items-center gap-2">
+                                <p className="text-[11px] text-amber-600 dark:text-amber-400 font-bold  mb-1 flex items-center gap-2">
                                     <AlertTriangle size={14} /> Warning
                                 </p>
                                 <p className="text-[12px] text-muted-foreground">
@@ -882,7 +882,7 @@ const AdminDashboard = () => {
                                     <button
                                         type="submit"
                                         disabled={isSending}
-                                        className="px-6 py-3 bg-primary text-white rounded-xl font-bold text-sm uppercase tracking-wider hover:scale-105 transition-all shadow-lg shadow-primary/20 flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+                                        className="px-6 py-3 bg-primary text-white rounded-xl font-bold text-sm  tracking-wider hover:scale-105 transition-all shadow-lg shadow-primary/20 flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
                                     >
                                         {isSending ? (
                                             <>
@@ -911,7 +911,7 @@ const AdminDashboard = () => {
                                     <button
                                         type="button"
                                         onClick={() => setBroadcastForm({ subject: '', message: '' })}
-                                        className="px-4 py-3 border border-border hover:bg-muted/50 rounded-xl font-bold text-sm uppercase tracking-wider transition-all"
+                                        className="px-4 py-3 border border-border hover:bg-muted/50 rounded-xl font-bold text-sm  tracking-wider transition-all"
                                     >
                                         Clear
                                     </button>
@@ -919,7 +919,7 @@ const AdminDashboard = () => {
                             </form>
 
                             <div className="p-4 bg-primary/5 border border-primary/20 rounded-xl mt-6">
-                                <p className="text-[11px] text-primary font-bold uppercase mb-2 flex items-center gap-2">
+                                <p className="text-[11px] text-primary font-bold  mb-2 flex items-center gap-2">
                                     <Mail size={14} /> Email Preview
                                 </p>
                                 <div className="text-[12px] text-muted-foreground space-y-1 font-mono bg-background p-4 rounded-lg border border-border">
@@ -950,7 +950,7 @@ const AdminDashboard = () => {
 
                                     <div className="flex items-center gap-6 p-4 bg-muted/20 border border-border/50 rounded-2xl">
                                         <div className="flex-1">
-                                            <p className="text-xs font-black uppercase tracking-widest text-muted-foreground mb-1">Active Design System</p>
+                                            <p className="text-xs font-bold  tracking-widest text-muted-foreground mb-1">Active Design System</p>
                                             <p className="text-lg font-bold text-primary">{globalThemeVersion.toUpperCase()}</p>
                                         </div>
                                         <div className="flex gap-2">
@@ -971,7 +971,7 @@ const AdminDashboard = () => {
                                                         toggleDesignSystem(nextVersion);
                                                         toast.success(`System Theme updated to ${v.name}`);
                                                     }}
-                                                    className={`px-4 py-2 rounded-lg text-[10px] font-black uppercase transition-all ${globalThemeVersion === v.id ? 'bg-primary text-white scale-105' : 'bg-secondary/50 text-muted-foreground hover:bg-secondary'}`}
+                                                    className={`px-4 py-2 rounded-lg text-[10px] font-bold  transition-all ${globalThemeVersion === v.id ? 'bg-primary text-white scale-105' : 'bg-secondary/50 text-muted-foreground hover:bg-secondary'}`}
                                                 >
                                                     {v.name}
                                                 </button>
@@ -994,22 +994,22 @@ const AdminDashboard = () => {
                                 <div className="space-y-4">
                                     <div className="flex items-center justify-between p-3 bg-secondary/30 rounded-xl border border-border/50">
                                         <span className="text-xs font-bold">API Status</span>
-                                        <span className="px-2 py-0.5 bg-green-500/10 text-green-500 text-[10px] font-black rounded uppercase">Operational</span>
+                                        <span className="px-2 py-0.5 bg-green-500/10 text-green-500 text-[10px] font-bold rounded ">Operational</span>
                                     </div>
                                     <div className="flex items-center justify-between p-3 bg-secondary/30 rounded-xl border border-border/50">
                                         <span className="text-xs font-bold">Database Mode</span>
-                                        <span className="px-2 py-0.5 bg-blue-500/10 text-blue-500 text-[10px] font-black rounded uppercase">Encrypted</span>
+                                        <span className="px-2 py-0.5 bg-blue-500/10 text-blue-500 text-[10px] font-bold rounded ">Encrypted</span>
                                     </div>
                                     <div className="flex items-center justify-between p-3 bg-secondary/30 rounded-xl border border-border/50">
                                         <span className="text-xs font-bold">Auth Provider</span>
-                                        <span className="px-2 py-0.5 bg-amber-500/10 text-amber-500 text-[10px] font-black rounded uppercase">Passport.js / JWT</span>
+                                        <span className="px-2 py-0.5 bg-amber-500/10 text-amber-500 text-[10px] font-bold rounded ">Passport.js / JWT</span>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
                         <div className="bg-gradient-to-br from-primary/5 to-transparent border border-primary/20 rounded-2xl p-6">
-                            <h4 className="font-black text-[10px] uppercase tracking-[0.3em] mb-4 text-primary">System Notice</h4>
+                            <h4 className="font-bold text-[10px]  tracking-[0.3em] mb-4 text-primary">System Notice</h4>
                             <p className="text-xs text-muted-foreground leading-relaxed">
                                 Theme changes are propagated instantly to all active sessions via the context provider. The Design System flag controls CSS variable injections and layout utility classes. No functional changes are performed during theme hot-swaps.
                             </p>
@@ -1039,14 +1039,14 @@ const StatCard = ({ icon, label, value, color, trend }) => {
                     {icon}
                 </div>
                 {trend && (
-                    <span className={`px-2 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider ${trend.startsWith('+') ? 'bg-green-500/10 text-green-500' : 'bg-red-500/10 text-red-500'}`}>
+                    <span className={`px-2 py-1 rounded-lg text-[10px] font-bold  tracking-wider ${trend.startsWith('+') ? 'bg-green-500/10 text-green-500' : 'bg-red-500/10 text-red-500'}`}>
                         {trend}
                     </span>
                 )}
             </div>
             <div>
-                <p className="text-[11px] font-bold text-muted-foreground uppercase tracking-[0.2em] mb-2">{label}</p>
-                <h3 className="text-4xl font-bold text-foreground tracking-tight group-hover:text-primary transition-colors duration-500">{value}</h3>
+                <p className="text-[11px] font-bold text-muted-foreground  tracking-[0.2em] mb-2">{label}</p>
+                <h3 className="text-xl font-bold text-foreground tracking-tight group-hover:text-primary transition-colors duration-500">{value}</h3>
             </div>
         </div>
     );

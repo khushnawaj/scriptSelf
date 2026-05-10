@@ -97,10 +97,10 @@ const PublicProfile = () => {
                 <X size={40} className="text-muted-foreground opacity-20" />
             </div>
             <div className="text-center space-y-2">
-                <h2 className="text-2xl font-black uppercase tracking-widest text-foreground">Sector Not Found</h2>
+                <h2 className="text-2xl font-bold  tracking-widest text-foreground">Sector Not Found</h2>
                 <p className="text-muted-foreground text-sm font-medium italic">The requested identity does not exist in the database.</p>
             </div>
-            <Link to="/" className="px-8 py-3 bg-primary text-white rounded-xl font-black text-xs uppercase tracking-widest shadow-lg shadow-primary/20 hover:scale-105 transition-all">
+            <Link to="/" className="px-8 py-3 bg-primary text-white rounded-xl font-bold text-xs  tracking-widest shadow-lg shadow-primary/20 hover:scale-105 transition-all">
                 Return to Command Center
             </Link>
         </div>
@@ -126,7 +126,7 @@ const PublicProfile = () => {
 
                 {/* Top Navigation */}
                 <div className="mb-8 text-center sm:text-left">
-                    <Link to="/" className="inline-flex items-center gap-2 text-muted-foreground hover:text-primary text-[10px] font-black uppercase tracking-[0.2em] transition-all group">
+                    <Link to="/" className="inline-flex items-center gap-2 text-muted-foreground hover:text-primary text-[10px] font-bold  tracking-[0.2em] transition-all group">
                         <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform" /> BACK TO DASHBOARD
                     </Link>
                 </div>
@@ -146,19 +146,19 @@ const PublicProfile = () => {
                                             {profile.avatar ? (
                                                 <img src={profile.avatar} alt="Profile" className="w-full h-full object-cover" />
                                             ) : (
-                                                <span className="text-3xl sm:text-4xl font-black text-muted-foreground">{profile.username.charAt(0).toUpperCase()}</span>
+                                                <span className="text-xl sm:text-xl font-bold text-muted-foreground">{profile.username.charAt(0).toUpperCase()}</span>
                                             )}
                                         </div>
                                     </div>
                                 </div>
 
                                 {/* Tier Name - Now a separate, non-overlapping element */}
-                                <div className={`px-5 py-1.5 rounded-full text-[9px] font-black uppercase tracking-[0.25em] mb-6 shadow-sm border ${currentTier.bg} ${currentTier.color} ${currentTier.border} backdrop-blur-sm`}>
+                                <div className={`px-5 py-1.5 rounded-full text-[9px] font-bold  tracking-[0.25em] mb-6 shadow-sm border ${currentTier.bg} ${currentTier.color} ${currentTier.border} backdrop-blur-sm`}>
                                     {currentTier.name}
                                 </div>
 
                                 <div className="space-y-1.5 mb-6 w-full px-2">
-                                    <h1 className="text-xl sm:text-2xl font-black text-foreground tracking-tight whitespace-nowrap overflow-hidden text-ellipsis italic">
+                                    <h1 className="text-xl sm:text-2xl font-bold text-foreground tracking-tight whitespace-nowrap overflow-hidden text-ellipsis italic">
                                         {profile.username}
                                     </h1>
                                     {profile.headline && <p className="text-xs text-muted-foreground font-medium italic">{profile.headline}</p>}
@@ -169,20 +169,20 @@ const PublicProfile = () => {
                                     <div className="flex flex-col items-center gap-4">
                                         <div className="flex justify-between w-full px-1">
                                             <div className="text-left">
-                                                <p className="text-[9px] font-bold text-muted-foreground uppercase opacity-50 tracking-tighter">LVL {systemLevel}</p>
-                                                <p className="text-[11px] sm:text-[12px] font-black text-foreground tracking-tight">{currentLevelXP}/100 XP</p>
+                                                <p className="text-[9px] font-bold text-muted-foreground  opacity-50 tracking-tighter">LVL {systemLevel}</p>
+                                                <p className="text-[11px] sm:text-[12px] font-bold text-foreground tracking-tight">{currentLevelXP}/100 XP</p>
                                             </div>
                                             <div className="text-right">
-                                                <p className="text-[9px] font-bold text-muted-foreground uppercase opacity-50 tracking-tighter">Sync Status</p>
-                                                <p className={`text-[9px] sm:text-[10px] font-black uppercase flex items-center gap-1 justify-end ${isSyncActive ? 'text-emerald-500' : 'text-rose-500'}`}>
-                                                    <span className={`w-1.5 h-1.5 rounded-full ${isSyncActive ? 'bg-emerald-500 animate-pulse outline outline-2 outline-emerald-500/30' : 'bg-rose-500'}`} />
+                                                <p className="text-[9px] font-bold text-muted-foreground  opacity-50 tracking-tighter">Sync Status</p>
+                                                <p className={`text-[9px] sm:text-[10px] font-bold  flex items-center gap-1 justify-end ${isSyncActive ? 'text-emerald-500' : 'text-rose-500'}`}>
+                                                    <span className={`w-1.5 h-1.5 rounded-full ${isSyncActive ? 'bg-emerald-500  outline outline-2 outline-emerald-500/30' : 'bg-rose-500'}`} />
                                                     {isSyncActive ? 'Active' : 'Offline'}
                                                 </p>
                                             </div>
                                         </div>
 
                                         <div className="w-full space-y-1.5">
-                                            <div className="flex justify-between items-end text-[9px] font-black uppercase tracking-tighter">
+                                            <div className="flex justify-between items-end text-[9px] font-bold  tracking-tighter">
                                                 <span className="text-muted-foreground/60 italic">Next Level</span>
                                                 <span className={currentTier.color}>{progress}%</span>
                                             </div>
@@ -205,7 +205,7 @@ const PublicProfile = () => {
                                 {currentUser && currentUser.username !== profile.username && (
                                     <button
                                         onClick={handleFollow}
-                                        className={`w-full py-3 rounded-lg text-[11px] font-black uppercase tracking-widest transition-all ${isFollowing
+                                        className={`w-full py-3 rounded-lg text-[11px] font-bold  tracking-widest transition-all ${isFollowing
                                             ? 'border border-border text-muted-foreground hover:text-rose-500 hover:border-rose-500 hover:bg-rose-500/5'
                                             : 'bg-primary text-white shadow-lg shadow-primary/20 hover:translate-y-[-1px]'
                                             }`}
@@ -219,16 +219,16 @@ const PublicProfile = () => {
                                         onClick={() => setModalData({ isOpen: true, type: 'followers', title: 'Followers' })}
                                         className="text-center group"
                                     >
-                                        <p className="text-sm font-black group-hover:text-primary transition-all">{profile.followers?.length || 0}</p>
-                                        <p className="text-[9px] uppercase font-bold text-muted-foreground tracking-tighter opacity-70">Followers</p>
+                                        <p className="text-sm font-bold group-hover:text-primary transition-all">{profile.followers?.length || 0}</p>
+                                        <p className="text-[9px]  font-bold text-muted-foreground tracking-tighter opacity-70">Followers</p>
                                     </button>
                                     <div className="w-[1px] h-8 bg-border opacity-50" />
                                     <button
                                         onClick={() => setModalData({ isOpen: true, type: 'following', title: 'Following' })}
                                         className="text-center group"
                                     >
-                                        <p className="text-sm font-black group-hover:text-primary transition-all">{profile.following?.length || 0}</p>
-                                        <p className="text-[9px] uppercase font-bold text-muted-foreground tracking-tighter opacity-70">Following</p>
+                                        <p className="text-sm font-bold group-hover:text-primary transition-all">{profile.following?.length || 0}</p>
+                                        <p className="text-[9px]  font-bold text-muted-foreground tracking-tighter opacity-70">Following</p>
                                     </button>
                                 </div>
                             </div>
@@ -237,7 +237,7 @@ const PublicProfile = () => {
                         <div className="bg-card border border-border rounded-xl p-5 space-y-4">
                             <div className="flex items-center gap-2 mb-1">
                                 <Calendar size={14} className="text-primary" />
-                                <h3 className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Information</h3>
+                                <h3 className="text-[10px] font-bold  tracking-widest text-muted-foreground">Information</h3>
                             </div>
                             <p className="text-xs text-foreground/80 leading-relaxed italic border-l-2 border-primary/20 pl-3 py-1">
                                 "{profile.bio || 'Active contributor and architect at ScriptShelf.'}"
@@ -291,7 +291,7 @@ const PublicProfile = () => {
 
                         {/* Skills Repository */}
                         <div className="bg-card border border-border rounded-xl p-5 space-y-4">
-                            <h3 className="text-[11px] font-bold uppercase tracking-widest text-primary flex items-center gap-2">
+                            <h3 className="text-[11px] font-bold  tracking-widest text-primary flex items-center gap-2">
                                 <Layers size={14} /> Professional Skills
                             </h3>
                             {profile.skills?.length > 0 ? (
@@ -302,7 +302,7 @@ const PublicProfile = () => {
                                             <div key={skill._id} className="group relative bg-secondary/50 border border-border px-3 py-1.5 rounded-lg flex items-center gap-2 hover:border-primary/30 transition-colors">
                                                 <span className="text-xs font-bold text-foreground">{skill.name}</span>
                                                 <div className="flex items-center gap-1 border-l border-border/50 pl-2 ml-1">
-                                                    <span className="text-[9px] font-black text-muted-foreground">{skill.endorsements?.length || 0}</span>
+                                                    <span className="text-[9px] font-bold text-muted-foreground">{skill.endorsements?.length || 0}</span>
                                                     {currentUser && currentUser._id !== profile._id && (
                                                         <button
                                                             onClick={() => handleEndorse(skill._id)}
@@ -324,17 +324,17 @@ const PublicProfile = () => {
 
                         {/* Arcade Progress */}
                         <div className="bg-card border border-border rounded-xl p-5 space-y-5 shadow-sm">
-                            <h3 className="text-[11px] font-bold uppercase tracking-widest text-primary flex items-center gap-2">
+                            <h3 className="text-[11px] font-bold  tracking-widest text-primary flex items-center gap-2">
                                 <Trophy size={14} /> Performance
                             </h3>
                             <div className="grid grid-cols-2 gap-3 sm:gap-4">
                                 <div className="bg-muted/50 p-2.5 sm:p-3 rounded-lg border border-border/50 text-center">
-                                    <p className="text-sm font-black text-primary italic leading-none">{profile.arcade?.points || 0}</p>
-                                    <p className="text-[8px] sm:text-[9px] uppercase font-bold text-muted-foreground mt-1">Total XP</p>
+                                    <p className="text-sm font-bold text-primary italic leading-none">{profile.arcade?.points || 0}</p>
+                                    <p className="text-[8px] sm:text-[9px]  font-bold text-muted-foreground mt-1">Total XP</p>
                                 </div>
                                 <div className="bg-muted/50 p-2.5 sm:p-3 rounded-lg border border-border/50 text-center">
-                                    <p className="text-sm font-black text-orange-500 italic leading-none">{profile.arcade?.streak || 0}d</p>
-                                    <p className="text-[8px] sm:text-[9px] uppercase font-bold text-muted-foreground mt-1">Streak</p>
+                                    <p className="text-sm font-bold text-orange-500 italic leading-none">{profile.arcade?.streak || 0}d</p>
+                                    <p className="text-[8px] sm:text-[9px]  font-bold text-muted-foreground mt-1">Streak</p>
                                 </div>
                             </div>
 
@@ -362,15 +362,15 @@ const PublicProfile = () => {
                         {/* Visual Analytics */}
                         <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-6">
                             <div className="bg-card border border-border rounded-xl p-4 sm:p-5 shadow-sm col-span-2 sm:col-span-1">
-                                <p className="text-[9px] sm:text-[10px] font-bold uppercase text-muted-foreground tracking-widest mb-1.5 opacity-60">Public Scripts</p>
+                                <p className="text-[9px] sm:text-[10px] font-bold  text-muted-foreground tracking-widest mb-1.5 opacity-60">Public Scripts</p>
                                 <h4 className="text-xl sm:text-2xl font-bold flex items-center gap-2">{recentNotes.length} Archive</h4>
                             </div>
                             <div className="bg-card border border-border rounded-xl p-4 sm:p-5 shadow-sm">
-                                <p className="text-[9px] sm:text-[10px] font-bold uppercase text-muted-foreground tracking-widest mb-1.5 opacity-60">Reputation</p>
+                                <p className="text-[9px] sm:text-[10px] font-bold  text-muted-foreground tracking-widest mb-1.5 opacity-60">Reputation</p>
                                 <h4 className="text-xl sm:text-2xl font-bold flex items-center gap-2 text-primary">{profile.reputation || 0} Points</h4>
                             </div>
                             <div className="bg-card border border-border rounded-xl p-4 sm:p-5 shadow-sm">
-                                <p className="text-[9px] sm:text-[10px] font-bold uppercase text-muted-foreground tracking-widest mb-1.5 opacity-60">Simulations</p>
+                                <p className="text-[9px] sm:text-[10px] font-bold  text-muted-foreground tracking-widest mb-1.5 opacity-60">Simulations</p>
                                 <h4 className="text-xl sm:text-2xl font-bold flex items-center gap-2">{profile.arcade?.gamesPlayed || 0} Completed</h4>
                             </div>
                         </div>
@@ -383,11 +383,11 @@ const PublicProfile = () => {
 
                         <section className="space-y-6">
                             <div className="flex items-center justify-between px-1">
-                                <h3 className="text-xs font-bold uppercase tracking-widest text-muted-foreground flex items-center gap-3">
+                                <h3 className="text-xs font-bold  tracking-widest text-muted-foreground flex items-center gap-3">
                                     <div className="w-1.5 h-1.5 rounded-full bg-primary" />
                                     Technical Records
                                 </h3>
-                                <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest bg-muted/50 px-3 py-1 rounded-full border border-border/50">Public Access</span>
+                                <span className="text-[10px] font-bold text-muted-foreground  tracking-widest bg-muted/50 px-3 py-1 rounded-full border border-border/50">Public Access</span>
                             </div>
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -395,7 +395,7 @@ const PublicProfile = () => {
                                     <Link key={note._id} to={`/notes/${note._id}`} className="group p-5 bg-card border border-border rounded-xl hover:border-primary/40 transition-all shadow-sm">
                                         <div className="flex items-start justify-between mb-3">
                                             <div className="space-y-1">
-                                                <span className="text-[9px] font-bold text-primary uppercase tracking-[0.1em]">{note.category?.name || 'GENERIC'}</span>
+                                                <span className="text-[9px] font-bold text-primary  tracking-[0.1em]">{note.category?.name || 'GENERIC'}</span>
                                                 <h4 className="font-bold text-sm group-hover:text-primary transition-colors truncate max-w-[200px]">{note.title}</h4>
                                             </div>
                                             <ChevronRight size={14} className="text-muted-foreground group-hover:text-primary group-hover:translate-x-1 transition-all mt-1" />
@@ -409,7 +409,7 @@ const PublicProfile = () => {
                                                     key={tag}
                                                     to={`/notes?search=${encodeURIComponent(tag)}`}
                                                     onClick={(e) => e.stopPropagation()}
-                                                    className="text-[8px] font-bold text-primary border border-primary/10 bg-primary/5 px-2 py-0.5 rounded uppercase tracking-tighter hover:bg-primary hover:text-white transition-all"
+                                                    className="text-[8px] font-bold text-primary border border-primary/10 bg-primary/5 px-2 py-0.5 rounded  tracking-tighter hover:bg-primary hover:text-white transition-all"
                                                 >
                                                     {tag}
                                                 </Link>

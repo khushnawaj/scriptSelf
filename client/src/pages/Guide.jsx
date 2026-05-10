@@ -45,7 +45,7 @@ const Guide = () => {
         <div className="max-w-[1000px] mx-auto pb-24 animate-in fade-in slide-in-from-bottom-4 duration-700">
             {/* Hero Section */}
             <header className="py-16 text-center space-y-4">
-                <div className="inline-flex items-center gap-2 px-3 py-1 bg-primary/10 border border-primary/20 rounded-full text-primary text-[11px] font-bold uppercase tracking-[0.2em] mb-4">
+                <div className="inline-flex items-center gap-2 px-3 py-1 bg-primary/10 border border-primary/20 rounded-full text-primary text-[11px] font-bold  tracking-[0.2em] mb-4">
                     <BookOpen size={14} /> Official Documentation
                 </div>
                 <h1 className="text-[42px] font-bold text-foreground leading-tight">
@@ -63,22 +63,22 @@ const Guide = () => {
                 </h2>
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
                     <div className="glass-frost p-6 rounded-[3px] border-t-2 border-t-primary">
-                        <div className="text-[28px] font-black text-primary/20 mb-2">01</div>
+                        <div className="text-[28px] font-bold text-primary/20 mb-2">01</div>
                         <h4 className="font-bold text-[16px] mb-2">Initialize</h4>
                         <p className="text-[13px] text-muted-foreground leading-relaxed">Open the editor via **Alt+N**. Your capture buffer is ready for logic input.</p>
                     </div>
                     <div className="glass-frost p-6 rounded-[3px] border-t-2 border-t-primary">
-                        <div className="text-[28px] font-black text-primary/20 mb-2">02</div>
+                        <div className="text-[28px] font-bold text-primary/20 mb-2">02</div>
                         <h4 className="font-bold text-[16px] mb-2">Categorize</h4>
                         <p className="text-[13px] text-muted-foreground leading-relaxed">Select a root stack and add surgical tags like #react or #middleware.</p>
                     </div>
                     <div className="glass-frost p-6 rounded-[3px] border-t-2 border-t-primary">
-                        <div className="text-[28px] font-black text-primary/20 mb-2">03</div>
+                        <div className="text-[28px] font-bold text-primary/20 mb-2">03</div>
                         <h4 className="font-bold text-[16px] mb-2">Cross-Link</h4>
                         <p className="text-[13px] text-muted-foreground leading-relaxed">Build neural paths using `[[Note Title]]` to connect related code vaults.</p>
                     </div>
                     <div className="glass-frost p-6 rounded-[3px] border-t-2 border-t-primary">
-                        <div className="text-[28px] font-black text-primary/20 mb-2">04</div>
+                        <div className="text-[28px] font-bold text-primary/20 mb-2">04</div>
                         <h4 className="font-bold text-[16px] mb-2">Authorize</h4>
                         <p className="text-[13px] text-muted-foreground leading-relaxed">Link your GitHub and tech stack in settings to verify your technical ID.</p>
                     </div>
@@ -104,7 +104,7 @@ const Guide = () => {
                     <p className="text-[14px] text-muted-foreground leading-relaxed">
                         Organize by multi-level stacks and surgical tagging. Move beyond folders into a multidimensional knowledge library.
                     </p>
-                    <p className="text-[11px] text-primary/70 font-bold mt-4 uppercase tracking-tighter">
+                    <p className="text-[11px] text-primary/70 font-bold mt-4  tracking-tighter">
                         PRO-TIP: Tags like #Hooks or #Security enable surgical retrieval.
                     </p>
                 </div>
@@ -124,7 +124,7 @@ const Guide = () => {
                 {/* 1. Tactical Editor */}
                 <div className="flex flex-col md:flex-row items-start gap-16">
                     <div className="flex-1 space-y-6 text-left">
-                        <div className="flex items-center gap-3 text-primary font-bold uppercase tracking-widest text-[13px]">
+                        <div className="flex items-center gap-3 text-primary font-bold  tracking-widest text-[13px]">
                             <Terminal size={18} /> Component 01: Capture
                         </div>
                         <h2 className="text-[32px] font-bold leading-tight">The Tactical Editor</h2>
@@ -148,7 +148,7 @@ const Guide = () => {
                     </div>
                     <div className="flex-1 bg-accent/20 p-8 border border-border rounded-[3px] font-mono text-[13px] shadow-sm text-left w-full">
                         <div className="flex gap-2 mb-4 border-b border-border/50 pb-2">
-                            <span className="text-[10px] text-muted-foreground uppercase font-bold tracking-widest">Active_Buffer.md</span>
+                            <span className="text-[10px] text-muted-foreground  font-bold tracking-widest">Active_Buffer.md</span>
                         </div>
                         <p className="text-primary font-bold"># Implementing Auth Strategy</p>
                         <p className="text-muted-foreground mt-2">Connecting with [[Auth Layer]] and [[Redux Store]].</p>
@@ -163,7 +163,7 @@ const Guide = () => {
                 {/* 2. Neural Graph & Links */}
                 <div className="flex flex-col md:flex-row-reverse items-start gap-16">
                     <div className="flex-1 space-y-6 text-left">
-                        <div className="flex items-center gap-3 text-primary font-bold uppercase tracking-widest text-[13px]">
+                        <div className="flex items-center gap-3 text-primary font-bold  tracking-widest text-[13px]">
                             <Share2 size={18} /> Component 02: Visual Intelligence
                         </div>
                         <h2 className="text-[32px] font-bold leading-tight">The Neural Graph</h2>
@@ -188,10 +188,10 @@ const Guide = () => {
                     <div className="flex-1 w-full bg-black/20 rounded-2xl border border-border overflow-hidden p-4 group">
                         <div className="relative w-full h-[200px] flex items-center justify-center">
                             {/* Visual representation of graph */}
-                            <div className="absolute inset-0 bg-primary/5 blur-3xl rounded-full animate-pulse" />
+                            <div className="absolute inset-0 bg-primary/5 blur-3xl rounded-full " />
                             <div className="relative z-10 flex flex-col items-center gap-2">
                                 <Activity size={40} className="text-primary opacity-50" />
-                                <span className="text-[10px] font-black text-primary uppercase tracking-[0.3em]">Neural_Link_Active</span>
+                                <span className="text-[10px] font-bold text-primary  tracking-[0.3em]">Neural_Link_Active</span>
                             </div>
                             <div className="absolute top-10 left-10 w-3 h-3 bg-primary rounded-full blur-[2px]" />
                             <div className="absolute bottom-10 right-20 w-4 h-4 bg-primary/40 rounded-full blur-[2px]" />
@@ -203,7 +203,7 @@ const Guide = () => {
                 {/* 3. Folders & Organization */}
                 <div className="flex flex-col md:flex-row items-start gap-16 border-t border-border/50 pt-16">
                     <div className="flex-1 space-y-6 text-left">
-                        <div className="flex items-center gap-3 text-primary font-bold uppercase tracking-widest text-[13px]">
+                        <div className="flex items-center gap-3 text-primary font-bold  tracking-widest text-[13px]">
                             <FolderTree size={18} /> Component 03: Structured Archives
                         </div>
                         <h2 className="text-[32px] font-bold leading-tight">Folder & Mention Protocol</h2>
@@ -243,7 +243,7 @@ const Guide = () => {
                 {/* 4. Reputation & Reputation Tiers */}
                 <div className="flex flex-col md:flex-row items-start gap-16 border-t border-border/50 pt-16">
                     <div className="flex-1 space-y-6 text-left">
-                        <div className="flex items-center gap-3 text-primary font-bold uppercase tracking-widest text-[13px]">
+                        <div className="flex items-center gap-3 text-primary font-bold  tracking-widest text-[13px]">
                             <Trophy size={18} /> Component 04: Reputation Tiers
                         </div>
                         <h2 className="text-[32px] font-bold leading-tight">Forge your Technical ID</h2>
@@ -270,15 +270,15 @@ const Guide = () => {
                     <div className="flex-1 w-full bg-card border border-border rounded-[3px] border-l-4 border-l-primary p-8 text-left relative overflow-hidden">
                         <div className="absolute -top-10 -right-10 w-40 h-40 bg-emerald-500/10 rounded-full blur-3xl" />
                         <div className="flex items-center gap-4 mb-6">
-                            <div className="w-14 h-14 bg-secondary border-2 border-emerald-500/20 rounded-2xl flex items-center justify-center font-black text-emerald-500 text-xl shadow-xl">S</div>
+                            <div className="w-14 h-14 bg-secondary border-2 border-emerald-500/20 rounded-2xl flex items-center justify-center font-bold text-emerald-500 text-xl shadow-xl">S</div>
                             <div>
-                                <p className="font-black text-[20px] text-foreground">Senior Architect</p>
-                                <p className="text-[10px] text-emerald-500 font-black uppercase tracking-[0.2em]">Rank: Tier II // Authorized</p>
+                                <p className="font-bold text-[20px] text-foreground">Senior Architect</p>
+                                <p className="text-[10px] text-emerald-500 font-bold  tracking-[0.2em]">Rank: Tier II // Authorized</p>
                             </div>
                         </div>
                         <div className="space-y-4">
                             <div className="space-y-2">
-                                <div className="flex justify-between text-[11px] font-black text-muted-foreground uppercase tracking-widest">
+                                <div className="flex justify-between text-[11px] font-bold text-muted-foreground  tracking-widest">
                                     <span>Intelligence_Sync</span>
                                     <span className="text-emerald-500">72%</span>
                                 </div>
@@ -286,10 +286,10 @@ const Guide = () => {
                                     <div className="w-[72%] h-full bg-emerald-500 rounded-full" />
                                 </div>
                             </div>
-                            <p className="text-[9px] text-muted-foreground/60 font-medium uppercase tracking-tight text-center">428 / 500 Intelligence Points to Next Tier</p>
+                            <p className="text-[9px] text-muted-foreground/60 font-medium  tracking-tight text-center">428 / 500 Intelligence Points to Next Tier</p>
                         </div>
                         <div className="mt-6 pt-6 border-t border-border/50">
-                            <Link to="/levels" className="w-full py-2 bg-primary/10 hover:bg-primary/20 text-primary text-[10px] font-black uppercase tracking-widest rounded transition-all flex items-center justify-center gap-2">
+                            <Link to="/levels" className="w-full py-2 bg-primary/10 hover:bg-primary/20 text-primary text-[10px] font-bold  tracking-widest rounded transition-all flex items-center justify-center gap-2">
                                 View Full Leveling Rules <ArrowRight size={14} />
                             </Link>
                         </div>
@@ -300,7 +300,7 @@ const Guide = () => {
                 <div className="mt-20 pt-16 border-t border-border/50">
                     <div className="flex flex-col md:flex-row-reverse items-start gap-16">
                         <div className="flex-1 space-y-6 text-left">
-                            <div className="flex items-center gap-3 text-primary font-bold uppercase tracking-widest text-[13px]">
+                            <div className="flex items-center gap-3 text-primary font-bold  tracking-widest text-[13px]">
                                 <Binary size={18} /> Component 04: Logic Lifecycle
                             </div>
                             <h2 className="text-[32px] font-bold leading-tight">The ADR Status Engine</h2>
@@ -310,15 +310,15 @@ const Guide = () => {
                             <div className="space-y-3">
                                 <div className="flex items-center gap-3 p-3 bg-emerald-500/5 border border-emerald-500/20 rounded-[3px]">
                                     <span className="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.3)]" />
-                                    <span className="text-[12px] font-bold text-emerald-500 uppercase tracking-widest">Proposed</span>
+                                    <span className="text-[12px] font-bold text-emerald-500  tracking-widest">Proposed</span>
                                 </div>
                                 <div className="flex items-center gap-3 p-3 bg-primary/5 border border-primary/20 rounded-[3px]">
                                     <span className="w-2 h-2 rounded-full bg-primary shadow-[0_0_8px_rgba(var(--primary-rgb),0.3)]" />
-                                    <span className="text-[12px] font-bold text-primary uppercase tracking-widest">Accepted</span>
+                                    <span className="text-[12px] font-bold text-primary  tracking-widest">Accepted</span>
                                 </div>
                                 <div className="flex items-center gap-3 p-3 bg-rose-500/5 border border-rose-500/20 rounded-[3px]">
                                     <span className="w-2 h-2 rounded-full bg-rose-500 shadow-[0_0_8px_rgba(244,63,94,0.3)]" />
-                                    <span className="text-[12px] font-bold text-rose-500 uppercase tracking-widest">Superceded</span>
+                                    <span className="text-[12px] font-bold text-rose-500  tracking-widest">Superceded</span>
                                 </div>
                             </div>
                         </div>
@@ -335,7 +335,7 @@ const Guide = () => {
                 <div className="mt-20 pt-16 border-t border-border/50">
                     <div className="flex flex-col md:flex-row items-start gap-16">
                         <div className="flex-1 space-y-6 text-left">
-                            <div className="flex items-center gap-3 text-primary font-bold uppercase tracking-widest text-[13px]">
+                            <div className="flex items-center gap-3 text-primary font-bold  tracking-widest text-[13px]">
                                 <Keyboard size={18} /> Component 05: Control Protocol
                             </div>
                             <h2 className="text-[32px] font-bold leading-tight">Master Command Palette</h2>
@@ -362,7 +362,7 @@ const Guide = () => {
                             </div>
 
                             <div className="space-y-4 pt-4">
-                                <p className="text-[11px] font-black uppercase text-primary tracking-widest">Active Slash Commands</p>
+                                <p className="text-[11px] font-bold  text-primary tracking-widest">Active Slash Commands</p>
                                 <div className="grid grid-cols-2 gap-3">
                                     {[
                                         { cmd: '/new', desc: 'Create record' },
@@ -372,7 +372,7 @@ const Guide = () => {
                                     ].map(item => (
                                         <div key={item.cmd} className="flex items-center gap-3 p-3 bg-card border border-border rounded shadow-sm">
                                             <span className="text-primary font-bold text-[12px]">{item.cmd}</span>
-                                            <span className="text-[10px] text-muted-foreground uppercase font-medium">{item.desc}</span>
+                                            <span className="text-[10px] text-muted-foreground  font-medium">{item.desc}</span>
                                         </div>
                                     ))}
                                 </div>
@@ -389,7 +389,7 @@ const Guide = () => {
                                 </p>
                             </div>
                             <div className="p-6 bg-accent/10 border border-border border-dashed rounded-[3px] text-left">
-                                <h4 className="text-[12px] font-bold text-primary uppercase tracking-[0.2em] mb-2">PRO_PROTOCOL: RECENT_ITEMS</h4>
+                                <h4 className="text-[12px] font-bold text-primary  tracking-[0.2em] mb-2">PRO_PROTOCOL: RECENT_ITEMS</h4>
                                 <p className="text-[13px] text-muted-foreground">The command palette caches your last 5 viewed items for rapid-fire switching during deep-work sessions.</p>
                             </div>
                         </div>
@@ -400,7 +400,7 @@ const Guide = () => {
                 <div className="mt-20 pt-16 border-t border-border/50">
                     <div className="flex flex-col md:flex-row items-start gap-16">
                         <div className="flex-1 space-y-6 text-left">
-                            <div className="flex items-center gap-3 text-primary font-bold uppercase tracking-widest text-[13px]">
+                            <div className="flex items-center gap-3 text-primary font-bold  tracking-widest text-[13px]">
                                 <MessageSquare size={18} /> Component 06: Communication
                             </div>
                             <h2 className="text-[32px] font-bold leading-tight">Encrypted Signal Protocol</h2>
@@ -424,11 +424,11 @@ const Guide = () => {
                         </div>
                         <div className="flex-1 bg-accent/20 p-8 border border-border rounded-[3px] font-mono text-[13px] shadow-sm text-left w-full">
                             <div className="flex gap-2 mb-4 border-b border-border/50 pb-2">
-                                <span className="text-[10px] text-muted-foreground uppercase font-bold tracking-widest">Chat_Interface.jsx</span>
+                                <span className="text-[10px] text-muted-foreground  font-bold tracking-widest">Chat_Interface.jsx</span>
                             </div>
                             <div className="space-y-4">
                                 <div className="flex items-center gap-3 p-3 bg-primary/5 rounded border-l-4 border-primary">
-                                    <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+                                    <div className="w-2 h-2 rounded-full bg-green-500 " />
                                     <span className="text-xs text-muted-foreground">Encrypted Connection Active</span>
                                 </div>
                                 <div className="p-3 bg-muted/30 rounded text-xs">
@@ -448,7 +448,7 @@ const Guide = () => {
                 <div className="mt-20 pt-16 border-t border-border/50">
                     <div className="flex flex-col md:flex-row-reverse items-start gap-16">
                         <div className="flex-1 space-y-6 text-left">
-                            <div className="flex items-center gap-3 text-primary font-bold uppercase tracking-widest text-[13px]">
+                            <div className="flex items-center gap-3 text-primary font-bold  tracking-widest text-[13px]">
                                 <Globe size={18} /> Component 07: Collective
                             </div>
                             <h2 className="text-[32px] font-bold leading-tight">The Global Knowledge Stream</h2>
@@ -474,10 +474,10 @@ const Guide = () => {
                         </div>
                         <div className="flex-1 w-full glass-frost p-8 rounded-[3px] border-t-0 border-l-4 border-l-primary text-left">
                             <div className="flex items-center gap-4 mb-6">
-                                <div className="w-12 h-12 bg-gradient-to-br from-primary/20 to-primary/10 rounded-full flex items-center justify-center font-black text-primary">C</div>
+                                <div className="w-12 h-12 bg-gradient-to-br from-primary/20 to-primary/10 rounded-full flex items-center justify-center font-bold text-primary">C</div>
                                 <div>
                                     <p className="font-bold text-[18px]">Community_Feed</p>
-                                    <p className="text-[11px] text-primary font-black uppercase tracking-tighter">Live Global Stream</p>
+                                    <p className="text-[11px] text-primary font-bold  tracking-tighter">Live Global Stream</p>
                                 </div>
                             </div>
                             <div className="space-y-3">
@@ -501,7 +501,7 @@ const Guide = () => {
                 <div className="mt-20 pt-16 border-t border-border/50">
                     <div className="flex flex-col md:flex-row-reverse items-start gap-16">
                         <div className="flex-1 space-y-6 text-left">
-                            <div className="flex items-center gap-3 text-primary font-bold uppercase tracking-widest text-[13px]">
+                            <div className="flex items-center gap-3 text-primary font-bold  tracking-widest text-[13px]">
                                 <Terminal size={18} /> Component 08: Playground
                             </div>
                             <h2 className="text-[32px] font-bold leading-tight">The Logic Sandbox</h2>
@@ -539,7 +539,7 @@ const Guide = () => {
                                 <p className="text-emerald-500/50 italic">// Output: 42</p>
                             </div>
                             <div className="mt-6 p-3 bg-black/20 rounded border border-white/5">
-                                <p className="text-[10px] text-muted-foreground uppercase tracking-widest mb-1">Console Output</p>
+                                <p className="text-[10px] text-muted-foreground  tracking-widest mb-1">Console Output</p>
                                 <p className="text-primary">&gt; Calculation complete.</p>
                             </div>
                         </div>
@@ -548,7 +548,7 @@ const Guide = () => {
 
                 {/* 9. DevArcade Game Mode */}
                 <div className="mt-20 pt-16 border-t border-border/50">
-                    <div className="flex items-center gap-3 text-primary font-bold uppercase tracking-widest text-[13px] mb-8">
+                    <div className="flex items-center gap-3 text-primary font-bold  tracking-widest text-[13px] mb-8">
                         <Zap size={18} /> Component 09: Training Hub
                     </div>
                     <h2 className="text-[32px] font-bold leading-tight mb-8">DevArcade: Gamified Sharpening</h2>
@@ -568,10 +568,10 @@ const Guide = () => {
                                 </div>
                                 <div>
                                     <h4 className="font-bold text-foreground group-hover:text-primary transition-colors">{game.title}</h4>
-                                    <p className="text-[10px] font-bold text-muted-foreground mt-1 uppercase tracking-tighter">{game.desc}</p>
+                                    <p className="text-[10px] font-bold text-muted-foreground mt-1  tracking-tighter">{game.desc}</p>
                                 </div>
                                 <div className="pt-4 border-t border-border flex justify-between items-center group-hover:border-primary/20 transition-colors">
-                                    <span className="text-[9px] font-bold text-foreground/40 uppercase">System: Ready</span>
+                                    <span className="text-[9px] font-bold text-foreground/40 ">System: Ready</span>
                                     <ArrowRight size={14} className={`${game.color} opacity-0 group-hover:opacity-100 transition-all`} />
                                 </div>
                             </div>
@@ -586,7 +586,7 @@ const Guide = () => {
                 <div className="mt-20 pt-16 border-t border-border/50">
                     <div className="flex flex-col md:flex-row items-start gap-16">
                         <div className="flex-1 space-y-6 text-left">
-                            <div className="flex items-center gap-3 text-red-500 font-bold uppercase tracking-widest text-[13px]">
+                            <div className="flex items-center gap-3 text-red-500 font-bold  tracking-widest text-[13px]">
                                 <Shield size={18} /> Component 10: Administration
                             </div>
                             <h2 className="text-[32px] font-bold leading-tight">System Control Center</h2>
@@ -617,21 +617,21 @@ const Guide = () => {
                                 <Shield size={24} className="text-red-500" />
                                 <div>
                                     <h4 className="font-bold text-[18px]">Security Level: Omega</h4>
-                                    <p className="text-[11px] text-red-500 font-black uppercase tracking-tighter">Authorized Personnel Only</p>
+                                    <p className="text-[11px] text-red-500 font-bold  tracking-tighter">Authorized Personnel Only</p>
                                 </div>
                             </div>
                             <div className="grid grid-cols-2 gap-4">
                                 <div className="p-4 bg-card border border-border rounded">
-                                    <p className="text-[24px] font-black text-foreground">1,247</p>
-                                    <p className="text-[10px] text-muted-foreground uppercase font-bold">Total Users</p>
+                                    <p className="text-[24px] font-bold text-foreground">1,247</p>
+                                    <p className="text-[10px] text-muted-foreground  font-bold">Total Users</p>
                                 </div>
                                 <div className="p-4 bg-card border border-border rounded">
-                                    <p className="text-[24px] font-black text-foreground">3,891</p>
-                                    <p className="text-[10px] text-muted-foreground uppercase font-bold">Content Items</p>
+                                    <p className="text-[24px] font-bold text-foreground">3,891</p>
+                                    <p className="text-[10px] text-muted-foreground  font-bold">Content Items</p>
                                 </div>
                             </div>
                             <div className="mt-4 p-3 bg-red-500/10 border border-red-500/20 rounded">
-                                <p className="text-[10px] text-red-500 font-black uppercase tracking-wider">Admin Access Required</p>
+                                <p className="text-[10px] text-red-500 font-bold  tracking-wider">Admin Access Required</p>
                             </div>
                         </div>
                     </div>
@@ -669,7 +669,7 @@ const Guide = () => {
                         Initialize First Entry <Zap size={18} className="ml-2" />
                     </Link>
                 </div>
-                <p className="text-muted-foreground font-bold uppercase tracking-[0.2em] text-[10px]">Session_System: Stable // V2.9.0</p>
+                <p className="text-muted-foreground font-bold  tracking-[0.2em] text-[10px]">Session_System: Stable // V2.9.0</p>
             </div>
         </div>
     );

@@ -30,11 +30,19 @@ const Navbar = ({ onMenuClick }) => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
-    const LogoIcon = themeAssets?.icons?.brand || Code2;
-
-
+    const [isScrolled, setIsScrolled] = useState(false);
     const [isProfileOpen, setIsProfileOpen] = useState(false);
     const profileRef = useRef(null);
+
+    const LogoIcon = themeAssets?.icons?.brand || Code2;
+
+    useEffect(() => {
+        const handleScroll = () => {
+            setIsScrolled(window.scrollY > 20);
+        };
+        window.addEventListener('scroll', handleScroll);
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, []);
 
     const handleLogout = useCallback(() => {
         dispatch(logout());
@@ -53,8 +61,11 @@ const Navbar = ({ onMenuClick }) => {
     }, []);
 
     return (
-        <nav className="fixed top-0 w-full z-50 glass-morphism bg-background/70 border-b border-border h-[64px] flex items-center transition-all duration-300">
-            <div className="max-w-[1500px] mx-auto w-full px-4 sm:px-6 flex items-center gap-2 sm:gap-6">
+        <nav className={`fixed top-0 w-full z-50 transition-all duration-500 ${isScrolled
+            ? 'h-[56px] bg-background/80 backdrop-blur-2xl border-b border-primary/20 shadow-[0_4px_30px_rgba(var(--primary),0.05)]'
+            : 'h-[64px] bg-background/0 border-b border-border/0'
+            }`}>
+            <div className={`max-w-[1500px] mx-auto w-full px-4 sm:px-6 flex items-center gap-2 sm:gap-6 h-full transition-all duration-500 ${isScrolled ? 'scale-[0.99]' : 'scale-100'}`}>
 
                 {/* Burger Menu for Mobile */}
                 <button
@@ -95,8 +106,8 @@ const Navbar = ({ onMenuClick }) => {
                         <span className="hidden sm:inline">Search intelligence...</span>
                         <span className="sm:hidden">Search...</span>
                         <div className="hidden md:flex items-center gap-1 opacity-50">
-                            <kbd className="px-1.5 py-0.5 rounded-[4px] border border-border bg-background text-[9px] font-black">CTRL</kbd>
-                            <kbd className="px-1.5 py-0.5 rounded-[4px] border border-border bg-background text-[9px] font-black">K</kbd>
+                            <kbd className="px-1.5 py-0.5 rounded-[4px] border border-border bg-background text-[9px] font-bold">CTRL</kbd>
+                            <kbd className="px-1.5 py-0.5 rounded-[4px] border border-border bg-background text-[9px] font-bold">K</kbd>
                         </div>
                     </div>
                 </div>

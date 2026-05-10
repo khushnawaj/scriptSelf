@@ -123,7 +123,7 @@ export default function CommandPalette() {
                     >
                         {/* Search Input */}
                         <div className="flex items-center gap-4 px-6 py-5 bg-muted/20 border-b border-border">
-                            {query.startsWith('/') ? <Terminal className="text-primary animate-pulse" size={20} /> : <Search className="text-muted-foreground" size={20} />}
+                            {query.startsWith('/') ? <Terminal className="text-primary " size={20} /> : <Search className="text-muted-foreground" size={20} />}
                             <input
                                 className="flex-1 bg-transparent border-none outline-none text-[16px] text-foreground font-medium placeholder:text-muted-foreground/40"
                                 placeholder={query.startsWith('/') ? "Type a system command..." : "Search intelligence archive or type '/' for commands..."}
@@ -133,7 +133,7 @@ export default function CommandPalette() {
                                 onKeyDown={(e) => e.key === 'Enter' && query.startsWith('/') && executeCommand(query)}
                             />
                             <div className="hidden sm:flex items-center gap-2">
-                                <kbd className="px-1.5 py-0.5 rounded-md border border-border bg-card text-[9px] font-black text-muted-foreground shadow-sm">ESC</kbd>
+                                <kbd className="px-1.5 py-0.5 rounded-md border border-border bg-card text-[9px] font-bold text-muted-foreground shadow-sm">ESC</kbd>
                             </div>
                         </div>
 
@@ -142,7 +142,7 @@ export default function CommandPalette() {
                             {/* Command Mode UI */}
                             {query.startsWith('/') && (
                                 <div className="space-y-1">
-                                    <div className="px-4 py-2 text-[10px] font-black uppercase tracking-[0.2em] text-primary/50">System Protocols</div>
+                                    <div className="px-4 py-2 text-[10px] font-bold  tracking-[0.2em] text-primary/50">System Protocols</div>
                                     {commands.filter(c => c.cmd.includes(query.toLowerCase())).map((c, i) => (
                                         <button key={i} onClick={() => executeCommand(c.cmd)} className="w-full flex items-center justify-between px-4 py-3 rounded-xl hover:bg-primary/[0.03] text-left transition-all group">
                                             <div className="flex items-center gap-4">
@@ -151,7 +151,7 @@ export default function CommandPalette() {
                                                 </div>
                                                 <span className="text-[14px] font-bold text-foreground/80">{c.label}</span>
                                             </div>
-                                            <span className="text-[10px] font-black text-muted-foreground/40 group-hover:text-primary transition-colors">{c.cmd}</span>
+                                            <span className="text-[10px] font-bold text-muted-foreground/40 group-hover:text-primary transition-colors">{c.cmd}</span>
                                         </button>
                                     ))}
                                 </div>
@@ -162,7 +162,7 @@ export default function CommandPalette() {
                                 <div className="space-y-6 p-2">
                                     {recentItems.length > 0 && (
                                         <div className="space-y-1">
-                                            <div className="px-4 py-2 text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/60 flex items-center gap-2">
+                                            <div className="px-4 py-2 text-[10px] font-bold  tracking-[0.2em] text-muted-foreground/60 flex items-center gap-2">
                                                 <History size={12} /> Recently Accessed
                                             </div>
                                             {recentItems.map((item, i) => (
@@ -172,7 +172,7 @@ export default function CommandPalette() {
                                                     </div>
                                                     <div className="flex-1">
                                                         <div className="text-[13px] font-bold text-foreground/80">{item.title}</div>
-                                                        <div className="text-[10px] text-muted-foreground uppercase tracking-widest">{item.category}</div>
+                                                        <div className="text-[10px] text-muted-foreground  tracking-widest">{item.category}</div>
                                                     </div>
                                                 </button>
                                             ))}
@@ -180,7 +180,7 @@ export default function CommandPalette() {
                                     )}
 
                                     <div className="space-y-1">
-                                        <div className="px-4 py-2 text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/60">Navigation Nodes</div>
+                                        <div className="px-4 py-2 text-[10px] font-bold  tracking-[0.2em] text-muted-foreground/60">Navigation Nodes</div>
                                         <div className="grid grid-cols-2 gap-1">
                                             {staticActions.map((a, i) => (
                                                 <button key={i} onClick={a.action} className="flex items-center gap-4 px-4 py-4 rounded-xl hover:bg-secondary/50 text-left transition-all group">
@@ -198,7 +198,7 @@ export default function CommandPalette() {
                             {/* Search Results UI */}
                             {query && !query.startsWith('/') && (
                                 <div className="space-y-1">
-                                    <div className="px-4 py-2 text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/60">Intelligence Matches</div>
+                                    <div className="px-4 py-2 text-[10px] font-bold  tracking-[0.2em] text-muted-foreground/60">Intelligence Matches</div>
                                     {results.map((note) => (
                                         <button
                                             key={note._id}
@@ -211,7 +211,7 @@ export default function CommandPalette() {
                                             <div className="flex-1 min-w-0">
                                                 <div className="text-[14px] font-bold text-foreground group-hover:text-primary truncate transition-colors">{note.title}</div>
                                                 <div className="flex items-center gap-2 mt-1">
-                                                    <span className="text-[9px] font-black px-1.5 py-0.5 bg-primary/10 text-primary rounded-md uppercase">{note.category?.name || 'GENERIC'}</span>
+                                                    <span className="text-[9px] font-bold px-1.5 py-0.5 bg-primary/10 text-primary rounded-md ">{note.category?.name || 'GENERIC'}</span>
                                                     <span className="text-[11px] text-muted-foreground truncate">{note.tags.join(' • ')}</span>
                                                 </div>
                                             </div>
@@ -234,7 +234,7 @@ export default function CommandPalette() {
                                 <span className="flex items-center gap-1.5 font-bold text-muted-foreground/70"><kbd className="bg-card px-1 rounded border border-border leading-none">↵</kbd> Execute</span>
                                 <span className="flex items-center gap-1.5 font-bold text-muted-foreground/70"><kbd className="bg-card px-1 rounded border border-border leading-none">/</kbd> Command Mode</span>
                             </div>
-                            <div className="font-black text-primary uppercase tracking-[0.2em] animate-pulse">
+                            <div className="font-bold text-primary  tracking-[0.2em] ">
                                 ScriptShelf Neural Link
                             </div>
                         </div>

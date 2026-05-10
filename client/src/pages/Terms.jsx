@@ -9,7 +9,7 @@ const Terms = () => {
                 <div className="inline-flex items-center justify-center w-14 h-14 md:w-16 md:h-16 bg-primary/10 text-primary rounded-2xl mb-2 md:mb-4">
                     <Scale size={28} md:size={32} />
                 </div>
-                <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-foreground">Terms of Service</h1>
+                <h1 className="text-xl sm:text-xl md:text-xl font-bold tracking-tight text-foreground">Terms of Service</h1>
                 <p className="text-base md:text-lg text-muted-foreground font-light">Last Updated: February 5, 2026</p>
             </div>
 

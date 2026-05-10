@@ -247,7 +247,7 @@ const FolderSidebar = ({ onSelectFolder, selectedFolderId, onRefresh, className 
                         <div className="w-6 h-6 rounded bg-primary/20 flex items-center justify-center">
                             <Folder size={14} className="text-primary" />
                         </div>
-                        <h3 className="text-[11px] font-black uppercase tracking-[2px] text-foreground/70">Library</h3>
+                        <h3 className="text-[11px] font-bold  tracking-[2px] text-foreground/70">Library</h3>
                     </div>
                     <button
                         onClick={() => setIsCreating(true)}
@@ -316,13 +316,13 @@ const FolderSidebar = ({ onSelectFolder, selectedFolderId, onRefresh, className 
                             <div className="w-16 h-16 bg-gradient-to-br from-primary/20 to-accent/20 rounded-[2rem] rotate-12 flex items-center justify-center mb-6 shadow-xl shadow-primary/10">
                                 <FolderOpen size={28} className="text-primary opacity-60 -rotate-12" />
                             </div>
-                            <h4 className="text-[14px] font-black text-foreground mb-2">No Volumes Found</h4>
+                            <h4 className="text-[14px] font-bold text-foreground mb-2">No Volumes Found</h4>
                             <p className="text-[11px] text-muted-foreground leading-relaxed mb-6 opacity-80">
                                 Your digital shelf is waiting for organization. Initialize a new folder to begin.
                             </p>
                             <button
                                 onClick={() => setIsCreating(true)}
-                                className="px-4 py-2 bg-primary/10 text-primary hover:bg-primary hover:text-white transition-all duration-300 rounded-full text-[10px] font-black uppercase tracking-widest flex items-center gap-2"
+                                className="px-4 py-2 bg-primary/10 text-primary hover:bg-primary hover:text-white transition-all duration-300 rounded-full text-[10px] font-bold  tracking-widest flex items-center gap-2"
                             >
                                 <Plus size={14} /> Build Framework
                             </button>
@@ -332,7 +332,7 @@ const FolderSidebar = ({ onSelectFolder, selectedFolderId, onRefresh, className 
                     {isLoading && (
                         <div className="space-y-2 p-4">
                             {[1, 2, 3].map(i => (
-                                <div key={i} className="h-8 bg-accent/20 rounded-md animate-pulse" />
+                                <div key={i} className="h-8 bg-accent/20 rounded-md " />
                             ))}
                         </div>
                     )}

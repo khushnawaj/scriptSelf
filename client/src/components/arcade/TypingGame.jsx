@@ -178,7 +178,7 @@ const TypingGame = ({ dispatch }) => {
                     <div className="flex-1 w-0 p-4">
                         <div className="flex items-start">
                             <div className="flex-shrink-0 pt-0.5">
-                                <Zap className="h-10 w-10 text-primary animate-pulse" />
+                                <Zap className="h-10 w-10 text-primary " />
                             </div>
                             <div className="ml-3 flex-1">
                                 <p className="text-sm font-medium text-foreground">
@@ -389,7 +389,7 @@ const TypingGame = ({ dispatch }) => {
                             // Block Cursor for Blind Mode
                             return (
                                 <span key={index} className="relative inline-block">
-                                    <span className="absolute inset-0 bg-amber-500 animate-pulse shadow-[0_0_10px_#f59e0b]" />
+                                    <span className="absolute inset-0 bg-amber-500  shadow-[0_0_10px_#f59e0b]" />
                                     <span className="relative z-10 text-transparent">{content}</span>
                                 </span>
                             );
@@ -410,9 +410,9 @@ const TypingGame = ({ dispatch }) => {
                         } else if (isCurrent) {
                             // Active Cursor for Revealed Mode
                             return (
-                                <span key={index} className="relative inline-block animate-pulse">
+                                <span key={index} className="relative inline-block ">
                                     <span className="absolute inset-0 bg-primary/20" />
-                                    <span className="relative z-10 text-foreground border-b-2 border-primary font-black">
+                                    <span className="relative z-10 text-foreground border-b-2 border-primary font-bold">
                                         {content}
                                     </span>
                                 </span>
@@ -438,7 +438,7 @@ const TypingGame = ({ dispatch }) => {
             {/* Header & Stats */}
             <header className="flex flex-col md:flex-row justify-between items-center gap-6 border-b border-border/50 pb-8">
                 <div>
-                    <h1 className="text-3xl font-black tracking-tighter flex items-center gap-3">
+                    <h1 className="text-xl font-bold tracking-tighter flex items-center gap-3">
                         <Terminal size={32} className="text-primary" />
                         <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary to-emerald-400">
                             BLIND_CODER_V1
@@ -454,10 +454,10 @@ const TypingGame = ({ dispatch }) => {
                     <div className="bg-card border border-border p-4 rounded-lg min-w-[140px] shadow-sm relative overflow-hidden group">
                         <div className="absolute inset-0 bg-primary/5 translate-y-full group-hover:translate-y-0 transition-transform duration-500" />
                         <div className="relative z-10">
-                            <span className="text-[10px] font-black text-muted-foreground uppercase tracking-wider flex items-center gap-2">
+                            <span className="text-[10px] font-bold text-muted-foreground  tracking-wider flex items-center gap-2">
                                 <Trophy size={12} /> Rank
                             </span>
-                            <div className="text-xl font-black mt-1 text-foreground">{getLevelTitle(level)}</div>
+                            <div className="text-xl font-bold mt-1 text-foreground">{getLevelTitle(level)}</div>
                             <div className="mt-2 h-1 w-full bg-secondary rounded-full overflow-hidden">
                                 <div className="h-full bg-primary transition-all duration-500" style={{ width: `${(score % 500) / 5}%` }} />
                             </div>
@@ -467,10 +467,10 @@ const TypingGame = ({ dispatch }) => {
                     <div className="bg-card border border-border p-4 rounded-lg min-w-[120px] shadow-sm relative overflow-hidden group">
                         <div className="absolute inset-0 bg-orange-500/5 translate-y-full group-hover:translate-y-0 transition-transform duration-500" />
                         <div className="relative z-10">
-                            <span className="text-[10px] font-black text-muted-foreground uppercase tracking-wider flex items-center gap-2">
+                            <span className="text-[10px] font-bold text-muted-foreground  tracking-wider flex items-center gap-2">
                                 <Zap size={12} /> Streak
                             </span>
-                            <div className="text-3xl font-black mt-1 text-orange-500 tabular-nums">x{streak}</div>
+                            <div className="text-xl font-bold mt-1 text-orange-500 tabular-nums">x{streak}</div>
                         </div>
                     </div>
                 </div>
@@ -481,10 +481,10 @@ const TypingGame = ({ dispatch }) => {
                 {/* Sidebar: Categories */}
                 <aside className="lg:col-span-4 space-y-4">
                     <div className="bg-secondary/30 rounded-lg p-1.5 flex gap-1 mb-6">
-                        <div className="flex-1 text-center py-1.5 text-[10px] font-bold uppercase tracking-widest text-foreground bg-background shadow-sm rounded-[4px]">
+                        <div className="flex-1 text-center py-1.5 text-[10px] font-bold  tracking-widest text-foreground bg-background shadow-sm rounded-[4px]">
                             Input_Select
                         </div>
-                        <div className="flex-1 text-center py-1.5 text-[10px] font-bold uppercase tracking-widest text-muted-foreground opacity-50">
+                        <div className="flex-1 text-center py-1.5 text-[10px] font-bold  tracking-widest text-muted-foreground opacity-50">
                             Config
                         </div>
                     </div>
@@ -506,14 +506,14 @@ const TypingGame = ({ dispatch }) => {
                                 </span>
                                 <span className="text-xs font-bold tracking-wide">{cat.name}</span>
                                 {currentCategory === cat.id && (
-                                    <span className="absolute right-3 w-1.5 h-1.5 rounded-full bg-primary animate-pulse shadow-[0_0_8px_currentColor]" />
+                                    <span className="absolute right-3 w-1.5 h-1.5 rounded-full bg-primary  shadow-[0_0_8px_currentColor]" />
                                 )}
                             </button>
                         ))}
                     </div>
 
                     <div className="mt-8 p-4 bg-blue-500/5 border border-blue-500/20 rounded-lg">
-                        <h3 className="text-[10px] font-black uppercase text-blue-500 flex items-center gap-2 mb-2">
+                        <h3 className="text-[10px] font-bold  text-blue-500 flex items-center gap-2 mb-2">
                             <Binary size={12} /> Protocol_Info
                         </h3>
                         <p className="text-xs text-muted-foreground leading-relaxed">
@@ -542,9 +542,9 @@ const TypingGame = ({ dispatch }) => {
                                     <div className="w-3 h-3 rounded-full bg-emerald-500/80 shadow-[0_0_8px_rgba(16,185,129,0.6)]" />
                                 </div>
                                 <div className="h-4 w-px bg-white/20 mx-2" />
-                                <span className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground flex items-center gap-2">
-                                    {gameState === 'SCANNING' && <span className="text-blue-400 animate-pulse"><Database size={12} /> RECEIVING_DATA</span>}
-                                    {gameState === 'BLIND' && <span className="text-amber-400 animate-pulse"><Terminal size={12} /> INPUT_REQUIRED</span>}
+                                <span className="text-[10px] font-bold  tracking-[0.2em] text-muted-foreground flex items-center gap-2">
+                                    {gameState === 'SCANNING' && <span className="text-blue-400 "><Database size={12} /> RECEIVING_DATA</span>}
+                                    {gameState === 'BLIND' && <span className="text-amber-400 "><Terminal size={12} /> INPUT_REQUIRED</span>}
                                     {gameState === 'REVEALED' && <span className="text-emerald-400"><Zap size={12} /> SYSTEM_SYNCED</span>}
                                 </span>
                             </div>
@@ -570,9 +570,9 @@ const TypingGame = ({ dispatch }) => {
                                 <div className="relative">
                                     <div className="h-16 w-16 rounded-full border-4 border-muted/30" />
                                     <div className="absolute inset-0 h-16 w-16 rounded-full border-4 border-t-primary border-r-primary animate-spin" />
-                                    <Binary size={24} className="absolute inset-0 m-auto text-primary animate-pulse" />
+                                    <Binary size={24} className="absolute inset-0 m-auto text-primary " />
                                 </div>
-                                <span className="text-xs font-black uppercase tracking-[0.3em] text-muted-foreground animate-pulse">Initializing Stream...</span>
+                                <span className="text-xs font-bold  tracking-[0.3em] text-muted-foreground ">Initializing Stream...</span>
                             </div>
                         )}
 
@@ -600,14 +600,14 @@ const TypingGame = ({ dispatch }) => {
                                     </div>
                                     <button
                                         onClick={handleStartBlind}
-                                        className="group relative px-6 py-2 bg-background/50 hover:bg-blue-500/10 border border-blue-500/30 hover:border-blue-500 text-blue-400 rounded-full text-xs font-black uppercase tracking-widest transition-all backdrop-blur-md flex items-center gap-3 overflow-hidden"
+                                        className="group relative px-6 py-2 bg-background/50 hover:bg-blue-500/10 border border-blue-500/30 hover:border-blue-500 text-blue-400 rounded-full text-xs font-bold  tracking-widest transition-all backdrop-blur-md flex items-center gap-3 overflow-hidden"
                                     >
                                         <span className="relative z-10 flex items-center gap-2">
                                             Start Decryption <Zap size={12} />
                                         </span>
                                         <div className="absolute inset-0 bg-blue-500/10 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
                                     </button>
-                                    <span className="text-[9px] font-bold text-muted-foreground/60 uppercase tracking-widest">[Press Enter]</span>
+                                    <span className="text-[9px] font-bold text-muted-foreground/60  tracking-widest">[Press Enter]</span>
                                 </div>
                             )}
 
@@ -627,12 +627,12 @@ const TypingGame = ({ dispatch }) => {
                     <div className="flex justify-between items-center gap-4">
                         {/* Left: Status */}
                         <div className="flex-1 px-4 py-3 bg-secondary/30 border border-border rounded-lg flex items-center gap-4 shadow-sm backdrop-blur-sm">
-                            <div className="text-[11px] text-muted-foreground uppercase font-black tracking-widest flex items-center gap-3">
+                            <div className="text-[11px] text-muted-foreground  font-bold tracking-widest flex items-center gap-3">
                                 <span className={`h-2 w-2 rounded-full ${gameState === 'SCANNING' ? 'bg-primary' : gameState === 'BLIND' ? 'bg-amber-500 shadow-[0_0_8px_#f59e0b]' : 'bg-emerald-500'}`} />
                                 {gameState === 'SCANNING' ? 'SCANNING...' : gameState === 'BLIND' ? 'BLIND_MODE' : 'SYSTEM_READY'}
                             </div>
                             <div className="h-3 w-px bg-border" />
-                            <div className="text-[10px] text-muted-foreground uppercase font-black tracking-[0.2em] opacity-60">
+                            <div className="text-[10px] text-muted-foreground  font-bold tracking-[0.2em] opacity-60">
                                 {streak > 2 ? `STREAK x${streak >= 10 ? '3' : streak >= 5 ? '2' : '1.5'}` : 'BUILD_STREAK'}
                             </div>
                         </div>
@@ -646,13 +646,13 @@ const TypingGame = ({ dispatch }) => {
                                         setStreak(0);
                                         setTimeout(() => inputRef.current?.focus(), 100);
                                     }}
-                                    className="px-4 py-3 bg-secondary hover:bg-muted text-muted-foreground hover:text-foreground text-[11px] font-bold tracking-widest uppercase rounded-lg border border-border shadow-sm transition-all flex items-center gap-2"
+                                    className="px-4 py-3 bg-secondary hover:bg-muted text-muted-foreground hover:text-foreground text-[11px] font-bold tracking-widest  rounded-lg border border-border shadow-sm transition-all flex items-center gap-2"
                                 >
                                     <Eye size={14} /> Reveal
                                 </button>
                                 <button
                                     onClick={handleSubmitBlind}
-                                    className="px-6 py-3 bg-amber-500 hover:bg-amber-400 text-black text-[11px] font-black tracking-widest uppercase rounded-lg shadow-[0_4px_12px_rgba(245,158,11,0.2)] hover:shadow-[0_4px_16px_rgba(245,158,11,0.4)] transition-all flex items-center gap-2 active:scale-95"
+                                    className="px-6 py-3 bg-amber-500 hover:bg-amber-400 text-black text-[11px] font-bold tracking-widest  rounded-lg shadow-[0_4px_12px_rgba(245,158,11,0.2)] hover:shadow-[0_4px_16px_rgba(245,158,11,0.4)] transition-all flex items-center gap-2 active:scale-95"
                                 >
                                     <span>Execute</span> <Zap size={14} fill="currentColor" />
                                 </button>

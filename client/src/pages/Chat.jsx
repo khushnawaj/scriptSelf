@@ -268,7 +268,7 @@ const Chat = () => {
             <div className={`w-full md:w-[320px] border-r border-border/50 flex flex-col bg-gradient-to-b from-secondary/5 to-transparent ${selectedRecipient ? 'hidden md:flex' : 'flex'}`}>
                 <div className="p-6 border-b border-border/50 bg-background/80 dark:bg-background/40 backdrop-blur-md">
                     <div className="flex items-center justify-between mb-6">
-                        <h2 className="text-xl font-black text-foreground tracking-tight flex items-center gap-2">
+                        <h2 className="text-xl font-bold text-foreground tracking-tight flex items-center gap-2">
                             SIGNAL <Zap size={18} className="text-primary" />
                         </h2>
                     </div>
@@ -308,17 +308,17 @@ const Chat = () => {
                                 <button onClick={() => setSelectedRecipient(null)} className="md:hidden p-2 hover:bg-muted/50 rounded-full transition-colors">
                                     <ArrowLeft size={18} />
                                 </button>
-                                <div className="w-11 h-11 rounded-xl border-2 border-primary/20 overflow-hidden bg-gradient-to-br from-primary/10 to-primary/5 flex items-center justify-center font-black text-primary shadow-inner">
+                                <div className="w-11 h-11 rounded-xl border-2 border-primary/20 overflow-hidden bg-gradient-to-br from-primary/10 to-primary/5 flex items-center justify-center font-bold text-primary shadow-inner">
                                     {selectedRecipient.avatar ? <img src={selectedRecipient.avatar} alt="" className="w-full h-full object-cover" /> : selectedRecipient.username?.[0]?.toUpperCase()}
                                 </div>
                                 <div>
-                                    <h3 className="text-sm font-black flex items-center gap-2 leading-none mb-1.5">
+                                    <h3 className="text-sm font-bold flex items-center gap-2 leading-none mb-1.5">
                                         {selectedRecipient.username}
                                         <ShieldCheck size={14} className="text-primary" />
                                     </h3>
                                     <div className="flex items-center gap-1.5">
-                                        <div className={`w-1.5 h-1.5 rounded-full ${isSocketConnected ? 'bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.5)] animate-pulse' : 'bg-red-500'}`} />
-                                        <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
+                                        <div className={`w-1.5 h-1.5 rounded-full ${isSocketConnected ? 'bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.5)] ' : 'bg-red-500'}`} />
+                                        <p className="text-[10px] font-bold text-muted-foreground  tracking-wider">
                                             {isSocketConnected ? 'Encrypted' : 'Connecting...'}
                                         </p>
                                     </div>
@@ -355,8 +355,8 @@ const Chat = () => {
                                         exit={{ opacity: 0, scale: 0.95 }}
                                         className="absolute inset-4 z-50 bg-primary/95 dark:bg-primary/90 backdrop-blur-md rounded-3xl border-4 border-dashed border-white/30 flex flex-col items-center justify-center text-white shadow-2xl"
                                     >
-                                        <Paperclip size={64} className="mb-4 animate-bounce" />
-                                        <h3 className="text-2xl font-black uppercase tracking-tight">Drop to Attach</h3>
+                                        <Paperclip size={64} className="mb-4 " />
+                                        <h3 className="text-2xl font-bold  tracking-tight">Drop to Attach</h3>
                                         <p className="mt-2 text-white/70 font-medium">Instant cloud sync</p>
                                     </motion.div>
                                 )}
@@ -459,7 +459,7 @@ const Chat = () => {
                 ) : (
                     <div className="flex-1 flex flex-col items-center justify-center p-20 text-center opacity-20 dark:opacity-10 pointer-events-none select-none">
                         <MessageCircle size={80} strokeWidth={1} />
-                        <h2 className="text-4xl font-black uppercase tracking-[0.2em] mt-8 text-foreground/40">SECURE CHAT</h2>
+                        <h2 className="text-xl font-bold  tracking-[0.2em] mt-8 text-foreground/40">SECURE CHAT</h2>
                     </div>
                 )}
             </div>
@@ -495,16 +495,16 @@ const NodeItem = React.memo(({ user, active, onClick }) => (
             }`}
     >
         <div className="relative">
-            <div className={`w-12 h-12 rounded-xl bg-gradient-to-br from-primary/10 to-primary/5 dark:from-primary/20 dark:to-primary/10 border flex items-center justify-center text-primary font-black overflow-hidden transform transition-transform duration-300 group-hover:scale-110 ${active ? 'border-primary/40 dark:border-primary/50' : 'border-border/50'
+            <div className={`w-12 h-12 rounded-xl bg-gradient-to-br from-primary/10 to-primary/5 dark:from-primary/20 dark:to-primary/10 border flex items-center justify-center text-primary font-bold overflow-hidden transform transition-transform duration-300 group-hover:scale-110 ${active ? 'border-primary/40 dark:border-primary/50' : 'border-border/50'
                 }`}>
                 {user.avatar ? <img src={user.avatar} alt="" className="w-full h-full object-cover" /> : user.username?.[0]?.toUpperCase()}
             </div>
-            <div className={`absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-green-500 border-[3px] border-card rounded-full ${active ? 'animate-pulse' : ''}`} />
+            <div className={`absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-green-500 border-[3px] border-card rounded-full ${active ? '' : ''}`} />
         </div>
         <div className="flex-1 text-left min-w-0">
-            <p className={`font-black text-sm truncate uppercase tracking-tight transition-colors ${active ? 'text-primary' : 'text-foreground'
+            <p className={`font-bold text-sm truncate  tracking-tight transition-colors ${active ? 'text-primary' : 'text-foreground'
                 }`}>{user.username}</p>
-            <p className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground/50 mt-1">Active</p>
+            <p className="text-[9px] font-bold  tracking-widest text-muted-foreground/50 mt-1">Active</p>
         </div>
     </button>
 ));
@@ -554,8 +554,8 @@ const MessageBubble = React.memo(({ msg, isMe, user, onEdit, onDelete }) => {
                                     <File size={22} />
                                 </div>
                                 <div className="flex-1 min-w-0">
-                                    <p className="text-xs font-black truncate">{msg.attachment.name}</p>
-                                    <p className="text-[9px] opacity-40 uppercase font-black tracking-widest mt-1">File</p>
+                                    <p className="text-xs font-bold truncate">{msg.attachment.name}</p>
+                                    <p className="text-[9px] opacity-40  font-bold tracking-widest mt-1">File</p>
                                 </div>
                                 <Download size={18} className="opacity-40" />
                             </div>
@@ -568,12 +568,12 @@ const MessageBubble = React.memo(({ msg, isMe, user, onEdit, onDelete }) => {
                 </p>
             </div>
             <div className={`mt-2 flex items-center gap-2 px-1 ${isMe ? 'flex-row' : 'flex-row-reverse'}`}>
-                <span className="text-[9px] font-black uppercase opacity-20 dark:opacity-30 tracking-tighter">
+                <span className="text-[9px] font-bold  opacity-20 dark:opacity-30 tracking-tighter">
                     {new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                 </span>
                 {isMe && (
                     <div className="transition-all duration-500">
-                        {msg.status === 'pending' && <Clock size={10} className="text-muted-foreground/30 animate-pulse" />}
+                        {msg.status === 'pending' && <Clock size={10} className="text-muted-foreground/30 " />}
                         {msg.status === 'sent' && <Check size={11} className="text-muted-foreground/40" />}
                         {msg.status === 'delivered' && <CheckCheck size={11} className="text-muted-foreground/40" />}
                         {msg.status === 'read' && <CheckCheck size={11} className="text-blue-500 dark:text-blue-400" />}

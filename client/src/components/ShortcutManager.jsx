@@ -131,13 +131,13 @@ const ShortcutManager = () => {
                                     <Keyboard size={20} />
                                 </div>
                                 <div>
-                                    <h3 className="text-[14px] font-black uppercase tracking-widest">Tactical_Shortcuts</h3>
-                                    <p className="text-[10px] text-muted-foreground uppercase tracking-tighter">Accelerate your navigation protocol</p>
+                                    <h3 className="text-[14px] font-bold  tracking-widest">Tactical_Shortcuts</h3>
+                                    <p className="text-[10px] text-muted-foreground  tracking-tighter">Accelerate your navigation protocol</p>
                                 </div>
                             </div>
                             <button
                                 onClick={() => setShowHelp(false)}
-                                className="text-[10px] font-bold text-muted-foreground hover:text-foreground uppercase tracking-widest border border-border px-2 py-1 rounded-[2px] transition-colors"
+                                className="text-[10px] font-bold text-muted-foreground hover:text-foreground  tracking-widest border border-border px-2 py-1 rounded-[2px] transition-colors"
                             >
                                 Esc_to_Close
                             </button>
@@ -148,7 +148,7 @@ const ShortcutManager = () => {
                             {shortcuts.map((s, i) => (
                                 <div key={i} className="flex items-center justify-between p-3 bg-muted/10 border border-border/50 rounded-[3px] group hover:border-primary/30 transition-colors">
                                     <span className="text-[12px] text-muted-foreground group-hover:text-foreground transition-colors">{s.desc}</span>
-                                    <kbd className="px-2 py-1 bg-background border border-border rounded-[4px] text-[10px] font-black text-primary shadow-sm min-w-[60px] text-center">
+                                    <kbd className="px-2 py-1 bg-background border border-border rounded-[4px] text-[10px] font-bold text-primary shadow-sm min-w-[60px] text-center">
                                         {s.key}
                                     </kbd>
                                 </div>
@@ -158,7 +158,7 @@ const ShortcutManager = () => {
                         {/* Footer */}
                         <div className="p-4 bg-primary/5 border-t border-border flex items-center justify-center gap-2">
                             <Zap size={14} className="text-primary" />
-                            <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-primary/80">Pro_WorkflowActive</span>
+                            <span className="text-[10px] font-bold  tracking-[0.2em] text-primary/80">Pro_WorkflowActive</span>
                         </div>
                     </motion.div>
                 </div>

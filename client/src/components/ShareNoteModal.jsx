@@ -109,10 +109,10 @@ const ShareNoteModal = ({ isOpen, onClose, noteId, currentSharedWith = [], share
                     {/* Header */}
                     <div className="px-6 py-5 border-b border-border bg-muted/5 flex items-center justify-between">
                         <div>
-                            <h3 className="text-lg font-black text-foreground italic flex items-center gap-2">
+                            <h3 className="text-lg font-bold text-foreground italic flex items-center gap-2">
                                 <Send size={18} className="text-primary" /> Direct Pulse Share
                             </h3>
-                            <p className="text-[10px] text-muted-foreground uppercase font-black tracking-widest mt-0.5">Authorize access for selected sector agents</p>
+                            <p className="text-[10px] text-muted-foreground  font-bold tracking-widest mt-0.5">Authorize access for selected sector agents</p>
                         </div>
                         <button onClick={onClose} className="p-2 hover:bg-secondary rounded-lg transition-all text-muted-foreground hover:text-foreground">
                             <X size={20} />
@@ -122,7 +122,7 @@ const ShareNoteModal = ({ isOpen, onClose, noteId, currentSharedWith = [], share
                     {/* Secret Share Link */}
                     <div className="px-6 py-4 border-b border-border bg-primary/5">
                         <div className="flex items-center justify-between mb-3">
-                            <h4 className="text-[11px] font-black text-primary uppercase tracking-[0.2em] flex items-center gap-2">
+                            <h4 className="text-[11px] font-bold text-primary  tracking-[0.2em] flex items-center gap-2">
                                 <LinkIcon size={14} /> Secret Pulse Link
                             </h4>
                             <span className="text-[10px] text-muted-foreground font-bold p-1 bg-background border border-border rounded">PUBLIC ACCESS BYPASS</span>
@@ -136,7 +136,7 @@ const ShareNoteModal = ({ isOpen, onClose, noteId, currentSharedWith = [], share
                             <button
                                 onClick={copyShareLink}
                                 disabled={!shareToken}
-                                className="px-4 py-2 bg-primary text-white rounded-xl text-[11px] font-black uppercase tracking-widest hover:scale-105 active:scale-95 transition-all shadow-lg shadow-primary/10 disabled:opacity-50"
+                                className="px-4 py-2 bg-primary text-white rounded-xl text-[11px] font-bold  tracking-widest hover:scale-105 active:scale-95 transition-all shadow-lg shadow-primary/10 disabled:opacity-50"
                             >
                                 {isCopied ? 'Copied' : shareToken ? 'Copy' : 'WAIT'}
                             </button>
@@ -163,7 +163,7 @@ const ShareNoteModal = ({ isOpen, onClose, noteId, currentSharedWith = [], share
                         {loading ? (
                             <div className="py-20 flex flex-col items-center gap-3">
                                 <Spinner />
-                                <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground animate-pulse">Scanning Network...</p>
+                                <p className="text-[10px] font-bold  tracking-widest text-muted-foreground ">Scanning Network...</p>
                             </div>
                         ) : filteredUsers.length > 0 ? (
                             <div className="space-y-1">
@@ -178,7 +178,7 @@ const ShareNoteModal = ({ isOpen, onClose, noteId, currentSharedWith = [], share
                                                 {u.avatar ? (
                                                     <img src={u.avatar} alt={u.username} className="w-full h-full object-cover" />
                                                 ) : (
-                                                    <span className="text-muted-foreground opacity-50 uppercase">{u.username.charAt(0)}</span>
+                                                    <span className="text-muted-foreground opacity-50 ">{u.username.charAt(0)}</span>
                                                 )}
                                             </div>
                                             <div>
@@ -194,7 +194,7 @@ const ShareNoteModal = ({ isOpen, onClose, noteId, currentSharedWith = [], share
                             </div>
                         ) : (
                             <div className="py-20 text-center opacity-40">
-                                <p className="text-xs font-bold uppercase tracking-widest">No matching agents</p>
+                                <p className="text-xs font-bold  tracking-widest">No matching agents</p>
                             </div>
                         )}
                     </div>
@@ -205,13 +205,13 @@ const ShareNoteModal = ({ isOpen, onClose, noteId, currentSharedWith = [], share
                             {selectedUsers.length} Agent{selectedUsers.length !== 1 ? 's' : ''} Selected
                         </span>
                         <div className="flex gap-3">
-                            <button onClick={onClose} className="px-4 py-2 text-[11px] font-black uppercase tracking-widest text-muted-foreground hover:text-foreground transition-all">
+                            <button onClick={onClose} className="px-4 py-2 text-[11px] font-bold  tracking-widest text-muted-foreground hover:text-foreground transition-all">
                                 Cancel
                             </button>
                             <button
                                 onClick={handleShare}
                                 disabled={isSharing}
-                                className="px-6 py-2 bg-primary text-white rounded-xl text-[11px] font-black uppercase tracking-widest shadow-lg shadow-primary/20 hover:scale-105 active:scale-95 transition-all disabled:opacity-50"
+                                className="px-6 py-2 bg-primary text-white rounded-xl text-[11px] font-bold  tracking-widest shadow-lg shadow-primary/20 hover:scale-105 active:scale-95 transition-all disabled:opacity-50"
                             >
                                 {isSharing ? 'Syncing...' : 'Broadcast Access'}
                             </button>

@@ -12,11 +12,11 @@ const NotFound = () => {
             >
                 <div className="relative inline-block">
                     <div className="absolute inset-0 bg-primary/20 blur-3xl rounded-full" />
-                    <AlertCircle size={120} className="text-primary relative z-10 mx-auto animate-bounce" />
+                    <AlertCircle size={120} className="text-primary relative z-10 mx-auto " />
                 </div>
 
                 <div className="space-y-4">
-                    <h1 className="text-[80px] font-black text-foreground leading-none tracking-tighter">404</h1>
+                    <h1 className="text-[80px] font-bold text-foreground leading-none tracking-tighter">404</h1>
                     <h2 className="text-[24px] font-bold text-foreground">Record Not Found</h2>
                     <p className="text-muted-foreground text-[15px] leading-relaxed">
                         The technical documentation you are looking for has been moved, deleted, or never existed in this logic vault.
@@ -32,7 +32,7 @@ const NotFound = () => {
                     </Link>
                 </div>
 
-                <p className="text-[11px] text-muted-foreground/50 uppercase tracking-[0.2em] font-bold">
+                <p className="text-[11px] text-muted-foreground/50  tracking-[0.2em] font-bold">
                     System Error: ERR_LOGIC_VOID
                 </p>
             </motion.div>

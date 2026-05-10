@@ -184,189 +184,208 @@ const Community = () => {
     };
 
     return (
-        <div className="flex flex-col h-[calc(100vh-140px)] max-w-5xl mx-auto bg-card border border-border rounded-xl overflow-hidden shadow-sm">
-            {/* Header */}
-            <div className="px-6 py-4 border-b border-border bg-secondary/30 flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center border border-primary/20">
-                        <Globe size={18} className="text-primary" />
+        <div className="w-full max-w-5xl mx-auto flex flex-col h-[calc(100vh-140px)] animate-in fade-in duration-700">
+            {/* Immersive Header */}
+            <div className="mb-6 relative group">
+                <div className="absolute -inset-1 bg-gradient-to-r from-primary/10 via-violet-500/10 to-primary/10 rounded-[1.5rem] blur-xl opacity-30" />
+                <div className="relative bg-card/40 backdrop-blur-3xl border border-border/50 rounded-[1.2rem] p-4 flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center border border-primary/20">
+                            <Globe size={20} className="text-primary" />
+                        </div>
+                        <div>
+                            <h1 className="text-lg font-bold tracking-tight text-foreground ">Community Feed</h1>
+                            <p className="text-[9px] font-bold text-muted-foreground/60  tracking-[0.2em]">Signal: Secure_Handshake</p>
+                        </div>
                     </div>
-                    <div>
-                        <h1 className="text-base font-bold text-foreground tracking-tight">Community Feed</h1>
-                        <p className="text-[11px] font-medium text-muted-foreground uppercase tracking-wider">Live Technical Stream</p>
+                    <div className="flex items-center gap-2 px-3 py-1 bg-emerald-500/5 rounded-full border border-emerald-500/10">
+                        <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full " />
+                        <span className="text-[10px] font-bold text-emerald-500  tracking-widest">Live_Sync</span>
                     </div>
-                </div>
-                <div className="flex items-center gap-2 px-3 py-1 bg-green-500/5 rounded-full border border-green-500/10">
-                    <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse" />
-                    <span className="text-[10px] font-bold text-green-500 uppercase tracking-widest">Online</span>
                 </div>
             </div>
 
-            {/* Messages Area */}
-            <div
-                onDragOver={handleDragOver}
-                onDragLeave={handleDragLeave}
-                onDrop={handleDrop}
-                className={`flex-1 overflow-y-auto p-6 space-y-4 no-scrollbar bg-background/50 relative ${isDragging ? 'bg-primary/5' : ''}`}
-            >
-                {isDragging && (
-                    <div className="absolute inset-0 z-50 flex flex-col items-center justify-center bg-background/80 backdrop-blur-sm border-2 border-dashed border-primary m-4 rounded-xl pointer-events-none">
-                        <Paperclip size={48} className="text-primary animate-bounce mb-4" />
-                        <p className="text-lg font-bold text-foreground">Drop file to share</p>
-                        <p className="text-xs text-muted-foreground uppercase tracking-widest font-black">Community Sync Protocol</p>
-                    </div>
-                )}
-                {messages.length === 0 ? (
-                    <div className="h-full flex flex-col items-center justify-center text-center opacity-20 space-y-3">
-                        <Zap size={48} />
-                        <p className="text-[11px] font-bold uppercase tracking-[0.2em]">Awaiting Signals...</p>
-                    </div>
-                ) : (
-                    messages.map((msg, i) => {
-                        const senderId = (msg.sender?._id || msg.sender)?.toString();
-                        const myId = user?._id?.toString();
-                        const isMe = senderId === myId;
-                        const isAdmin = user?.role === 'admin';
-                        const timeDiff = (Date.now() - new Date(msg.createdAt).getTime()) / 1000 / 60;
-                        const canModify = !msg.isDeleted && msg._id?.length === 24 && ((isMe && timeDiff < 15) || isAdmin);
+            {/* Main Chat Container */}
+            <div className="flex-1 flex flex-col bg-card/30 backdrop-blur-3xl border border-border/50 rounded-[1.5rem] overflow-hidden shadow-2xl relative">
+                {/* Blueprint Background */}
+                
+                
 
-                        return (
-                            <motion.div
-                                initial={{ opacity: 0 }}
-                                animate={{ opacity: 1 }}
-                                key={i}
-                                className={`flex flex-col ${isMe ? 'items-end' : 'items-start'} space-y-1 group relative`}
-                            >
-                                <div className="flex items-center gap-2 px-1">
-                                    {!isMe && (
-                                        <span className="text-[11px] font-bold text-primary">
-                                            {msg.sender?.username}
-                                        </span>
-                                    )}
-                                    <span className="text-[10px] text-muted-foreground/50">
-                                        {new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                                    </span>
-                                </div>
-                                <div className={`relative max-w-[85%] px-4 py-2.5 rounded-2xl text-[13px] leading-normal border shadow-sm transition-all hover:shadow-md ${isMe
-                                    ? 'bg-primary text-white border-primary rounded-tr-none'
-                                    : 'bg-card text-foreground border-border rounded-tl-none'
-                                    } ${msg.isDeleted ? 'italic opacity-60' : ''}`}>
-
-                                    {/* Action Buttons */}
-                                    {canModify && (
-                                        <div className={`absolute top-2 ${isMe ? '-left-16' : '-right-16'} opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1 bg-background/80 backdrop-blur rounded-lg border border-border p-1 shadow-sm z-10`}>
-                                            <button onClick={() => handleEditMessage(msg)} className="p-1.5 hover:bg-muted text-muted-foreground hover:text-primary rounded-md" title="Edit (15m)">
-                                                <Pencil size={12} />
-                                            </button>
-                                            <button onClick={() => handleDeleteMessage(msg._id)} className="p-1.5 hover:bg-muted text-muted-foreground hover:text-destructive rounded-md" title="Delete">
-                                                <Trash2 size={12} />
-                                            </button>
-                                        </div>
-                                    )}
-
-                                    {msg.attachment && msg.attachment.url && !msg.isDeleted && (
-                                        <div className="mb-2.5 overflow-hidden rounded-xl border border-white/5 bg-black/5">
-                                            {(msg.attachment.fileType === 'image' || msg.attachment.type === 'image') ? (
-                                                <div className="relative group/img cursor-zoom-in">
-                                                    <img src={msg.attachment.url} alt="" className="max-w-full h-auto transition-transform duration-500 group-hover/img:scale-105" onClick={() => window.open(msg.attachment.url, '_blank')} />
-                                                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover/img:opacity-100 transition-opacity flex items-center justify-center pointer-events-none">
-                                                        <Maximize2 size={24} className="text-white" />
-                                                    </div>
-                                                </div>
-                                            ) : (msg.attachment.fileType === 'video' || msg.attachment.type === 'video') ? (
-                                                <video src={msg.attachment.url} controls className="max-w-full h-auto" />
-                                            ) : (
-                                                <a href={msg.attachment.url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 p-3 bg-white/5 hover:bg-white/10 transition-all">
-                                                    <div className="p-2 bg-primary/20 rounded-lg">
-                                                        <File size={20} className={isMe ? 'text-white' : 'text-primary'} />
-                                                    </div>
-                                                    <div className="flex-1 min-w-0">
-                                                        <p className="text-[12px] font-bold truncate pr-4 leading-tight">{msg.attachment.name}</p>
-                                                        <p className="text-[9px] uppercase font-black opacity-50 tracking-widest mt-0.5">Application/Octet-Stream</p>
-                                                    </div>
-                                                    <Download size={16} className="shrink-0 transition-transform group-hover:translate-y-0.5" />
-                                                </a>
-                                            )}
-                                        </div>
-                                    )}
-                                    <p className="leading-relaxed">
-                                        {msg.message}
-                                        {msg.isEdited && <span className="text-[9px] opacity-50 ml-1 italic">(edited)</span>}
-                                    </p>
-                                </div>
-                            </motion.div>
-                        );
-                    })
-                )}
-                <div ref={scrollRef} />
-            </div>
-
-            {/* Input Area */}
-            <div className="p-4 bg-secondary/30 border-t border-border relative">
-                {!user && (
-                    <div className="absolute inset-0 bg-background/60 backdrop-blur-[2px] z-10 flex items-center justify-center rounded-b-xl">
-                        <div className="bg-card border border-border px-6 py-3 rounded-xl shadow-lg flex flex-col items-center gap-1">
-                            <p className="font-bold text-sm text-foreground">Join the conversation</p>
-                            <Link to="/login" className="text-[11px] text-primary hover:underline font-black uppercase tracking-wide">Login to Chat</Link>
-                        </div>
-                    </div>
-                )}
-                {selectedFile && (
-                    <div className="mb-3 px-1 animate-in slide-in-from-bottom-2 duration-300">
-                        <div className="relative inline-block group">
-                            <div className="w-14 h-14 bg-muted/40 border border-border rounded-xl overflow-hidden flex items-center justify-center relative">
-                                {selectedFile.fileType === 'image' || selectedFile.type === 'image' ? (
-                                    <img src={selectedFile.url} alt="Preview" className="w-full h-full object-cover" />
-                                ) : (
-                                    <div className="text-muted-foreground p-3 bg-primary/10 rounded-lg">
-                                        {selectedFile.fileType === 'video' ? <Video size={20} /> : <File size={20} />}
-                                    </div>
-                                )}
-                                <div className="absolute inset-0 bg-black/5 dark:bg-black/10 pointer-events-none" />
-                            </div>
-
-                            <button
-                                type="button"
-                                onClick={() => setSelectedFile(null)}
-                                className="absolute -top-2 -right-2 bg-background border border-border text-muted-foreground hover:text-red-500 hover:border-red-500/30 rounded-full p-1 shadow-sm transition-all scale-90 hover:scale-100 z-50 cursor-pointer"
-                                title="Remove file"
-                            >
-                                <X size={12} strokeWidth={3} />
-                            </button>
-                        </div>
-                    </div>
-                )}
-                <form onSubmit={editingMessageId ? submitEdit : handleSendMessage} className="flex gap-2">
-                    {editingMessageId && (
-                        <div className="absolute bottom-full left-0 right-0 p-2 bg-muted/80 backdrop-blur border-t border-b border-border text-[11px] flex justify-between items-center text-foreground">
-                            <span>Editing message...</span>
-                            <button type="button" onClick={() => { setEditingMessageId(null); setNewMessage(''); }} className="hover:text-red-500"><X size={14} /></button>
+                {/* Messages Area */}
+                <div
+                    onDragOver={handleDragOver}
+                    onDragLeave={handleDragLeave}
+                    onDrop={handleDrop}
+                    className={`flex-1 overflow-y-auto p-6 space-y-6 no-scrollbar relative z-10 ${isDragging ? 'bg-primary/5' : ''}`}
+                >
+                    {isDragging && (
+                        <div className="absolute inset-0 z-50 flex flex-col items-center justify-center bg-background/80 backdrop-blur-sm border-2 border-dashed border-primary m-4 rounded-2xl pointer-events-none">
+                            <Paperclip size={48} className="text-primary  mb-4" />
+                            <p className="text-lg font-bold text-foreground">Drop file to share</p>
+                            <p className="text-xs text-muted-foreground  tracking-widest font-bold">Community Sync Protocol</p>
                         </div>
                     )}
-                    <input type="file" ref={fileInputRef} onChange={onFileChange} className="hidden" />
-                    <div
-                        onClick={() => fileInputRef.current.click()}
-                        className="p-2 text-muted-foreground hover:text-primary hover:bg-primary/5 rounded-md transition-all shrink-0 cursor-pointer"
-                        title="Attach File"
-                    >
-                        {isUploading ? <Loader2 size={18} className="animate-spin text-primary" /> : <Paperclip size={18} />}
-                    </div>
-                    <input
-                        type="text"
-                        value={newMessage}
-                        onChange={(e) => setNewMessage(e.target.value)}
-                        placeholder="Type a message..."
-                        className="flex-1 bg-background border border-border rounded-md px-4 py-2 text-[13px] outline-none focus:border-primary transition-all"
-                    />
-                    <button
-                        type="submit"
-                        disabled={isUploading || (!newMessage.trim() && !fileToSend)}
-                        className="so-btn so-btn-primary disabled:opacity-50"
-                    >
-                        <Send size={16} />
-                        <span className="hidden sm:inline">Send</span>
-                    </button>
-                </form>
+
+                    {messages.length === 0 ? (
+                        <div className="h-full flex flex-col items-center justify-center text-center opacity-20 space-y-3">
+                            <Zap size={48} className="" />
+                            <p className="text-[10px] font-bold  tracking-[0.3em]">Awaiting Uplink Signals...</p>
+                        </div>
+                    ) : (
+                        messages.map((msg, i) => {
+                            const senderId = (msg.sender?._id || msg.sender)?.toString();
+                            const myId = user?._id?.toString();
+                            const isMe = senderId === myId;
+                            const isAdmin = user?.role === 'admin';
+                            const timeDiff = (Date.now() - new Date(msg.createdAt).getTime()) / 1000 / 60;
+                            const canModify = !msg.isDeleted && msg._id?.length === 24 && ((isMe && timeDiff < 15) || isAdmin);
+
+                            return (
+                                <motion.div
+                                    initial={{ opacity: 0, y: 10 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    key={i}
+                                    className={`flex flex-col ${isMe ? 'items-end' : 'items-start'} space-y-1.5 group relative`}
+                                >
+                                    <div className="flex items-center gap-2 px-1">
+                                        {!isMe && (
+                                            <span className="text-[10px] font-bold text-primary  tracking-tighter">
+                                                {msg.sender?.username}
+                                            </span>
+                                        )}
+                                        <span className="text-[9px] font-bold text-muted-foreground/40">
+                                            {new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                        </span>
+                                    </div>
+                                    <div className={`relative max-w-[80%] px-5 py-3 rounded-2xl text-[13px] leading-relaxed border shadow-sm transition-all hover:shadow-xl ${isMe
+                                        ? 'bg-primary text-white border-primary shadow-primary/20 rounded-tr-none'
+                                        : 'bg-card/80 text-foreground border-border/60 rounded-tl-none backdrop-blur-md shadow-black/10'
+                                        } ${msg.isDeleted ? 'italic opacity-60' : ''}`}>
+
+                                        {/* Action Buttons */}
+                                        {canModify && (
+                                            <div className={`absolute top-2 ${isMe ? '-left-12' : '-right-12'} opacity-0 group-hover:opacity-100 transition-opacity flex flex-col gap-1 z-10`}>
+                                                <button onClick={() => handleEditMessage(msg)} className="p-1.5 bg-background border border-border hover:text-primary rounded-lg shadow-sm" title="Edit">
+                                                    <Pencil size={11} />
+                                                </button>
+                                                <button onClick={() => handleDeleteMessage(msg._id)} className="p-1.5 bg-background border border-border hover:text-rose-500 rounded-lg shadow-sm" title="Delete">
+                                                    <Trash2 size={11} />
+                                                </button>
+                                            </div>
+                                        )}
+
+                                        {msg.attachment && msg.attachment.url && !msg.isDeleted && (
+                                            <div className="mb-3 overflow-hidden rounded-xl border border-white/10 bg-black/5 shadow-inner">
+                                                {(msg.attachment.fileType === 'image' || msg.attachment.type === 'image') ? (
+                                                    <div className="relative group/img cursor-zoom-in overflow-hidden">
+                                                        <img src={msg.attachment.url} alt="" className="max-w-full h-auto transition-transform duration-700 group-hover/img:scale-105" onClick={() => window.open(msg.attachment.url, '_blank')} />
+                                                        <div className="absolute inset-0 bg-primary/20 opacity-0 group-hover/img:opacity-100 transition-opacity flex items-center justify-center pointer-events-none">
+                                                            <Maximize2 size={24} className="text-white drop-shadow-lg" />
+                                                        </div>
+                                                    </div>
+                                                ) : (msg.attachment.fileType === 'video' || msg.attachment.type === 'video') ? (
+                                                    <video src={msg.attachment.url} controls className="max-w-full h-auto" />
+                                                ) : (
+                                                    <a href={msg.attachment.url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 p-3 bg-white/5 hover:bg-white/10 transition-all group/file">
+                                                        <div className="p-2 bg-primary/20 rounded-lg group-hover/file:scale-110 transition-transform">
+                                                            <File size={20} className={isMe ? 'text-white' : 'text-primary'} />
+                                                        </div>
+                                                        <div className="flex-1 min-w-0">
+                                                            <p className="text-[12px] font-bold truncate pr-4 leading-tight  tracking-tighter">{msg.attachment.name}</p>
+                                                            <p className="text-[8px]  font-bold opacity-40 tracking-[0.2em] mt-1">Binary_Payload</p>
+                                                        </div>
+                                                        <Download size={14} className="shrink-0 transition-transform group-hover/file:translate-y-0.5" />
+                                                    </a>
+                                                )}
+                                            </div>
+                                        )}
+                                        <p className="font-medium">
+                                            {msg.message}
+                                            {msg.isEdited && <span className="text-[8px] opacity-40 ml-1.5  font-bold tracking-widest">[EDITED]</span>}
+                                        </p>
+                                    </div>
+                                </motion.div>
+                            );
+                        })
+                    )}
+                    <div ref={scrollRef} />
+                </div>
+
+                {/* Input Area */}
+                <div className="p-6 bg-secondary/20 border-t border-border/50 relative z-20">
+                    {!user && (
+                        <div className="absolute inset-0 bg-background/80 backdrop-blur-sm z-30 flex items-center justify-center">
+                            <div className="bg-card border border-border px-8 py-4 rounded-2xl shadow-2xl flex flex-col items-center gap-2">
+                                <Lock size={24} className="text-primary mb-1" />
+                                <p className="font-bold text-xs  tracking-widest">Authentication Required</p>
+                                <Link to="/login" className="px-6 py-2 bg-primary text-white text-[10px] font-bold  tracking-[0.2em] rounded-xl hover:opacity-90 transition-all">Establish_Link</Link>
+                            </div>
+                        </div>
+                    )}
+                    
+                    {selectedFile && (
+                        <div className="mb-4 px-1 animate-in slide-in-from-bottom-2 duration-300">
+                            <div className="relative inline-block group">
+                                <div className="w-16 h-16 bg-background/50 border border-primary/30 rounded-xl overflow-hidden flex items-center justify-center relative shadow-lg shadow-primary/5">
+                                    {selectedFile.fileType === 'image' || selectedFile.type === 'image' ? (
+                                        <img src={selectedFile.url} alt="Preview" className="w-full h-full object-cover" />
+                                    ) : (
+                                        <div className="text-primary p-3">
+                                            {selectedFile.fileType === 'video' ? <Video size={24} /> : <File size={24} />}
+                                        </div>
+                                    )}
+                                </div>
+
+                                <button
+                                    type="button"
+                                    onClick={() => setSelectedFile(null)}
+                                    className="absolute -top-2 -right-2 bg-background border border-border text-muted-foreground hover:text-rose-500 hover:border-rose-500/30 rounded-full p-1.5 shadow-xl transition-all hover:scale-110 z-50 cursor-pointer"
+                                >
+                                    <X size={12} strokeWidth={3} />
+                                </button>
+                            </div>
+                        </div>
+                    )}
+
+                    <form onSubmit={editingMessageId ? submitEdit : handleSendMessage} className="flex gap-3 relative">
+                        {editingMessageId && (
+                            <div className="absolute bottom-full left-0 right-0 mb-2 p-2 px-4 bg-primary/10 backdrop-blur border border-primary/20 text-[10px] font-bold  tracking-widest flex justify-between items-center text-primary rounded-xl">
+                                <span className="flex items-center gap-2"><Pencil size={12} /> Modifying Record...</span>
+                                <button type="button" onClick={() => { setEditingMessageId(null); setNewMessage(''); }} className="hover:scale-110 transition-transform"><X size={14} /></button>
+                            </div>
+                        )}
+                        
+                        <input type="file" ref={fileInputRef} onChange={onFileChange} className="hidden" />
+                        
+                        <div className="flex-1 relative flex items-center">
+                            <button
+                                type="button"
+                                onClick={() => fileInputRef.current.click()}
+                                className="absolute left-3 p-2 text-muted-foreground hover:text-primary transition-colors rounded-lg"
+                                disabled={isUploading}
+                            >
+                                {isUploading ? <Loader2 size={18} className="animate-spin text-primary" /> : <Paperclip size={18} />}
+                            </button>
+                            
+                            <input
+                                type="text"
+                                value={newMessage}
+                                onChange={(e) => setNewMessage(e.target.value)}
+                                placeholder="Transmit signal to community..."
+                                className="w-full bg-background/50 border border-border/50 rounded-xl pl-12 pr-4 py-3 text-[13px] font-medium outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20 transition-all placeholder:text-muted-foreground/30"
+                            />
+                        </div>
+
+                        <button
+                            type="submit"
+                            disabled={isUploading || (!newMessage.trim() && !fileToSend)}
+                            className="bg-primary text-white px-6 py-3 rounded-xl font-bold  tracking-[0.2em] text-[10px] flex items-center gap-2 shadow-lg shadow-primary/20 hover:shadow-primary/40 transition-all active:scale-95 disabled:opacity-30"
+                        >
+                            <Send size={14} />
+                            <span className="hidden sm:inline">Transmit</span>
+                        </button>
+                    </form>
+                </div>
             </div>
         </div>
     );

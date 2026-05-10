@@ -106,7 +106,7 @@ const CodeBreaker = ({ dispatch }) => {
             </div>
 
             <div className="flex justify-between items-center mb-6 px-4">
-                <span className="font-bold text-muted-foreground text-[12px] uppercase tracking-wider">Attempt {guesses.length + 1}/{ATTEMPTS}</span>
+                <span className="font-bold text-muted-foreground text-[12px]  tracking-wider">Attempt {guesses.length + 1}/{ATTEMPTS}</span>
                 <span className="flex items-center gap-2 text-primary font-mono font-bold"><Timer size={14} /> {Math.floor(time / 60)}:{(time % 60).toString().padStart(2, '0')}</span>
             </div>
 

@@ -91,17 +91,17 @@ const TerminalLanding = ({ user, notes }) => {
             {/* Header: OS Kernel Status */}
             <div className="h-12 border-b border-border bg-muted/30 backdrop-blur-md flex items-center justify-between px-6 z-20 relative">
                 <div className="flex items-center gap-6">
-                    <div className="flex items-center gap-2 text-primary font-black tracking-tighter text-sm">
-                        <Cpu size={14} className="animate-pulse" />
+                    <div className="flex items-center gap-2 text-primary font-bold tracking-tighter text-sm">
+                        <Cpu size={14} className="" />
                         SCRIPTSHELF_OS.INTERNAL
                     </div>
-                    <div className="hidden md:flex gap-4 text-[10px] font-bold uppercase tracking-widest opacity-40">
+                    <div className="hidden md:flex gap-4 text-[10px] font-bold  tracking-widest opacity-40">
                         <span>SESSION: {user?.username?.toUpperCase()}</span>
                         <span>|</span>
                         <span>KERNEL_VER: 4.2.0X</span>
                     </div>
                 </div>
-                <div className="flex items-center gap-8 text-[10px] font-black tabular-nums">
+                <div className="flex items-center gap-8 text-[10px] font-bold tabular-nums">
                     <div className="flex gap-4 opacity-70">
                         <span className="flex items-center gap-1.5"><Activity size={10} className="text-primary" /> LOAD: {systemLoad.join(' ')}</span>
                         <span className="flex items-center gap-1.5 text-primary">CLK: {currentTime.toLocaleTimeString()}</span>
@@ -113,7 +113,7 @@ const TerminalLanding = ({ user, notes }) => {
                 {/* Left Panel: Resource Topology */}
                 <div className="w-64 border-r border-border h-full p-6 flex flex-col gap-8 bg-muted/10">
                     <section className="space-y-4">
-                        <h3 className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em] mb-4 flex items-center gap-2">
+                        <h3 className="text-[10px] font-bold text-muted-foreground  tracking-[0.2em] mb-4 flex items-center gap-2">
                             <Layers size={12} /> Resource_Stack
                         </h3>
                         <div className="space-y-3">
@@ -123,7 +123,7 @@ const TerminalLanding = ({ user, notes }) => {
                                 { label: 'Cache_State', val: 84, max: 100 }
                             ].map(metric => (
                                 <div key={metric.label} className="space-y-1.5">
-                                    <div className="flex justify-between text-[9px] font-bold uppercase">
+                                    <div className="flex justify-between text-[9px] font-bold ">
                                         <span className="text-muted-foreground">{metric.label}</span>
                                         <span className="text-primary">{metric.val}</span>
                                     </div>
@@ -140,7 +140,7 @@ const TerminalLanding = ({ user, notes }) => {
                     </section>
 
                     <section className="flex-1 overflow-hidden">
-                        <h3 className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em] mb-4">Memory_Allocation</h3>
+                        <h3 className="text-[10px] font-bold text-muted-foreground  tracking-[0.2em] mb-4">Memory_Allocation</h3>
                         <div className="space-y-0.5">
                             {[...Array(12)].map((_, i) => (
                                 <div key={i} className="flex justify-between text-[8px] font-medium opacity-30 hover:opacity-100 transition-opacity">
@@ -156,15 +156,15 @@ const TerminalLanding = ({ user, notes }) => {
                 <div className="flex-1 flex flex-col min-w-0 bg-background/20">
                     <div className="p-8 pb-4 flex items-center justify-between">
                         <div>
-                            <h2 className="text-lg font-black text-foreground tracking-tight flex items-center gap-3">
+                            <h2 className="text-lg font-bold text-foreground tracking-tight flex items-center gap-3">
                                 <Database size={18} className="text-primary" />
                                 KNOWLEDGE_GRAV_CORES
                             </h2>
-                            <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-widest mt-1">Indexing active pointers in /vault/root</p>
+                            <p className="text-[10px] text-muted-foreground  font-bold tracking-widest mt-1">Indexing active pointers in /vault/root</p>
                         </div>
                         <div className="flex items-center gap-2 px-3 py-1.5 bg-primary/5 border border-primary/20 rounded-sm">
                             <Binary size={12} className="text-primary" />
-                            <span className="text-[10px] font-black text-primary tracking-widest uppercase">OPTIMIZED</span>
+                            <span className="text-[10px] font-bold text-primary tracking-widest ">OPTIMIZED</span>
                         </div>
                     </div>
 
@@ -182,7 +182,7 @@ const TerminalLanding = ({ user, notes }) => {
                                     <div className="absolute top-0 right-0 w-16 h-16 bg-primary/5 rotate-45 translate-x-12 -translate-y-12" />
 
                                     <div className="flex items-center justify-between z-10">
-                                        <span className="text-[9px] font-black text-primary/60 uppercase tracking-widest">PTR: 0x{note._id.slice(-4).toUpperCase()}</span>
+                                        <span className="text-[9px] font-bold text-primary/60  tracking-widest">PTR: 0x{note._id.slice(-4).toUpperCase()}</span>
                                         <ChevronRight size={12} className="text-muted-foreground group-hover:text-primary translate-x-0 group-hover:translate-x-1 transition-transform" />
                                     </div>
 
@@ -193,7 +193,7 @@ const TerminalLanding = ({ user, notes }) => {
                                             <span className="so-tag py-0.5 px-2 text-[9px] min-w-[40px] justify-center">
                                                 {note.type?.toUpperCase() || 'RAW'}
                                             </span>
-                                            <span className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest opacity-60">
+                                            <span className="text-[9px] font-bold text-muted-foreground  tracking-widest opacity-60">
                                                 {note.category?.name || 'ROOT'}
                                             </span>
                                         </div>
@@ -208,13 +208,13 @@ const TerminalLanding = ({ user, notes }) => {
                 {/* Right Panel: Global Context */}
                 <div className="w-72 border-l border-border h-full p-6 flex flex-col gap-8 bg-muted/10">
                     <section>
-                        <h3 className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em] mb-4 flex items-center gap-2">
+                        <h3 className="text-[10px] font-bold text-muted-foreground  tracking-[0.2em] mb-4 flex items-center gap-2">
                             <Compass size={12} /> Global_Nav
                         </h3>
                         <div className="space-y-1">
                             {['Playground', 'Arcade', 'Community', 'Settings'].map((item, i) => (
                                 <div key={item} className="p-3 border border-transparent hover:border-border hover:bg-card transition-all flex items-center justify-between group cursor-pointer rounded-[4px]">
-                                    <span className="text-[11px] font-bold text-muted-foreground group-hover:text-primary uppercase tracking-tight">{item}</span>
+                                    <span className="text-[11px] font-bold text-muted-foreground group-hover:text-primary  tracking-tight">{item}</span>
                                     <span className="text-[9px] text-muted-foreground/40 group-hover:text-primary">0{i + 1}</span>
                                 </div>
                             ))}
@@ -224,7 +224,7 @@ const TerminalLanding = ({ user, notes }) => {
                     <section className="bg-primary/5 border border-primary/20 p-4 rounded-[4px]">
                         <div className="flex items-center gap-2 mb-3">
                             <Target size={14} className="text-primary" />
-                            <span className="text-[10px] font-black text-primary uppercase tracking-widest">Neural_Feed</span>
+                            <span className="text-[10px] font-bold text-primary  tracking-widest">Neural_Feed</span>
                         </div>
                         <p className="text-[10px] text-muted-foreground leading-relaxed font-bold">
                             Detected <span className="text-foreground">{notes?.length || 0}</span> logic nodes in primary memory.
@@ -235,7 +235,7 @@ const TerminalLanding = ({ user, notes }) => {
             </div>
 
             {/* Bottom Status Bar */}
-            <div className="h-8 border-t border-border bg-muted/20 flex items-center justify-between px-6 text-[8px] font-black text-muted-foreground uppercase tracking-widest">
+            <div className="h-8 border-t border-border bg-muted/20 flex items-center justify-between px-6 text-[8px] font-bold text-muted-foreground  tracking-widest">
                 <div className="flex gap-6">
                     <span className="text-primary">√ SYNC_ACTIVE</span>
                     <span>DB_CLUSTER: CLOUD_VAULT</span>
@@ -244,7 +244,7 @@ const TerminalLanding = ({ user, notes }) => {
                 <div className="flex gap-4">
                     <span>UTF-8</span>
                     <span>LN: 104 COL: 12</span>
-                    <span className="text-primary font-black">INS</span>
+                    <span className="text-primary font-bold">INS</span>
                 </div>
             </div>
         </div>

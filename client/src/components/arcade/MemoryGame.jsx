@@ -124,7 +124,7 @@ const MemoryGame = ({ dispatch }) => {
                 <div className="lg:col-span-2 space-y-6">
                     {/* Mission Brief */}
                     <div className={`w-full bg-emerald-500/5 border border-emerald-500/20 p-4 rounded-xl animate-in slide-in-from-top-4 shadow-sm text-center transition-all duration-300 ${gameState === 'idle' ? 'ring-2 ring-emerald-500/40 bg-emerald-500/10' : ''}`}>
-                        <h4 className="text-[12px] font-black text-emerald-500 mb-1 flex items-center justify-center gap-2 uppercase tracking-widest">
+                        <h4 className="text-[12px] font-bold text-emerald-500 mb-1 flex items-center justify-center gap-2  tracking-widest">
                             <Brain size={16} /> Neural Link Re-Sync
                         </h4>
                         <p className="text-[10px] text-muted-foreground leading-relaxed font-medium opacity-80">
@@ -135,14 +135,14 @@ const MemoryGame = ({ dispatch }) => {
                     {/* Stats */}
                     <div className="w-full flex justify-between items-center bg-card border border-border p-3 rounded-xl shadow-sm">
                         <div className="flex flex-col items-start min-w-[70px]">
-                            <span className="text-[8px] font-black text-muted-foreground uppercase tracking-widest">RUNTIME</span>
-                            <span className={`text-lg font-black tabular-nums transition-colors duration-300 ${gameState === 'playing' ? 'text-emerald-500' : 'text-foreground'}`}>
+                            <span className="text-[8px] font-bold text-muted-foreground  tracking-widest">RUNTIME</span>
+                            <span className={`text-lg font-bold tabular-nums transition-colors duration-300 ${gameState === 'playing' ? 'text-emerald-500' : 'text-foreground'}`}>
                                 {Math.floor(time / 60)}:{(time % 60).toString().padStart(2, '0')}
                             </span>
                         </div>
                         <div className="flex flex-col items-end min-w-[70px]">
-                            <span className="text-[8px] font-black text-muted-foreground uppercase tracking-widest">STEPS</span>
-                            <span className="text-lg font-black text-foreground">{moves}</span>
+                            <span className="text-[8px] font-bold text-muted-foreground  tracking-widest">STEPS</span>
+                            <span className="text-lg font-bold text-foreground">{moves}</span>
                         </div>
                     </div>
 
@@ -221,7 +221,7 @@ const MemoryGame = ({ dispatch }) => {
                     <div className="flex gap-4">
                         <button
                             onClick={initializeGame}
-                            className="px-6 py-2.5 bg-secondary hover:bg-accent border border-border dark:bg-white/5 dark:hover:bg-white/10 dark:border-white/10 text-[9px] font-black uppercase tracking-[0.2em] rounded-xl transition-all active:scale-95 text-foreground"
+                            className="px-6 py-2.5 bg-secondary hover:bg-accent border border-border dark:bg-white/5 dark:hover:bg-white/10 dark:border-white/10 text-[9px] font-bold  tracking-[0.2em] rounded-xl transition-all active:scale-95 text-foreground"
                             disabled={gameState !== 'playing'}
                         >
                             RESET_GRID
@@ -234,7 +234,7 @@ const MemoryGame = ({ dispatch }) => {
                     <div className="sticky top-4 bg-card border border-border rounded-xl p-5 shadow-sm space-y-4">
                         <div className="flex items-center gap-2 pb-3 border-b border-border">
                             <Timer size={16} className="text-primary" />
-                            <h5 className="text-[11px] font-black text-foreground uppercase tracking-widest">
+                            <h5 className="text-[11px] font-bold text-foreground  tracking-widest">
                                 Match History
                             </h5>
                         </div>
@@ -247,7 +247,7 @@ const MemoryGame = ({ dispatch }) => {
                                         className="bg-secondary/50 border border-border rounded-lg p-3 space-y-2 hover:bg-secondary transition-all"
                                     >
                                         <div className="flex items-center justify-between">
-                                            <span className="text-[10px] font-black uppercase tracking-wider text-muted-foreground">
+                                            <span className="text-[10px] font-bold  tracking-wider text-muted-foreground">
                                                 Match #{history.length - i}
                                             </span>
                                             <span className="text-[10px] font-bold text-emerald-500">
@@ -256,12 +256,12 @@ const MemoryGame = ({ dispatch }) => {
                                         </div>
                                         <div className="grid grid-cols-2 gap-2 text-[11px]">
                                             <div className="flex flex-col">
-                                                <span className="text-[9px] text-muted-foreground font-semibold uppercase tracking-wider">Steps</span>
-                                                <span className="font-black text-foreground">{entry.moves}</span>
+                                                <span className="text-[9px] text-muted-foreground font-semibold  tracking-wider">Steps</span>
+                                                <span className="font-bold text-foreground">{entry.moves}</span>
                                             </div>
                                             <div className="flex flex-col">
-                                                <span className="text-[9px] text-muted-foreground font-semibold uppercase tracking-wider">Time</span>
-                                                <span className="font-black text-foreground tabular-nums">
+                                                <span className="text-[9px] text-muted-foreground font-semibold  tracking-wider">Time</span>
+                                                <span className="font-bold text-foreground tabular-nums">
                                                     {Math.floor(entry.time / 60)}:{(entry.time % 60).toString().padStart(2, '0')}
                                                 </span>
                                             </div>
@@ -284,16 +284,16 @@ const MemoryGame = ({ dispatch }) => {
                         {history.length > 0 && (
                             <div className="pt-3 border-t border-border space-y-2">
                                 <div className="flex items-center justify-between text-[10px]">
-                                    <span className="font-bold text-muted-foreground uppercase tracking-wider">Total Matches</span>
-                                    <span className="font-black text-foreground">{history.length}</span>
+                                    <span className="font-bold text-muted-foreground  tracking-wider">Total Matches</span>
+                                    <span className="font-bold text-foreground">{history.length}</span>
                                 </div>
                                 <div className="flex items-center justify-between text-[10px]">
-                                    <span className="font-bold text-muted-foreground uppercase tracking-wider">Best Steps</span>
-                                    <span className="font-black text-primary">{Math.min(...history.map(h => h.moves))}</span>
+                                    <span className="font-bold text-muted-foreground  tracking-wider">Best Steps</span>
+                                    <span className="font-bold text-primary">{Math.min(...history.map(h => h.moves))}</span>
                                 </div>
                                 <div className="flex items-center justify-between text-[10px]">
-                                    <span className="font-bold text-muted-foreground uppercase tracking-wider">Best Time</span>
-                                    <span className="font-black text-emerald-500 tabular-nums">
+                                    <span className="font-bold text-muted-foreground  tracking-wider">Best Time</span>
+                                    <span className="font-bold text-emerald-500 tabular-nums">
                                         {(() => {
                                             const bestTime = Math.min(...history.map(h => h.time));
                                             return `${Math.floor(bestTime / 60)}:${(bestTime % 60).toString().padStart(2, '0')}`;
@@ -306,7 +306,7 @@ const MemoryGame = ({ dispatch }) => {
                         {/* Global Leaders - Subtle */}
                         {leaders.length > 0 && (
                             <div className="pt-3 border-t border-border/50">
-                                <div className="text-[9px] font-bold text-muted-foreground/60 uppercase tracking-wider mb-2">
+                                <div className="text-[9px] font-bold text-muted-foreground/60  tracking-wider mb-2">
                                     Top Players
                                 </div>
                                 <div className="space-y-1.5">

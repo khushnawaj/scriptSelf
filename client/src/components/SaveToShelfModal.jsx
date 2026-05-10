@@ -85,10 +85,10 @@ const SaveToShelfModal = ({ isOpen, onClose, onConfirm, isCloning }) => {
                     {/* Header */}
                     <div className="px-6 py-5 border-b border-border bg-muted/5 flex items-center justify-between shrink-0">
                         <div>
-                            <h3 className="text-lg font-black text-foreground italic flex items-center gap-2">
+                            <h3 className="text-lg font-bold text-foreground italic flex items-center gap-2">
                                 <Save size={18} className="text-primary" /> Save to Shelf
                             </h3>
-                            <p className="text-[10px] text-muted-foreground uppercase font-black tracking-widest mt-0.5">Select destination for cloned record</p>
+                            <p className="text-[10px] text-muted-foreground  font-bold tracking-widest mt-0.5">Select destination for cloned record</p>
                         </div>
                         <button onClick={onClose} className="p-2 hover:bg-secondary rounded-lg transition-all text-muted-foreground hover:text-foreground">
                             <X size={20} />
@@ -114,7 +114,7 @@ const SaveToShelfModal = ({ isOpen, onClose, onConfirm, isCloning }) => {
                         {loading ? (
                             <div className="py-20 flex flex-col items-center gap-3">
                                 <Spinner />
-                                <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground animate-pulse">Scanning Archive...</p>
+                                <p className="text-[10px] font-bold  tracking-widest text-muted-foreground ">Scanning Archive...</p>
                             </div>
                         ) : (
                             <div className="space-y-1 pb-4">
@@ -167,7 +167,7 @@ const SaveToShelfModal = ({ isOpen, onClose, onConfirm, isCloning }) => {
 
                                 {filteredFolders.length === 0 && search && (
                                     <div className="py-10 text-center opacity-40">
-                                        <p className="text-xs font-bold uppercase tracking-widest text-foreground">No matches in library</p>
+                                        <p className="text-xs font-bold  tracking-widest text-foreground">No matches in library</p>
                                     </div>
                                 )}
                             </div>
@@ -176,13 +176,13 @@ const SaveToShelfModal = ({ isOpen, onClose, onConfirm, isCloning }) => {
 
                     {/* Footer / Action */}
                     <div className="p-6 border-t border-border flex items-center justify-end gap-3 bg-muted/5 shrink-0">
-                        <button onClick={onClose} className="px-4 py-2 text-[11px] font-black uppercase tracking-widest text-muted-foreground hover:text-foreground transition-all">
+                        <button onClick={onClose} className="px-4 py-2 text-[11px] font-bold  tracking-widest text-muted-foreground hover:text-foreground transition-all">
                             Cancel
                         </button>
                         <button
                             onClick={handleConfirm}
                             disabled={isCloning}
-                            className="px-6 py-2 bg-primary text-white rounded-xl text-[11px] font-black uppercase tracking-widest shadow-lg shadow-primary/20 hover:scale-105 active:scale-95 transition-all disabled:opacity-50 flex items-center gap-2"
+                            className="px-6 py-2 bg-primary text-white rounded-xl text-[11px] font-bold  tracking-widest shadow-lg shadow-primary/20 hover:scale-105 active:scale-95 transition-all disabled:opacity-50 flex items-center gap-2"
                         >
                             {isCloning ? 'Cloning...' : 'Save to Shelf'}
                         </button>

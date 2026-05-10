@@ -469,7 +469,7 @@ const BugHunter = ({ dispatch }) => {
     return (
         <div className="w-full h-[600px] lg:h-[82vh] min-h-[550px] relative bg-slate-50 dark:bg-[#020617] rounded-3xl overflow-hidden border border-border dark:border-cyan-500/30 shadow-xl dark:shadow-[0_0_80px_rgba(6,182,212,0.15)] font-mono selection:bg-cyan-500/40 flex flex-col transition-all duration-500">
             {/* VINTAGE CRT EFFECTS */}
-            <div className="absolute inset-0 pointer-events-none z-50 opacity-[0.03] scanlines" />
+            
             <div className="absolute inset-0 pointer-events-none z-50 vignette" />
 
             {/* HUD HEADER */}
@@ -477,22 +477,22 @@ const BugHunter = ({ dispatch }) => {
                 <div className="max-w-[1400px] mx-auto p-3 sm:p-5 flex flex-col sm:flex-row justify-between items-center gap-4 sm:gap-6">
                     <div className="flex items-center justify-between w-full sm:w-auto gap-4 lg:gap-8">
                         <div className="flex flex-col">
-                            <span className="text-[7px] text-cyan-600 dark:text-cyan-500 uppercase tracking-[0.3em] font-black opacity-60 text-center sm:text-left">XP</span>
+                            <span className="text-[7px] text-cyan-600 dark:text-cyan-500  tracking-[0.3em] font-bold opacity-60 text-center sm:text-left">XP</span>
                             <div className="flex items-baseline gap-1">
-                                <span className="text-xl sm:text-3xl font-black text-foreground dark:text-white tabular-nums tracking-tighter drop-shadow-[0_0_10px_rgba(6,182,212,0.4)] dark:drop-shadow-[0_0_10px_rgba(6,182,212,0.6)]">{score.toLocaleString()}</span>
-                                <span className="text-[8px] text-cyan-600 dark:text-cyan-500 font-bold opacity-30 uppercase">nodes</span>
+                                <span className="text-xl sm:text-xl font-bold text-foreground dark:text-white tabular-nums tracking-tighter drop-shadow-[0_0_10px_rgba(6,182,212,0.4)] dark:drop-shadow-[0_0_10px_rgba(6,182,212,0.6)]">{score.toLocaleString()}</span>
+                                <span className="text-[8px] text-cyan-600 dark:text-cyan-500 font-bold opacity-30 ">nodes</span>
                             </div>
                         </div>
 
                         <div className="h-8 w-[1px] bg-white/5 hidden sm:block" />
 
                         <div className="flex flex-col">
-                            <span className="text-[7px] text-yellow-500 uppercase tracking-[0.3em] font-black opacity-60 text-center sm:text-left">COMBO</span>
+                            <span className="text-[7px] text-yellow-500  tracking-[0.3em] font-bold opacity-60 text-center sm:text-left">COMBO</span>
                             <div className="flex items-center gap-1.5">
-                                <div className={`text-lg sm:text-2xl font-black ${streak > 0 ? 'text-yellow-400 drop-shadow-[0_0_10px_rgba(250,204,21,0.5)]' : 'text-slate-700'}`}>
+                                <div className={`text-lg sm:text-2xl font-bold ${streak > 0 ? 'text-yellow-400 drop-shadow-[0_0_10px_rgba(250,204,21,0.5)]' : 'text-slate-700'}`}>
                                     {streak}x
                                 </div>
-                                {streak >= 5 && <Zap size={14} className="text-yellow-400 animate-pulse fill-yellow-400" />}
+                                {streak >= 5 && <Zap size={14} className="text-yellow-400  fill-yellow-400" />}
                             </div>
                         </div>
                     </div>
@@ -500,7 +500,7 @@ const BugHunter = ({ dispatch }) => {
                     <div className="flex items-center justify-between w-full sm:w-auto gap-4 lg:gap-10">
                         {/* SYSTEMS STATUS */}
                         <div className="flex flex-col items-start sm:items-end">
-                            <span className="text-[7px] text-rose-500 uppercase tracking-[0.3em] font-black opacity-60 mb-1 text-center sm:text-right">INTEGRITY</span>
+                            <span className="text-[7px] text-rose-500  tracking-[0.3em] font-bold opacity-60 mb-1 text-center sm:text-right">INTEGRITY</span>
                             <div className="flex gap-1 pt-0.5">
                                 {[0, 1, 2, 3].map(i => (
                                     <div
@@ -513,8 +513,8 @@ const BugHunter = ({ dispatch }) => {
 
                         {/* TIMER CHIP */}
                         <div className={`relative px-4 py-1.5 sm:py-2 min-w-[80px] sm:min-w-[100px] rounded-lg border flex items-center justify-center gap-2 transition-all duration-300 ${timeLeft < 10 ? 'border-rose-500 bg-rose-500/10 text-rose-500 shadow-[0_0_20px_rgba(244,63,94,0.4)] scale-105' : 'border-cyan-500/30 bg-cyan-500/5 text-cyan-400'}`}>
-                            <Clock size={16} className={timeLeft < 10 ? 'animate-pulse' : ''} />
-                            <span className="text-xl sm:text-2xl font-black tabular-nums tracking-tighter">{timeLeft}</span>
+                            <Clock size={16} className={timeLeft < 10 ? '' : ''} />
+                            <span className="text-xl sm:text-2xl font-bold tabular-nums tracking-tighter">{timeLeft}</span>
                         </div>
                     </div>
                 </div>
@@ -527,7 +527,7 @@ const BugHunter = ({ dispatch }) => {
                 <div className="hidden lg:flex flex-col border-r border-border dark:border-white/5 bg-slate-100/30 dark:bg-slate-950/50 p-4 font-mono text-[10px] overflow-hidden">
                     <div className="mb-3 flex items-center justify-between opacity-40">
                         <span className="flex items-center gap-2 tracking-widest"><Cpu size={10} /> SYS_MON</span>
-                        <span className="animate-pulse">● LIVE</span>
+                        <span className="">● LIVE</span>
                     </div>
 
                     <div className="flex-1 space-y-1.5 overflow-hidden italic text-slate-500">
@@ -557,10 +557,10 @@ const BugHunter = ({ dispatch }) => {
                     {gameState === 'menu' && (
                         <div className="text-center space-y-6 sm:space-y-10 animate-in fade-in zoom-in duration-500 w-full max-w-lg">
                             <div className="space-y-2">
-                                <h1 className="text-4xl sm:text-6xl font-black tracking-tighter text-foreground dark:text-white drop-shadow-[0_0_15px_rgba(255,255,255,0.1)]">
+                                <h1 className="text-xl sm:text-6xl font-bold tracking-tighter text-foreground dark:text-white drop-shadow-[0_0_15px_rgba(255,255,255,0.1)]">
                                     BUG<span className="text-cyan-500">_HUNTER</span>
                                 </h1>
-                                <p className="text-muted-foreground text-[9px] tracking-[0.4em] uppercase font-black">Global_Debug_Interface_v2.4</p>
+                                <p className="text-muted-foreground text-[9px] tracking-[0.4em]  font-bold">Global_Debug_Interface_v2.4</p>
                             </div>
 
                             <div className="flex flex-col gap-2 w-full">
@@ -571,11 +571,11 @@ const BugHunter = ({ dispatch }) => {
                                         className="group relative px-6 py-3.5 bg-slate-900/30 border border-slate-800 rounded-xl hover:border-cyan-500 hover:bg-cyan-500/10 transition-all text-left flex items-center justify-between"
                                     >
                                         <div className="flex flex-col">
-                                            <span className="text-[8px] text-slate-500 font-black tracking-[0.2em]">{DIFFICULTIES[diff].label}</span>
-                                            <span className="text-sm sm:text-base font-black text-slate-300 group-hover:text-cyan-400 uppercase tracking-wide">{diff}</span>
+                                            <span className="text-[8px] text-slate-500 font-bold tracking-[0.2em]">{DIFFICULTIES[diff].label}</span>
+                                            <span className="text-sm sm:text-base font-bold text-slate-300 group-hover:text-cyan-400  tracking-wide">{diff}</span>
                                         </div>
                                         <div className="flex items-center gap-3">
-                                            <span className="text-[10px] text-cyan-500/40 font-black tracking-widest uppercase italic">x{DIFFICULTIES[diff].scoreMultiplier} XP</span>
+                                            <span className="text-[10px] text-cyan-500/40 font-bold tracking-widest  italic">x{DIFFICULTIES[diff].scoreMultiplier} XP</span>
                                             <ChevronRight className="text-slate-700 group-hover:text-cyan-500 transition-colors" size={16} />
                                         </div>
                                     </button>
@@ -584,11 +584,11 @@ const BugHunter = ({ dispatch }) => {
 
                             {leaderboard.length > 0 && (
                                 <div className="mt-4 pt-4 border-t border-white/5 w-full text-left">
-                                    <span className="text-[8px] text-slate-600 font-black tracking-[0.3em] uppercase mb-2 block text-center">LOCAL_TOP_AGENTS</span>
+                                    <span className="text-[8px] text-slate-600 font-bold tracking-[0.3em]  mb-2 block text-center">LOCAL_TOP_AGENTS</span>
                                     <div className="grid grid-cols-2 gap-x-6 gap-y-1.5">
                                         {leaderboard.map((entry, i) => (
                                             <div key={i} className="flex justify-between items-center text-[9px]">
-                                                <span className="text-slate-500 uppercase">{i + 1}. {entry.difficulty}</span>
+                                                <span className="text-slate-500 ">{i + 1}. {entry.difficulty}</span>
                                                 <span className="text-cyan-500 font-bold">{entry.score}</span>
                                             </div>
                                         ))}
@@ -611,9 +611,9 @@ const BugHunter = ({ dispatch }) => {
                                             <div className="w-1.5 h-1.5 rounded-full bg-yellow-500/40" />
                                             <div className="w-1.5 h-1.5 rounded-full bg-emerald-500/40" />
                                         </div>
-                                        <span className="text-[10px] text-slate-500 font-black tracking-widest lowercase opacity-60">dev_source.js</span>
+                                        <span className="text-[10px] text-slate-500 font-bold tracking-widest lowercase opacity-60">dev_source.js</span>
                                         <div className="ml-auto flex items-center gap-2">
-                                            <span className="text-[8px] text-cyan-500/60 font-black uppercase tracking-widest">LIVE_PROBE</span>
+                                            <span className="text-[8px] text-cyan-500/60 font-bold  tracking-widest">LIVE_PROBE</span>
                                         </div>
                                     </div>
 
@@ -621,7 +621,7 @@ const BugHunter = ({ dispatch }) => {
                                     <div className="p-4 sm:p-6 font-mono text-[11px] sm:text-[12px] leading-relaxed relative min-h-[150px] max-h-[300px] overflow-y-auto no-scrollbar">
                                         {feedback && (
                                             <div className={`absolute inset-0 flex items-center justify-center z-20 backdrop-blur-sm transition-all duration-300 ${feedback.type === 'success' ? 'bg-emerald-500/10' : feedback.type === 'shield' ? 'bg-cyan-500/10' : 'bg-rose-500/10'} animate-in fade-in`}>
-                                                <div className={`text-3xl sm:text-5xl font-black italic tracking-tighter uppercase transform -rotate-3 drop-shadow-2xl ${feedback.type === 'success' ? 'text-emerald-400' : feedback.type === 'shield' ? 'text-cyan-400' : 'text-rose-500'}`}>
+                                                <div className={`text-xl sm:text-xl font-bold italic tracking-tighter  transform -rotate-3 drop-shadow-2xl ${feedback.type === 'success' ? 'text-emerald-400' : feedback.type === 'shield' ? 'text-cyan-400' : 'text-rose-500'}`}>
                                                     {feedback.message}
                                                 </div>
                                             </div>
@@ -650,7 +650,7 @@ const BugHunter = ({ dispatch }) => {
                                         style={{ animationDelay: `${idx * 100}ms` }}
                                     >
                                         <div className="flex items-center gap-2 mb-1.5">
-                                            <span className="text-[7px] font-black text-slate-500 bg-slate-800/50 px-1 py-0.5 rounded group-hover:bg-cyan-500 group-hover:text-black transition-colors uppercase">PROBE_{idx + 1}</span>
+                                            <span className="text-[7px] font-bold text-slate-500 bg-slate-800/50 px-1 py-0.5 rounded group-hover:bg-cyan-500 group-hover:text-black transition-colors ">PROBE_{idx + 1}</span>
                                         </div>
                                         <code className="text-[10px] text-slate-400 group-hover:text-white leading-tight">{option}</code>
                                     </button>
@@ -662,33 +662,33 @@ const BugHunter = ({ dispatch }) => {
                     {gameState === 'game_over' && (
                         <div className="text-center animate-in scale-in duration-500 py-6 w-full max-w-sm">
                             <div className="relative inline-block mb-6">
-                                <div className="absolute inset-0 bg-cyan-500/20 blur-[40px] animate-pulse"></div>
+                                <div className="absolute inset-0 bg-cyan-500/20 blur-[40px] "></div>
                                 <div className="relative bg-slate-950 p-6 rounded-full border border-cyan-500/30 shadow-2xl">
                                     <Trophy size={40} className="text-cyan-400" />
                                 </div>
                             </div>
 
                             <div className="space-y-1 mb-8">
-                                <h2 className="text-[9px] text-slate-600 font-black tracking-[0.4em] uppercase">Session_End</h2>
-                                <h1 className="text-5xl sm:text-6xl font-black text-white tracking-tighter tabular-nums drop-shadow-2xl">
+                                <h2 className="text-[9px] text-slate-600 font-bold tracking-[0.4em] ">Session_End</h2>
+                                <h1 className="text-xl sm:text-6xl font-bold text-white tracking-tighter tabular-nums drop-shadow-2xl">
                                     {score}
                                 </h1>
                             </div>
 
                             <div className="grid grid-cols-2 gap-3 mb-8">
                                 <div className="bg-slate-900/40 p-3 rounded-xl border border-white/5">
-                                    <span className="text-[7px] text-slate-600 font-black tracking-widest uppercase block mb-1">DIFF</span>
-                                    <div className="text-xs font-black text-cyan-400 uppercase">{difficulty}</div>
+                                    <span className="text-[7px] text-slate-600 font-bold tracking-widest  block mb-1">DIFF</span>
+                                    <div className="text-xs font-bold text-cyan-400 ">{difficulty}</div>
                                 </div>
                                 <div className="bg-slate-900/40 p-3 rounded-xl border border-white/5">
-                                    <span className="text-[7px] text-slate-600 font-black tracking-widest uppercase block mb-1">STREAK</span>
-                                    <div className="text-xs font-black text-yellow-500">{streak}</div>
+                                    <span className="text-[7px] text-slate-600 font-bold tracking-widest  block mb-1">STREAK</span>
+                                    <div className="text-xs font-bold text-yellow-500">{streak}</div>
                                 </div>
                             </div>
 
                             <button
                                 onClick={() => setGameState('menu')}
-                                className="w-full bg-white hover:bg-cyan-400 text-black font-black py-3.5 rounded-xl transition-all active:scale-95 uppercase text-xs tracking-[0.2em]"
+                                className="w-full bg-white hover:bg-cyan-400 text-black font-bold py-3.5 rounded-xl transition-all active:scale-95  text-xs tracking-[0.2em]"
                             >
                                 REINITIALIZE
                             </button>
@@ -699,7 +699,7 @@ const BugHunter = ({ dispatch }) => {
 
             {/* DECORATIVE FOOTER */}
             <div className="h-1 bg-gradient-to-r from-transparent via-cyan-500/20 to-transparent" />
-            <div className="bg-slate-950 px-4 py-1.5 flex justify-between items-center text-[7px] text-slate-800 font-black tracking-[0.3em] uppercase opacity-50">
+            <div className="bg-slate-950 px-4 py-1.5 flex justify-between items-center text-[7px] text-slate-800 font-bold tracking-[0.3em]  opacity-50">
                 <span>SYS_NOMINAL</span>
                 <span>ARCADE_STATION_NX4</span>
             </div>

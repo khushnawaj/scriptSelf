@@ -37,7 +37,7 @@ const ContributionGraph = ({ logs = [] }) => {
             <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                     <Activity size={16} className="text-primary" />
-                    <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Recent Activity</h3>
+                    <h3 className="text-xs font-bold  tracking-wider text-muted-foreground">Recent Activity</h3>
                 </div>
                 <span className="text-[10px] font-medium text-muted-foreground/60">{logs.length > 0 ? `${logs.length} entries tracked` : 'No recent activity'}</span>
             </div>

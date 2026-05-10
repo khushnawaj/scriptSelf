@@ -138,13 +138,13 @@ const TerminalConsole = ({ isOpen, onClose }) => {
                 >
                     {/* CRT Scanline Effect Overlay */}
                     <div className="absolute inset-0 pointer-events-none bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.1)_50%),linear-gradient(90deg,rgba(255,0,0,0.02),rgba(0,255,0,0.01),rgba(0,0,255,0.02))] bg-[length:100%_2px,3px_100%] z-10" />
-                    <div className="absolute inset-0 pointer-events-none bg-green-900/5 z-0 animate-pulse" />
+                    <div className="absolute inset-0 pointer-events-none bg-green-900/5 z-0 " />
 
                     {/* Terminal Header */}
                     <div className="bg-zinc-900/80 border-b border-green-900/20 px-4 py-3 flex items-center justify-between z-20">
                         <div className="flex items-center gap-3">
-                            <Cpu size={14} className="text-green-500 animate-pulse" />
-                            <span className="text-[11px] font-black text-green-500 uppercase tracking-[0.2em]">Neural_Console_v4.0.2</span>
+                            <Cpu size={14} className="text-green-500 " />
+                            <span className="text-[11px] font-bold text-green-500  tracking-[0.2em]">Neural_Console_v4.0.2</span>
                         </div>
                         <div className="flex items-center gap-2">
                             <button onClick={onClose} className="p-1 hover:bg-zinc-800 text-zinc-500 hover:text-green-500 transition-all">
@@ -167,7 +167,7 @@ const TerminalConsole = ({ isOpen, onClose }) => {
 
                     {/* Command Input Area */}
                     <div className="p-4 bg-zinc-900/30 border-t border-green-900/10 flex items-center gap-4 z-20">
-                        <span className="text-green-500 font-black tracking-widest animate-pulse">#_</span>
+                        <span className="text-green-500 font-bold tracking-widest ">#_</span>
                         <input
                             ref={inputRef}
                             type="text"

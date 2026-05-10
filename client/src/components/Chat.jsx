@@ -159,7 +159,7 @@ const Chat = () => {
             >
                 <div className="relative">
                     <MessageCircle size={24} className="group-hover:rotate-12 transition-transform duration-300" />
-                    <span className="absolute -top-1 -right-1 w-3 h-3 bg-green-500 rounded-full border-2 border-primary animate-pulse" />
+                    <span className="absolute -top-1 -right-1 w-3 h-3 bg-green-500 rounded-full border-2 border-primary " />
                 </div>
             </motion.button>
         );
@@ -181,17 +181,17 @@ const Chat = () => {
                     ) : (
                         <div className="relative">
                             <div className="w-10 h-10 rounded-2xl bg-primary/10 flex items-center justify-center border border-primary/20">
-                                <Zap size={20} className="text-primary animate-pulse" />
+                                <Zap size={20} className="text-primary " />
                             </div>
                             <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-500 rounded-full border-2 border-background shadow-[0_0_8px_rgba(34,197,94,0.5)]" />
                         </div>
                     )}
                     <div className="flex flex-col">
-                        <span className="text-[17px] font-black text-foreground tracking-tight flex items-center gap-2">
+                        <span className="text-[17px] font-bold text-foreground tracking-tight flex items-center gap-2">
                             {activeTab === 'private' ? selectedRecipient?.username : 'Technical Pulse'}
                             {activeTab === 'private' && <ShieldCheck size={14} className="text-green-500" />}
                         </span>
-                        <span className="text-[9px] uppercase font-bold text-muted-foreground/60 tracking-[0.15em]">
+                        <span className="text-[9px]  font-bold text-muted-foreground/60 tracking-[0.15em]">
                             {activeTab === 'private' ? 'P2P Encrypted Node' : 'Global Network Stream'}
                         </span>
                     </div>
@@ -212,13 +212,13 @@ const Chat = () => {
                     <div className="flex p-1.5 bg-muted/20 border-b border-white/5 gap-1.5 relative z-10">
                         <button
                             onClick={() => { setMessages([]); setActiveTab('global'); }}
-                            className={`flex-1 flex items-center justify-center py-2.5 gap-2.5 text-[11px] font-black uppercase tracking-[0.1em] rounded-2xl transition-all ${activeTab === 'global' ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'text-muted-foreground hover:bg-white/5'}`}
+                            className={`flex-1 flex items-center justify-center py-2.5 gap-2.5 text-[11px] font-bold  tracking-[0.1em] rounded-2xl transition-all ${activeTab === 'global' ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'text-muted-foreground hover:bg-white/5'}`}
                         >
                             <Globe size={14} /> Global Stream
                         </button>
                         <button
                             onClick={() => setActiveTab('inbox')}
-                            className={`flex-1 flex items-center justify-center py-2.5 gap-2.5 text-[11px] font-black uppercase tracking-[0.1em] rounded-2xl transition-all ${activeTab === 'inbox' || activeTab === 'private' ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'text-muted-foreground hover:bg-white/5'}`}
+                            className={`flex-1 flex items-center justify-center py-2.5 gap-2.5 text-[11px] font-bold  tracking-[0.1em] rounded-2xl transition-all ${activeTab === 'inbox' || activeTab === 'private' ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'text-muted-foreground hover:bg-white/5'}`}
                         >
                             <Users size={14} /> Network Nodes
                         </button>
@@ -250,11 +250,11 @@ const Chat = () => {
                                         {!searchQuery.trim() ? (
                                             <div className="py-12 text-center space-y-4 opacity-40">
                                                 <Search size={32} className="mx-auto" />
-                                                <p className="text-[11px] font-black uppercase tracking-[0.2em]">Search to connect with Nodes</p>
+                                                <p className="text-[11px] font-bold  tracking-[0.2em]">Search to connect with Nodes</p>
                                             </div>
                                         ) : usersList.length === 0 ? (
                                             <div className="py-12 text-center space-y-2 opacity-40">
-                                                <p className="text-[11px] font-black uppercase tracking-[0.2em]">No Nodes found matching frequency</p>
+                                                <p className="text-[11px] font-bold  tracking-[0.2em]">No Nodes found matching frequency</p>
                                             </div>
                                         ) : (
                                             usersList.map((u, i) => {
@@ -272,8 +272,8 @@ const Chat = () => {
                                                             {u.avatar ? <img src={u.avatar} alt="" className="w-full h-full object-cover" /> : <User size={24} />}
                                                         </div>
                                                         <div className="flex-1 flex flex-col items-start gap-0.5">
-                                                            <span className="text-[15px] font-black text-foreground group-hover:text-primary transition-colors">{u.username}</span>
-                                                            <span className="text-[9px] text-muted-foreground font-black uppercase tracking-tighter bg-muted/50 px-1.5 py-0.5 rounded border border-white/5">{u.role} NODE</span>
+                                                            <span className="text-[15px] font-bold text-foreground group-hover:text-primary transition-colors">{u.username}</span>
+                                                            <span className="text-[9px] text-muted-foreground font-bold  tracking-tighter bg-muted/50 px-1.5 py-0.5 rounded border border-white/5">{u.role} NODE</span>
                                                         </div>
                                                         <button
                                                             onClick={(e) => toggleFollow(e, u._id, isFollowing)}
@@ -299,7 +299,7 @@ const Chat = () => {
                                             <div className="p-6 bg-muted/30 rounded-[30px] border border-white/5">
                                                 <Zap size={48} className="text-primary" />
                                             </div>
-                                            <p className="text-[11px] font-black uppercase tracking-[0.3em] leading-relaxed">System standby.<br />Awaiting technical signals.</p>
+                                            <p className="text-[11px] font-bold  tracking-[0.3em] leading-relaxed">System standby.<br />Awaiting technical signals.</p>
                                         </div>
                                     )}
                                     {messages.map((msg, i) => {
@@ -313,9 +313,9 @@ const Chat = () => {
                                             >
                                                 {!isMe && (
                                                     <div className="flex items-center gap-2 mb-2 px-1">
-                                                        <span className="text-[10px] font-black text-primary uppercase tracking-widest">{msg.sender?.username}</span>
+                                                        <span className="text-[10px] font-bold text-primary  tracking-widest">{msg.sender?.username}</span>
                                                         <span className="w-1 h-1 bg-white/10 rounded-full" />
-                                                        <span className="text-[9px] font-bold text-muted-foreground/30 uppercase">{new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                                                        <span className="text-[9px] font-bold text-muted-foreground/30 ">{new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
                                                     </div>
                                                 )}
                                                 <div className={`p-4 rounded-[22px] text-[14px] leading-relaxed shadow-lg transition-all border ${isMe

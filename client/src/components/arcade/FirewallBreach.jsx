@@ -209,7 +209,7 @@ const FirewallBreach = ({ dispatch }) => {
         <div className="w-full max-w-2xl mx-auto space-y-6 px-4 flex flex-col items-center animate-in fade-in duration-700">
             {/* Mission Brief */}
             <div className="w-full bg-violet-500/5 border border-violet-500/20 p-4 rounded-xl animate-in slide-in-from-top-4 shadow-sm text-center">
-                <h4 className="text-[11px] font-black text-violet-500 mb-1 flex items-center justify-center gap-2 uppercase tracking-widest">
+                <h4 className="text-[11px] font-bold text-violet-500 mb-1 flex items-center justify-center gap-2  tracking-widest">
                     <Zap size={14} /> Firewall_Breach
                 </h4>
                 <p className="text-[10px] text-muted-foreground leading-relaxed font-medium opacity-80">
@@ -220,8 +220,8 @@ const FirewallBreach = ({ dispatch }) => {
             {/* Stats */}
             <div className="w-full flex justify-between items-center bg-card border border-border p-3 rounded-xl shadow-sm">
                 <div className="flex flex-col items-start min-w-[80px]">
-                    <span className="text-[8px] font-black text-muted-foreground uppercase tracking-widest">SYNC_SCORE</span>
-                    <span className="text-xl font-black text-foreground tabular-nums">{score}</span>
+                    <span className="text-[8px] font-bold text-muted-foreground  tracking-widest">SYNC_SCORE</span>
+                    <span className="text-xl font-bold text-foreground tabular-nums">{score}</span>
                 </div>
                 <div className="flex gap-1.5 min-w-[60px] justify-end">
                     {[0, 1, 2].map(i => (
@@ -235,22 +235,22 @@ const FirewallBreach = ({ dispatch }) => {
                     {gameState !== 'playing' && (
                         <div className="absolute inset-0 bg-black/80 backdrop-blur-md flex flex-col items-center justify-center z-20 p-6">
                             {gameState === 'menu' && (
-                                <button onClick={initGame} className="px-10 py-4 bg-primary text-white font-black uppercase tracking-widest rounded-xl hover:scale-105 transition-all shadow-lg text-xs">
+                                <button onClick={initGame} className="px-10 py-4 bg-primary text-white font-bold  tracking-widest rounded-xl hover:scale-105 transition-all shadow-lg text-xs">
                                     INITIALIZE_BREACH
                                 </button>
                             )}
                             {gameState === 'lost' && (
                                 <div className="text-center animate-in zoom-in">
-                                    <h2 className="text-2xl font-black text-rose-500 mb-2 uppercase tracking-tighter">CONNECTION_TERMINATED</h2>
-                                    <p className="text-[10px] text-muted-foreground mb-6 uppercase tracking-widest font-bold font-mono">CORE_XP: {score}</p>
-                                    <button onClick={initGame} className="px-8 py-3 bg-secondary text-white font-black uppercase tracking-widest rounded-xl text-[10px]">Retry_Handshake</button>
+                                    <h2 className="text-2xl font-bold text-rose-500 mb-2  tracking-tighter">CONNECTION_TERMINATED</h2>
+                                    <p className="text-[10px] text-muted-foreground mb-6  tracking-widest font-bold font-mono">CORE_XP: {score}</p>
+                                    <button onClick={initGame} className="px-8 py-3 bg-secondary text-white font-bold  tracking-widest rounded-xl text-[10px]">Retry_Handshake</button>
                                 </div>
                             )}
                             {gameState === 'won' && (
                                 <div className="text-center animate-in zoom-in">
-                                    <h2 className="text-2xl font-black text-emerald-500 mb-2 uppercase tracking-tighter">ACCESS_GRANTED</h2>
-                                    <p className="text-[10px] text-muted-foreground mb-6 uppercase tracking-widest font-bold">Root_Link_Stable</p>
-                                    <button onClick={initGame} className="px-8 py-3 bg-primary text-white font-black uppercase tracking-widest rounded-xl text-[10px]">Re-run_Simulation</button>
+                                    <h2 className="text-2xl font-bold text-emerald-500 mb-2  tracking-tighter">ACCESS_GRANTED</h2>
+                                    <p className="text-[10px] text-muted-foreground mb-6  tracking-widest font-bold">Root_Link_Stable</p>
+                                    <button onClick={initGame} className="px-8 py-3 bg-primary text-white font-bold  tracking-widest rounded-xl text-[10px]">Re-run_Simulation</button>
                                 </div>
                             )}
                         </div>
@@ -268,7 +268,7 @@ const FirewallBreach = ({ dispatch }) => {
                 </div>
             </div>
 
-            <div className="text-center text-[8px] text-muted-foreground uppercase tracking-[0.3em] font-black opacity-30 mt-2">
+            <div className="text-center text-[8px] text-muted-foreground  tracking-[0.3em] font-bold opacity-30 mt-2">
                 Mouse / Touch Controls Enabled
             </div>
         </div>

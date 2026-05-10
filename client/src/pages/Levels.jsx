@@ -21,15 +21,15 @@ export default function Levels() {
         <div className="max-w-5xl mx-auto px-4 py-12 space-y-16 animate-in fade-in duration-700">
             {/* Header */}
             <header className="space-y-4 text-center sm:text-left">
-                <Link to="/guide" className="inline-flex items-center gap-2 text-muted-foreground hover:text-primary text-[10px] font-black uppercase tracking-[0.2em] transition-all group mb-4">
+                <Link to="/guide" className="inline-flex items-center gap-2 text-muted-foreground hover:text-primary text-[10px] font-bold  tracking-[0.2em] transition-all group mb-4">
                     <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform" /> BACK TO GUIDE
                 </Link>
                 <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6">
                     <div className="space-y-2">
-                        <div className="inline-flex items-center gap-2 px-3 py-1 bg-amber-500/10 border border-amber-500/20 rounded-full text-amber-500 text-[10px] font-black uppercase tracking-[0.2em]">
+                        <div className="inline-flex items-center gap-2 px-3 py-1 bg-amber-500/10 border border-amber-500/20 rounded-full text-amber-500 text-[10px] font-bold  tracking-[0.2em]">
                             <Trophy size={14} /> System Hierarchy
                         </div>
-                        <h1 className="text-4xl font-black tracking-tight text-foreground uppercase">Reputation & Tiers</h1>
+                        <h1 className="text-xl font-bold tracking-tight text-foreground ">Reputation & Tiers</h1>
                         <p className="text-muted-foreground text-sm font-medium italic opacity-70">The rules of engagement for the ScriptShelf neural network.</p>
                     </div>
                 </div>
@@ -57,10 +57,10 @@ export default function Levels() {
                                 className="p-4 bg-card border border-border rounded-xl flex items-center justify-between group hover:border-primary/30 transition-all hover:bg-primary/5"
                             >
                                 <div className="space-y-0.5">
-                                    <h4 className="font-bold text-xs uppercase tracking-wider">{rule.action}</h4>
+                                    <h4 className="font-bold text-xs  tracking-wider">{rule.action}</h4>
                                     <p className="text-[10px] text-muted-foreground">{rule.desc}</p>
                                 </div>
-                                <span className="text-primary font-black text-xs">{rule.points}</span>
+                                <span className="text-primary font-bold text-xs">{rule.points}</span>
                             </motion.div>
                         ))}
                     </div>
@@ -79,12 +79,12 @@ export default function Levels() {
 
                                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 relative z-10">
                                     <div className="flex items-center gap-5">
-                                        <div className={`w-14 h-14 rounded-2xl ${tier.bg} ${tier.border} border-2 flex items-center justify-center font-black text-2xl ${tier.color} shadow-lg`}>
+                                        <div className={`w-14 h-14 rounded-2xl ${tier.bg} ${tier.border} border-2 flex items-center justify-center font-bold text-2xl ${tier.color} shadow-lg`}>
                                             {tier.name.charAt(0)}
                                         </div>
                                         <div>
-                                            <h4 className={`text-lg font-black uppercase tracking-tight ${tier.color}`}>{tier.name}</h4>
-                                            <p className="text-[10px] text-muted-foreground font-bold uppercase tracking-widest">
+                                            <h4 className={`text-lg font-bold  tracking-tight ${tier.color}`}>{tier.name}</h4>
+                                            <p className="text-[10px] text-muted-foreground font-bold  tracking-widest">
                                                 Range: {tier.min} - {tier.max === Infinity ? '∞' : tier.max} XP
                                             </p>
                                         </div>
@@ -92,9 +92,9 @@ export default function Levels() {
 
                                     <div className="flex flex-col items-start sm:items-end gap-2 shrink-0">
                                         <div className="flex gap-2">
-                                            {i >= 1 && <span className="bg-emerald-500/10 text-emerald-500 text-[8px] font-black px-2 py-0.5 rounded border border-emerald-500/20 uppercase">Network Access</span>}
-                                            {i >= 3 && <span className="bg-primary/10 text-primary text-[8px] font-black px-2 py-0.5 rounded border border-primary/20 uppercase">Neural Graph</span>}
-                                            {i === 4 && <span className="bg-rose-500/10 text-rose-500 text-[8px] font-black px-2 py-0.5 rounded border border-rose-500/20 uppercase">Custom FX</span>}
+                                            {i >= 1 && <span className="bg-emerald-500/10 text-emerald-500 text-[8px] font-bold px-2 py-0.5 rounded border border-emerald-500/20 ">Network Access</span>}
+                                            {i >= 3 && <span className="bg-primary/10 text-primary text-[8px] font-bold px-2 py-0.5 rounded border border-primary/20 ">Neural Graph</span>}
+                                            {i === 4 && <span className="bg-rose-500/10 text-rose-500 text-[8px] font-bold px-2 py-0.5 rounded border border-rose-500/20 ">Custom FX</span>}
                                         </div>
                                         <p className="text-[11px] text-muted-foreground/60 italic font-medium">
                                             {i === 0 && "Your journey as an archivist begins here."}
@@ -116,7 +116,7 @@ export default function Levels() {
                 <div className="absolute top-0 right-0 w-64 h-64 bg-primary/10 blur-[100px] -translate-y-1/2 translate-x-1/2" />
 
                 <div className="max-w-2xl space-y-6 relative z-10 text-left">
-                    <h2 className="text-2xl font-black text-foreground uppercase tracking-tight">Reward Protocol</h2>
+                    <h2 className="text-2xl font-bold text-foreground  tracking-tight">Reward Protocol</h2>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8 text-sm">
                         <div className="space-y-3">
                             <h4 className="flex items-center gap-2 font-bold text-primary italic">
@@ -141,7 +141,7 @@ export default function Levels() {
             {/* Call to Action */}
             <div className="flex flex-col items-center gap-4 py-8 border-t border-border/50">
                 <Info size={24} className="text-muted-foreground opacity-20" />
-                <p className="text-xs text-muted-foreground font-bold uppercase tracking-widest text-center">
+                <p className="text-xs text-muted-foreground font-bold  tracking-widest text-center">
                     Questions? Check the official <Link to="/guide" className="text-primary hover:underline">Documentation Guide</Link>
                 </p>
             </div>

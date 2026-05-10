@@ -146,7 +146,7 @@ const StackOverflowEscape = ({ dispatch }) => {
     return (
         <div className="w-full max-w-2xl mx-auto text-center relative px-4 flex flex-col gap-6 animate-in fade-in duration-700">
             <div className="bg-cyan-500/5 border border-cyan-500/20 p-4 rounded-xl animate-in slide-in-from-top-4 shadow-sm">
-                <h4 className="text-[12px] font-black text-cyan-500 mb-1 flex items-center justify-center gap-2 uppercase tracking-widest">
+                <h4 className="text-[12px] font-bold text-cyan-500 mb-1 flex items-center justify-center gap-2  tracking-widest">
                     <Ghost size={16} /> Recursion Escape
                 </h4>
                 <p className="text-[10px] text-muted-foreground opacity-80 leading-relaxed font-medium">
@@ -157,17 +157,17 @@ const StackOverflowEscape = ({ dispatch }) => {
             {/* Stats */}
             <div className="flex justify-between items-center bg-card border border-border p-3 rounded-xl shadow-sm">
                 <div className="flex flex-col items-start min-w-[60px]">
-                    <span className="text-[8px] font-black text-muted-foreground uppercase tracking-widest">FRAME</span>
-                    <span className="text-lg font-black text-foreground tabular-nums">LVL_0{level + 1}</span>
+                    <span className="text-[8px] font-bold text-muted-foreground  tracking-widest">FRAME</span>
+                    <span className="text-lg font-bold text-foreground tabular-nums">LVL_0{level + 1}</span>
                 </div>
                 <div className="flex-1 mx-6">
-                    <div className="flex justify-between text-[8px] font-black text-muted-foreground uppercase tracking-tighter mb-1">
+                    <div className="flex justify-between text-[8px] font-bold text-muted-foreground  tracking-tighter mb-1">
                         <span>HEAP_UTILIZATION</span>
                         <span>{memory}%</span>
                     </div>
                     <div className="h-2 bg-slate-100 dark:bg-muted rounded-full overflow-hidden border border-border dark:border-white/5">
                         <div
-                            className={`h-full transition-all duration-500 ${memory > 80 ? 'bg-rose-500 animate-pulse' : 'bg-cyan-500'}`}
+                            className={`h-full transition-all duration-500 ${memory > 80 ? 'bg-rose-500 ' : 'bg-cyan-500'}`}
                             style={{ width: `${memory}%` }}
                         />
                     </div>
@@ -184,12 +184,12 @@ const StackOverflowEscape = ({ dispatch }) => {
 
                             if (cell === 1) bg = 'bg-slate-200 dark:bg-slate-900 border border-border dark:border-white/5 shadow-inner'; // Wall
                             if (cell === 3) { content = '🚪'; bg = 'bg-emerald-500/10 border border-emerald-500/30'; } // Exit
-                            if (cell === 4) { content = '🔒'; bg = 'bg-rose-500/10 border border-rose-500/30 animate-pulse'; } // Door
+                            if (cell === 4) { content = '🔒'; bg = 'bg-rose-500/10 border border-rose-500/30 '; } // Door
                             if (x === player.x && y === player.y) { content = '🤖'; bg = 'bg-cyan-500/20 border-2 border-cyan-500 shadow-[0_0_15px_rgba(6,182,212,0.4)] z-10 scale-105'; }
 
                             return (
                                 <div key={`${x}-${y}`} className={`aspect-square rounded-lg flex items-center justify-center text-[16px] sm:text-[20px] transition-all duration-300 ${bg}`}>
-                                    <span className={x === player.x && y === player.y ? 'animate-bounce' : ''}>{content}</span>
+                                    <span className={x === player.x && y === player.y ? '' : ''}>{content}</span>
                                 </div>
                             );
                         })
@@ -211,7 +211,7 @@ const StackOverflowEscape = ({ dispatch }) => {
             {showPuzzle && (
                 <div className="absolute inset-0 bg-black/90 backdrop-blur-xl rounded-[2rem] flex flex-col items-center justify-center p-4 z-20 animate-in fade-in zoom-in duration-300">
                     <div className="w-full max-w-xs bg-card border border-cyan-500/30 p-5 rounded-2xl shadow-2xl">
-                        <h4 className="text-cyan-500 font-black mb-3 flex items-center justify-center gap-1.5 uppercase tracking-widest text-xs"><Terminal size={14} /> Logic_Gate</h4>
+                        <h4 className="text-cyan-500 font-bold mb-3 flex items-center justify-center gap-1.5  tracking-widest text-xs"><Terminal size={14} /> Logic_Gate</h4>
                         <div className="bg-slate-950 p-3 rounded-lg font-mono text-[10px] text-left text-muted-foreground mb-4 border border-white/5 overflow-x-auto">
                             <pre>{LEVELS[level].doorPuzzle.code}</pre>
                         </div>
@@ -239,24 +239,24 @@ const StackOverflowEscape = ({ dispatch }) => {
                         {gameState === 'won' ? (
                             <>
                                 <Trophy size={60} className="text-emerald-500 mx-auto mb-4 drop-shadow-[0_0_15px_rgba(16,185,129,0.5)]" />
-                                <h2 className="text-2xl font-black text-white mb-1 tracking-tighter uppercase">Escaped!</h2>
+                                <h2 className="text-2xl font-bold text-white mb-1 tracking-tighter ">Escaped!</h2>
                                 <p className="text-muted-foreground text-xs font-medium mb-6">System memory stabilized.</p>
                             </>
                         ) : (
                             <>
-                                <Ghost size={60} className="text-rose-500 mx-auto mb-4 drop-shadow-[0_0_15px_rgba(244,63,94,0.5)] animate-pulse" />
-                                <h2 className="text-2xl font-black text-rose-500 mb-1 tracking-tighter uppercase">Critical Leak!</h2>
+                                <Ghost size={60} className="text-rose-500 mx-auto mb-4 drop-shadow-[0_0_15px_rgba(244,63,94,0.5)] " />
+                                <h2 className="text-2xl font-bold text-rose-500 mb-1 tracking-tighter ">Critical Leak!</h2>
                                 <p className="text-muted-foreground text-xs font-medium mb-6">Stack Overflow detected.</p>
                             </>
                         )}
-                        <button onClick={() => { setGameState('playing'); loadLevel(0); }} className="px-8 py-3 bg-primary text-white text-xs font-black uppercase tracking-widest rounded-xl hover:scale-105 transition-transform shadow-lg">
+                        <button onClick={() => { setGameState('playing'); loadLevel(0); }} className="px-8 py-3 bg-primary text-white text-xs font-bold  tracking-widest rounded-xl hover:scale-105 transition-transform shadow-lg">
                             RESTART
                         </button>
                     </div>
                 </div>
             )}
 
-            <div className="text-[8px] text-muted-foreground uppercase tracking-[0.3em] font-black opacity-30">
+            <div className="text-[8px] text-muted-foreground  tracking-[0.3em] font-bold opacity-30">
                 WASD / Arrows / Touch Controls
             </div>
         </div>

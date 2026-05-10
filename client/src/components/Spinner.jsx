@@ -10,8 +10,8 @@ const Spinner = ({ fullPage = false, message = "Loading" }) => {
             <div className="flex flex-col items-center gap-4">
                 <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
                 {message && (
-                    <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-400">
-                        {message.toUpperCase()}
+                    <p className="text-[10px] font-bold  tracking-[0.2em] text-zinc-400">
+                        {message?.toUpperCase()}
                     </p>
                 )}
             </div>

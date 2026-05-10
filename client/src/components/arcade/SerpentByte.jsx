@@ -118,7 +118,7 @@ const SerpentByte = ({ dispatch }) => {
 
             <div className="flex justify-between items-center mb-6 px-4">
                 <span className="font-bold text-primary text-[20px] drop-shadow-sm">{score} XP</span>
-                <span className="text-[10px] text-muted-foreground font-black uppercase tracking-widest bg-slate-100 dark:bg-secondary/50 px-3 py-1.5 rounded-lg border border-border">SPEED: {Math.round((BASE_SPEED - speed + 10))}MS</span>
+                <span className="text-[10px] text-muted-foreground font-bold  tracking-widest bg-slate-100 dark:bg-secondary/50 px-3 py-1.5 rounded-lg border border-border">SPEED: {Math.round((BASE_SPEED - speed + 10))}MS</span>
             </div>
 
             <div
@@ -147,7 +147,7 @@ const SerpentByte = ({ dispatch }) => {
 
                 {/* Food */}
                 <div
-                    className="absolute text-rose-500 flex items-center justify-center animate-pulse"
+                    className="absolute text-rose-500 flex items-center justify-center "
                     style={{
                         left: `${(food.x / GRID_SIZE) * 100}%`,
                         top: `${(food.y / GRID_SIZE) * 100}%`,

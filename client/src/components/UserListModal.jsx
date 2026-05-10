@@ -55,7 +55,7 @@ const UserListModal = ({ isOpen, onClose, userId, title, type }) => {
                     >
                         {/* Header */}
                         <div className="px-5 py-4 border-b border-border flex items-center justify-between bg-muted/10">
-                            <h3 className="text-[11px] font-bold uppercase tracking-[0.2em] text-foreground">{title}</h3>
+                            <h3 className="text-[11px] font-bold  tracking-[0.2em] text-foreground">{title}</h3>
                             <button onClick={onClose} className="p-1.5 hover:bg-secondary rounded-md transition-colors text-muted-foreground hover:text-foreground">
                                 <X size={18} />
                             </button>
@@ -66,7 +66,7 @@ const UserListModal = ({ isOpen, onClose, userId, title, type }) => {
                             {loading ? (
                                 <div className="py-20 flex flex-col items-center gap-3">
                                     <Spinner />
-                                    <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground animate-pulse">Syncing sector...</p>
+                                    <p className="text-[10px] font-bold  tracking-widest text-muted-foreground ">Syncing sector...</p>
                                 </div>
                             ) : users.length > 0 ? (
                                 <div className="space-y-1.5">
@@ -103,7 +103,7 @@ const UserListModal = ({ isOpen, onClose, userId, title, type }) => {
                                     <div className="w-14 h-14 bg-muted/50 rounded-full flex items-center justify-center mx-auto border border-border/50">
                                         <User size={24} className="text-muted-foreground opacity-30" />
                                     </div>
-                                    <p className="text-[11px] font-bold text-muted-foreground uppercase tracking-widest">No connections found</p>
+                                    <p className="text-[11px] font-bold text-muted-foreground  tracking-widest">No connections found</p>
                                 </div>
                             )}
                         </div>
@@ -112,7 +112,7 @@ const UserListModal = ({ isOpen, onClose, userId, title, type }) => {
                         <div className="px-5 py-3.5 bg-muted/5 border-t border-border flex justify-end">
                             <button
                                 onClick={onClose}
-                                className="px-4 py-2 text-[10px] font-bold text-primary hover:text-primary/80 uppercase tracking-widest transition-colors"
+                                className="px-4 py-2 text-[10px] font-bold text-primary hover:text-primary/80  tracking-widest transition-colors"
                             >
                                 Dismiss_Overlay
                             </button>

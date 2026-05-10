@@ -150,7 +150,7 @@ const NotificationBell = () => {
                 onClick={() => setIsOpen(!isOpen)}
                 className={`relative p-2.5 rounded-xl transition-all duration-300 ${isOpen ? 'bg-primary/10 text-primary' : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'}`}
             >
-                <Bell size={20} className={unreadCount > 0 ? "animate-pulse" : ""} />
+                <Bell size={20} className={unreadCount > 0 ? "" : ""} />
                 {unreadCount > 0 && (
                     <span className="absolute top-2.5 right-2.5 w-2 h-2 bg-primary rounded-full ring-2 ring-background" />
                 )}
@@ -170,13 +170,13 @@ const NotificationBell = () => {
                             <div className="flex items-center justify-between mb-4">
                                 <div>
                                     <h3 className="text-sm font-bold text-foreground">Notifications</h3>
-                                    <p className="text-[10px] text-muted-foreground font-medium uppercase tracking-wider mt-0.5">Signal Intelligence</p>
+                                    <p className="text-[10px] text-muted-foreground font-medium  tracking-wider mt-0.5">Signal Intelligence</p>
                                 </div>
                                 <div className="flex items-center gap-3">
                                     {unreadCount > 0 && (
                                         <button
                                             onClick={markAllRead}
-                                            className="text-[10px] font-bold text-primary hover:text-primary/80 uppercase tracking-tighter transition-colors"
+                                            className="text-[10px] font-bold text-primary hover:text-primary/80  tracking-tighter transition-colors"
                                         >
                                             Mark read
                                         </button>
@@ -184,7 +184,7 @@ const NotificationBell = () => {
                                     {notifications.length > 0 && (
                                         <button
                                             onClick={clearAllNotifications}
-                                            className="text-[10px] font-bold text-rose-500 hover:text-rose-600 uppercase tracking-tighter transition-colors"
+                                            className="text-[10px] font-bold text-rose-500 hover:text-rose-600  tracking-tighter transition-colors"
                                         >
                                             Clear All
                                         </button>
@@ -206,7 +206,7 @@ const NotificationBell = () => {
                                     className={`text-[11px] font-bold pb-2 border-b-2 transition-all flex items-center gap-2 ${filter === 'unread' ? 'border-primary text-primary' : 'border-transparent text-muted-foreground hover:text-foreground'}`}
                                 >
                                     Unread
-                                    {unreadCount > 0 && <span className="w-4 h-4 rounded-full bg-primary/10 text-[9px] flex items-center justify-center font-black">{unreadCount}</span>}
+                                    {unreadCount > 0 && <span className="w-4 h-4 rounded-full bg-primary/10 text-[9px] flex items-center justify-center font-bold">{unreadCount}</span>}
                                 </button>
                             </div>
                         </div>
@@ -240,7 +240,7 @@ const NotificationBell = () => {
                                                     </button>
                                                 </div>
                                                 <div className="flex items-center justify-between mt-2">
-                                                    <span className="text-[9px] font-bold text-muted-foreground/40 uppercase">
+                                                    <span className="text-[9px] font-bold text-muted-foreground/40 ">
                                                         {formatRelativeTime(n.createdAt)}
                                                     </span>
                                                     {n.link && (
@@ -263,7 +263,7 @@ const NotificationBell = () => {
                                         <Bell size={24} className="text-muted-foreground opacity-10" />
                                     </div>
                                     <div className="space-y-1 px-8">
-                                        <p className="text-[11px] font-bold text-muted-foreground uppercase tracking-widest">Workspace Silence</p>
+                                        <p className="text-[11px] font-bold text-muted-foreground  tracking-widest">Workspace Silence</p>
                                         <p className="text-[10px] text-muted-foreground/60 italic leading-relaxed">No active signals detected in this sector.</p>
                                     </div>
                                 </div>
@@ -272,7 +272,7 @@ const NotificationBell = () => {
 
                         {/* Footer */}
                         <div className="px-5 py-3 bg-muted/20 border-t border-border flex justify-center">
-                            <button className="text-[9px] font-black text-muted-foreground hover:text-primary uppercase tracking-[0.2em] transition-colors">
+                            <button className="text-[9px] font-bold text-muted-foreground hover:text-primary  tracking-[0.2em] transition-colors">
                                 Archive Management Protocol
                             </button>
                         </div>

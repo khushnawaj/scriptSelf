@@ -119,7 +119,7 @@ export default function Explorers() {
             <header className="space-y-4">
                 <Link
                     to="/dashboard"
-                    className="inline-flex items-center gap-2 text-muted-foreground hover:text-primary text-[10px] font-black uppercase tracking-[0.2em] transition-all group"
+                    className="inline-flex items-center gap-2 text-muted-foreground hover:text-primary text-[10px] font-bold  tracking-[0.2em] transition-all group"
                 >
                     <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform" />
                     BACK TO DASHBOARD
@@ -132,7 +132,7 @@ export default function Explorers() {
                                 <Users size={24} />
                             </div>
                             <div>
-                                <h1 className="text-3xl font-black uppercase tracking-tight text-foreground">
+                                <h1 className="text-xl font-bold  tracking-tight text-foreground">
                                     Explorers
                                 </h1>
                                 <p className="text-sm text-muted-foreground font-medium italic opacity-70">
@@ -146,8 +146,8 @@ export default function Explorers() {
                         <div className="bg-card border border-border px-4 py-2 rounded-xl flex items-center gap-3 shadow-sm">
                             <Users size={16} className="text-primary" />
                             <div className="flex flex-col">
-                                <span className="text-[14px] font-black text-foreground">{users.length}</span>
-                                <span className="text-[8px] font-bold text-muted-foreground uppercase tracking-widest">
+                                <span className="text-[14px] font-bold text-foreground">{users.length}</span>
+                                <span className="text-[8px] font-bold text-muted-foreground  tracking-widest">
                                     Architects
                                 </span>
                             </div>
@@ -163,14 +163,14 @@ export default function Explorers() {
                     <div className="bg-card border border-border rounded-xl p-5 space-y-5 shadow-sm">
                         <div className="flex items-center gap-2">
                             <Filter size={14} className="text-primary" />
-                            <h3 className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+                            <h3 className="text-[10px] font-bold  tracking-widest text-muted-foreground">
                                 Filters
                             </h3>
                         </div>
 
                         {/* Tier Filter */}
                         <div className="space-y-2">
-                            <label className="text-[10px] font-bold text-foreground uppercase tracking-wider">
+                            <label className="text-[10px] font-bold text-foreground  tracking-wider">
                                 Reputation Tier
                             </label>
                             <select
@@ -189,7 +189,7 @@ export default function Explorers() {
 
                         {/* Sort Filter */}
                         <div className="space-y-2">
-                            <label className="text-[10px] font-bold text-foreground uppercase tracking-wider">
+                            <label className="text-[10px] font-bold text-foreground  tracking-wider">
                                 Sort By
                             </label>
                             <select
@@ -221,7 +221,7 @@ export default function Explorers() {
                         <div className="bg-card border border-border rounded-xl p-5 space-y-4 shadow-sm">
                             <div className="flex items-center gap-2">
                                 <TrendingUp size={14} className="text-primary" />
-                                <h3 className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+                                <h3 className="text-[10px] font-bold  tracking-widest text-muted-foreground">
                                     Top Contributors
                                 </h3>
                             </div>
@@ -281,7 +281,7 @@ export default function Explorers() {
                     {loading ? (
                         <div className="flex flex-col items-center justify-center py-20 space-y-4">
                             <Spinner />
-                            <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground animate-pulse">
+                            <p className="text-[10px] font-bold  tracking-widest text-muted-foreground ">
                                 Scanning network...
                             </p>
                         </div>
@@ -312,7 +312,7 @@ export default function Explorers() {
                                                             {user.avatar ? (
                                                                 <img src={user.avatar} alt={user.username} className="w-full h-full object-cover" />
                                                             ) : (
-                                                                <span className="text-2xl font-black text-muted-foreground">
+                                                                <span className="text-2xl font-bold text-muted-foreground">
                                                                     {user.username.charAt(0).toUpperCase()}
                                                                 </span>
                                                             )}
@@ -324,11 +324,11 @@ export default function Explorers() {
                                                 <div className="flex-1 min-w-0 space-y-2">
                                                     <div>
                                                         <Link to={`/u/${user.username}`} className="group/name">
-                                                            <h3 className="text-base font-black text-foreground truncate group-hover/name:text-primary transition-colors italic">
+                                                            <h3 className="text-base font-bold text-foreground truncate group-hover/name:text-primary transition-colors italic">
                                                                 {user.username}
                                                             </h3>
                                                         </Link>
-                                                        <div className={`inline-flex items-center px-2 py-0.5 rounded-full text-[8px] font-black uppercase tracking-wider ${tier.bg} ${tier.color} ${tier.border} border mt-1`}>
+                                                        <div className={`inline-flex items-center px-2 py-0.5 rounded-full text-[8px] font-bold  tracking-wider ${tier.bg} ${tier.color} ${tier.border} border mt-1`}>
                                                             {tier.name}
                                                         </div>
                                                     </div>
@@ -373,7 +373,7 @@ export default function Explorers() {
                                             {/* View Profile Link */}
                                             <Link
                                                 to={`/u/${user.username}`}
-                                                className="mt-4 flex items-center justify-center gap-2 py-2 border-t border-border/50 text-[10px] font-bold uppercase tracking-widest text-primary hover:text-primary/80 transition-colors group/link"
+                                                className="mt-4 flex items-center justify-center gap-2 py-2 border-t border-border/50 text-[10px] font-bold  tracking-widest text-primary hover:text-primary/80 transition-colors group/link"
                                             >
                                                 View Profile
                                                 <ChevronRight size={12} className="group-hover/link:translate-x-0.5 transition-transform" />
@@ -391,7 +391,7 @@ export default function Explorers() {
                     ) : (
                         <div className="py-20 text-center border border-dashed border-border rounded-xl bg-muted/10">
                             <Users size={48} className="mx-auto text-muted-foreground opacity-20 mb-4" />
-                            <h3 className="text-sm font-black uppercase tracking-widest text-foreground mb-2">
+                            <h3 className="text-sm font-bold  tracking-widest text-foreground mb-2">
                                 No Users Found
                             </h3>
                             <p className="text-xs text-muted-foreground font-medium italic">

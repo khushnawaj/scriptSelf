@@ -192,8 +192,8 @@ export default function NeuralGraph({ data = [] }) {
             <div className="absolute top-4 left-4 flex flex-col gap-2">
                 <div className="bg-card/80 backdrop-blur-md p-3 rounded-xl border border-border flex items-center gap-3">
                     <div className="flex flex-col">
-                        <span className="text-[10px] font-black uppercase tracking-widest text-primary">Neural Network</span>
-                        <span className="text-[9px] text-muted-foreground font-medium uppercase">{graphData.nodes.length} Synchronized Nodes</span>
+                        <span className="text-[10px] font-bold  tracking-widest text-primary">Neural Network</span>
+                        <span className="text-[9px] text-muted-foreground font-medium ">{graphData.nodes.length} Synchronized Nodes</span>
                     </div>
                 </div>
             </div>
@@ -205,7 +205,7 @@ export default function NeuralGraph({ data = [] }) {
             </div>
 
             <div className="absolute bottom-4 left-4 pointer-events-none">
-                <div className="flex items-center gap-4 text-[10px] font-black text-muted-foreground uppercase tracking-tighter bg-card/40 px-3 py-1.5 rounded-full backdrop-blur-sm">
+                <div className="flex items-center gap-4 text-[10px] font-bold text-muted-foreground  tracking-tighter bg-card/40 px-3 py-1.5 rounded-full backdrop-blur-sm">
                     <span className="flex items-center gap-1.5"><div className="w-2 h-2 rounded-full bg-primary" /> ACTIVE LINK</span>
                     <span className="flex items-center gap-1.5 opacity-50"><div className="w-2 h-2 rounded-full bg-border" /> COLD STORAGE</span>
                 </div>

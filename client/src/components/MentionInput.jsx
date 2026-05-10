@@ -104,7 +104,7 @@ const MentionInput = ({ value, onChange, placeholder, className }) => {
             {showSuggestions && suggestions.length > 0 && (
                 <div className="absolute bottom-full left-0 mb-2 w-64 bg-card border border-border rounded-lg shadow-2xl z-50 max-h-48 overflow-y-auto">
                     <div className="p-2 border-b border-border bg-muted/30">
-                        <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1">
+                        <p className="text-[10px] font-bold  tracking-wider text-muted-foreground flex items-center gap-1">
                             <AtSign size={10} />
                             Mention User
                         </p>

@@ -30,7 +30,9 @@ import {
     Pin,
     Zap as ZapIcon,
     Flame,
-    Brain
+    Brain,
+    Clock,
+    Activity
 } from 'lucide-react';
 
 import { toast } from 'react-hot-toast';
@@ -239,7 +241,7 @@ const NoteDetails = () => {
                     Access to this record is either restricted or the link has expired.
                     Ensure you have the correct bypass token.
                 </p>
-                <Link to="/notes" className="px-6 py-2 bg-primary text-white rounded-xl text-xs font-black uppercase tracking-widest hover:scale-105 active:scale-95 transition-all mt-4">
+                <Link to="/notes" className="px-6 py-2 bg-primary text-white rounded-xl text-xs font-bold  tracking-widest hover:scale-105 active:scale-95 transition-all mt-4">
                     Return to Library
                 </Link>
             </div>
@@ -248,53 +250,60 @@ const NoteDetails = () => {
 
     return (
         <>
-            <div className="space-y-4 max-w-[1100px] mx-auto pb-20 animate-in fade-in duration-300">
+            <div className="space-y-8 max-w-[1100px] mx-auto pb-20 animate-in fade-in duration-700">
                 {(note.coverImageUrl || note.coverGradient) && (
-                    <div className="relative w-full h-44 sm:h-56 rounded-2xl overflow-hidden border border-border/80 shadow-lg shadow-black/5">
+                    <div className="relative w-full h-56 sm:h-72 rounded-[2.5rem] overflow-hidden border border-border/50 shadow-2xl group">
+                        
                         {note.coverImageUrl ? (
                             <img
                                 src={note.coverImageUrl}
                                 alt=""
-                                className="absolute inset-0 w-full h-full object-cover"
+                                className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
                             />
                         ) : (
                             <div
-                                className="absolute inset-0"
+                                className="absolute inset-0 transition-transform duration-1000 group-hover:scale-105"
                                 style={getCoverGradientStyle(note.coverGradient) || undefined}
                             />
                         )}
-                        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/30 to-transparent pointer-events-none" />
+                        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/20 to-transparent pointer-events-none z-[5]" />
                     </div>
                 )}
+
                 {/* Header Section */}
-                <div className="border-b border-border pb-6 mb-6">
-                    {/* ... (keep header content) ... */}
-                    <div className="flex flex-col sm:flex-row justify-between items-start gap-4 mb-5">
-                        <h1 className="text-[24px] sm:text-[32px] font-normal text-foreground leading-tight tracking-tight flex flex-wrap items-center gap-2 sm:gap-4">
-                            <LogicSeal content={note.content} id={note._id} size={60} className="rounded-2xl border-primary/20 shadow-xl shadow-primary/5" />
-                            <div className="flex items-center gap-2 sm:gap-3">
-                                {note.isPinned && <Pin className="text-primary fill-primary w-5 h-5 sm:w-6 sm:h-6" />}
-                                {note.title}
+                <div className="border-b border-border/50 pb-10 mb-10 relative">
+                    <div className="flex flex-col xl:flex-row justify-between items-start gap-8 mb-8">
+                        <div className="flex-1 min-w-0">
+                            <div className="flex flex-wrap items-center gap-4 mb-4">
+                                <div className="p-3 bg-primary/10 rounded-2xl border border-primary/20 shadow-xl shadow-primary/5">
+                                    <LogicSeal content={note.content} id={note._id} size={56} className="opacity-80" />
+                                </div>
+                                <div>
+                                    <h1 className="text-xl sm:text-xl font-bold text-foreground  tracking-tighter leading-tight flex items-center gap-4">
+                                        {note.isPinned && <Pin size={24} className="text-primary fill-primary drop-shadow-[0_0_8px_rgba(var(--primary),0.5)]" />}
+                                        {note.title}
+                                    </h1>
+                                    <div className="flex items-center gap-3 mt-2">
+                                        <div className="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]" />
+                                        <span className="text-[10px] font-bold  tracking-[0.3em] text-muted-foreground/60">RECORD_HASH::{note._id.slice(-8).toUpperCase()}</span>
+                                    </div>
+                                </div>
                             </div>
-                            {note.type === 'issue' && (note.comments?.length || 0) === 0 && (
-                                <span className="bg-amber-500/10 text-amber-500 border border-amber-500/20 px-2 sm:px-3 py-0.5 sm:py-1 rounded-full text-[9px] sm:text-[10px] font-black uppercase tracking-widest animate-pulse">
-                                    Unanswered
-                                </span>
-                            )}
-                        </h1>
-                        <div className="flex gap-2 shrink-0">
+                        </div>
+
+                        <div className="flex flex-wrap gap-3 shrink-0 relative z-20">
                             {user && user.role === 'admin' && (
                                 <button
                                     onClick={handlePin}
-                                    className={`so-btn border transition-all font-bold flex items-center gap-2 ${note.isPinned ? 'border-primary text-primary hover:bg-primary/10' : 'border-border text-muted-foreground hover:text-foreground'}`}
-                                    title={note.isPinned ? 'Unpin Post' : 'Pin Post to Top'}
+                                    className={`h-12 px-5 rounded-xl border transition-all flex items-center gap-2 ${note.isPinned ? 'bg-primary border-primary text-white shadow-lg shadow-primary/20' : 'bg-card/40 backdrop-blur-xl border-border/50 text-muted-foreground hover:border-primary/30'}`}
+                                    title={note.isPinned ? 'Unpin_Record' : 'Pin_Record'}
                                 >
-                                    <Pin size={14} className={note.isPinned ? 'fill-primary' : ''} />
+                                    <Pin size={16} strokeWidth={3} className={note.isPinned ? 'fill-white' : ''} />
                                 </button>
                             )}
                             {user && note.user?._id === user._id ? (
-                                <Link to={`/notes/edit/${id}`} className="so-btn border border-border hover:bg-muted/50 text-foreground transition-all">
-                                    <Edit size={14} /> Edit
+                                <Link to={`/notes/edit/${id}`} className="h-12 px-6 bg-card/40 backdrop-blur-xl border border-border/50 rounded-xl text-[10px] font-bold  tracking-[0.2em] flex items-center gap-2 hover:border-primary/30 transition-all">
+                                    <Edit size={16} strokeWidth={3} /> EDIT_SOURCE
                                 </Link>
                             ) : (
                                 user && note.isPublic && (
@@ -302,174 +311,158 @@ const NoteDetails = () => {
                                         <button
                                             onClick={() => setIsSaveModalOpen(true)}
                                             disabled={isCloning}
-                                            className="so-btn border border-primary text-primary hover:bg-primary/5 transition-all font-bold flex items-center gap-2"
+                                            className="h-12 px-6 bg-primary text-white shadow-xl shadow-primary/20 rounded-xl text-[10px] font-bold  tracking-[0.2em] flex items-center gap-3 group active:scale-95 transition-all relative overflow-hidden"
                                         >
-                                            <Copy size={14} /> {isCloning ? 'Cloning...' : 'Clone to My Shelf'}
+                                            
+                                            <Copy size={16} strokeWidth={3} /> {isCloning ? 'CLONING...' : 'SYNC_TO_VAULT'}
                                         </button>
                                         <button
                                             onClick={handleDownload}
-                                            className="so-btn border border-border hover:bg-muted/50 text-foreground transition-all"
-                                            title="Download as Markdown"
+                                            className="h-12 w-12 bg-card/40 backdrop-blur-xl border border-border/50 rounded-xl flex items-center justify-center hover:border-primary/30 transition-all text-muted-foreground"
+                                            title="Download_Raw_Markdown"
                                         >
-                                            <FileDown size={14} />
+                                            <FileDown size={18} strokeWidth={2.5} />
                                         </button>
                                     </>
                                 )
                             )}
-                            <Link to="/notes/new" className="so-btn so-btn-primary py-2.5 px-3">
-                                Post new record
-                            </Link>
                             <button
                                 onClick={toggleInterviewMode}
-                                className={`so-btn border transition-all font-bold flex items-center gap-2 ${isInterviewMode ? 'bg-amber-500 border-amber-500 text-white shadow-lg shadow-amber-500/30' : 'border-border text-muted-foreground hover:border-amber-500/50 hover:text-amber-500'}`}
-                                title="Interview Mode"
+                                className={`h-12 px-6 rounded-xl border font-bold text-[10px]  tracking-[0.2em] flex items-center gap-3 transition-all relative overflow-hidden ${isInterviewMode ? 'bg-amber-500 border-amber-500 text-white shadow-lg shadow-amber-500/30' : 'bg-card/40 backdrop-blur-xl border-border/50 text-muted-foreground hover:border-amber-500/30 hover:text-amber-500'}`}
                             >
-                                <Flame size={14} className={isInterviewMode ? 'fill-white' : ''} /> {isInterviewMode ? 'Active' : 'Cheat Sheet'}
+                                
+                                <Flame size={16} strokeWidth={3} className={isInterviewMode ? 'fill-white' : ''} /> {isInterviewMode ? 'PROTOCOL_ACTIVE' : 'BRIEFING_MODE'}
                             </button>
                         </div>
                     </div>
 
-
-                    {/* Neural Sync Call to Action */}
+                    {/* Neural Sync CTA */}
                     {user && (
-                        <div className="mb-6 p-4 bg-primary/5 border border-primary/20 rounded-2xl flex items-center justify-between group hover:bg-primary/10 transition-all cursor-pointer" onClick={() => setIsQuizOpen(true)}>
-                            <div className="flex items-center gap-4">
-                                <div className="w-12 h-12 bg-primary rounded-xl flex items-center justify-center shadow-lg shadow-primary/20 group-hover:scale-110 transition-transform">
-                                    <Brain size={24} className="text-white" />
+                        <div className="mb-10 p-6 bg-primary/5 border border-primary/20 rounded-[2rem] flex flex-col sm:flex-row items-center justify-between group hover:border-primary/40 transition-all cursor-pointer relative overflow-hidden" onClick={() => setIsQuizOpen(true)}>
+                            
+                            <div className="flex items-center gap-6 relative z-10">
+                                <div className="w-16 h-16 bg-primary rounded-2xl flex items-center justify-center shadow-2xl shadow-primary/20 group-hover:scale-110 transition-transform duration-500 border border-white/10">
+                                    <Brain size={32} className="text-white" />
                                 </div>
                                 <div>
-                                    <h4 className="text-[14px] font-bold text-foreground mb-0.5">Ready for Neural Sync?</h4>
-                                    <p className="text-[12px] text-muted-foreground italic">Challenge your understanding and earn Logic Rep points.</p>
+                                    <h4 className="text-[16px] font-bold text-foreground  tracking-tighter mb-1">Initialize_Neural_Sync</h4>
+                                    <p className="text-[11px] text-muted-foreground/80 font-bold  tracking-[0.2em]">Validate core understanding // EARN_XP_REPUTATION</p>
                                 </div>
                             </div>
-                            <div className="flex items-center gap-2 text-primary font-black text-[10px] uppercase tracking-widest">
-                                Sync Now <ChevronRight size={14} />
+                            <div className="flex items-center gap-3 text-primary font-bold text-[11px]  tracking-[0.3em] mt-4 sm:mt-0 relative z-10">
+                                START_SYNC <ChevronRight size={16} strokeWidth={3} className="group-hover:translate-x-1 transition-transform" />
                             </div>
                         </div>
                     )}
 
-                    {/* ... (keep existing metadata) ... */}
-                    <div className="flex flex-wrap gap-x-4 gap-y-3 sm:gap-6 text-[12px] sm:text-[13px] text-muted-foreground">
-                        <span className="flex items-center gap-1.5 border-r border-border pr-4 sm:pr-6 last:border-0 whitespace-nowrap">
-                            <span className="font-normal opacity-60">Recorded</span>
-                            <span className="text-foreground font-medium">{new Date(note.createdAt).toLocaleDateString()}</span>
-                        </span>
-                        <span className="flex items-center gap-1.5 border-r border-border pr-4 sm:pr-6 last:border-0 whitespace-nowrap">
-                            <span className="font-normal opacity-60">Status</span>
-                            <span className="text-primary font-bold uppercase tracking-widest text-[10px] sm:text-[11px]">{note.isPublic ? 'PUBLIC' : 'VAULT'}</span>
-                        </span>
+                    <div className="flex flex-wrap gap-8 text-[11px] font-bold  tracking-[0.2em] text-muted-foreground">
+                        <div className="flex items-center gap-3 group">
+                            <Clock size={14} className="text-primary group-hover:scale-110 transition-transform" />
+                            <span className="text-foreground/40 group-hover:text-foreground transition-colors">RECORDED: {new Date(note.createdAt).toLocaleDateString()}</span>
+                        </div>
+                        <div className="flex items-center gap-3 group">
+                            <CheckCircle2 size={14} className={note.isPublic ? 'text-emerald-500' : 'text-muted-foreground/30'} />
+                            <span className={note.isPublic ? 'text-emerald-500' : 'text-foreground/40'}>{note.isPublic ? 'PULSE_PUBLIC' : 'VAULT_SECURE'}</span>
+                        </div>
                         {note.type === 'adr' && (
-                            <span className="flex items-center gap-1.5 border-r border-border pr-4 sm:pr-6 last:border-0 whitespace-nowrap">
-                                <span className="font-normal opacity-60">Decision</span>
-                                <span className={`font-bold uppercase tracking-widest text-[10px] sm:text-[11px] px-2 py-0.5 rounded-[2px] ${note.adrStatus === 'accepted' ? 'bg-green-500/20 text-green-500 border border-green-500/20' :
-                                    note.adrStatus === 'superseded' || note.adrStatus === 'deprecated' ? 'bg-amber-500/20 text-amber-500' : 'bg-primary/20 text-primary'
-                                    }`}>
-                                    {note.adrStatus}
+                            <div className="flex items-center gap-3 group">
+                                <ZapIcon size={14} className="text-primary" />
+                                <span className={`px-2 py-1 rounded-lg border ${note.adrStatus === 'accepted' ? 'bg-emerald-500/10 border-emerald-500 text-emerald-500' : 'bg-primary/10 border-primary text-primary'}`}>
+                                    DECISION::{note.adrStatus}
                                 </span>
-                            </span>
+                            </div>
                         )}
-                        {note.type === 'pattern' && (
-                            <span className="flex items-center gap-1.5 border-r border-border pr-4 sm:pr-6 last:border-0 whitespace-nowrap">
-                                <span className="font-normal opacity-60">Architecture</span>
-                                <span className="bg-blue-500/20 text-blue-500 font-bold uppercase tracking-widest text-[10px] sm:text-[11px] px-2 py-0.5 rounded-[2px] border border-blue-500/20">LOGIC PATTERN</span>
-                            </span>
-                        )}
-
-                        <span className="flex items-center gap-1.5 whitespace-nowrap">
-                            <span className="font-normal opacity-60">Path</span>
-                            <span className="text-link font-medium flex items-center gap-1">
-                                {note.category?.name || 'GENERIC'}
-                                {note.folder && (
-                                    <>
-                                        <span className="opacity-40">/</span>
-                                        {note.folder.name}
-                                    </>
-                                )}
-                            </span>
-                        </span>
+                        <div className="flex items-center gap-3 group ml-auto">
+                            <FolderTree size={14} className="text-primary" />
+                            <span className="text-foreground/40 group-hover:text-primary transition-colors">PATH: {note.category?.name || 'ROOT'} {note.folder && `// ${note.folder.name}`}</span>
+                        </div>
                     </div>
                 </div>
 
-                <div className="flex flex-col lg:flex-row gap-6 sm:gap-8">
+                <div className="flex flex-col lg:flex-row gap-10">
                     {/* Voting Sidebar */}
-                    <div className="flex lg:flex-col items-center justify-center sm:justify-start gap-4 sm:gap-2 pt-1 border-b lg:border-none border-border pb-4 lg:pb-0">
+                    <div className="flex lg:flex-col items-center justify-center sm:justify-start gap-4 pt-2">
                         <button
                             onClick={() => setIsQuizOpen(true)}
-                            className="p-3 bg-primary/10 border border-primary/20 rounded-full hover:bg-primary/20 transition-all group mb-4 hidden lg:flex"
-                            title="Neural Sync Quiz"
+                            className="w-14 h-14 bg-primary/10 border border-primary/20 rounded-2xl hover:bg-primary/20 transition-all group mb-4 hidden lg:flex items-center justify-center relative shadow-xl shadow-primary/5"
+                            title="Neural_Sync_Core"
                         >
-                            <Brain className="w-6 h-6 text-primary group-hover:scale-110 transition-transform" />
+                            
+                            <Brain className="w-7 h-7 text-primary group-hover:scale-110 transition-transform" />
                         </button>
-                        <button className="p-2 sm:p-3 border border-border rounded-full hover:bg-accent/50 transition-colors text-muted-foreground group">
-
-                            <ChevronUp className="w-5 h-5 sm:w-7 sm:h-7 group-hover:text-primary transition-colors" />
-                        </button>
-                        <span className="text-[20px] sm:text-[24px] font-bold text-foreground">1</span>
-                        <button className="p-2 sm:p-3 border border-border rounded-full hover:bg-accent/50 transition-colors text-muted-foreground group">
-                            <ChevronDown className="w-5 h-5 sm:w-7 sm:h-7 group-hover:text-primary transition-colors" />
-                        </button>
-
-                        <div className="flex lg:flex-col gap-4 lg:mt-6">
-                            <button className="p-2 text-muted-foreground/30 hover:text-primary transition-all scale-100 sm:scale-110">
-                                <Bookmark className="w-[18px] h-[18px] sm:w-5 sm:h-5" />
+                        <div className="flex lg:flex-col items-center gap-3 bg-card/40 backdrop-blur-xl border border-border/50 rounded-2xl p-2 shadow-2xl">
+                            <button className="p-3 text-muted-foreground/40 hover:text-primary hover:bg-primary/10 rounded-xl transition-all group">
+                                <ChevronUp size={24} strokeWidth={3} className="group-hover:scale-110 transition-transform" />
                             </button>
-                            <button className="p-2 text-muted-foreground/30 hover:text-muted-foreground transition-all scale-100 sm:scale-110">
-                                <History className="w-[18px] h-[18px] sm:w-5 sm:h-5" />
+                            <span className="text-2xl font-bold tabular-nums tracking-tighter text-foreground">1</span>
+                            <button className="p-3 text-muted-foreground/40 hover:text-primary hover:bg-primary/10 rounded-xl transition-all group">
+                                <ChevronDown size={24} strokeWidth={3} className="group-hover:scale-110 transition-transform" />
+                            </button>
+                        </div>
+
+                        <div className="flex lg:flex-col gap-6 lg:mt-8">
+                            <button className="text-muted-foreground/30 hover:text-primary transition-all group">
+                                <Bookmark size={20} strokeWidth={2.5} className="group-hover:scale-110 transition-transform" />
+                            </button>
+                            <button className="text-muted-foreground/30 hover:text-foreground transition-all group">
+                                <History size={20} strokeWidth={2.5} className="group-hover:scale-110 transition-transform" />
                             </button>
                         </div>
                     </div>
 
-                    {/* Main Content Area */}
-                    <div className={`flex-1 min-w-0 transition-all duration-500 ${isInterviewMode ? 'max-w-4xl mx-auto' : ''}`}>
+                        {/* Main Content Area */}
+                        <div className={`flex-1 min-w-0 transition-all duration-700 bg-card/20 backdrop-blur-3xl border border-border/50 rounded-[3rem] p-8 sm:p-12 shadow-2xl relative overflow-hidden ${isInterviewMode ? 'max-w-4xl mx-auto ring-2 ring-amber-500/20' : ''}`}>
+                            
 
-                        {isInterviewMode && (
-                            <motion.div
-                                initial={{ opacity: 0, y: -20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                className="bg-amber-500/5 border border-amber-500/20 rounded-2xl p-6 mb-8 shadow-inner overflow-hidden relative"
-                            >
-                                <div className="absolute top-0 right-0 p-4 opacity-10">
-                                    <Flame size={60} />
-                                </div>
-
-                                <h3 className="text-[11px] font-black text-amber-600 uppercase tracking-[0.3em] mb-4 flex items-center gap-2">
-                                    <ZapIcon size={14} /> Tactical Briefing
-                                </h3>
-
-                                {isInterviewLoading ? (
-                                    <div className="flex items-center gap-3 text-amber-600/60 animate-pulse">
-                                        <div className="h-2 w-2 bg-amber-600 rounded-full" />
-                                        <span className="text-[12px] font-bold">SYST-AI: Analyzing Core Logic...</span>
+                            {isInterviewMode && (
+                                <motion.div
+                                    initial={{ opacity: 0, y: -20 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    className="bg-amber-500/10 border border-amber-500/20 rounded-3xl p-8 mb-12 shadow-2xl overflow-hidden relative"
+                                >
+                                    <div className="absolute top-0 right-0 p-6 opacity-5">
+                                        <Flame size={80} />
                                     </div>
-                                ) : interviewData ? (
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                                        <div className="space-y-4">
-                                            <h4 className="text-[13px] font-bold text-foreground underline decoration-amber-500/30 underline-offset-4">Core Talking Points</h4>
-                                            <ul className="space-y-2">
-                                                {interviewData.talkingPoints.map((point, i) => (
-                                                    <li key={i} className="text-[13px] text-muted-foreground flex gap-3">
-                                                        <span className="text-amber-500 font-bold">•</span> {point}
-                                                    </li>
-                                                ))}
-                                            </ul>
+
+                                    <h3 className="text-[11px] font-bold text-amber-500  tracking-[0.4em] mb-6 flex items-center gap-3">
+                                        <div className="w-2 h-2 rounded-full bg-amber-500 " />
+                                        TACTICAL_BRIEFING_CORE
+                                    </h3>
+
+                                    {isInterviewLoading ? (
+                                        <div className="flex items-center gap-4 text-amber-500/60 ">
+                                            <div className="h-2 w-2 bg-amber-500 rounded-full" />
+                                            <span className="text-[12px] font-bold  tracking-widest">SYST-AI: ANALYZING_LOGIC_GATES...</span>
                                         </div>
-                                        <div className="space-y-4">
-                                            <h4 className="text-[13px] font-bold text-foreground underline decoration-amber-500/30 underline-offset-4">Rapid Fire Q&A</h4>
-                                            <div className="space-y-4">
-                                                {interviewData.questions.slice(0, 2).map((q, i) => (
-                                                    <div key={i} className="space-y-1">
-                                                        <p className="text-[12px] font-bold text-foreground">Q: {q.q}</p>
-                                                        <p className="text-[12px] text-muted-foreground bg-white/5 p-2 rounded-lg border border-white/5 italic">A: {q.a}</p>
-                                                    </div>
-                                                ))}
+                                    ) : interviewData ? (
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+                                            <div className="space-y-6">
+                                                <h4 className="text-[11px] font-bold text-foreground  tracking-[0.2em] border-b border-amber-500/20 pb-2">CRITICAL_POINTS</h4>
+                                                <ul className="space-y-3">
+                                                    {interviewData.talkingPoints.map((point, i) => (
+                                                        <li key={i} className="text-[13px] text-muted-foreground/90 flex gap-3 font-medium italic">
+                                                            <span className="text-amber-500 font-bold">#</span> {point}
+                                                        </li>
+                                                    ))}
+                                                </ul>
+                                            </div>
+                                            <div className="space-y-6">
+                                                <h4 className="text-[11px] font-bold text-foreground  tracking-[0.2em] border-b border-amber-500/20 pb-2">NEURAL_Q&A</h4>
+                                                <div className="space-y-5">
+                                                    {interviewData.questions.slice(0, 2).map((q, i) => (
+                                                        <div key={i} className="space-y-2 bg-background/40 p-4 rounded-xl border border-amber-500/10">
+                                                            <p className="text-[12px] font-bold text-foreground  tracking-tight">Q: {q.q}</p>
+                                                            <p className="text-[12px] text-muted-foreground italic leading-relaxed">A: {q.a}</p>
+                                                        </div>
+                                                    ))}
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                ) : (
-                                    <p className="text-[12px] text-muted-foreground italic">Prepare for technical scrutiny. Activate AI briefing for deeper insights.</p>
-                                )}
-                            </motion.div>
-                        )}
+                                    ) : (
+                                        <p className="text-[12px] text-muted-foreground/60 italic font-bold  tracking-widest">Prepare for technical scrutiny. Protocol standing by.</p>
+                                    )}
+                                </motion.div>
+                            )}
 
                         {/* ... (keep Article, Backlinks, Tags) ... */}
 
@@ -492,7 +485,7 @@ const NoteDetails = () => {
                                                 <div className="flex items-center justify-between px-4 py-2 bg-muted/20 border border-border border-b-0 rounded-t-[3px]">
                                                     <div className="flex items-center gap-2">
                                                         <FileCode size={14} className="text-muted-foreground" />
-                                                        <span className="text-[11px] font-bold text-muted-foreground uppercase tracking-widest">{match[1]}</span>
+                                                        <span className="text-[11px] font-bold text-muted-foreground  tracking-widest">{match[1]}</span>
                                                     </div>
                                                     <button
                                                         onClick={() => handleCopy(codeString, blockIndex)}
@@ -603,22 +596,24 @@ const NoteDetails = () => {
                         </article>
 
                         {((note.relatedNotes && note.relatedNotes.length > 0) || (note.backlinks && note.backlinks.length > 0)) && (
-                            <div className="mt-12 pt-8 border-t border-border grid grid-cols-1 md:grid-cols-2 gap-8">
+                            <div className="mt-20 pt-12 border-t border-border/20 grid grid-cols-1 md:grid-cols-2 gap-10">
                                 {note.relatedNotes && note.relatedNotes.length > 0 && (
-                                    <div>
-                                        <h3 className="text-[11px] font-black text-muted-foreground uppercase tracking-[0.2em] mb-4 flex items-center gap-2">
-                                            <History size={14} /> Outbound Pulses
+                                    <div className="space-y-6">
+                                        <h3 className="text-[10px] font-bold text-primary  tracking-[0.3em] flex items-center gap-3">
+                                            <div className="w-1.5 h-1.5 rounded-full bg-primary" />
+                                            OUTBOUND_PULSES
                                         </h3>
-                                        <div className="space-y-2">
+                                        <div className="space-y-3">
                                             {note.relatedNotes.map((link) => (
                                                 <Link
                                                     key={link._id}
                                                     to={`/notes/${link._id}`}
-                                                    className="block p-3 border border-border rounded-[3px] bg-muted/20 hover:border-primary/50 transition-all group"
+                                                    className="block p-4 bg-background/40 border border-border/50 rounded-2xl hover:border-primary/40 transition-all group relative overflow-hidden"
                                                 >
-                                                    <div className="flex items-center justify-between">
-                                                        <span className="text-[13px] text-foreground font-medium truncate group-hover:text-primary transition-colors">{link.title}</span>
-                                                        <ChevronRight size={14} className="text-muted-foreground opacity-0 group-hover:opacity-100 transition-all shrink-0" />
+                                                    
+                                                    <div className="flex items-center justify-between relative z-10">
+                                                        <span className="text-[13px] text-foreground font-bold  tracking-tight truncate group-hover:text-primary transition-colors">{link.title}</span>
+                                                        <ChevronRight size={14} className="text-primary opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all shrink-0" />
                                                     </div>
                                                 </Link>
                                             ))}
@@ -627,20 +622,22 @@ const NoteDetails = () => {
                                 )}
 
                                 {note.backlinks && note.backlinks.length > 0 && (
-                                    <div>
-                                        <h3 className="text-[11px] font-black text-muted-foreground uppercase tracking-[0.2em] mb-4 flex items-center gap-2">
-                                            <ExternalLink size={14} /> Knowledge Backlinks
+                                    <div className="space-y-6">
+                                        <h3 className="text-[10px] font-bold text-muted-foreground  tracking-[0.3em] flex items-center gap-3">
+                                            <div className="w-1.5 h-1.5 rounded-full bg-muted-foreground/30" />
+                                            KNOWLEDGE_BACKLINS
                                         </h3>
-                                        <div className="space-y-2">
+                                        <div className="space-y-3">
                                             {note.backlinks.map((link) => (
                                                 <Link
                                                     key={link._id}
                                                     to={`/notes/${link._id}`}
-                                                    className="block p-3 border border-border rounded-[3px] bg-muted/20 hover:border-primary/50 transition-all group"
+                                                    className="block p-4 bg-background/40 border border-border/50 rounded-2xl hover:border-primary/40 transition-all group relative overflow-hidden"
                                                 >
-                                                    <div className="flex items-center justify-between">
-                                                        <span className="text-[13px] text-foreground font-medium truncate group-hover:text-primary transition-colors">{link.title}</span>
-                                                        <ChevronRight size={14} className="text-muted-foreground opacity-0 group-hover:opacity-100 transition-all shrink-0" />
+                                                    
+                                                    <div className="flex items-center justify-between relative z-10">
+                                                        <span className="text-[13px] text-foreground font-bold  tracking-tight truncate group-hover:text-primary transition-colors">{link.title}</span>
+                                                        <ChevronRight size={14} className="text-primary opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all shrink-0" />
                                                     </div>
                                                 </Link>
                                             ))}
@@ -669,51 +666,46 @@ const NoteDetails = () => {
                             ))}
                         </div>
 
-                        {/* Actions & Attribution */}
-                        <div className="flex flex-col sm:flex-row justify-between items-start mt-8 pt-6 gap-6 pb-8 sm:pb-16 border-t border-border/50">
-                            <div className="flex flex-wrap items-center gap-4 sm:gap-6 text-[12px] sm:text-[13px] text-muted-foreground w-full sm:w-auto">
-                                <button onClick={handleShare} className="hover:text-primary transition-colors flex items-center gap-1.5 border-none bg-transparent cursor-pointer">
-                                    <Share2 size={14} /> Share
+                        <div className="flex flex-col xl:flex-row justify-between items-start mt-12 pt-8 gap-8 pb-10 border-t border-border/20">
+                            <div className="flex flex-wrap items-center gap-6 text-[10px] font-bold  tracking-[0.3em] text-muted-foreground/60 w-full sm:w-auto">
+                                <button onClick={handleShare} className="hover:text-primary transition-all flex items-center gap-2 bg-transparent cursor-pointer group">
+                                    <Share2 size={14} className="group-hover:scale-110 transition-transform" /> SHARE_SIGNAL
                                 </button>
-                                <button onClick={handleCopyReference} className="hover:text-primary transition-colors flex items-center gap-1.5 border-none bg-transparent cursor-pointer" title="Copy as Wiki-Link reference">
-                                    <LinkIcon size={14} /> Reference
+                                <button onClick={handleCopyReference} className="hover:text-primary transition-all flex items-center gap-2 bg-transparent cursor-pointer group" title="Copy as Wiki-Link reference">
+                                    <LinkIcon size={14} className="group-hover:scale-110 transition-transform" /> COPY_REF
                                 </button>
                                 <button
                                     onClick={handleFollow}
-                                    className={`${isFollowing ? 'text-primary' : 'hover:text-primary'} transition-colors flex items-center gap-1.5 border-none bg-transparent cursor-pointer`}
+                                    className={`${isFollowing ? 'text-primary' : 'hover:text-primary'} transition-all flex items-center gap-2 bg-transparent cursor-pointer group`}
                                 >
-                                    <Bookmark size={14} className={isFollowing ? 'fill-primary' : ''} /> {isFollowing ? 'Following' : 'Follow'}
+                                    <Bookmark size={14} className={`${isFollowing ? 'fill-primary' : ''} group-hover:scale-110 transition-transform`} /> {isFollowing ? 'FOLLOWING_ENTITY' : 'FOLLOW_ENTITY'}
                                 </button>
                                 {user && (user.role === 'admin' || note.user?._id === user._id) && (
-                                    <button onClick={handleDelete} className="hover:text-rose-500 transition-colors flex items-center gap-1.5 border-none bg-transparent cursor-pointer">
-                                        <Trash2 size={14} /> Delete
+                                    <button onClick={handleDelete} className="hover:text-rose-500 transition-all flex items-center gap-2 bg-transparent cursor-pointer group">
+                                        <Trash2 size={14} className="group-hover:scale-110 transition-transform" /> WIPE_RECORD
                                     </button>
                                 )}
                             </div>
 
-                            <div className="bg-accent/30 p-4 rounded-[3px] w-full sm:w-[220px] shrink-0 border border-transparent hover:border-primary/20 transition-all shadow-sm">
-                                <p className="text-[12px] text-muted-foreground mb-2">
-                                    documented {new Date(note.createdAt).toLocaleDateString()}
+                            <div className="bg-card/40 backdrop-blur-xl p-5 rounded-3xl w-full sm:w-[280px] shrink-0 border border-border/50 group hover:border-primary/30 transition-all shadow-2xl relative overflow-hidden">
+                                
+                                <p className="text-[9px] font-bold  tracking-[0.3em] text-muted-foreground/40 mb-3 relative z-10">
+                                    AUTH_IDENTITY // TS::{new Date(note.createdAt).toLocaleDateString()}
                                 </p>
-                                <div className="flex items-center gap-3">
-                                    <div className="w-10 h-10 bg-primary rounded-[3px] flex items-center justify-center text-white text-[16px] font-bold shadow-sm">
+                                <div className="flex items-center gap-4 relative z-10">
+                                    <div className="w-12 h-12 bg-primary rounded-2xl flex items-center justify-center text-white text-xl font-bold shadow-xl shadow-primary/20 border border-white/10">
                                         {note.user?.username?.charAt(0).toUpperCase() || 'U'}
                                     </div>
-                                    <div className="text-[13px]">
-                                        <p className="text-link font-bold leading-tight">
-                                            {note.user?.username || 'System User'}
+                                    <div className="flex-1 min-w-0">
+                                        <p className="text-foreground font-bold  tracking-tight truncate">
+                                            {note.user?.username || 'ANON_USER'}
                                         </p>
-                                        <div className="flex items-center gap-1.5 text-[11px] text-muted-foreground font-bold mt-0.5">
-                                            <span title="Reputation Points">{reputation.toLocaleString()}</span>
-                                            {/* Rank Badge */}
-                                            {reputation > 500 && (
-                                                <span
-                                                    className={`px-1.5 py-0.5 rounded-[2px] text-[9px] uppercase tracking-wider text-white ${reputation > 2000 ? 'bg-amber-400' :
-                                                        reputation > 1000 ? 'bg-slate-300' : 'bg-amber-600'
-                                                        }`}
-                                                    title={reputation > 2000 ? 'Gold Contributor' : reputation > 1000 ? 'Silver Contributor' : 'Bronze Contributor'}
-                                                >
-                                                    {reputation > 2000 ? 'GOLD' : reputation > 1000 ? 'SILVER' : 'BRONZE'}
+                                        <div className="flex items-center gap-2 text-[9px] text-primary font-bold  tracking-widest mt-1">
+                                            <Activity size={10} strokeWidth={3} className="text-emerald-500" />
+                                            <span>REP::{(note.user?.reputation || 0).toLocaleString()}</span>
+                                            {(note.user?.reputation || 0) > 500 && (
+                                                <span className="bg-primary/20 px-1.5 py-0.5 rounded text-[8px]">
+                                                    {(note.user?.reputation || 0) > 2000 ? 'GOLD' : (note.user?.reputation || 0) > 1000 ? 'SILVER' : 'BRONZE'}
                                                 </span>
                                             )}
                                         </div>
@@ -722,26 +714,28 @@ const NoteDetails = () => {
                             </div>
                         </div>
 
-                        {/* Technical Resources Section */}
                         {note.attachmentUrl && (
-                            <div className="mt-8 pt-6 border-t border-border">
-                                <h3 className="text-[19px] font-normal mb-4 text-foreground flex items-center gap-3">
-                                    <FileCode size={20} className="text-primary" /> Technical Resources
+                            <div className="mt-12 pt-8 border-t border-border/20">
+                                <h3 className="text-[10px] font-bold  tracking-[0.4em] text-primary mb-6 flex items-center gap-3">
+                                    <div className="w-2 h-2 rounded-full bg-primary " />
+                                    TECHNICAL_RESOURCES_VAULT
                                 </h3>
-                                <div className="bg-muted/20 border border-border border-dashed rounded-[3px] p-6 flex flex-col items-center justify-center text-center group hover:bg-muted/30 transition-all">
-                                    <div className="p-3 bg-secondary rounded-full mb-3 text-muted-foreground group-hover:text-primary transition-colors">
-                                        <FileDown size={32} />
+                                <div className="bg-card/40 backdrop-blur-xl border border-border/50 border-dashed rounded-[2rem] p-10 flex flex-col items-center justify-center text-center group hover:border-primary/40 transition-all relative overflow-hidden shadow-2xl">
+                                    
+                                    <div className="p-5 bg-primary/10 rounded-full mb-6 text-primary group-hover:scale-110 transition-transform duration-500 shadow-xl shadow-primary/5 border border-primary/20">
+                                        <FileDown size={40} strokeWidth={2.5} />
                                     </div>
-                                    <p className="text-[14px] font-bold text-foreground mb-1">
-                                        {note.attachment?.originalName || 'Download Documentation'}
+                                    <p className="text-xl font-bold text-foreground  tracking-tighter mb-2 relative z-10">
+                                        {note.attachment?.originalName || 'RAW_DOCUMENTATION'}
                                     </p>
+                                    <p className="text-[11px] font-bold text-muted-foreground  tracking-[0.2em] mb-8 relative z-10">PROTOCOL_READY // AUTHORIZED_DOWNLOAD_ONLY</p>
                                     <a
                                         href={note.attachmentUrl.startsWith('http') ? note.attachmentUrl : `http://localhost:5005/${note.attachmentUrl}`}
                                         target="_blank"
                                         rel="noopener noreferrer"
-                                        className="so-btn so-btn-primary px-6 flex items-center gap-2"
+                                        className="h-12 px-10 bg-primary text-white shadow-xl shadow-primary/20 rounded-xl text-[10px] font-bold  tracking-[0.3em] flex items-center gap-3 active:scale-95 transition-all relative z-10"
                                     >
-                                        <ExternalLink size={14} /> Open Document
+                                        <ExternalLink size={16} strokeWidth={3} /> INITIALIZE_EXTRACTION
                                     </a>
                                 </div>
                             </div>
@@ -749,11 +743,13 @@ const NoteDetails = () => {
 
                         {/* Tutorial Section if exists */}
                         {note.videoUrl && (
-                            <div className="mt-8 pt-8 border-t border-border">
-                                <h3 className="text-[22px] font-normal mb-6 text-foreground flex items-center gap-3">
-                                    <Video size={20} className="text-primary" /> Integrated Video Context
+                            <div className="mt-12 pt-10 border-t border-border/20">
+                                <h3 className="text-[10px] font-bold  tracking-[0.4em] text-primary mb-6 flex items-center gap-3">
+                                    <div className="w-2 h-2 rounded-full bg-primary " />
+                                    INTEGRATED_VISUAL_SYNC
                                 </h3>
-                                <div className="aspect-video bg-black rounded-[3px] overflow-hidden border border-border shadow-2xl">
+                                <div className="aspect-video bg-black rounded-[2.5rem] overflow-hidden border border-border/50 shadow-2xl relative group">
+                                    
                                     <iframe
                                         width="100%"
                                         height="100%"
@@ -761,17 +757,19 @@ const NoteDetails = () => {
                                         title="Tutorial"
                                         frameBorder="0"
                                         allowFullScreen
+                                        className="relative z-10"
                                     />
                                 </div>
                             </div>
                         )}
 
                         {/* Community Discussion Layer */}
+                        {/* Community Discussion Layer */}
                         {!isInterviewMode && (
-                            <div id="comments" className="mt-12 pt-10 border-t border-border">
-
-                                <h3 className="text-[19px] font-normal mb-6 text-foreground flex items-center gap-3">
-                                    <MessageSquare size={20} className="text-primary" /> {note.type === 'issue' ? 'Answers & Solutions' : 'Discussion & Contributions'}
+                            <div id="comments" className="mt-20 pt-12 border-t border-border/20">
+                                <h3 className="text-[10px] font-bold  tracking-[0.4em] text-primary mb-10 flex items-center gap-3">
+                                    <div className="w-2 h-2 rounded-full bg-primary " />
+                                    {note.type === 'issue' ? 'ANSWERS_&_SOLUTIONS_PROTOCOL' : 'DISCUSSION_&_LOGIC_CONTRIBUTIONS'}
                                 </h3>
 
                                 {user ? (
@@ -781,57 +779,53 @@ const NoteDetails = () => {
                                         dispatch(addComment({ id, text: commentText }));
                                         setCommentText('');
                                         setCommentPreview(false);
-                                    }} className="mb-10 bg-secondary/10 p-6 rounded-[8px] border border-border/50 shadow-sm relative overflow-hidden">
-                                        {/* Decorative Accent */}
-                                        <div className="absolute top-0 left-0 w-1 h-full bg-primary/40" />
-
-                                        <div className="flex justify-between items-center mb-4">
-                                            <div className="flex items-center gap-3">
-                                                <div className="w-8 h-8 bg-primary/20 rounded-full flex items-center justify-center text-primary font-bold text-xs ring-2 ring-background">
+                                    }} className="mb-12 bg-card/40 backdrop-blur-xl p-8 rounded-[2rem] border border-border/50 shadow-2xl relative overflow-hidden group">
+                                        
+                                        
+                                        <div className="flex justify-between items-center mb-6 relative z-10">
+                                            <div className="flex items-center gap-4">
+                                                <div className="w-10 h-10 bg-primary/20 rounded-xl flex items-center justify-center text-primary font-bold text-xs border border-primary/20">
                                                     {user.username.charAt(0).toUpperCase()}
                                                 </div>
-                                                <span className="text-sm font-bold text-foreground">Drafting Response</span>
+                                                <span className="text-[11px] font-bold  tracking-[0.2em] text-foreground">DRAFTING_CONTRIBUTION</span>
                                             </div>
-                                            <div className="flex gap-1.5">
-                                                <button
-                                                    type="button"
-                                                    onClick={() => setCommentPreview(!commentPreview)}
-                                                    className={`text-[10px] uppercase font-black tracking-widest px-3 py-1.5 rounded transition-all ${commentPreview ? 'bg-primary text-white' : 'bg-background border border-border text-muted-foreground hover:border-primary/50'}`}
-                                                >
-                                                    {commentPreview ? 'Editor' : 'Preview Result'}
-                                                </button>
-                                            </div>
+                                            <button
+                                                type="button"
+                                                onClick={() => setCommentPreview(!commentPreview)}
+                                                className={`text-[9px]  font-bold tracking-[0.3em] px-4 py-2 rounded-lg transition-all ${commentPreview ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'bg-background/50 border border-border/50 text-muted-foreground hover:border-primary/30'}`}
+                                            >
+                                                {commentPreview ? 'EDITOR_MODE' : 'PREVIEW_SIGNAL'}
+                                            </button>
                                         </div>
 
                                         {commentPreview ? (
-                                            <div className="min-h-[140px] bg-background border border-border p-4 rounded-[3px] prose prose-sm dark:prose-invert max-w-none mb-3">
+                                            <div className="min-h-[160px] bg-background/50 border border-border/50 p-6 rounded-2xl prose prose-sm dark:prose-invert max-w-none mb-6 relative z-10 italic">
                                                 <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                                                    {commentText || "*Nothing to preview yet...*"}
+                                                    {commentText || "*No neural signal detected...*"}
                                                 </ReactMarkdown>
                                             </div>
                                         ) : (
                                             <textarea
                                                 value={commentText}
                                                 onChange={(e) => setCommentText(e.target.value)}
-                                                placeholder="Use Markdown to share code snippets... `backticks` for code blocks."
-                                                className="w-full bg-background border border-border rounded-[3px] p-4 text-[14px] text-foreground focus:border-primary outline-none min-h-[140px] font-mono transition-all mb-3 placeholder:opacity-50"
+                                                placeholder="Initialize contribution logic... (Markdown Supported)"
+                                                className="w-full bg-background/50 border border-border/50 rounded-2xl p-6 text-[14px] text-foreground focus:border-primary outline-none min-h-[160px] font-mono transition-all mb-6 placeholder:opacity-30 relative z-10"
                                             />
                                         )}
 
-                                        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-                                            {/* Quick Context Buttons - Only for Issues */}
+                                        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 relative z-10">
                                             {note.type === 'issue' && (
                                                 <div className="flex flex-wrap gap-2">
                                                     {[
-                                                        { label: 'Step/Steps?', text: 'Can you provide the step-by-step instructions to reproduce this?' },
-                                                        { label: 'Environment?', text: 'What is your current OS/Browser and version?' },
-                                                        { label: 'Check Logs', text: 'Please check your console/terminal logs and paste the error here.' }
+                                                        { label: 'STEPS_REQ?', text: 'Can you provide the step-by-step instructions to reproduce this?' },
+                                                        { label: 'ENV_METRICS?', text: 'What is your current OS/Browser and version?' },
+                                                        { label: 'FETCH_LOGS', text: 'Please check your console/terminal logs and paste the error here.' }
                                                     ].map((btn, i) => (
                                                         <button
                                                             key={i}
                                                             type="button"
                                                             onClick={() => handleQuickAction(btn.text)}
-                                                            className="text-[10px] font-bold text-primary bg-primary/5 border border-primary/10 px-2 py-1 rounded hover:bg-primary/20 transition-all uppercase"
+                                                            className="text-[9px] font-bold  tracking-widest text-primary bg-primary/10 border border-primary/20 px-3 py-1.5 rounded-lg hover:bg-primary/20 transition-all"
                                                         >
                                                             + {btn.label}
                                                         </button>
@@ -839,69 +833,65 @@ const NoteDetails = () => {
                                                 </div>
                                             )}
 
-                                            <button type="submit" className="so-btn so-btn-primary py-2.5 px-6 shadow-lg shadow-primary/20 w-full sm:w-auto">
-                                                Post Contribution
+                                            <button type="submit" className="h-12 px-8 bg-primary text-white shadow-xl shadow-primary/20 rounded-xl text-[10px] font-bold  tracking-[0.3em] flex items-center gap-2 group active:scale-95 transition-all w-full sm:w-auto relative overflow-hidden">
+                                                
+                                                POST_CONTRIBUTION <ChevronRight size={14} strokeWidth={3} className="group-hover:translate-x-1 transition-transform" />
                                             </button>
                                         </div>
                                     </form>
                                 ) : (
-                                    <div className="p-8 bg-muted/20 border border-border border-dashed rounded-[12px] text-center mb-10 overflow-hidden relative">
+                                    <div className="p-12 bg-card/20 backdrop-blur-xl border border-border/50 border-dashed rounded-[2rem] text-center mb-12 relative overflow-hidden group">
+                                        
                                         <div className="relative z-10">
-                                            <p className="text-[14px] text-muted-foreground mb-4 font-medium italic">Shared knowledge builds better systems.</p>
-                                            <Link to="/login" className="so-btn so-btn-primary inline-flex items-center gap-2">
-                                                Log in to respond
+                                            <p className="text-[12px] text-muted-foreground/60 mb-6 font-bold  tracking-[0.3em]">SHARED_KNOWLEDGE_BUILDS_STABLE_SYSTEMS</p>
+                                            <Link to="/login" className="h-12 px-8 bg-primary/10 border border-primary/30 text-primary hover:bg-primary/20 rounded-xl font-bold  tracking-[0.3em] text-[10px] inline-flex items-center gap-3 transition-all">
+                                                AUTH_BYPASS_TO_RESPOND <ExternalLink size={14} strokeWidth={3} />
                                             </Link>
                                         </div>
                                     </div>
                                 )}
 
-                                <div className="space-y-6">
+                                <div className="space-y-8">
                                     {note.comments?.length > 0 ? (
                                         [...note.comments]
                                             .sort((a, b) => (b.isSolution === a.isSolution) ? 0 : b.isSolution ? 1 : -1)
                                             .map((comment, index) => (
-                                                <div key={index} className={`flex gap-4 group p-4 rounded-[6px] transition-all ${comment.isSolution ? 'bg-green-500/5 border border-green-500/20' : ''}`}>
-                                                    <div className="w-8 h-8 bg-secondary rounded-[3px] flex items-center justify-center text-[12px] font-bold text-muted-foreground shrink-0 border border-border">
+                                                <div key={index} className={`flex gap-6 group p-8 rounded-[2rem] transition-all relative overflow-hidden ${comment.isSolution ? 'bg-emerald-500/5 border-2 border-emerald-500/30 shadow-2xl shadow-emerald-500/10' : 'bg-card/20 border border-border/50 shadow-xl'}`}>
+                                                    
+                                                    
+                                                    <div className="w-12 h-12 bg-background/50 backdrop-blur border border-border/50 rounded-2xl flex items-center justify-center text-lg font-bold text-muted-foreground shrink-0 relative z-10 shadow-lg">
                                                         {comment.user?.username?.charAt(0).toUpperCase() || '?'}
                                                     </div>
-                                                    <div className="flex-1">
-                                                        <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-2 gap-2">
-                                                            <div className="flex flex-wrap items-center gap-2">
-                                                                <span className="text-[13px] font-bold text-link">{comment.user?.username || 'Unknown User'}</span>
-                                                                <span className="text-[11px] text-muted-foreground">{new Date(comment.createdAt).toLocaleDateString([], { month: 'short', day: 'numeric' })}</span>
+                                                    
+                                                    <div className="flex-1 relative z-10">
+                                                        <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 gap-4">
+                                                            <div className="flex flex-wrap items-center gap-3">
+                                                                <span className="text-[13px] font-bold text-foreground  tracking-tight">{comment.user?.username || 'ANON_ENTITY'}</span>
+                                                                <div className="w-1 h-1 rounded-full bg-muted-foreground/30" />
+                                                                <span className="text-[10px] text-muted-foreground font-bold  tracking-widest">TS::{new Date(comment.createdAt).toLocaleDateString([], { month: 'short', day: 'numeric' })}</span>
                                                                 {comment.isSolution && (
-                                                                    <span className="flex items-center gap-1 text-[9px] sm:text-[10px] uppercase font-bold text-green-600 bg-green-500/10 px-2 py-0.5 rounded-full border border-green-500/20">
-                                                                        <CheckCircle2 size={10} /> Solution
+                                                                    <span className="flex items-center gap-1.5 text-[9px]  font-bold tracking-widest text-emerald-500 bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/20 shadow-[0_0_10px_rgba(16,185,129,0.1)]">
+                                                                        <CheckCircle2 size={12} strokeWidth={3} /> VERIFIED_LOGIC
                                                                     </span>
                                                                 )}
                                                             </div>
-                                                            <div className="flex items-center gap-2">
-                                                                {/* Mark Solution Button (Only for Issue Author) */}
+                                                            <div className="flex items-center gap-3">
                                                                 {user && note.type === 'issue' && note.user._id === user._id && !comment.isSolution && (
                                                                     <button
                                                                         onClick={() => handleMarkSolution(comment._id)}
-                                                                        className="opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity text-[10px] font-black uppercase text-green-600 bg-green-500/5 border border-green-500/20 px-3 py-1 rounded hover:bg-green-500 hover:text-white flex items-center gap-1.5"
-                                                                        title="Mark as Solution"
+                                                                        className="h-9 px-4 bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 rounded-xl hover:bg-emerald-500 hover:text-white transition-all text-[9px] font-bold  tracking-widest flex items-center gap-2 shadow-lg"
                                                                     >
-                                                                        <CheckCircle2 size={12} /> Mark Best Answer
+                                                                        <CheckCircle2 size={12} strokeWidth={3} /> MARK_SOLUTION
                                                                     </button>
                                                                 )}
 
                                                                 {user && (user._id === comment.user?._id || user.role === 'admin') && (
-                                                                    <div className="flex gap-2 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity ml-2">
-                                                                        <button
-                                                                            onClick={() => startEditingComment(comment)}
-                                                                            className="text-muted-foreground hover:text-primary"
-                                                                            title="Edit"
-                                                                        >
-                                                                            <Edit size={12} />
+                                                                    <div className="flex gap-2 opacity-40 group-hover:opacity-100 transition-opacity">
+                                                                        <button onClick={() => startEditingComment(comment)} className="p-2 hover:text-primary transition-colors">
+                                                                            <Edit size={14} strokeWidth={3} />
                                                                         </button>
-                                                                        <button
-                                                                            onClick={() => handleDeleteComment(comment._id)}
-                                                                            className="text-muted-foreground hover:text-destructive"
-                                                                            title="Delete"
-                                                                        >
-                                                                            <Trash2 size={12} />
+                                                                        <button onClick={() => handleDeleteComment(comment._id)} className="p-2 hover:text-rose-500 transition-colors">
+                                                                            <Trash2 size={14} strokeWidth={3} />
                                                                         </button>
                                                                     </div>
                                                                 )}
@@ -909,30 +899,19 @@ const NoteDetails = () => {
                                                         </div>
 
                                                         {editingCommentId === comment._id ? (
-                                                            <div className="mt-2">
+                                                            <div className="mt-4 space-y-4">
                                                                 <textarea
                                                                     value={editCommentText}
                                                                     onChange={(e) => setEditCommentText(e.target.value)}
-                                                                    className="w-full bg-background border border-border rounded-[3px] p-2 text-[14px] text-foreground focus:border-primary outline-none min-h-[100px] mb-2 font-mono"
-                                                                    placeholder="Use Markdown for code blocks..."
+                                                                    className="w-full bg-background/50 border border-border/50 rounded-2xl p-4 text-[14px] text-foreground focus:border-primary outline-none min-h-[120px] font-mono shadow-inner"
                                                                 />
-                                                                <div className="flex gap-2">
-                                                                    <button
-                                                                        onClick={() => saveEditedComment(comment._id)}
-                                                                        className="so-btn so-btn-primary py-1 px-3 text-[12px]"
-                                                                    >
-                                                                        Save Changes
-                                                                    </button>
-                                                                    <button
-                                                                        onClick={cancelEditingComment}
-                                                                        className="so-btn border border-border py-1 px-3 text-[12px]"
-                                                                    >
-                                                                        Cancel
-                                                                    </button>
+                                                                <div className="flex gap-3">
+                                                                    <button onClick={() => saveEditedComment(comment._id)} className="h-10 px-6 bg-primary text-white rounded-xl text-[10px] font-bold  tracking-widest shadow-lg shadow-primary/20">SAVE_INPUT</button>
+                                                                    <button onClick={cancelEditingComment} className="h-10 px-6 bg-background border border-border text-muted-foreground rounded-xl text-[10px] font-bold  tracking-widest">CANCEL</button>
                                                                 </div>
                                                             </div>
                                                         ) : (
-                                                            <div className="prose prose-sm dark:prose-invert max-w-none prose-p:leading-relaxed prose-pre:bg-muted/50 prose-pre:border prose-pre:border-border mt-2">
+                                                            <div className="prose prose-sm dark:prose-invert max-w-none prose-p:text-[15px] prose-p:leading-relaxed text-foreground/90 font-medium italic bg-background/30 p-6 rounded-2xl border border-border/10 shadow-inner">
                                                                 <ReactMarkdown
                                                                     remarkPlugins={[remarkGfm]}
                                                                     components={{
@@ -940,17 +919,19 @@ const NoteDetails = () => {
                                                                             const match = /language-(\w+)/.exec(className || '')
                                                                             const codeString = String(children).replace(/\n$/, '');
                                                                             return !inline && match ? (
-                                                                                <SyntaxHighlighter
-                                                                                    style={theme === 'dark' ? vscDarkPlus : prism}
-                                                                                    language={match[1]}
-                                                                                    PreTag="div"
-                                                                                    className="!rounded-[3px] !text-[12px] !p-4"
-                                                                                    {...props}
-                                                                                >
-                                                                                    {codeString}
-                                                                                </SyntaxHighlighter>
+                                                                                <div className="my-4 rounded-xl overflow-hidden border border-border/50 shadow-2xl">
+                                                                                    <SyntaxHighlighter
+                                                                                        style={theme === 'dark' ? vscDarkPlus : prism}
+                                                                                        language={match[1]}
+                                                                                        PreTag="div"
+                                                                                        className="!rounded-none !text-[12px] !p-6 !m-0 !bg-background/80"
+                                                                                        {...props}
+                                                                                    >
+                                                                                        {codeString}
+                                                                                    </SyntaxHighlighter>
+                                                                                </div>
                                                                             ) : (
-                                                                                <code className="bg-accent/40 text-primary px-1 py-0.5 rounded-[2px] font-mono text-[12px]" {...props}>
+                                                                                <code className="bg-primary/10 text-primary px-1.5 py-0.5 rounded-lg font-mono text-[13px] font-bold" {...props}>
                                                                                     {children}
                                                                                 </code>
                                                                             )
@@ -965,7 +946,9 @@ const NoteDetails = () => {
                                                 </div>
                                             ))
                                     ) : (
-                                        <p className="text-[13px] text-muted-foreground italic">No feedback recorded yet. Be the first to contribute.</p>
+                                        <div className="py-12 text-center opacity-40">
+                                            <p className="text-[12px] font-bold  tracking-[0.4em]">NO_LOGIC_CONTRIBUTIONS_DETECTED</p>
+                                        </div>
                                     )}
                                 </div>
                             </div>

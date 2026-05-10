@@ -85,10 +85,10 @@ const FlashQuiz = ({ noteId, onClose }) => {
                     {loading ? (
                         <div className="h-64 flex flex-col items-center justify-center space-y-4">
                             <div className="relative">
-                                <Brain size={48} className="text-primary animate-pulse" />
+                                <Brain size={48} className="text-primary " />
                                 <div className="absolute inset-0 bg-primary/20 blur-xl rounded-full" />
                             </div>
-                            <p className="text-[11px] font-black uppercase tracking-[0.3em] text-primary animate-pulse">Synchronizing Neural Logic...</p>
+                            <p className="text-[11px] font-bold  tracking-[0.3em] text-primary ">Synchronizing Neural Logic...</p>
                         </div>
                     ) : currentStep === 0 ? (
                         <div className="text-center space-y-6 py-4 sm:py-8">
@@ -112,7 +112,7 @@ const FlashQuiz = ({ noteId, onClose }) => {
                         <div className="space-y-6 sm:space-y-8">
                             {/* Quiz Progress */}
                             <div className="flex justify-between items-center bg-card/30 p-2 rounded-lg border border-border/40">
-                                <span className="text-[10px] font-black uppercase tracking-widest text-primary">Question {currentQuestion + 1} / {quizData?.length || 0}</span>
+                                <span className="text-[10px] font-bold  tracking-widest text-primary">Question {currentQuestion + 1} / {quizData?.length || 0}</span>
                                 <div className="flex gap-1.5">
                                     {quizData?.map((_, i) => (
                                         <div
@@ -128,7 +128,7 @@ const FlashQuiz = ({ noteId, onClose }) => {
                             {!quizData ? (
                                 <div className="text-center py-10">
                                     <p className="text-muted-foreground italic">Neural synchronization failed. Retrying...</p>
-                                    <button onClick={fetchQuiz} className="mt-4 so-btn border text-xs uppercase font-black">Refresh Logic</button>
+                                    <button onClick={fetchQuiz} className="mt-4 so-btn border text-xs  font-bold">Refresh Logic</button>
                                 </div>
                             ) : (
                                 <div className="space-y-6">
@@ -172,13 +172,13 @@ const FlashQuiz = ({ noteId, onClose }) => {
                                             >
                                                 <div className="p-4 bg-primary/5 border border-primary/20 rounded-xl">
                                                     <p className="text-[11px] sm:text-[12px] text-foreground leading-relaxed">
-                                                        <span className="font-black text-primary uppercase mr-2 text-[10px] tracking-widest">System Logic:</span>
+                                                        <span className="font-bold text-primary  mr-2 text-[10px] tracking-widest">System Logic:</span>
                                                         {quizData?.[currentQuestion]?.explanation}
                                                     </p>
                                                 </div>
                                                 <button
                                                     onClick={nextQuestion}
-                                                    className="w-full so-btn so-btn-primary py-4 font-black uppercase tracking-widest text-[11px]"
+                                                    className="w-full so-btn so-btn-primary py-4 font-bold  tracking-widest text-[11px]"
                                                 >
                                                     {currentQuestion === (quizData?.length || 0) - 1 ? 'Final Commit' : 'Advance Next'}
                                                 </button>
@@ -199,14 +199,14 @@ const FlashQuiz = ({ noteId, onClose }) => {
                                 >
                                     <Award size={40} className="sm:size-[48px] text-primary" />
                                 </motion.div>
-                                <div className="absolute -top-1 -right-1 bg-green-500 text-white text-[8px] sm:text-[10px] font-black px-2 py-1 rounded-full uppercase tracking-widest shadow-lg">
+                                <div className="absolute -top-1 -right-1 bg-green-500 text-white text-[8px] sm:text-[10px] font-bold px-2 py-1 rounded-full  tracking-widest shadow-lg">
                                     Validated
                                 </div>
                             </div>
 
                             <div>
-                                <h3 className="text-[20px] sm:text-[24px] font-black text-foreground mb-1 leading-tight uppercase tracking-tight">Sync Complete</h3>
-                                <div className="text-[11px] sm:text-[13px] text-muted-foreground uppercase font-black tracking-widest flex items-center justify-center gap-2">
+                                <h3 className="text-[20px] sm:text-[24px] font-bold text-foreground mb-1 leading-tight  tracking-tight">Sync Complete</h3>
+                                <div className="text-[11px] sm:text-[13px] text-muted-foreground  font-bold tracking-widest flex items-center justify-center gap-2">
                                     <span className="opacity-50">Score:</span>
                                     <span className="text-primary text-base">{score} / {quizData?.length || 0}</span>
                                     <span className="opacity-50">Accuracy</span>
@@ -215,23 +215,23 @@ const FlashQuiz = ({ noteId, onClose }) => {
 
                             <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-4">
                                 <div className="p-3 sm:p-4 rounded-2xl bg-muted/30 border border-border">
-                                    <p className="text-[9px] sm:text-[10px] text-muted-foreground uppercase font-black mb-1 opacity-60 text-center">Logic Rep</p>
-                                    <p className="text-[14px] sm:text-[18px] font-black text-foreground text-center">+{score * 10}</p>
+                                    <p className="text-[9px] sm:text-[10px] text-muted-foreground  font-bold mb-1 opacity-60 text-center">Logic Rep</p>
+                                    <p className="text-[14px] sm:text-[18px] font-bold text-foreground text-center">+{score * 10}</p>
                                 </div>
                                 <div className="p-3 sm:p-4 rounded-2xl bg-muted/30 border border-border">
-                                    <p className="text-[9px] sm:text-[10px] text-muted-foreground uppercase font-black mb-1 opacity-60 text-center">Accuracy Pts</p>
-                                    <p className="text-[14px] sm:text-[18px] font-black text-foreground text-center">+{score * 5}</p>
+                                    <p className="text-[9px] sm:text-[10px] text-muted-foreground  font-bold mb-1 opacity-60 text-center">Accuracy Pts</p>
+                                    <p className="text-[14px] sm:text-[18px] font-bold text-foreground text-center">+{score * 5}</p>
                                 </div>
                                 <div className="p-3 sm:p-4 rounded-2xl bg-muted/30 border border-border">
-                                    <p className="text-[9px] sm:text-[10px] text-muted-foreground uppercase font-black mb-1 opacity-60 text-center">Status</p>
-                                    <p className="text-[14px] sm:text-[18px] font-black text-primary text-center">COMMITTED</p>
+                                    <p className="text-[9px] sm:text-[10px] text-muted-foreground  font-bold mb-1 opacity-60 text-center">Status</p>
+                                    <p className="text-[14px] sm:text-[18px] font-bold text-primary text-center">COMMITTED</p>
                                 </div>
                             </div>
 
                             <div className="flex flex-col sm:flex-row gap-3 pt-4">
                                 <button
                                     onClick={syncToNeuralNetwork}
-                                    className="flex-1 so-btn so-btn-primary py-4 font-black uppercase tracking-widest order-2 sm:order-1 text-[11px]"
+                                    className="flex-1 so-btn so-btn-primary py-4 font-bold  tracking-widest order-2 sm:order-1 text-[11px]"
                                 >
                                     Commit to Neural Record
                                 </button>

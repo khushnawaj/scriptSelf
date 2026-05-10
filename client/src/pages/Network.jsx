@@ -91,7 +91,7 @@ export default function Network() {
         <div className="max-w-7xl mx-auto px-4 py-8 space-y-6">
             <header className="flex flex-col md:flex-row md:items-end justify-between gap-6">
                 <div className="space-y-2">
-                    <Link to="/dashboard" className="inline-flex items-center gap-2 text-muted-foreground hover:text-primary text-[10px] font-black uppercase tracking-[0.2em] transition-all group mb-2">
+                    <Link to="/dashboard" className="inline-flex items-center gap-2 text-muted-foreground hover:text-primary text-[10px] font-bold  tracking-[0.2em] transition-all group mb-2">
                         <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform" /> BACK TO CONSOLE
                     </Link>
                     <div className="flex items-center gap-4">
@@ -99,7 +99,7 @@ export default function Network() {
                             {activeTab === 'feed' ? <Rss size={24} /> : <NetworkIcon size={24} />}
                         </div>
                         <div>
-                            <h1 className="text-3xl font-black uppercase tracking-tight text-foreground">
+                            <h1 className="text-xl font-bold  tracking-tight text-foreground">
                                 {activeTab === 'feed' ? 'Network Feed' : 'Neural Graph'}
                             </h1>
                             <p className="text-sm text-muted-foreground font-medium italic opacity-70">
@@ -114,13 +114,13 @@ export default function Network() {
                 <div className="flex bg-card border border-border rounded-lg p-1 gap-1">
                     <button
                         onClick={() => setActiveTab('feed')}
-                        className={`px-4 py-2 rounded-md text-xs font-bold uppercase tracking-wider transition-all flex items-center gap-2 ${activeTab === 'feed' ? 'bg-primary text-white shadow-sm' : 'text-muted-foreground hover:bg-secondary'}`}
+                        className={`px-4 py-2 rounded-md text-xs font-bold  tracking-wider transition-all flex items-center gap-2 ${activeTab === 'feed' ? 'bg-primary text-white shadow-sm' : 'text-muted-foreground hover:bg-secondary'}`}
                     >
                         <Rss size={14} /> Feed
                     </button>
                     <button
                         onClick={() => setActiveTab('graph')}
-                        className={`px-4 py-2 rounded-md text-xs font-bold uppercase tracking-wider transition-all flex items-center gap-2 ${activeTab === 'graph' ? 'bg-primary text-white shadow-sm' : 'text-muted-foreground hover:bg-secondary'}`}
+                        className={`px-4 py-2 rounded-md text-xs font-bold  tracking-wider transition-all flex items-center gap-2 ${activeTab === 'graph' ? 'bg-primary text-white shadow-sm' : 'text-muted-foreground hover:bg-secondary'}`}
                     >
                         <NetworkIcon size={14} /> Graph
                     </button>
@@ -143,14 +143,14 @@ export default function Network() {
                                 <Activity size={40} className="mx-auto text-muted-foreground/30 mb-4" />
                                 <h3 className="text-lg font-bold">Network Access Restricted</h3>
                                 <p className="text-muted-foreground text-sm mt-2">Log in to track the intelligence stream of other architects.</p>
-                                <Link to="/login" className="inline-block mt-4 px-6 py-2 bg-primary text-white rounded-lg font-bold text-xs uppercase tracking-widest hover:scale-105 transition-all">Authenticate</Link>
+                                <Link to="/login" className="inline-block mt-4 px-6 py-2 bg-primary text-white rounded-lg font-bold text-xs  tracking-widest hover:scale-105 transition-all">Authenticate</Link>
                             </div>
                         ) : feedItems.length === 0 ? (
                             <div className="text-center py-20 bg-card border border-border rounded-xl">
                                 <Activity size={40} className="mx-auto text-muted-foreground/30 mb-4" />
                                 <h3 className="text-lg font-bold">Your feed is quiet</h3>
                                 <p className="text-muted-foreground text-sm mt-2">Follow more explorer to see their logic updates here.</p>
-                                <Link to="/explorers" className="inline-block mt-4 text-primary font-bold text-xs uppercase hover:underline">Find Architects</Link>
+                                <Link to="/explorers" className="inline-block mt-4 text-primary font-bold text-xs  hover:underline">Find Architects</Link>
                             </div>
                         ) : (
                             <div className="space-y-4">
@@ -161,7 +161,7 @@ export default function Network() {
                                                 {note.user?.avatar ? (
                                                     <img src={note.user.avatar} alt={note.user.username} className="w-10 h-10 rounded-lg object-cover border border-border" />
                                                 ) : (
-                                                    <div className="w-10 h-10 bg-secondary rounded-lg flex items-center justify-center text-muted-foreground font-black">
+                                                    <div className="w-10 h-10 bg-secondary rounded-lg flex items-center justify-center text-muted-foreground font-bold">
                                                         {note.user?.username?.charAt(0).toUpperCase()}
                                                     </div>
                                                 )}
@@ -242,15 +242,15 @@ export default function Network() {
                 activeTab === 'graph' && (
                     <footer className="grid grid-cols-1 md:grid-cols-3 gap-6">
                         <div className="p-6 bg-card border border-border rounded-2xl space-y-2">
-                            <h4 className="text-[11px] font-black uppercase tracking-widest text-primary">Interconnectivity</h4>
+                            <h4 className="text-[11px] font-bold  tracking-widest text-primary">Interconnectivity</h4>
                             <p className="text-[12px] text-muted-foreground leading-relaxed font-medium">Nodes are linked based on shared semantic tags and categorical alignment. Stronger connections represent higher thematic synergy.</p>
                         </div>
                         <div className="p-6 bg-card border border-border rounded-2xl space-y-2">
-                            <h4 className="text-[11px] font-black uppercase tracking-widest text-primary">Navigation Protocol</h4>
+                            <h4 className="text-[11px] font-bold  tracking-widest text-primary">Navigation Protocol</h4>
                             <p className="text-[12px] text-muted-foreground leading-relaxed font-medium">Use the scroll wheel to zoom into specific clusters. Click and drag to move through the network. Individual nodes can be accessed via direct link.</p>
                         </div>
                         <div className="p-6 bg-card border border-border rounded-2xl space-y-2">
-                            <h4 className="text-[11px] font-black uppercase tracking-widest text-primary">System Intelligence</h4>
+                            <h4 className="text-[11px] font-bold  tracking-widest text-primary">System Intelligence</h4>
                             <p className="text-[12px] text-muted-foreground leading-relaxed font-medium">The graph view is synchronized with the live archive database. New records are integrated as cold-storage nodes before establishing neural links.</p>
                         </div>
                     </footer>
