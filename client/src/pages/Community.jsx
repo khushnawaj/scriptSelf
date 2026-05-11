@@ -3,9 +3,10 @@ import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { io } from 'socket.io-client';
 import api from '../utils/api';
-import { Send, Globe, Zap, Paperclip, File, Image as ImageIcon, Video, Loader2, Download, ArrowLeft, Maximize2, X, MoreVertical, Pencil, Trash2 } from 'lucide-react';
+import { Send, Globe, Zap, Paperclip, File, Image as ImageIcon, Video, Loader2, Download, ArrowLeft, Maximize2, X, MoreVertical, Pencil, Trash2, Lock } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { toast } from 'react-hot-toast';
+
 
 const Community = () => {
     const { user } = useSelector((state) => state.auth);
@@ -208,8 +209,8 @@ const Community = () => {
             {/* Main Chat Container */}
             <div className="flex-1 flex flex-col bg-card/30 backdrop-blur-3xl border border-border/50 rounded-[1.5rem] overflow-hidden shadow-2xl relative">
                 {/* Blueprint Background */}
-                
-                
+
+
 
                 {/* Messages Area */}
                 <div
@@ -322,7 +323,7 @@ const Community = () => {
                             </div>
                         </div>
                     )}
-                    
+
                     {selectedFile && (
                         <div className="mb-4 px-1 animate-in slide-in-from-bottom-2 duration-300">
                             <div className="relative inline-block group">
@@ -354,9 +355,9 @@ const Community = () => {
                                 <button type="button" onClick={() => { setEditingMessageId(null); setNewMessage(''); }} className="hover:scale-110 transition-transform"><X size={14} /></button>
                             </div>
                         )}
-                        
+
                         <input type="file" ref={fileInputRef} onChange={onFileChange} className="hidden" />
-                        
+
                         <div className="flex-1 relative flex items-center">
                             <button
                                 type="button"
@@ -366,7 +367,7 @@ const Community = () => {
                             >
                                 {isUploading ? <Loader2 size={18} className="animate-spin text-primary" /> : <Paperclip size={18} />}
                             </button>
-                            
+
                             <input
                                 type="text"
                                 value={newMessage}

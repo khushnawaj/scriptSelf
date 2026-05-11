@@ -6,6 +6,7 @@ import { getCategories } from '../features/categories/categorySlice';
 import Spinner from '../components/Spinner';
 import LogicSeal from '../components/LogicSeal';
 import Pagination from '../components/Pagination';
+import { Activity } from 'react';
 import {
     Search,
     Filter,
@@ -121,8 +122,8 @@ const Notes = () => {
         <div className="flex-1 flex flex-col md:flex-row gap-8 lg:gap-10 animate-in fade-in duration-700">
             {/* Sidebar Filters - System Protocols */}
             <aside className="w-full md:w-64 lg:w-72 shrink-0 space-y-8 lg:space-y-10 p-6 lg:p-8 bg-card/20 backdrop-blur-xl border border-border/50 rounded-[2rem] relative overflow-hidden h-fit">
-                
-                
+
+
                 <div className="space-y-6 relative z-10">
                     <h3 className="text-[10px] font-bold  tracking-[0.3em] text-primary border-b border-primary/20 pb-3 flex items-center justify-between">
                         COLLECTIONS_VAULT
@@ -233,7 +234,7 @@ const Notes = () => {
                             <p className="text-[10px] text-muted-foreground font-bold  tracking-[0.3em]">Status: Authorized_Access // {total} Records_Found</p>
                         </div>
                     </div>
-                    
+
                     <div className="flex items-center gap-4 w-full xl:w-auto overflow-x-auto no-scrollbar pb-2 xl:pb-0">
                         <div className="flex bg-background/50 border border-border/50 rounded-xl overflow-hidden p-1 shadow-inner" title="Library layout">
                             <button
@@ -255,7 +256,7 @@ const Notes = () => {
                                 <LayoutGrid size={18} />
                             </button>
                         </div>
-                        
+
                         <div className="flex bg-background/50 border border-border/50 rounded-xl overflow-hidden p-1 shadow-inner">
                             {(user ? ['Newest', 'Public', 'Private'] : ['Public']).map((tab) => (
                                 <button
@@ -270,7 +271,7 @@ const Notes = () => {
                                 </button>
                             ))}
                         </div>
-                        
+
                         {user ? (
                             <Link to="/notes/new" className="h-12 px-6 bg-primary text-white shadow-xl shadow-primary/20 rounded-xl text-[10px] font-bold  tracking-[0.3em] flex items-center gap-2 group active:scale-95 transition-all shrink-0">
                                 <Plus size={16} strokeWidth={3} /> <span className="hidden sm:inline">Initialize_Record</span>
@@ -292,14 +293,14 @@ const Notes = () => {
                         <p className="text-[11px] font-bold  tracking-[0.2em] text-muted-foreground">
                             Active_Filter: <span className="text-foreground">{searchTerm || 'DIRECTORY_FILTER'}</span>
                         </p>
-                        <button 
+                        <button
                             onClick={() => {
                                 setSearchTerm('');
                                 setSelectedFolder(null);
                                 const url = new URL(window.location);
                                 url.searchParams.delete('folder');
                                 window.history.replaceState({}, '', url);
-                            }} 
+                            }}
                             className="ml-auto text-[10px] font-bold  tracking-[0.2em] text-primary hover:text-primary/70 transition-colors border-b border-primary/20"
                         >
                             Reset_Core
@@ -317,7 +318,7 @@ const Notes = () => {
                                     to={`/notes/${note._id}`}
                                     className="group flex flex-col rounded-[2rem] border border-border/50 bg-card/40 backdrop-blur-xl overflow-hidden shadow-2xl hover:shadow-primary/10 hover:border-primary/40 transition-all duration-500 hover:-translate-y-2 relative"
                                 >
-                                    
+
                                     <div className="relative h-48 overflow-hidden shrink-0">
                                         {note.coverImageUrl ? (
                                             <img
@@ -381,84 +382,84 @@ const Notes = () => {
                             ))}
                         </div>
                     ) : (
-                    <div className="flex flex-col gap-1 bg-card/40 backdrop-blur-xl border border-border/50 rounded-[2rem] overflow-hidden shadow-2xl relative">
-                        
-                        {notes.map((note, i) => (
-                            <div key={note._id} className="flex flex-col sm:flex-row p-6 hover:bg-primary/5 transition-all gap-6 group relative z-10 border-b border-border/20 last:border-b-0">
-                                {/* Technical Metadata Column */}
-                                <div className="flex flex-row sm:flex-col items-center sm:items-end gap-4 w-full sm:w-20 shrink-0 text-center">
-                                    <div className="flex flex-col items-center opacity-20 group-hover:opacity-100 transition-opacity min-w-[50px] font-mono">
-                                        <span className="text-lg font-bold text-foreground">[{String(i + 1).padStart(2, '0')}]</span>
-                                        <span className="text-[8px] text-muted-foreground  tracking-[0.3em] font-bold">LOG_ID</span>
-                                    </div>
-                                    <div className={`flex flex-col items-center border-2 p-2 rounded-2xl min-w-[60px] sm:min-w-[64px] transition-all shadow-lg ${note.isPublic ? 'border-primary/40 text-primary bg-primary/5' : 'border-border/50 text-muted-foreground bg-background/50'}`}>
-                                        <LogicSeal content={note.content} id={note._id} size={44} className="mb-1.5 border-none bg-transparent opacity-40 group-hover:opacity-100 transition-opacity" />
-                                        <span className="font-bold text-[9px]  tracking-tighter">{note.isPublic ? 'PUBLIC' : 'SECURE'}</span>
-                                    </div>
-                                    <div className="hidden sm:flex items-center gap-1.5 text-muted-foreground/30 text-[9px] font-bold  tracking-[0.3em] group-hover:text-primary transition-colors">
-                                        {note.type || 'RAW_DOC'}
-                                    </div>
-                                </div>
+                        <div className="flex flex-col gap-1 bg-card/40 backdrop-blur-xl border border-border/50 rounded-[2rem] overflow-hidden shadow-2xl relative">
 
-                                {/* Content Core Column */}
-                                <div className="flex-1 min-w-0">
-                                    <Link
-                                        to={`/notes/${note._id}`}
-                                        className="text-2xl font-bold text-foreground  tracking-tighter hover:text-primary transition-colors group-hover:translate-x-1 inline-flex items-center gap-3"
-                                    >
-                                        {note.isPinned && <Pin size={20} className="text-primary fill-primary shrink-0 " />}
-                                        {note.title}
-                                    </Link>
-                                    <p className="text-[15px] text-muted-foreground/80 line-clamp-2 mt-2 mb-6 font-medium italic leading-relaxed">
-                                        {note.content.replace(/[#*`\[\]]/g, '').substring(0, 280)}...
-                                    </p>
-
-                                    <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-4">
-                                        <div className="flex flex-wrap gap-2.5">
-                                            {note.category && (
-                                                <span className="px-3 py-1.5 bg-primary/10 text-primary border border-primary/20 rounded-xl flex items-center gap-2 text-[10px] font-bold  tracking-[0.2em] shadow-sm">
-                                                    <FolderTree size={12} strokeWidth={3} />
-                                                    {note.category.name}
-                                                </span>
-                                            )}
-                                            {note.tags?.slice(0, 3).map((tag, i) => (
-                                                <button
-                                                    key={i}
-                                                    onClick={(e) => {
-                                                        e.preventDefault();
-                                                        e.stopPropagation();
-                                                        setSearchTerm(tag);
-                                                    }}
-                                                    className="px-3 py-1.5 bg-background/50 text-muted-foreground/60 border border-border/50 rounded-xl hover:border-primary/50 hover:text-primary transition-all text-[10px] font-bold  tracking-[0.2em]"
-                                                >
-                                                    #{tag}
-                                                </button>
-                                            ))}
+                            {notes.map((note, i) => (
+                                <div key={note._id} className="flex flex-col sm:flex-row p-6 hover:bg-primary/5 transition-all gap-6 group relative z-10 border-b border-border/20 last:border-b-0">
+                                    {/* Technical Metadata Column */}
+                                    <div className="flex flex-row sm:flex-col items-center sm:items-end gap-4 w-full sm:w-20 shrink-0 text-center">
+                                        <div className="flex flex-col items-center opacity-20 group-hover:opacity-100 transition-opacity min-w-[50px] font-mono">
+                                            <span className="text-lg font-bold text-foreground">[{String(i + 1).padStart(2, '0')}]</span>
+                                            <span className="text-[8px] text-muted-foreground  tracking-[0.3em] font-bold">LOG_ID</span>
                                         </div>
-
-                                        <div className="flex items-center gap-4 bg-background/50 p-2.5 rounded-2xl border border-border/50 group-hover:border-primary/20 transition-all w-fit xl:ml-auto">
-                                            <div className="w-8 h-8 bg-primary rounded-xl flex items-center justify-center text-white text-xs font-bold shadow-lg shadow-primary/20 border border-white/10">
-                                                {note.user?.username?.charAt(0).toUpperCase() || 'U'}
-                                            </div>
-                                            <div className="flex flex-col pr-4">
-                                                <span className="text-[11px] font-bold  tracking-[0.1em] text-foreground leading-none mb-1">
-                                                    {note.user?.username || 'AUTH_ENTITY'}
-                                                </span>
-                                                <span className="text-[9px] text-muted-foreground/50 font-bold  tracking-[0.2em]">
-                                                    TS::{new Date(note.createdAt).toLocaleDateString([], { month: 'short', day: 'numeric', year: 'numeric' })}
-                                                </span>
-                                            </div>
+                                        <div className={`flex flex-col items-center border-2 p-2 rounded-2xl min-w-[60px] sm:min-w-[64px] transition-all shadow-lg ${note.isPublic ? 'border-primary/40 text-primary bg-primary/5' : 'border-border/50 text-muted-foreground bg-background/50'}`}>
+                                            <LogicSeal content={note.content} id={note._id} size={44} className="mb-1.5 border-none bg-transparent opacity-40 group-hover:opacity-100 transition-opacity" />
+                                            <span className="font-bold text-[9px]  tracking-tighter">{note.isPublic ? 'PUBLIC' : 'SECURE'}</span>
+                                        </div>
+                                        <div className="hidden sm:flex items-center gap-1.5 text-muted-foreground/30 text-[9px] font-bold  tracking-[0.3em] group-hover:text-primary transition-colors">
+                                            {note.type || 'RAW_DOC'}
                                         </div>
                                     </div>
+
+                                    {/* Content Core Column */}
+                                    <div className="flex-1 min-w-0">
+                                        <Link
+                                            to={`/notes/${note._id}`}
+                                            className="text-2xl font-bold text-foreground  tracking-tighter hover:text-primary transition-colors group-hover:translate-x-1 inline-flex items-center gap-3"
+                                        >
+                                            {note.isPinned && <Pin size={20} className="text-primary fill-primary shrink-0 " />}
+                                            {note.title}
+                                        </Link>
+                                        <p className="text-[15px] text-muted-foreground/80 line-clamp-2 mt-2 mb-6 font-medium italic leading-relaxed">
+                                            {note.content.replace(/[#*`\[\]]/g, '').substring(0, 280)}...
+                                        </p>
+
+                                        <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-4">
+                                            <div className="flex flex-wrap gap-2.5">
+                                                {note.category && (
+                                                    <span className="px-3 py-1.5 bg-primary/10 text-primary border border-primary/20 rounded-xl flex items-center gap-2 text-[10px] font-bold  tracking-[0.2em] shadow-sm">
+                                                        <FolderTree size={12} strokeWidth={3} />
+                                                        {note.category.name}
+                                                    </span>
+                                                )}
+                                                {note.tags?.slice(0, 3).map((tag, i) => (
+                                                    <button
+                                                        key={i}
+                                                        onClick={(e) => {
+                                                            e.preventDefault();
+                                                            e.stopPropagation();
+                                                            setSearchTerm(tag);
+                                                        }}
+                                                        className="px-3 py-1.5 bg-background/50 text-muted-foreground/60 border border-border/50 rounded-xl hover:border-primary/50 hover:text-primary transition-all text-[10px] font-bold  tracking-[0.2em]"
+                                                    >
+                                                        #{tag}
+                                                    </button>
+                                                ))}
+                                            </div>
+
+                                            <div className="flex items-center gap-4 bg-background/50 p-2.5 rounded-2xl border border-border/50 group-hover:border-primary/20 transition-all w-fit xl:ml-auto">
+                                                <div className="w-8 h-8 bg-primary rounded-xl flex items-center justify-center text-white text-xs font-bold shadow-lg shadow-primary/20 border border-white/10">
+                                                    {note.user?.username?.charAt(0).toUpperCase() || 'U'}
+                                                </div>
+                                                <div className="flex flex-col pr-4">
+                                                    <span className="text-[11px] font-bold  tracking-[0.1em] text-foreground leading-none mb-1">
+                                                        {note.user?.username || 'AUTH_ENTITY'}
+                                                    </span>
+                                                    <span className="text-[9px] text-muted-foreground/50 font-bold  tracking-[0.2em]">
+                                                        TS::{new Date(note.createdAt).toLocaleDateString([], { month: 'short', day: 'numeric', year: 'numeric' })}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
-                        ))}
-                    </div>
+                            ))}
+                        </div>
                     )}
 
                     {notes.length === 0 && (
                         <div className="py-40 text-center bg-card/20 backdrop-blur-xl rounded-[3rem] border border-dashed border-border/50 mt-4 relative overflow-hidden group">
-                            
+
                             <MessageSquare size={64} className="mx-auto text-muted-foreground/20 mb-8 group-hover:scale-110 transition-transform duration-500" />
                             <h3 className="text-2xl font-bold text-foreground  tracking-tighter">No_Tactical_Records_Found</h3>
                             <p className="text-muted-foreground/60 text-sm max-w-sm mx-auto mt-4 font-medium  tracking-widest leading-relaxed">Adjust your neural filters or initiate a new documentation pulse to populate this repository.</p>
