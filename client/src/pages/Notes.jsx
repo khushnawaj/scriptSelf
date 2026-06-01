@@ -1,7 +1,7 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { getNotes, resetNotes } from '../features/notes/noteSlice';
+import { getNotes, resetNotes, getSharedNotes } from '../features/notes/noteSlice';
 import { getCategories } from '../features/categories/categorySlice';
 import Spinner from '../components/Spinner';
 import LogicSeal from '../components/LogicSeal';
@@ -175,6 +175,12 @@ const Notes = () => {
     }, [user]);
 
     useEffect(() => {
+        // If Received folder is selected, use the dedicated shared endpoint
+        if (selectedFolder === 'received') {
+            if (user) dispatch(getSharedNotes());
+            return () => { dispatch(resetNotes()); };
+        }
+
         const catId = selectedCategory === 'All' ? null : selectedCategory;
         const type = selectedType === 'All' ? null : selectedType.toLowerCase();
 

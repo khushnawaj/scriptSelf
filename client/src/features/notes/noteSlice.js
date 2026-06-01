@@ -424,6 +424,9 @@ const noteSlice = createSlice({
       .addCase(getSharedNotes.fulfilled, (state, action) => {
         state.isLoading = false;
         state.sharedNotes = action.payload;
+        // Also populate the main notes list so the Notes page can display them
+        state.notes = action.payload;
+        state.total = action.payload.length;
       })
       .addCase(likeNote.fulfilled, (state, action) => {
         const index = state.notes.findIndex(n => n._id === action.payload._id);
