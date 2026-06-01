@@ -349,8 +349,8 @@ const AdminDashboard = () => {
                         <ThemeIcon size={32} className="text-primary" />
                     </div>
                     <div>
-                        <h1 className="text-xl font-bold text-foreground tracking-tight">System Administration</h1>
-                        <p className="text-muted-foreground mt-1 text-sm font-medium  tracking-widest">
+                        <h1 className="text-xl font-medium text-foreground tracking-tight">System Administration</h1>
+                        <p className="text-muted-foreground mt-1 text-sm font-medium  tracking-wide">
                             Security Level: Omega // Authorized Personnel Only
                         </p>
                     </div>
@@ -404,7 +404,7 @@ const AdminDashboard = () => {
                     <button
                         key={tab}
                         onClick={() => setActiveTab(tab)}
-                        className={`px-6 py-2.5 rounded-2xl text-[13px] font-bold  tracking-wider transition-all whitespace-nowrap border ${activeTab === tab
+                        className={`px-6 py-2.5 rounded-xl text-[13px] font-medium  tracking-wide transition-all whitespace-nowrap border ${activeTab === tab
                             ? 'bg-primary text-primary-foreground border-primary shadow-lg shadow-primary/20'
                             : 'bg-secondary/50 text-muted-foreground border-transparent hover:bg-secondary hover:text-foreground'
                             }`}
@@ -439,73 +439,162 @@ const AdminDashboard = () => {
 
             {/* Content Sections */}
             {activeTab === 'overview' && (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    {/* Latest Signups */}
-                    <div className="bg-card border border-border rounded-2xl p-6">
-                        <h3 className="text-lg font-bold mb-4 flex items-center gap-2">
-                            <UserPlus size={20} className="text-primary" />
-                            Latest Signups
-                        </h3>
-                        <div className="space-y-3">
-                            {users.slice(0, 5).map(u => (
-                                <div key={u._id} className="flex items-center gap-3 p-3 bg-muted/30 rounded-xl">
-                                    <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center font-bold text-primary text-xs">
-                                        {u.username[0].toUpperCase()}
-                                    </div>
-                                    <div className="flex-1">
-                                        <p className="text-sm font-bold">{u.username}</p>
-                                        <p className="text-[10px] text-muted-foreground  tracking-wider">
-                                            Joined {new Date(u.createdAt).toLocaleDateString()}
-                                        </p>
-                                    </div>
-                                    <div className="text-[10px] font-bold bg-secondary px-2 py-1 rounded text-muted-foreground ">
-                                        {u.role}
+                <div className="flex flex-col xl:flex-row gap-6 animate-in fade-in duration-500">
+                    {/* Left Column (Main Content) */}
+                    <div className="flex-1 space-y-6">
+                        {/* Charts Row */}
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                            {/* Analytics (Line Chart) */}
+                            <div className="bg-card border border-border rounded-xl p-6 shadow-sm hover:shadow-md transition-all">
+                                <div className="flex items-center justify-between mb-8">
+                                    <h3 className="font-medium text-sm text-foreground">Platform Analytics</h3>
+                                    <div className="px-3 py-1.5 bg-muted/40 rounded-lg text-xs font-medium text-muted-foreground flex items-center gap-2">
+                                        <Clock size={12} /> 2026
                                     </div>
                                 </div>
-                            ))}
+                                <div className="relative pt-4">
+                                    <LineChartAnalytics />
+                                    <div className="flex justify-between text-[10px] font-medium text-muted-foreground mt-4 px-2">
+                                        <span>Jan</span><span>Feb</span><span>Mar</span>
+                                        <span className="bg-primary text-primary-foreground px-2 py-0.5 rounded-full shadow-sm">Apr</span>
+                                        <span>May</span><span>Jun</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Daily Activity (Bar Chart) */}
+                            <div className="bg-card border border-border rounded-xl p-6 shadow-sm hover:shadow-md transition-all">
+                                <div className="flex items-center justify-between mb-8">
+                                    <h3 className="font-medium text-sm text-foreground">Registration Activity</h3>
+                                    <p className="text-[10px] text-muted-foreground font-medium flex items-center gap-1">
+                                        <Clock size={12} /> Weekly signups
+                                    </p>
+                                </div>
+                                <BarChartActivity data={[15, 45, 20, 80, 40, 30, 95]} />
+                                <div className="flex gap-2 sm:gap-4 pl-10 mt-3">
+                                    {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((d, i) => (
+                                        <div key={i} className="flex-1 text-center text-[10px] font-medium text-muted-foreground tracking-wide">
+                                            {d}
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Recent Notes (Orders layout) */}
+                        <div className="bg-card border border-border rounded-xl p-6 shadow-sm">
+                            <div className="flex items-center justify-between mb-6">
+                                <h3 className="font-medium text-sm text-foreground">Recent Content Activity</h3>
+                                <button onClick={() => setActiveTab('content')} className="text-xs font-medium text-primary hover:underline">
+                                    View All
+                                </button>
+                            </div>
+                            
+                            <div className="overflow-x-auto">
+                                <table className="w-full text-sm">
+                                    <thead>
+                                        <tr className="text-left text-muted-foreground border-b border-border/40">
+                                            <th className="pb-4 font-medium text-[11px] uppercase tracking-wide">Content ID</th>
+                                            <th className="pb-4 font-medium text-[11px] uppercase tracking-wide">Date</th>
+                                            <th className="pb-4 font-medium text-[11px] uppercase tracking-wide">Type</th>
+                                            <th className="pb-4 font-medium text-[11px] uppercase tracking-wide">Title</th>
+                                            <th className="pb-4 font-medium text-[11px] uppercase tracking-wide text-right">Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {notes.slice(0, 5).map((n) => (
+                                            <tr key={n._id} className="border-b border-border/20 last:border-0 hover:bg-muted/20 transition-colors">
+                                                <td className="py-4 font-medium text-foreground text-xs">
+                                                    #{n._id.substring(0, 6)}
+                                                </td>
+                                                <td className="py-4 text-muted-foreground text-[11px] font-medium tracking-wide">
+                                                    {new Date(n.createdAt).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}
+                                                </td>
+                                                <td className="py-4 font-medium text-[11px] text-muted-foreground uppercase tracking-wide">
+                                                    {n.type}
+                                                </td>
+                                                <td className="py-4 font-medium text-foreground truncate max-w-[150px] text-xs">
+                                                    {n.title}
+                                                </td>
+                                                <td className="py-4 text-right">
+                                                    <span className={`inline-block px-3 py-1 rounded-md text-[9px] font-medium uppercase tracking-widest ${n.isPublic ? 'bg-emerald-500/10 text-emerald-500' : 'bg-muted text-muted-foreground'}`}>
+                                                        {n.isPublic ? 'Public' : 'Private'}
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
 
-                    {/* Recent Content */}
-                    <div className="bg-card border border-border rounded-2xl p-6">
-                        <h3 className="text-lg font-bold mb-4 flex items-center gap-2">
-                            <FileText size={20} className="text-primary" />
-                            New Content
-                        </h3>
-                        <div className="space-y-3">
-                            {notes.slice(0, 5).map(n => (
-                                <div key={n._id} className="flex items-center gap-3 p-3 bg-muted/30 rounded-xl">
-                                    <div className="p-2 bg-primary/10 rounded-lg text-primary">
-                                        {n.type === 'issue' ? <AlertTriangle size={14} /> : <FileText size={14} />}
-                                    </div>
-                                    <div className="flex-1 min-w-0">
-                                        <p className="text-sm font-bold truncate">{n.title}</p>
-                                        <p className="text-[10px] text-muted-foreground  tracking-wider">
-                                            By {n.author?.username || 'Unknown'}
-                                        </p>
-                                    </div>
-                                    <span className="text-[10px] bg-background border border-border px-2 py-0.5 rounded font-mono">
-                                        {new Date(n.createdAt).toLocaleDateString(undefined, { month: 'numeric', day: 'numeric' })}
-                                    </span>
+                    {/* Right Column (Sidebar) */}
+                    <div className="w-full xl:w-[320px] shrink-0 space-y-6">
+                        
+                        {/* Usage Card */}
+                        <div className="bg-card border border-border rounded-xl p-6 shadow-sm">
+                            <h3 className="font-medium text-sm text-foreground mb-8">System Usage</h3>
+                            <div className="flex justify-center mb-8">
+                                <Donut pct={stats.totalNotes > 0 ? Math.round(((stats.totalNotes - stats.totalIssues) / stats.totalNotes) * 100) : 0} size={180} color="hsl(var(--primary))" />
+                            </div>
+                            <div className="space-y-3">
+                                <div className="flex items-center gap-3">
+                                    <div className="w-3 h-3 rounded bg-primary" />
+                                    <span className="text-[11px] font-medium text-muted-foreground flex-1 tracking-wide">Healthy Content</span>
+                                    <span className="text-xs font-medium">{stats.totalNotes - stats.totalIssues}</span>
                                 </div>
-                            ))}
+                                <div className="flex items-center gap-3">
+                                    <div className="w-3 h-3 rounded bg-primary/20" />
+                                    <span className="text-[11px] font-medium text-muted-foreground flex-1 tracking-wide">Active Issues</span>
+                                    <span className="text-xs font-medium">{stats.totalIssues}</span>
+                                </div>
+                            </div>
                         </div>
+
+                        {/* Recent Signups Tracking */}
+                        <div className="bg-card border border-border rounded-xl p-6 shadow-sm">
+                            <h3 className="font-medium text-sm text-foreground mb-6">User Tracking</h3>
+                            <div className="space-y-4">
+                                {users.slice(0, 3).map((u, i) => (
+                                    <div key={u._id || i} className="p-4 border border-border/40 rounded-xl bg-muted/10">
+                                        <div className="flex justify-between items-start mb-4">
+                                            <div>
+                                                <p className="text-[9px] text-muted-foreground font-medium mb-1 tracking-wide uppercase">User ID</p>
+                                                <p className="text-sm font-medium truncate max-w-[120px]">{u.username}</p>
+                                                <p className="text-[11px] text-muted-foreground mt-1 capitalize">{u.role}</p>
+                                            </div>
+                                            <div className="text-right">
+                                                <p className="text-[9px] text-muted-foreground font-medium mb-1 tracking-wide uppercase">Joined</p>
+                                                <p className="text-[11px] font-medium">
+                                                    {new Date(u.createdAt || Date.now()).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <button onClick={() => { setActiveTab('users'); setSearchTerm(u.username); }} className="w-full py-2 bg-primary/10 text-primary rounded-lg text-[11px] font-medium tracking-wide hover:bg-primary hover:text-primary-foreground transition-colors border border-primary/20 hover:border-transparent">
+                                            Track User
+                                        </button>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+
                     </div>
                 </div>
             )}
 
             {activeTab === 'users' && (
-                <div className="bg-card border border-border rounded-2xl overflow-hidden">
+                <div className="bg-card border border-border rounded-xl overflow-hidden">
                     <div className="overflow-x-auto">
                         <table className="w-full">
                             <thead className="bg-muted/50 border-b border-border">
                                 <tr>
-                                    <th className="text-left p-4 text-xs font-bold  tracking-wider text-muted-foreground">User</th>
-                                    <th className="text-left p-4 text-xs font-bold  tracking-wider text-muted-foreground">Email</th>
-                                    <th className="text-left p-4 text-xs font-bold  tracking-wider text-muted-foreground">Role</th>
-                                    <th className="text-left p-4 text-xs font-bold  tracking-wider text-muted-foreground">Reputation</th>
-                                    <th className="text-left p-4 text-xs font-bold  tracking-wider text-muted-foreground">Group</th>
-                                    <th className="text-right p-4 text-xs font-bold  tracking-wider text-muted-foreground">Actions</th>
+                                    <th className="text-left p-4 text-xs font-medium  tracking-wide text-muted-foreground">User</th>
+                                    <th className="text-left p-4 text-xs font-medium  tracking-wide text-muted-foreground">Email</th>
+                                    <th className="text-left p-4 text-xs font-medium  tracking-wide text-muted-foreground">Role</th>
+                                    <th className="text-left p-4 text-xs font-medium  tracking-wide text-muted-foreground">Reputation</th>
+                                    <th className="text-left p-4 text-xs font-medium  tracking-wide text-muted-foreground">Group</th>
+                                    <th className="text-right p-4 text-xs font-medium  tracking-wide text-muted-foreground">Actions</th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-border">
@@ -514,10 +603,10 @@ const AdminDashboard = () => {
                                         <tr className="hover:bg-muted/30 transition-colors">
                                             <td className="p-4">
                                                 <div className="flex items-center gap-3">
-                                                    <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center font-bold text-primary text-xs">
+                                                    <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center font-medium text-primary text-xs">
                                                         {u.username[0].toUpperCase()}
                                                     </div>
-                                                    <span className="font-bold text-sm">{u.username}</span>
+                                                    <span className="font-medium text-sm">{u.username}</span>
                                                 </div>
                                             </td>
                                             <td className="p-4 text-sm text-muted-foreground">{u.email}</td>
@@ -525,19 +614,19 @@ const AdminDashboard = () => {
                                                 <select
                                                     value={u.role}
                                                     onChange={(e) => handleRoleUpdate(u._id, e.target.value)}
-                                                    className="bg-muted border border-border rounded-lg px-3 py-1.5 text-xs font-bold outline-none focus:border-primary/50"
+                                                    className="bg-muted border border-border rounded-lg px-3 py-1.5 text-xs font-medium outline-none focus:border-primary/50"
                                                 >
                                                     <option value="user">User</option>
                                                     <option value="admin">Admin</option>
                                                 </select>
                                             </td>
                                             <td className="p-4">
-                                                <span className="px-3 py-1 bg-amber-500/10 text-amber-600 dark:text-amber-400 rounded-full text-[10px] font-bold">
+                                                <span className="px-3 py-1 bg-amber-500/10 text-amber-600 dark:text-amber-400 rounded-full text-[10px] font-medium">
                                                     {u.reputation || 0}
                                                 </span>
                                             </td>
                                             <td className="p-4">
-                                                <div className={`text-[10px] font-bold w-6 h-6 flex items-center justify-center rounded-md border ${u.experimentGroup === 'A' ? 'bg-primary/10 text-primary border-primary/20' : 'bg-blue-500/10 text-blue-500 border-blue-500/20'}`}>
+                                                <div className={`text-[10px] font-medium w-6 h-6 flex items-center justify-center rounded-md border ${u.experimentGroup === 'A' ? 'bg-primary/10 text-primary border-primary/20' : 'bg-blue-500/10 text-blue-500 border-blue-500/20'}`}>
                                                     {u.experimentGroup || 'A'}
                                                 </div>
                                             </td>
@@ -565,15 +654,15 @@ const AdminDashboard = () => {
                                                 <td colSpan="6" className="p-4 border-b border-border/50">
                                                     <div className="flex flex-col gap-4 animate-in slide-in-from-top-2 duration-300">
                                                         <div className="flex items-center justify-between">
-                                                            <h4 className="text-[10px] font-bold  tracking-widest text-muted-foreground flex items-center gap-2">
+                                                            <h4 className="text-[10px] font-medium  tracking-wide text-muted-foreground flex items-center gap-2">
                                                                 <Zap size={10} className="text-primary" /> User Settings Override
                                                             </h4>
                                                             <div className="flex items-center gap-2">
-                                                                <span className="text-[10px] font-bold text-muted-foreground">COHORT:</span>
+                                                                <span className="text-[10px] font-medium text-muted-foreground">COHORT:</span>
                                                                 <select
                                                                     value={u.experimentGroup || 'A'}
                                                                     onChange={(e) => handleGroupUpdate(u._id, e.target.value)}
-                                                                    className="bg-background border border-border rounded px-2 py-1 text-[10px] font-bold outline-none focus:border-primary/50"
+                                                                    className="bg-background border border-border rounded px-2 py-1 text-[10px] font-medium outline-none focus:border-primary/50"
                                                                 >
                                                                     <option value="A">Group_Alpha</option>
                                                                     <option value="B">Group_Beta</option>
@@ -583,7 +672,7 @@ const AdminDashboard = () => {
                                                         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                                                             {['v2_bars', 'dark_mode_experimental', 'new_editor', 'global_chat'].map(flag => (
                                                                 <div key={flag} className="flex items-center justify-between p-2 bg-background border border-border/50 rounded-lg">
-                                                                    <span className="text-[9px] font-mono font-bold truncate pr-2 text-muted-foreground ">{flag.replace(/_/g, ' ')}</span>
+                                                                    <span className="text-[9px] font-mono font-medium truncate pr-2 text-muted-foreground ">{flag.replace(/_/g, ' ')}</span>
                                                                     <button
                                                                         onClick={() => handleFlagUpdate(u._id, flag, !u.featureFlags?.[flag])}
                                                                         className={`w-7 h-3.5 rounded-full relative transition-all ${u.featureFlags?.[flag] ? 'bg-primary' : 'bg-muted'}`}
@@ -618,10 +707,10 @@ const AdminDashboard = () => {
                                 key={note._id}
                                 initial={{ opacity: 0, y: 20 }}
                                 animate={{ opacity: 1, y: 0 }}
-                                className="bg-card border border-border rounded-2xl p-6 hover:shadow-lg transition-all"
+                                className="bg-card border border-border rounded-xl p-6 hover:shadow-lg transition-all"
                             >
                                 <div className="flex items-start justify-between mb-4">
-                                    <h3 className="font-bold text-lg line-clamp-2">{note.title}</h3>
+                                    <h3 className="font-medium text-lg line-clamp-2">{note.title}</h3>
                                     {note.isPinned && (
                                         <Pin size={16} className="text-primary flex-shrink-0" />
                                     )}
@@ -664,14 +753,14 @@ const AdminDashboard = () => {
             {activeTab === 'experiments' && (
                 <div className="space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-400">
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        <div className="bg-card border border-border rounded-2xl p-6 shadow-sm">
+                        <div className="bg-card border border-border rounded-xl p-6 shadow-sm">
                             <div className="flex items-center gap-3 mb-6">
                                 <div className="p-2.5 bg-primary/10 text-primary rounded-xl"><FlaskConical size={20} /></div>
-                                <h3 className="font-bold text-sm  tracking-wider">Cohort Distribution</h3>
+                                <h3 className="font-medium text-sm  tracking-wide">Cohort Distribution</h3>
                             </div>
                             <div className="space-y-6">
                                 <div>
-                                    <div className="flex justify-between text-[11px] font-bold  tracking-tighter mb-2">
+                                    <div className="flex justify-between text-[11px] font-medium  tracking-tight mb-2">
                                         <span className="text-muted-foreground">Group_Alpha</span>
                                         <span className="text-primary">{users.filter(u => u.experimentGroup === 'A' || !u.experimentGroup).length} Units</span>
                                     </div>
@@ -684,7 +773,7 @@ const AdminDashboard = () => {
                                     </div>
                                 </div>
                                 <div>
-                                    <div className="flex justify-between text-[11px] font-bold  tracking-tighter mb-2">
+                                    <div className="flex justify-between text-[11px] font-medium  tracking-tight mb-2">
                                         <span className="text-muted-foreground">Group_Beta</span>
                                         <span className="text-blue-500">{users.filter(u => u.experimentGroup === 'B').length} Units</span>
                                     </div>
@@ -699,10 +788,10 @@ const AdminDashboard = () => {
                             </div>
                         </div>
 
-                        <div className="bg-card border border-border rounded-2xl p-6 shadow-sm">
+                        <div className="bg-card border border-border rounded-xl p-6 shadow-sm">
                             <div className="flex items-center gap-3 mb-6">
                                 <div className="p-2.5 bg-amber-500/10 text-amber-500 rounded-xl"><Zap size={20} /></div>
-                                <h3 className="font-bold text-sm  tracking-wider">Active Experiment Status</h3>
+                                <h3 className="font-medium text-sm  tracking-wide">Active Experiment Status</h3>
                             </div>
                             <div className="space-y-3">
                                 {[
@@ -711,23 +800,23 @@ const AdminDashboard = () => {
                                     { name: 'GLOBAL_CHAT', status: 'ARCHIVED', color: 'text-muted-foreground bg-muted/50' }
                                 ].map((exp, idx) => (
                                     <div key={idx} className="flex items-center justify-between p-3 bg-muted/20 border border-border/50 rounded-xl">
-                                        <span className="text-[10px] font-bold tracking-widest">{exp.name}</span>
-                                        <span className={`text-[9px] font-bold px-2 py-0.5 rounded ${exp.color}`}>{exp.status}</span>
+                                        <span className="text-[10px] font-medium tracking-wide">{exp.name}</span>
+                                        <span className={`text-[9px] font-medium px-2 py-0.5 rounded ${exp.color}`}>{exp.status}</span>
                                     </div>
                                 ))}
                             </div>
                         </div>
 
-                        <div className="bg-card border border-border rounded-2xl p-6 shadow-sm relative overflow-hidden group">
+                        <div className="bg-card border border-border rounded-xl p-6 shadow-sm relative overflow-hidden group">
                             <div className="relative z-10 h-full flex flex-col">
                                 <div className="flex items-center gap-3 mb-4">
                                     <div className="p-2.5 bg-blue-500/10 text-blue-500 rounded-xl"><BarChart3 size={20} /></div>
-                                    <h3 className="font-bold text-sm  tracking-wider">Telemetry</h3>
+                                    <h3 className="font-medium text-sm  tracking-wide">Telemetry</h3>
                                 </div>
                                 <p className="text-[11px] text-muted-foreground font-medium leading-relaxed mb-4">
                                     Real-time engagement metrics are being aggregated. Beta cohort shows 12% higher interaction on XP visualization sub-modules.
                                 </p>
-                                <button className="mt-auto w-full py-2 bg-secondary/50 text-muted-foreground text-[10px] font-bold  tracking-widest rounded-lg hover:bg-primary hover:text-white transition-all">
+                                <button className="mt-auto w-full py-2 bg-secondary/50 text-muted-foreground text-[10px] font-medium  tracking-wide rounded-lg hover:bg-primary hover:text-white transition-all">
                                     View Detailed Analytics
                                 </button>
                             </div>
@@ -741,13 +830,13 @@ const AdminDashboard = () => {
                         </div>
                     </div>
 
-                    <div className="bg-card border border-border rounded-2xl p-6 border-l-4 border-l-primary/50 relative overflow-hidden">
+                    <div className="bg-card border border-border rounded-xl p-6 border-l-4 border-l-primary/50 relative overflow-hidden">
                         <div className="relative z-10">
-                            <h3 className="font-bold text-sm  tracking-widest mb-4 flex items-center gap-2">
+                            <h3 className="font-medium text-sm  tracking-wide mb-4 flex items-center gap-2">
                                 <Settings2 size={18} className="text-primary" /> Master System Protocol
                             </h3>
                             <p className="text-xs text-muted-foreground leading-relaxed max-w-4xl">
-                                A/B group assignments are permanently bound to user identities upon initialization. Manual overrides are available via the <span className="text-foreground font-bold italic">User Management</span> matrix. All feature flags are hot-swappable and require no system reboot. Telemetry data is synchronized across all nodes every 300 seconds.
+                                A/B group assignments are permanently bound to user identities upon initialization. Manual overrides are available via the <span className="text-foreground font-medium italic">User Management</span> matrix. All feature flags are hot-swappable and require no system reboot. Telemetry data is synchronized across all nodes every 300 seconds.
                             </p>
                         </div>
                         <div className="absolute top-0 right-0 p-2 opacity-10">
@@ -765,9 +854,9 @@ const AdminDashboard = () => {
                         animate={{ opacity: 1, y: 0 }}
                         className="space-y-6 max-w-3xl mx-auto animate-in fade-in slide-in-from-bottom-2 duration-400"
                     >
-                        <div className="bg-card border border-border rounded-2xl p-8 shadow-sm">
+                        <div className="bg-card border border-border rounded-xl p-8 shadow-sm">
                             <div className="space-y-2 mb-6">
-                                <h3 className="text-2xl font-bold text-foreground flex items-center gap-3">
+                                <h3 className="text-2xl font-medium text-foreground flex items-center gap-3">
                                     <Mail size={28} className="text-primary" />
                                     Email Broadcast
                                 </h3>
@@ -777,7 +866,7 @@ const AdminDashboard = () => {
                             </div>
 
                             <div className="bg-amber-500/10 border border-amber-500/20 p-4 rounded-xl mb-6">
-                                <p className="text-[11px] text-amber-600 dark:text-amber-400 font-bold  mb-1 flex items-center gap-2">
+                                <p className="text-[11px] text-amber-600 dark:text-amber-400 font-medium  mb-1 flex items-center gap-2">
                                     <AlertTriangle size={14} /> Warning
                                 </p>
                                 <p className="text-[12px] text-muted-foreground">
@@ -787,7 +876,7 @@ const AdminDashboard = () => {
 
                             {/* Quick Templates */}
                             <div className="mb-6">
-                                <label className="block text-[13px] font-bold mb-3 text-foreground">Quick Templates</label>
+                                <label className="block text-[13px] font-medium mb-3 text-foreground">Quick Templates</label>
                                 <div className="flex flex-wrap gap-2">
                                     {emailTemplates.map((template, index) => (
                                         <button
@@ -798,7 +887,7 @@ const AdminDashboard = () => {
                                                 subject: template.subject,
                                                 message: template.message
                                             }))}
-                                            className="px-3 py-1.5 text-xs font-bold bg-secondary/50 hover:bg-secondary border border-border rounded-lg transition-all hover:scale-105"
+                                            className="px-3 py-1.5 text-xs font-medium bg-secondary/50 hover:bg-secondary border border-border rounded-lg transition-all hover:scale-105"
                                         >
                                             {template.name}
                                         </button>
@@ -808,7 +897,7 @@ const AdminDashboard = () => {
 
                             {/* Recipient Selection */}
                             <div className="mb-6 p-4 bg-muted/20 border border-border rounded-xl">
-                                <label className="block text-[13px] font-bold mb-3 text-foreground">Send To</label>
+                                <label className="block text-[13px] font-medium mb-3 text-foreground">Send To</label>
                                 <div className="flex gap-4 mb-4">
                                     <label className="flex items-center gap-2 cursor-pointer">
                                         <input
@@ -853,7 +942,7 @@ const AdminDashboard = () => {
 
                             <form onSubmit={handleBroadcast} className="space-y-5">
                                 <div>
-                                    <label className="block text-[13px] font-bold mb-2 text-foreground">Email Subject</label>
+                                    <label className="block text-[13px] font-medium mb-2 text-foreground">Email Subject</label>
                                     <input
                                         type="text"
                                         className="w-full border border-border bg-background rounded-xl py-3 px-4 text-[13px] outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
@@ -865,7 +954,7 @@ const AdminDashboard = () => {
                                 </div>
 
                                 <div>
-                                    <label className="block text-[13px] font-bold mb-2 text-foreground">Message Body</label>
+                                    <label className="block text-[13px] font-medium mb-2 text-foreground">Message Body</label>
                                     <textarea
                                         className="w-full border border-border bg-background rounded-xl py-3 px-4 text-[13px] min-h-[200px] outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all font-mono"
                                         placeholder="Write your message here..."
@@ -882,7 +971,7 @@ const AdminDashboard = () => {
                                     <button
                                         type="submit"
                                         disabled={isSending}
-                                        className="px-6 py-3 bg-primary text-white rounded-xl font-bold text-sm  tracking-wider hover:scale-105 transition-all shadow-lg shadow-primary/20 flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+                                        className="px-6 py-3 bg-primary text-white rounded-xl font-medium text-sm  tracking-wide hover:scale-105 transition-all shadow-lg shadow-primary/20 flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
                                     >
                                         {isSending ? (
                                             <>
@@ -911,7 +1000,7 @@ const AdminDashboard = () => {
                                     <button
                                         type="button"
                                         onClick={() => setBroadcastForm({ subject: '', message: '' })}
-                                        className="px-4 py-3 border border-border hover:bg-muted/50 rounded-xl font-bold text-sm  tracking-wider transition-all"
+                                        className="px-4 py-3 border border-border hover:bg-muted/50 rounded-xl font-medium text-sm  tracking-wide transition-all"
                                     >
                                         Clear
                                     </button>
@@ -919,13 +1008,13 @@ const AdminDashboard = () => {
                             </form>
 
                             <div className="p-4 bg-primary/5 border border-primary/20 rounded-xl mt-6">
-                                <p className="text-[11px] text-primary font-bold  mb-2 flex items-center gap-2">
+                                <p className="text-[11px] text-primary font-medium  mb-2 flex items-center gap-2">
                                     <Mail size={14} /> Email Preview
                                 </p>
                                 <div className="text-[12px] text-muted-foreground space-y-1 font-mono bg-background p-4 rounded-lg border border-border">
-                                    <p className="font-bold">Hi [username],</p>
+                                    <p className="font-medium">Hi [username],</p>
                                     <p className="pl-4 whitespace-pre-wrap">{broadcastForm.message || '(Your message will appear here)'}</p>
-                                    <p className="mt-3 font-bold">Best regards,<br />ScriptShelf Team</p>
+                                    <p className="mt-3 font-medium">Best regards,<br />ScriptShelf Team</p>
                                 </div>
                             </div>
                         </div>
@@ -938,9 +1027,9 @@ const AdminDashboard = () => {
 
                     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-400">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div className="bg-card border border-border rounded-2xl p-8 shadow-sm relative overflow-hidden">
+                            <div className="bg-card border border-border rounded-xl p-8 shadow-sm relative overflow-hidden">
                                 <div className="relative z-10">
-                                    <h3 className="text-xl font-bold mb-2 flex items-center gap-3">
+                                    <h3 className="text-xl font-medium mb-2 flex items-center gap-3">
                                         <Zap size={24} className="text-primary" />
                                         Global Theme Management
                                     </h3>
@@ -948,12 +1037,12 @@ const AdminDashboard = () => {
                                         Switch the entire project design system. Theme V1 uses the original Olive/GitHub aesthetic. Theme V2 introduces a modern Indigo/Slate vibrant design with softer edges.
                                     </p>
 
-                                    <div className="flex items-center gap-6 p-4 bg-muted/20 border border-border/50 rounded-2xl">
+                                    <div className="flex flex-col md:flex-row items-start md:items-center gap-6 p-4 bg-muted/20 border border-border/50 rounded-xl">
                                         <div className="flex-1">
-                                            <p className="text-xs font-bold  tracking-widest text-muted-foreground mb-1">Active Design System</p>
-                                            <p className="text-lg font-bold text-primary">{globalThemeVersion.toUpperCase()}</p>
+                                            <p className="text-xs font-medium tracking-wide text-muted-foreground mb-1">Active Design System</p>
+                                            <p className="text-lg font-medium text-primary">{globalThemeVersion.toUpperCase()}</p>
                                         </div>
-                                        <div className="flex gap-2">
+                                        <div className="flex flex-wrap gap-2 w-full md:w-auto">
                                             {[
                                                 { id: 'v1', name: 'Script Classic' },
                                                 { id: 'v2', name: 'Shelf Modern' },
@@ -971,7 +1060,7 @@ const AdminDashboard = () => {
                                                         toggleDesignSystem(nextVersion);
                                                         toast.success(`System Theme updated to ${v.name}`);
                                                     }}
-                                                    className={`px-4 py-2 rounded-lg text-[10px] font-bold  transition-all ${globalThemeVersion === v.id ? 'bg-primary text-white scale-105' : 'bg-secondary/50 text-muted-foreground hover:bg-secondary'}`}
+                                                    className={`px-4 py-2 rounded-lg text-[10px] font-medium transition-all flex-1 sm:flex-none whitespace-nowrap text-center ${globalThemeVersion === v.id ? 'bg-primary text-white md:scale-105 shadow-md' : 'bg-secondary/50 text-muted-foreground hover:bg-secondary border border-border/50'}`}
                                                 >
                                                     {v.name}
                                                 </button>
@@ -986,30 +1075,30 @@ const AdminDashboard = () => {
                                 </div>
                             </div>
 
-                            <div className="bg-card border border-border rounded-2xl p-8 shadow-sm">
-                                <h3 className="text-xl font-bold mb-6 flex items-center gap-3">
+                            <div className="bg-card border border-border rounded-xl p-8 shadow-sm">
+                                <h3 className="text-xl font-medium mb-6 flex items-center gap-3">
                                     <Shield size={24} className="text-primary" />
                                     Security & Infrastructure
                                 </h3>
                                 <div className="space-y-4">
                                     <div className="flex items-center justify-between p-3 bg-secondary/30 rounded-xl border border-border/50">
-                                        <span className="text-xs font-bold">API Status</span>
-                                        <span className="px-2 py-0.5 bg-green-500/10 text-green-500 text-[10px] font-bold rounded ">Operational</span>
+                                        <span className="text-xs font-medium">API Status</span>
+                                        <span className="px-2 py-0.5 bg-green-500/10 text-green-500 text-[10px] font-medium rounded ">Operational</span>
                                     </div>
                                     <div className="flex items-center justify-between p-3 bg-secondary/30 rounded-xl border border-border/50">
-                                        <span className="text-xs font-bold">Database Mode</span>
-                                        <span className="px-2 py-0.5 bg-blue-500/10 text-blue-500 text-[10px] font-bold rounded ">Encrypted</span>
+                                        <span className="text-xs font-medium">Database Mode</span>
+                                        <span className="px-2 py-0.5 bg-blue-500/10 text-blue-500 text-[10px] font-medium rounded ">Encrypted</span>
                                     </div>
                                     <div className="flex items-center justify-between p-3 bg-secondary/30 rounded-xl border border-border/50">
-                                        <span className="text-xs font-bold">Auth Provider</span>
-                                        <span className="px-2 py-0.5 bg-amber-500/10 text-amber-500 text-[10px] font-bold rounded ">Passport.js / JWT</span>
+                                        <span className="text-xs font-medium">Auth Provider</span>
+                                        <span className="px-2 py-0.5 bg-amber-500/10 text-amber-500 text-[10px] font-medium rounded ">Passport.js / JWT</span>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        <div className="bg-gradient-to-br from-primary/5 to-transparent border border-primary/20 rounded-2xl p-6">
-                            <h4 className="font-bold text-[10px]  tracking-[0.3em] mb-4 text-primary">System Notice</h4>
+                        <div className="bg-gradient-to-br from-primary/5 to-transparent border border-primary/20 rounded-xl p-6">
+                            <h4 className="font-medium text-[10px] tracking-widest uppercase mb-4 text-primary">System Notice</h4>
                             <p className="text-xs text-muted-foreground leading-relaxed">
                                 Theme changes are propagated instantly to all active sessions via the context provider. The Design System flag controls CSS variable injections and layout utility classes. No functional changes are performed during theme hot-swaps.
                             </p>
@@ -1035,18 +1124,18 @@ const StatCard = ({ icon, label, value, color, trend }) => {
     return (
         <div className="group bg-card border border-border/50 p-6 rounded-[2rem] hover:border-primary/40 hover:-translate-y-2 transition-all duration-500 shadow-sm">
             <div className="flex items-center justify-between mb-6">
-                <div className={`p-4 rounded-2xl ${colorClasses[color]} group-hover:scale-110 transition-transform duration-500`}>
+                <div className={`p-4 rounded-xl ${colorClasses[color]} group-hover:scale-110 transition-transform duration-500`}>
                     {icon}
                 </div>
                 {trend && (
-                    <span className={`px-2 py-1 rounded-lg text-[10px] font-bold  tracking-wider ${trend.startsWith('+') ? 'bg-green-500/10 text-green-500' : 'bg-red-500/10 text-red-500'}`}>
+                    <span className={`px-2 py-1 rounded-lg text-[10px] font-medium  tracking-wide ${trend.startsWith('+') ? 'bg-green-500/10 text-green-500' : 'bg-red-500/10 text-red-500'}`}>
                         {trend}
                     </span>
                 )}
             </div>
             <div>
-                <p className="text-[11px] font-bold text-muted-foreground  tracking-[0.2em] mb-2">{label}</p>
-                <h3 className="text-xl font-bold text-foreground tracking-tight group-hover:text-primary transition-colors duration-500">{value}</h3>
+                <p className="text-[11px] font-medium text-muted-foreground  tracking-[0.2em] mb-2">{label}</p>
+                <h3 className="text-xl font-medium text-foreground tracking-tight group-hover:text-primary transition-colors duration-500">{value}</h3>
             </div>
         </div>
     );
@@ -1062,8 +1151,71 @@ const QuickActionButton = ({ icon, label, onClick }) => (
         <div className="p-2 bg-background border border-border group-hover:bg-primary/20 rounded-lg transition-all shadow-sm">
             {icon}
         </div>
-        <span className="text-xs font-bold text-muted-foreground group-hover:text-foreground">{label}</span>
+        <span className="text-xs font-medium text-muted-foreground group-hover:text-foreground">{label}</span>
     </button>
+);
+
+const Donut = ({ pct = 0, size = 180, stroke = 24, color = '#3b82f6' }) => {
+    const r = (size - stroke) / 2;
+    const circ = 2 * Math.PI * r;
+    const dash = (pct / 100) * circ;
+    return (
+        <div className="relative flex items-center justify-center">
+            <svg width={size} height={size} style={{ transform: 'rotate(-90deg)' }}>
+                <circle cx={size / 2} cy={size / 2} r={r} fill="none"
+                    stroke="currentColor" strokeWidth={stroke} className="text-blue-500/10" />
+                <circle cx={size / 2} cy={size / 2} r={r} fill="none"
+                    stroke={color} strokeWidth={stroke}
+                    strokeDasharray={`${dash} ${circ}`} strokeLinecap="round"
+                    style={{ transition: 'stroke-dasharray 1s ease' }} />
+            </svg>
+            <div className="absolute text-center flex flex-col items-center justify-center">
+                <span className="text-2xl font-medium">{pct}%</span>
+                <p className="text-[10px] text-muted-foreground font-medium uppercase tracking-widest mt-1">Used</p>
+            </div>
+        </div>
+    );
+};
+
+const BarChartActivity = ({ data = [] }) => (
+    <div className="flex items-end gap-2 sm:gap-4 h-[140px] px-2 relative w-full pt-4">
+        <div className="absolute inset-0 flex flex-col justify-between py-2 pointer-events-none">
+            {[200, 150, 100, 50, 0].map(v => (
+                <div key={v} className="flex items-center gap-2 w-full">
+                    <span className="text-[9px] text-muted-foreground w-6 font-medium text-right">{v}</span>
+                    <div className="flex-1 h-px bg-border/40 border-dashed" />
+                </div>
+            ))}
+        </div>
+        
+        <div className="flex flex-1 items-end gap-2 sm:gap-4 pl-10 relative z-10 h-full pb-2">
+            {data.map((h, i) => (
+                <div key={i} className="flex flex-col items-center gap-2 flex-1 h-full justify-end">
+                    <div className="w-full rounded-full overflow-hidden flex flex-col justify-end bg-muted/30"
+                        style={{ height: '100%' }}>
+                        <div className={`w-full rounded-full transition-all duration-700 ${i === data.length - 1 ? 'bg-primary' : 'bg-primary/50'}`}
+                            style={{ height: `${Math.max(h, 15)}%` }} />
+                    </div>
+                </div>
+            ))}
+        </div>
+    </div>
+);
+
+const LineChartAnalytics = () => (
+    <svg viewBox="0 0 400 150" className="w-full h-[140px] drop-shadow-md">
+        <defs>
+            <linearGradient id="lineGrad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity="0.2" />
+                <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity="0" />
+            </linearGradient>
+        </defs>
+        <path d="M 0 100 Q 50 60 100 80 T 200 40 T 300 60 T 400 30 L 400 150 L 0 150 Z" fill="url(#lineGrad)" />
+        <path d="M 0 100 Q 50 60 100 80 T 200 40 T 300 60 T 400 30" fill="none" stroke="hsl(var(--primary))" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+        <circle cx="200" cy="40" r="4" fill="hsl(var(--primary))" className="animate-pulse" />
+        <circle cx="200" cy="40" r="12" fill="hsl(var(--primary))" fillOpacity="0.2" />
+        <line x1="200" y1="40" x2="200" y2="150" stroke="hsl(var(--primary))" strokeWidth="1" strokeDasharray="4 4" opacity="0.5" />
+    </svg>
 );
 
 export default AdminDashboard;

@@ -20,14 +20,14 @@ exports.getFolders = async (req, res, next) => {
             const tree = [];
 
             folders.forEach(folder => {
-                folderMap[folder._id] = { ...folder.toObject(), children: [] };
+                folderMap[folder._id.toString()] = { ...folder.toObject({ virtuals: true }), children: [] };
             });
 
             folders.forEach(folder => {
-                if (folder.parent && folderMap[folder.parent]) {
-                    folderMap[folder.parent].children.push(folderMap[folder._id]);
+                if (folder.parent && folderMap[folder.parent.toString()]) {
+                    folderMap[folder.parent.toString()].children.push(folderMap[folder._id.toString()]);
                 } else {
-                    tree.push(folderMap[folder._id]);
+                    tree.push(folderMap[folder._id.toString()]);
                 }
             });
 

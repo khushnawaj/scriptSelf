@@ -30,8 +30,7 @@ const notifications = require('./routes/notificationRoutes');
 const chat = require('./routes/chatRoutes');
 const system = require('./routes/systemRoutes');
 const folders = require('./routes/folderRoutes');
-
-
+const jobs = require('./routes/jobRoutes');
 
 const app = express();
 
@@ -249,6 +248,7 @@ app.use('/api/v1/notifications', notifications);
 app.use('/api/v1/chat', chat);
 app.use('/api/v1/system', system);
 app.use('/api/v1/folders', folders);
+app.use('/api/v1/jobs', jobs);
 
 
 

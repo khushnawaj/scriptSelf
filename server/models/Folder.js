@@ -41,7 +41,9 @@ const folderSchema = new mongoose.Schema({
         default: 0 // For custom sorting
     }
 }, {
-    timestamps: true
+    timestamps: true,
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true }
 });
 
 // Index for faster queries

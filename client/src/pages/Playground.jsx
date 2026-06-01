@@ -1,8 +1,10 @@
 import { useState, useRef, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import Editor from '@monaco-editor/react';
-import { Play, Trash2, Terminal as TerminalIcon, Eraser, PlayCircle, Loader2 } from 'lucide-react';
+import { Play, Terminal as TerminalIcon, Eraser, PlayCircle, Loader2, Save, FolderPlus, X, Plus } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import { useTheme } from '../context/ThemeContext';
+import api from '../utils/api';
 
 const Playground = () => {
     const { theme } = useTheme();
@@ -22,9 +24,46 @@ setTimeout(() => {
     console.log("Async log successfully captured!");
 }, 500);`;
 
+    const [searchParams] = useSearchParams();
+    const noteId = searchParams.get('id');
+
     const [code, setCode] = useState(TEMPLATE);
     const [output, setOutput] = useState([]);
     const [isRunning, setIsRunning] = useState(false);
+    
+    // Save Modal States
+    const [isSaveModalOpen, setIsSaveModalOpen] = useState(false);
+    const [fileName, setFileName] = useState('My Script');
+    const [isPublic, setIsPublic] = useState(false);
+    const [selectedFolder, setSelectedFolder] = useState('');
+    const [selectedCategory, setSelectedCategory] = useState('');
+    const [folders, setFolders] = useState([]);
+    const [categories, setCategories] = useState([]);
+    const [isSaving, setIsSaving] = useState(false);
+
+    // New folder creation inline
+    const [isCreatingFolder, setIsCreatingFolder] = useState(false);
+    const [newFolderName, setNewFolderName] = useState('');
+    const [isCreatingFolderLoading, setIsCreatingFolderLoading] = useState(false);
+
+    // Fetch initial code if noteId is present
+    useEffect(() => {
+        if (noteId) {
+            api.get(`/notes/${noteId}`)
+                .then(res => {
+                    if (res.data.success) {
+                        const note = res.data.data;
+                        setCode(note.codeSnippet || note.content || TEMPLATE);
+                        setFileName(note.title);
+                        if (note.category) setSelectedCategory(note.category._id || note.category);
+                        if (note.folder) setSelectedFolder(note.folder._id || note.folder);
+                        setIsPublic(note.isPublic);
+                    }
+                })
+                .catch(() => toast.error('Failed to load saved script'));
+        }
+    }, [noteId]);
+
     const outputRef = useRef(null);
     const editorRef = useRef(null);
 
@@ -52,6 +91,85 @@ setTimeout(() => {
 
     const addLog = (type, content) => {
         setOutput(prev => [...prev, { type, content, timestamp: new Date().toLocaleTimeString() }]);
+    };
+
+    const handleOpenSaveModal = async () => {
+        setIsSaveModalOpen(true);
+        setIsCreatingFolder(false);
+        setNewFolderName('');
+        try {
+            const [foldersRes, categoriesRes] = await Promise.all([
+                api.get('/folders'),
+                api.get('/categories')
+            ]);
+            setFolders(foldersRes.data.data || []);
+            setCategories(categoriesRes.data.data || []);
+            if (categoriesRes.data.data?.length > 0 && !selectedCategory) {
+                setSelectedCategory(categoriesRes.data.data[0]._id);
+            }
+        } catch (error) {
+            toast.error('Failed to load directories/categories');
+        }
+    };
+
+    const handleCreateFolder = async () => {
+        if (!newFolderName.trim()) return;
+        setIsCreatingFolderLoading(true);
+        try {
+            const res = await api.post('/folders', { name: newFolderName.trim() });
+            if (res.data.success) {
+                const created = res.data.data;
+                setFolders(prev => [...prev, created]);
+                setSelectedFolder(created._id);
+                setNewFolderName('');
+                setIsCreatingFolder(false);
+                toast.success(`Folder "${created.name}" created!`);
+            }
+        } catch (e) {
+            toast.error('Failed to create folder');
+        } finally {
+            setIsCreatingFolderLoading(false);
+        }
+    };
+
+    const handleSaveScript = async () => {
+        if (!fileName.trim()) return toast.error('Please enter a file name');
+        if (!selectedCategory) return toast.error('Please select a category');
+
+        setIsSaving(true);
+        try {
+            let folderId = selectedFolder;
+
+            // Automatically create folder if user typed a name but didn't click "Create" button first
+            if (isCreatingFolder && newFolderName.trim()) {
+                const folderRes = await api.post('/folders', { name: newFolderName.trim() });
+                if (folderRes.data.success) {
+                    const created = folderRes.data.data;
+                    folderId = created._id;
+                    setFolders(prev => [...prev, created]);
+                    setSelectedFolder(created._id);
+                    setNewFolderName('');
+                    setIsCreatingFolder(false);
+                    toast.success(`Folder "${created.name}" created!`);
+                }
+            }
+
+            await api.post('/notes', {
+                title: fileName,
+                content: `// Playground Snippet: ${fileName}\n\n${code}`,
+                codeSnippet: code,
+                type: 'code',
+                isPublic,
+                folder: folderId || null,
+                category: selectedCategory
+            });
+            toast.success('Script saved successfully!');
+            setIsSaveModalOpen(false);
+        } catch (error) {
+            toast.error(error.response?.data?.error || 'Failed to save script');
+        } finally {
+            setIsSaving(false);
+        }
     };
 
     // Sandbox Iframe Logic
@@ -175,6 +293,13 @@ setTimeout(() => {
 
                 <div className="flex items-center gap-4 relative z-10">
                     <button
+                        onClick={handleOpenSaveModal}
+                        className="h-10 px-4 text-[9px] font-bold tracking-[0.2em] text-muted-foreground hover:text-primary transition-all flex items-center gap-2 bg-background/30 border border-border/50 rounded-xl"
+                        title="Save script"
+                    >
+                        <Save size={14} strokeWidth={3} /> <span className="hidden sm:inline">Save</span>
+                    </button>
+                    <button
                         onClick={clearOutput}
                         className="h-10 px-4 text-[9px] font-bold  tracking-[0.2em] text-muted-foreground hover:text-rose-500 transition-all flex items-center gap-2 bg-background/30 border border-border/50 rounded-xl"
                         title="Clear console"
@@ -269,6 +394,139 @@ setTimeout(() => {
                     </div>
                 </div>
             </div>
+
+            {/* Save Modal */}
+            {isSaveModalOpen && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm px-4">
+                    <div className="bg-background border border-border/50 rounded-2xl p-6 w-full max-w-md shadow-2xl relative">
+                        <button 
+                            onClick={() => setIsSaveModalOpen(false)}
+                            className="absolute top-4 right-4 text-muted-foreground hover:text-foreground"
+                        >
+                            <X size={20} />
+                        </button>
+                        <h2 className="text-xl font-bold mb-6 flex items-center gap-2">
+                            <Save className="text-primary" size={24} />
+                            Save Script
+                        </h2>
+                        
+                        <div className="space-y-4">
+                            <div>
+                                <label className="block text-xs font-bold tracking-widest text-muted-foreground mb-2">FILE NAME</label>
+                                <input 
+                                    type="text" 
+                                    value={fileName}
+                                    onChange={(e) => setFileName(e.target.value)}
+                                    className="w-full bg-secondary/50 border border-border/50 rounded-xl px-4 py-3 focus:outline-none focus:border-primary transition-colors text-sm"
+                                    placeholder="Enter file name..."
+                                />
+                            </div>
+
+                            <div>
+                                <div className="flex items-center justify-between mb-2">
+                                    <label className="block text-xs font-bold tracking-widest text-muted-foreground">DIRECTORY</label>
+                                    <button
+                                        type="button"
+                                        onClick={() => { setIsCreatingFolder(!isCreatingFolder); setNewFolderName(''); }}
+                                        className="text-[10px] font-bold tracking-widest text-primary hover:text-primary/70 transition-colors flex items-center gap-1"
+                                    >
+                                        <FolderPlus size={12} />
+                                        {isCreatingFolder ? 'Cancel' : 'New Folder'}
+                                    </button>
+                                </div>
+
+                                {isCreatingFolder ? (
+                                    <div className="flex gap-2">
+                                        <input
+                                            type="text"
+                                            value={newFolderName}
+                                            onChange={(e) => setNewFolderName(e.target.value)}
+                                            onKeyDown={(e) => { if (e.key === 'Enter') handleCreateFolder(); if (e.key === 'Escape') setIsCreatingFolder(false); }}
+                                            placeholder="Folder name..."
+                                            autoFocus
+                                            className="flex-1 bg-secondary/50 border border-primary/50 rounded-xl px-4 py-2.5 focus:outline-none focus:border-primary transition-colors text-sm"
+                                        />
+                                        <button
+                                            type="button"
+                                            onClick={handleCreateFolder}
+                                            disabled={isCreatingFolderLoading || !newFolderName.trim()}
+                                            className="px-4 py-2.5 bg-primary text-white rounded-xl text-sm font-bold hover:bg-primary/90 transition-colors disabled:opacity-50 flex items-center gap-1.5"
+                                        >
+                                            {isCreatingFolderLoading ? <Loader2 size={14} className="animate-spin" /> : <Plus size={14} />}
+                                            Create
+                                        </button>
+                                    </div>
+                                ) : (
+                                    <select 
+                                        value={selectedFolder}
+                                        onChange={(e) => setSelectedFolder(e.target.value)}
+                                        className="w-full bg-secondary/50 border border-border/50 rounded-xl px-4 py-3 focus:outline-none focus:border-primary transition-colors text-sm"
+                                    >
+                                        <option value="">Root Directory (no folder)</option>
+                                        {folders.map(f => (
+                                            <option key={f._id} value={f._id}>{f.name}</option>
+                                        ))}
+                                    </select>
+                                )}
+                            </div>
+
+                            <div>
+                                <label className="block text-xs font-bold tracking-widest text-muted-foreground mb-2">CATEGORY</label>
+                                <select 
+                                    value={selectedCategory}
+                                    onChange={(e) => setSelectedCategory(e.target.value)}
+                                    className="w-full bg-secondary/50 border border-border/50 rounded-xl px-4 py-3 focus:outline-none focus:border-primary transition-colors text-sm appearance-none"
+                                >
+                                    {categories.map(c => (
+                                        <option key={c._id} value={c._id}>{c.name}</option>
+                                    ))}
+                                </select>
+                            </div>
+
+                            <div>
+                                <label className="block text-xs font-bold tracking-widest text-muted-foreground mb-2">VISIBILITY</label>
+                                <div className="flex gap-4">
+                                    <label className="flex items-center gap-2 cursor-pointer">
+                                        <input 
+                                            type="radio" 
+                                            checked={!isPublic}
+                                            onChange={() => setIsPublic(false)}
+                                            className="text-primary focus:ring-primary h-4 w-4"
+                                        />
+                                        <span className="text-sm">Private</span>
+                                    </label>
+                                    <label className="flex items-center gap-2 cursor-pointer">
+                                        <input 
+                                            type="radio" 
+                                            checked={isPublic}
+                                            onChange={() => setIsPublic(true)}
+                                            className="text-primary focus:ring-primary h-4 w-4"
+                                        />
+                                        <span className="text-sm">Public</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="mt-8 flex justify-end gap-3">
+                            <button 
+                                onClick={() => setIsSaveModalOpen(false)}
+                                className="px-5 py-2.5 rounded-xl border border-border/50 text-sm font-semibold hover:bg-secondary/50 transition-colors"
+                            >
+                                Cancel
+                            </button>
+                            <button 
+                                onClick={handleSaveScript}
+                                disabled={isSaving}
+                                className="px-5 py-2.5 rounded-xl bg-primary text-white text-sm font-semibold hover:bg-primary/90 transition-colors disabled:opacity-50 flex items-center gap-2"
+                            >
+                                {isSaving ? <Loader2 size={16} className="animate-spin" /> : <Save size={16} />}
+                                {isSaving ? 'Saving...' : 'Save Script'}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

@@ -176,15 +176,15 @@ const Admin = () => {
                     </div>
                     <div>
                         <h1 className="text-[27px] font-normal text-foreground">Admin Center</h1>
-                        <p className="text-[12px] text-muted-foreground  tracking-wider font-bold">
+                        <p className="text-[12px] text-muted-foreground  tracking-wide font-medium">
                             System Management Console
                         </p>
                     </div>
                 </div>
                 <div className="flex gap-4">
                     <div className="text-right hidden sm:block">
-                        <p className="text-[13px] font-bold text-foreground">User: {user.username}</p>
-                        <p className="text-[11px] text-primary font-bold ">Super Admin Privileges</p>
+                        <p className="text-[13px] font-medium text-foreground">User: {user.username}</p>
+                        <p className="text-[11px] text-primary font-medium ">Super Admin Privileges</p>
                     </div>
                 </div>
             </div>
@@ -200,9 +200,9 @@ const Admin = () => {
                     <div key={i} className="bg-card border border-border p-4 rounded-[3px] shadow-sm hover:border-primary/50 transition-colors">
                         <div className="flex justify-between items-start">
                             <stat.icon size={20} className={stat.color} />
-                            <span className="text-[21px] font-bold text-foreground">{stat.value}</span>
+                            <span className="text-[21px] font-medium text-foreground">{stat.value}</span>
                         </div>
-                        <p className="text-[11px] text-muted-foreground  tracking-wider font-bold mt-2">{stat.label}</p>
+                        <p className="text-[11px] text-muted-foreground  tracking-wide font-medium mt-2">{stat.label}</p>
                     </div>
                 ))}
             </div>
@@ -223,7 +223,7 @@ const Admin = () => {
                         <button
                             key={tab.id}
                             onClick={() => setActiveTab(tab.id)}
-                            className={`px-6 py-4 text-[13px] font-bold transition-all border-b-2 whitespace-nowrap ${activeTab === tab.id
+                            className={`px-6 py-4 text-[13px] font-medium transition-all border-b-2 whitespace-nowrap ${activeTab === tab.id
                                 ? 'border-primary text-primary bg-background'
                                 : 'border-transparent text-muted-foreground hover:text-foreground hover:bg-muted/30'
                                 }`}
@@ -266,11 +266,11 @@ const Admin = () => {
                                 <table className="w-full text-left text-[13px]">
                                     <thead className="bg-muted/30 text-muted-foreground border-b border-border">
                                         <tr>
-                                            <th className="px-6 py-3 font-bold  tracking-wider">User</th>
-                                            <th className="px-6 py-3 font-bold  tracking-wider">Email</th>
-                                            <th className="px-6 py-3 font-bold  tracking-wider">Role</th>
-                                            <th className="px-6 py-3 font-bold  tracking-wider">Joined</th>
-                                            <th className="px-6 py-3 font-bold  tracking-wider text-right">Actions</th>
+                                            <th className="px-6 py-3 font-medium  tracking-wide">User</th>
+                                            <th className="px-6 py-3 font-medium  tracking-wide">Email</th>
+                                            <th className="px-6 py-3 font-medium  tracking-wide">Role</th>
+                                            <th className="px-6 py-3 font-medium  tracking-wide">Joined</th>
+                                            <th className="px-6 py-3 font-medium  tracking-wide text-right">Actions</th>
                                         </tr>
                                     </thead>
                                     <tbody className="divide-y divide-border">
@@ -278,17 +278,17 @@ const Admin = () => {
                                             <tr key={u._id} className="hover:bg-muted/20 transition-colors">
                                                 <td className="px-6 py-4">
                                                     <div className="flex items-center gap-3">
-                                                        <div className="w-8 h-8 rounded-[3px] bg-primary/20 text-primary flex items-center justify-center font-bold">
+                                                        <div className="w-8 h-8 rounded-[3px] bg-primary/20 text-primary flex items-center justify-center font-medium">
                                                             {u.username.charAt(0).toUpperCase()}
                                                         </div>
-                                                        <span className="font-bold text-foreground">{u.username}</span>
+                                                        <span className="font-medium text-foreground">{u.username}</span>
                                                     </div>
                                                 </td>
                                                 <td className="px-6 py-4 text-muted-foreground">{u.email}</td>
                                                 <td className="px-6 py-4">
                                                     <button
                                                         onClick={() => handleToggleRole(u._id, u.role)}
-                                                        className={`px-2 py-1 rounded-[3px] text-[10px] font-bold  flex items-center gap-1 ${u.role === 'admin' ? 'bg-rose-500/10 text-rose-500' : 'bg-indigo-500/10 text-indigo-500'
+                                                        className={`px-2 py-1 rounded-[3px] text-[10px] font-medium  flex items-center gap-1 ${u.role === 'admin' ? 'bg-rose-500/10 text-rose-500' : 'bg-indigo-500/10 text-indigo-500'
                                                             }`}
                                                     >
                                                         {u.role} <UserCog size={10} />
@@ -324,17 +324,17 @@ const Admin = () => {
                                 <table className="w-full text-left text-[13px]">
                                     <thead className="bg-muted/30 text-muted-foreground border-b border-border">
                                         <tr>
-                                            <th className="px-6 py-3 font-bold  tracking-wider">Title</th>
-                                            <th className="px-6 py-3 font-bold  tracking-wider">Author</th>
-                                            <th className="px-6 py-3 font-bold  tracking-wider">Category</th>
-                                            <th className="px-6 py-3 font-bold  tracking-wider">Status</th>
-                                            <th className="px-6 py-3 font-bold  tracking-wider text-right">Actions</th>
+                                            <th className="px-6 py-3 font-medium  tracking-wide">Title</th>
+                                            <th className="px-6 py-3 font-medium  tracking-wide">Author</th>
+                                            <th className="px-6 py-3 font-medium  tracking-wide">Category</th>
+                                            <th className="px-6 py-3 font-medium  tracking-wide">Status</th>
+                                            <th className="px-6 py-3 font-medium  tracking-wide text-right">Actions</th>
                                         </tr>
                                     </thead>
                                     <tbody className="divide-y divide-border">
                                         {filteredNotes.map(n => (
                                             <tr key={n._id} className="hover:bg-muted/20 transition-colors">
-                                                <td className="px-6 py-4 font-bold text-foreground flex items-center gap-2">
+                                                <td className="px-6 py-4 font-medium text-foreground flex items-center gap-2">
                                                     {n.isPinned && <Pin size={14} className="text-amber-500 fill-amber-500" />}
                                                     {n.title}
                                                 </td>
@@ -343,7 +343,7 @@ const Admin = () => {
                                                     <span className="so-tag">{n.category?.name || 'Uncategorized'}</span>
                                                 </td>
                                                 <td className="px-6 py-4">
-                                                    <span className={`px-2 py-0.5 rounded-[3px] text-[10px] font-bold  ${n.isPublic ? 'bg-emerald-500/10 text-emerald-500' : 'bg-slate-500/10 text-slate-500'}`}>
+                                                    <span className={`px-2 py-0.5 rounded-[3px] text-[10px] font-medium  ${n.isPublic ? 'bg-emerald-500/10 text-emerald-500' : 'bg-slate-500/10 text-slate-500'}`}>
                                                         {n.isPublic ? 'Public' : 'Private'}
                                                     </span>
                                                 </td>
@@ -393,7 +393,7 @@ const Admin = () => {
                                             </div>
                                         </div>
                                         <p className="text-[12px] text-muted-foreground line-clamp-2">{cat.description || 'No description provided.'}</p>
-                                        <div className="mt-4 pt-3 border-t border-border flex justify-between items-center text-[11px] font-bold  tracking-wider">
+                                        <div className="mt-4 pt-3 border-t border-border flex justify-between items-center text-[11px] font-medium  tracking-wide">
                                             <span className={cat.isGlobal ? 'text-primary' : 'text-muted-foreground'}>
                                                 {cat.isGlobal ? 'Global Access' : 'Private Tag'}
                                             </span>
@@ -416,45 +416,45 @@ const Admin = () => {
                                     <div className="bg-slate-900 border border-border p-6 rounded-[3px] shadow-sm">
                                         <div className="flex justify-between items-start mb-4">
                                             <Trophy size={24} className="text-primary" />
-                                            <span className="text-[24px] font-bold text-foreground">
+                                            <span className="text-[24px] font-medium text-foreground">
                                                 {users.reduce((acc, current) => acc + (current.arcade?.points || 0), 0).toLocaleString()}
                                             </span>
                                         </div>
-                                        <p className="text-[11px] text-muted-foreground  tracking-widest font-bold">Global XP Pool</p>
+                                        <p className="text-[11px] text-muted-foreground  tracking-wide font-medium">Global XP Pool</p>
                                     </div>
                                     <div className="bg-slate-900 border border-border p-6 rounded-[3px] shadow-sm">
                                         <div className="flex justify-between items-start mb-4">
                                             <Flame size={24} className="text-orange-500" />
-                                            <span className="text-[24px] font-bold text-foreground">
+                                            <span className="text-[24px] font-medium text-foreground">
                                                 {Math.max(...users.map(u => u.arcade?.streak || 0), 0)}
                                             </span>
                                         </div>
-                                        <p className="text-[11px] text-muted-foreground  tracking-widest font-bold">Record Daily Streak</p>
+                                        <p className="text-[11px] text-muted-foreground  tracking-wide font-medium">Record Daily Streak</p>
                                     </div>
                                     <div className="bg-slate-900 border border-border p-6 rounded-[3px] shadow-sm">
                                         <div className="flex justify-between items-start mb-4">
                                             <Gamepad2 size={24} className="text-emerald-500" />
-                                            <span className="text-[24px] font-bold text-foreground">
+                                            <span className="text-[24px] font-medium text-foreground">
                                                 {users.filter(u => u.arcade?.points > 0).length}
                                             </span>
                                         </div>
-                                        <p className="text-[11px] text-muted-foreground  tracking-widest font-bold">Active Players</p>
+                                        <p className="text-[11px] text-muted-foreground  tracking-wide font-medium">Active Players</p>
                                     </div>
                                 </div>
 
                                 <div className="space-y-4">
-                                    <h3 className="text-[19px] font-bold text-foreground flex items-center gap-2">
+                                    <h3 className="text-[19px] font-medium text-foreground flex items-center gap-2">
                                         Global Player Registry
                                     </h3>
                                     <div className="overflow-x-auto border border-border rounded-[3px]">
                                         <table className="w-full text-left text-[13px]">
                                             <thead className="bg-muted/30 text-muted-foreground border-b border-border">
                                                 <tr>
-                                                    <th className="px-6 py-3 font-bold  tracking-wider">Agent</th>
-                                                    <th className="px-6 py-3 font-bold  tracking-wider">Total XP</th>
-                                                    <th className="px-6 py-3 font-bold  tracking-wider">Streak</th>
-                                                    <th className="px-6 py-3 font-bold  tracking-wider">Last Deploy</th>
-                                                    <th className="px-6 py-3 font-bold  tracking-wider">Efficiency</th>
+                                                    <th className="px-6 py-3 font-medium  tracking-wide">Agent</th>
+                                                    <th className="px-6 py-3 font-medium  tracking-wide">Total XP</th>
+                                                    <th className="px-6 py-3 font-medium  tracking-wide">Streak</th>
+                                                    <th className="px-6 py-3 font-medium  tracking-wide">Last Deploy</th>
+                                                    <th className="px-6 py-3 font-medium  tracking-wide">Efficiency</th>
                                                 </tr>
                                             </thead>
                                             <tbody className="divide-y divide-border">
@@ -464,13 +464,13 @@ const Admin = () => {
                                                         <tr key={u._id} className="hover:bg-muted/20 transition-colors">
                                                             <td className="px-6 py-4">
                                                                 <div className="flex items-center gap-3">
-                                                                    <span className="text-[11px] font-bold text-primary/50 w-4">#{i + 1}</span>
-                                                                    <span className="font-bold text-foreground">{u.username}</span>
+                                                                    <span className="text-[11px] font-medium text-primary/50 w-4">#{i + 1}</span>
+                                                                    <span className="font-medium text-foreground">{u.username}</span>
                                                                 </div>
                                                             </td>
-                                                            <td className="px-6 py-4 font-bold text-primary">{u.arcade?.points || 0}</td>
+                                                            <td className="px-6 py-4 font-medium text-primary">{u.arcade?.points || 0}</td>
                                                             <td className="px-6 py-4">
-                                                                <div className="flex items-center gap-1.5 text-orange-500 font-bold">
+                                                                <div className="flex items-center gap-1.5 text-orange-500 font-medium">
                                                                     <Flame size={12} fill="currentColor" /> {u.arcade?.streak || 0}
                                                                 </div>
                                                             </td>
@@ -505,10 +505,10 @@ const Admin = () => {
                                 {/* Cohort Distribution Summary */}
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     <div className="bg-card border border-border p-6 rounded-[3px]">
-                                        <h3 className="text-sm font-bold  tracking-widest text-muted-foreground mb-4">Cohort Distribution</h3>
+                                        <h3 className="text-sm font-medium  tracking-wide text-muted-foreground mb-4">Cohort Distribution</h3>
                                         <div className="flex items-center gap-6">
                                             <div className="flex-1 space-y-2">
-                                                <div className="flex justify-between text-[11px] font-bold">
+                                                <div className="flex justify-between text-[11px] font-medium">
                                                     <span>COHORT A</span>
                                                     <span>{Math.round((users.filter(u => u.experimentGroup === 'A').length / users.length) * 100 || 0)}%</span>
                                                 </div>
@@ -518,7 +518,7 @@ const Admin = () => {
                                                 <p className="text-[10px] text-muted-foreground ">{users.filter(u => u.experimentGroup === 'A').length} Users</p>
                                             </div>
                                             <div className="flex-1 space-y-2">
-                                                <div className="flex justify-between text-[11px] font-bold">
+                                                <div className="flex justify-between text-[11px] font-medium">
                                                     <span>COHORT B</span>
                                                     <span>{Math.round((users.filter(u => u.experimentGroup === 'B').length / users.length) * 100 || 0)}%</span>
                                                 </div>
@@ -533,7 +533,7 @@ const Admin = () => {
                                     <div className="bg-primary/5 border border-primary/20 p-6 rounded-[3px] flex items-center gap-4">
                                         <ShieldCheck size={32} className="text-primary" />
                                         <div>
-                                            <h4 className="text-[14px] font-bold  tracking-tight">Active Experiment: v2_bars</h4>
+                                            <h4 className="text-[14px] font-medium  tracking-tight">Active Experiment: v2_bars</h4>
                                             <p className="text-[12px] text-muted-foreground leading-relaxed">
                                                 Testing high-visibility progress metrics for Cohort B. Currently monitoring engagement deltas.
                                             </p>
@@ -543,30 +543,30 @@ const Admin = () => {
 
                                 {/* User Flag Management */}
                                 <div className="space-y-4">
-                                    <h3 className="text-[19px] font-bold text-foreground">A/B Testing Controls</h3>
+                                    <h3 className="text-[19px] font-medium text-foreground">A/B Testing Controls</h3>
                                     <div className="overflow-x-auto border border-border rounded-[3px]">
                                         <table className="w-full text-left text-[13px]">
                                             <thead className="bg-muted/30 text-muted-foreground border-b border-border">
                                                 <tr>
-                                                    <th className="px-6 py-3 font-bold  tracking-wider">Agent</th>
-                                                    <th className="px-6 py-3 font-bold  tracking-wider">Current Cohort</th>
-                                                    <th className="px-6 py-3 font-bold  tracking-wider">Feature Flags</th>
-                                                    <th className="px-6 py-3 font-bold  tracking-wider text-right">Toggle Operations</th>
+                                                    <th className="px-6 py-3 font-medium  tracking-wide">Agent</th>
+                                                    <th className="px-6 py-3 font-medium  tracking-wide">Current Cohort</th>
+                                                    <th className="px-6 py-3 font-medium  tracking-wide">Feature Flags</th>
+                                                    <th className="px-6 py-3 font-medium  tracking-wide text-right">Toggle Operations</th>
                                                 </tr>
                                             </thead>
                                             <tbody className="divide-y divide-border">
                                                 {filteredUsers.map(u => (
                                                     <tr key={u._id} className="hover:bg-muted/20 transition-colors">
-                                                        <td className="px-6 py-4 font-bold">{u.username}</td>
+                                                        <td className="px-6 py-4 font-medium">{u.username}</td>
                                                         <td className="px-6 py-4">
-                                                            <span className={`px-2 py-1 rounded-[3px] text-[10px] font-bold ${u.experimentGroup === 'B' ? 'bg-emerald-500/10 text-emerald-500' : 'bg-primary/10 text-primary'}`}>
+                                                            <span className={`px-2 py-1 rounded-[3px] text-[10px] font-medium ${u.experimentGroup === 'B' ? 'bg-emerald-500/10 text-emerald-500' : 'bg-primary/10 text-primary'}`}>
                                                                 GROUP_{u.experimentGroup}
                                                             </span>
                                                         </td>
                                                         <td className="px-6 py-4">
                                                             <div className="flex gap-2">
                                                                 {u.featureFlags && Object.entries(u.featureFlags).map(([flag, val]) => (
-                                                                    <span key={flag} className={`px-2 py-0.5 rounded-[3px] text-[9px] font-bold  ${val ? 'bg-indigo-500/10 text-indigo-500' : 'bg-slate-500/10 text-slate-500'}`}>
+                                                                    <span key={flag} className={`px-2 py-0.5 rounded-[3px] text-[9px] font-medium  ${val ? 'bg-indigo-500/10 text-indigo-500' : 'bg-slate-500/10 text-slate-500'}`}>
                                                                         {flag}
                                                                     </span>
                                                                 ))}
@@ -586,7 +586,7 @@ const Admin = () => {
                                                                             toast.success(`User moved to GROUP_${newGroup}`);
                                                                         } catch (e) { toast.error("Failed to update cohort"); }
                                                                     }}
-                                                                    className="px-3 py-1 bg-muted border border-border rounded-[3px] text-[10px] font-bold  hover:bg-muted/80"
+                                                                    className="px-3 py-1 bg-muted border border-border rounded-[3px] text-[10px] font-medium  hover:bg-muted/80"
                                                                 >
                                                                     Switch Cohort
                                                                 </button>
@@ -602,7 +602,7 @@ const Admin = () => {
                                                                             toast.success(`Flag ${flagName} updated`);
                                                                         } catch (e) { toast.error("Failed to update flags"); }
                                                                     }}
-                                                                    className="px-3 py-1 bg-primary text-white rounded-[3px] text-[10px] font-bold  shadow-sm"
+                                                                    className="px-3 py-1 bg-primary text-white rounded-[3px] text-[10px] font-medium  shadow-sm"
                                                                 >
                                                                     Manage Flags
                                                                 </button>
@@ -626,14 +626,14 @@ const Admin = () => {
                                 className="p-6 max-w-3xl mx-auto space-y-6"
                             >
                                 <div className="space-y-2">
-                                    <h3 className="text-[21px] font-bold text-foreground">Email Broadcast</h3>
+                                    <h3 className="text-[21px] font-medium text-foreground">Email Broadcast</h3>
                                     <p className="text-[13px] text-muted-foreground">
                                         Send important updates, announcements, or information to all registered users.
                                     </p>
                                 </div>
 
                                 <div className="bg-amber-500/10 border border-amber-500/20 p-4 rounded-[3px]">
-                                    <p className="text-[11px] text-amber-600 dark:text-amber-400 font-bold  mb-1">⚠️ Warning</p>
+                                    <p className="text-[11px] text-amber-600 dark:text-amber-400 font-medium  mb-1">⚠️ Warning</p>
                                     <p className="text-[12px] text-muted-foreground">
                                         This will send an email to ALL users with registered email addresses. Use responsibly.
                                     </p>
@@ -641,7 +641,7 @@ const Admin = () => {
 
                                 <form onSubmit={handleBroadcast} className="space-y-5">
                                     <div>
-                                        <label className="block text-[13px] font-bold mb-2 text-foreground">Email Subject</label>
+                                        <label className="block text-[13px] font-medium mb-2 text-foreground">Email Subject</label>
                                         <input
                                             type="text"
                                             className="w-full border border-border bg-background rounded-[3px] py-2.5 px-4 text-[13px] outline-none focus:border-primary transition-colors"
@@ -653,7 +653,7 @@ const Admin = () => {
                                     </div>
 
                                     <div>
-                                        <label className="block text-[13px] font-bold mb-2 text-foreground">Message Body</label>
+                                        <label className="block text-[13px] font-medium mb-2 text-foreground">Message Body</label>
                                         <textarea
                                             className="w-full border border-border bg-background rounded-[3px] py-2.5 px-4 text-[13px] min-h-[200px] outline-none focus:border-primary transition-colors font-mono"
                                             placeholder="Write your message here..."
@@ -695,7 +695,7 @@ const Admin = () => {
                                 </form>
 
                                 <div className="p-4 bg-primary/5 border border-primary/20 rounded-[3px]">
-                                    <p className="text-[11px] text-primary font-bold  mb-1">📧 Email Preview</p>
+                                    <p className="text-[11px] text-primary font-medium  mb-1">📧 Email Preview</p>
                                     <div className="text-[12px] text-muted-foreground space-y-1 font-mono">
                                         <p>Hi [username],</p>
                                         <p className="pl-4">{broadcastForm.message || '(Your message will appear here)'}</p>
@@ -718,7 +718,7 @@ const Admin = () => {
                                 </div>
                                 <div className="max-w-md mx-auto space-y-6">
                                     <div>
-                                        <h3 className="text-[19px] font-bold">Workspace Maintenance</h3>
+                                        <h3 className="text-[19px] font-medium">Workspace Maintenance</h3>
                                         <p className="text-muted-foreground text-[14px]">
                                             Core system tools for data portability and synchronization.
                                         </p>
@@ -745,7 +745,7 @@ const Admin = () => {
                                     </div>
 
                                     <div className="p-4 bg-primary/5 border border-primary/20 rounded-[3px] text-left">
-                                        <p className="text-[11px] text-primary font-bold  mb-1">Architecture Note</p>
+                                        <p className="text-[11px] text-primary font-medium  mb-1">Architecture Note</p>
                                         <p className="text-[12px] text-muted-foreground">
                                             The export contains clean Markdown files with YAML frontmatter, preserving your technical patterns across local editors.
                                         </p>
@@ -768,7 +768,7 @@ const Admin = () => {
                             className="bg-card border border-border w-full max-w-md rounded-[3px] shadow-2xl p-6"
                         >
                             <div className="flex justify-between items-center mb-6">
-                                <h3 className="text-[19px] font-bold text-foreground flex items-center gap-2">
+                                <h3 className="text-[19px] font-medium text-foreground flex items-center gap-2">
                                     Create Global Category
                                 </h3>
                                 <button onClick={() => setShowCategoryModal(false)}>
@@ -777,7 +777,7 @@ const Admin = () => {
                             </div>
                             <form onSubmit={handleCreateCategory} className="space-y-4">
                                 <div>
-                                    <label className="block text-[13px] font-bold mb-1">Category Name</label>
+                                    <label className="block text-[13px] font-medium mb-1">Category Name</label>
                                     <input
                                         className="w-full border border-border bg-background rounded-[3px] py-2 px-3 text-[13px] outline-none focus:border-primary"
                                         placeholder="e.g. System Architecture"
@@ -787,7 +787,7 @@ const Admin = () => {
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-[13px] font-bold mb-1">Description</label>
+                                    <label className="block text-[13px] font-medium mb-1">Description</label>
                                     <textarea
                                         className="w-full border border-border bg-background rounded-[3px] py-2 px-3 text-[13px] min-h-[100px] outline-none focus:border-primary"
                                         placeholder="What kind of records belong here?"
@@ -796,7 +796,7 @@ const Admin = () => {
                                     />
                                 </div>
                                 <div className="p-3 bg-primary/5 border border-primary/20 rounded-[3px]">
-                                    <p className="text-[11px] text-primary font-bold  flex items-center gap-1">
+                                    <p className="text-[11px] text-primary font-medium  flex items-center gap-1">
                                         Pro Tip
                                     </p>
                                     <p className="text-[12px] text-muted-foreground mt-1">

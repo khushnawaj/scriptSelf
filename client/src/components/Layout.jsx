@@ -24,7 +24,9 @@ import {
     Activity,
     BarChart3,
     Command,
-    Compass
+    Compass,
+    Briefcase,
+    HardDrive
 } from 'lucide-react';
 
 import { useSelector } from 'react-redux';
@@ -318,8 +320,9 @@ const Layout = () => {
                 <div className="h-px bg-border/30 my-4 mx-4" />
             )}
             <NavItem to="/notes" label="All Notes" icon={FileText} />
+            {user && <NavItem to="/files" label="Files" icon={HardDrive} />}
             {user && <NavItem to="/notes/new" label="New Note" icon={Zap} />}
-            <NavItem to="/categories" label="Tags" icon={BookOpen} />
+
             <NavItem to="/roadmap" label="Roadmap" icon={Network} />
             <NavItem to="/issues" label="Issues" icon={Flag} />
 
@@ -333,6 +336,8 @@ const Layout = () => {
             )}
             <NavItem to="/playground" label="Playground" icon={Terminal} />
             <NavItem to="/arcade" label="Arcade" icon={Gamepad2} />
+            <NavItem to="/jobs" label="Jobs" icon={Briefcase} />
+            <NavItem to="/careers" label="Careers" icon={Users} />
 
 
 

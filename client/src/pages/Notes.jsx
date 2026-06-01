@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { getNotes, resetNotes } from '../features/notes/noteSlice';
@@ -7,6 +7,7 @@ import Spinner from '../components/Spinner';
 import LogicSeal from '../components/LogicSeal';
 import Pagination from '../components/Pagination';
 import { Activity } from 'react';
+import api from '../utils/api';
 import {
     Search,
     Filter,
@@ -17,14 +18,95 @@ import {
     Clock,
     User,
     ChevronDown,
+    ChevronLeft,
     Tag,
     FolderTree,
+    Folder,
+    FolderOpen,
     Pin,
     ArrowUpRight,
     LayoutGrid,
-    LayoutList
+    LayoutList,
+    Terminal,
+    Trash2,
+    Loader2,
+    HardDrive
 } from 'lucide-react';
 import { getCoverGradientStyle } from '../utils/noteCover';
+import { toast } from 'react-hot-toast';
+import FolderSidebar from '../components/FolderSidebar';
+
+const AddFolderCard = ({ onCreated }) => {
+    const [isCreating, setIsCreating] = useState(false);
+    const [name, setName] = useState('');
+    const [loading, setLoading] = useState(false);
+
+    const handleCreate = async (e) => {
+        if (e) e.stopPropagation();
+        if (!name.trim()) return;
+        setLoading(true);
+        try {
+            const res = await api.post('/folders', { name: name.trim() });
+            if (res.data.success) {
+                setName('');
+                setIsCreating(false);
+                toast.success(`Volume "${res.data.data.name}" created successfully!`);
+                if (onCreated) onCreated();
+            }
+        } catch (e) {
+            toast.error('Failed to create volume');
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    if (isCreating) {
+        return (
+            <div 
+                onClick={(e) => e.stopPropagation()} 
+                className="p-5 rounded-2xl border border-primary/40 bg-primary/5 backdrop-blur-xl transition-all duration-300 flex flex-col justify-between h-32 relative"
+            >
+                <input
+                    type="text"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    onKeyDown={(e) => { if (e.key === 'Enter') handleCreate(e); if (e.key === 'Escape') setIsCreating(false); }}
+                    placeholder="Volume name..."
+                    autoFocus
+                    className="w-full bg-background/50 border border-primary/30 rounded-xl px-3 py-1.5 focus:outline-none focus:border-primary transition-all text-xs"
+                />
+                <div className="flex gap-2 justify-end mt-2">
+                    <button
+                        onClick={(e) => { e.stopPropagation(); setIsCreating(false); }}
+                        className="px-2.5 py-1.5 border border-border hover:bg-secondary/50 rounded-lg text-[9px] font-bold uppercase tracking-wider text-muted-foreground"
+                    >
+                        Cancel
+                    </button>
+                    <button
+                        onClick={handleCreate}
+                        disabled={loading || !name.trim()}
+                        className="px-2.5 py-1.5 bg-primary text-white hover:bg-primary/90 rounded-lg text-[9px] font-bold uppercase tracking-wider flex items-center gap-1 disabled:opacity-50"
+                    >
+                        {loading ? <Loader2 size={10} className="animate-spin" /> : null}
+                        Create
+                    </button>
+                </div>
+            </div>
+        );
+    }
+
+    return (
+        <div
+            onClick={() => setIsCreating(true)}
+            className="group cursor-pointer p-4 rounded-2xl border border-dashed border-border/60 bg-transparent hover:border-primary/40 hover:bg-primary/5 transition-all duration-300 flex flex-col items-center justify-center h-32 gap-2 text-center"
+        >
+            <div className="p-2.5 bg-secondary/30 rounded-xl border border-border group-hover:bg-primary group-hover:text-white group-hover:border-primary transition-all duration-300 text-muted-foreground">
+                <Plus size={16} />
+            </div>
+            <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground group-hover:text-primary transition-colors">Add Volume</span>
+        </div>
+    );
+};
 
 const Notes = () => {
     const dispatch = useDispatch();
@@ -43,6 +125,19 @@ const Notes = () => {
     const [showMoreCategories, setShowMoreCategories] = useState(false);
     const [showMoreTypes, setShowMoreTypes] = useState(false);
     const [showMoreTags, setShowMoreTags] = useState(false);
+    const [folders, setFolders] = useState([]);
+    const [showMoreFolders, setShowMoreFolders] = useState(false);
+
+    // Fetch folders for logged-in users
+    const fetchFolders = useCallback(async () => {
+        if (!user) return;
+        try {
+            const res = await api.get('/folders?tree=true');
+            if (res.data.success) setFolders(res.data.data);
+        } catch (e) { /* silent */ }
+    }, [user]);
+
+    useEffect(() => { fetchFolders(); }, [fetchFolders]);
     const [libraryView, setLibraryView] = useState(() => {
         try {
             return localStorage.getItem('ss_notes_view') === 'shelf' ? 'shelf' : 'list';
@@ -115,27 +210,57 @@ const Notes = () => {
         setPage(1);
     };
 
+    const handleFolderSelect = (folderId) => {
+        setSelectedFolder(folderId);
+        setPage(1);
+        const url = new URL(window.location);
+        if (folderId) {
+            url.searchParams.set('folder', folderId);
+        } else {
+            url.searchParams.delete('folder');
+        }
+        window.history.replaceState({}, '', url);
+    };
+
     // Only show full spinner on absolute first mount (when total is -1)
     if (notesLoading && total === -1) return <Spinner />;
 
     return (
         <div className="flex-1 flex flex-col md:flex-row gap-8 lg:gap-10 animate-in fade-in duration-700">
-            {/* Sidebar Filters - System Protocols */}
+            {/* Sidebar Filters */}
             <aside className="w-full md:w-64 lg:w-72 shrink-0 space-y-8 lg:space-y-10 p-6 lg:p-8 bg-card/20 backdrop-blur-xl border border-border/50 rounded-[2rem] relative overflow-hidden h-fit">
 
+                {/* --- LINUX-STYLE FILE EXPLORER --- */}
+                {user && (
+                <div className="space-y-4 relative z-10">
+                    <h3 className="text-[10px] font-bold tracking-[0.3em] text-primary border-b border-primary/20 pb-3 flex items-center justify-between uppercase">
+                        Workspace
+                        <HardDrive size={12} className="opacity-50" />
+                    </h3>
+                    <div className="max-h-[360px] overflow-hidden rounded-xl border border-border/40 bg-background/30 shadow-inner">
+                        <FolderSidebar
+                            selectedFolderId={selectedFolder}
+                            onSelectFolder={handleFolderSelect}
+                            onRefresh={fetchFolders}
+                            className="bg-transparent max-h-[360px]"
+                        />
+                    </div>
+                </div>
+                )}
 
+                {/* --- CATEGORIES SECTION --- */}
                 <div className="space-y-6 relative z-10">
-                    <h3 className="text-[10px] font-bold  tracking-[0.3em] text-primary border-b border-primary/20 pb-3 flex items-center justify-between">
-                        COLLECTIONS_VAULT
+                    <h3 className="text-[10px] font-bold tracking-[0.3em] text-muted-foreground border-b border-border/50 pb-3 flex items-center justify-between uppercase">
+                        Collections
                         <FolderTree size={12} className="opacity-50" />
                     </h3>
-                    <div className="flex lg:flex-col gap-2 overflow-x-auto lg:overflow-visible no-scrollbar -mx-2 px-2 lg:mx-0 lg:px-0">
+                    <div className="flex flex-wrap gap-2 md:flex-col md:gap-2">
                         <button
                             onClick={() => handleCategoryClick('All')}
                             className={`group flex items-center gap-3 px-4 py-3 text-[11px] font-bold  tracking-[0.1em] rounded-xl border transition-all whitespace-nowrap ${selectedCategory === 'All' ? 'bg-primary border-primary text-white shadow-lg shadow-primary/20' : 'bg-background/50 border-border/50 text-muted-foreground hover:border-primary/30 hover:text-foreground'}`}
                         >
                             <div className={`w-1.5 h-1.5 rounded-full shrink-0 ${selectedCategory === 'All' ? 'bg-white shadow-[0_0_8px_white]' : 'bg-muted-foreground/30 group-hover:bg-primary'}`} />
-                            All_Records
+                            All Records
                         </button>
                         {(showMoreCategories ? categories : categories.slice(0, 5)).map(cat => (
                             <button
@@ -151,9 +276,9 @@ const Notes = () => {
                         {categories.length > 5 && (
                             <button
                                 onClick={() => setShowMoreCategories(!showMoreCategories)}
-                                className="text-[10px] font-bold text-primary hover:underline px-4 py-2 flex items-center gap-2 mt-1 shrink-0  tracking-widest"
+                                className="text-[10px] font-bold text-primary hover:underline px-4 py-2 flex items-center gap-2 mt-1 shrink-0  tracking-widest uppercase"
                             >
-                                {showMoreCategories ? 'collapse_tree' : 'expand_vault'}
+                                {showMoreCategories ? 'Collapse' : 'Expand'}
                                 <ChevronDown size={12} className={`transition-transform ${showMoreCategories ? 'rotate-180' : ''}`} />
                             </button>
                         )}
@@ -161,11 +286,11 @@ const Notes = () => {
                 </div>
 
                 <div className="space-y-6 relative z-10">
-                    <h3 className="text-[10px] font-bold  tracking-[0.3em] text-muted-foreground border-b border-border/50 pb-3 flex items-center justify-between">
-                        SIGNAL_FILTERS
+                    <h3 className="text-[10px] font-bold  tracking-[0.3em] text-muted-foreground border-b border-border/50 pb-3 flex items-center justify-between uppercase">
+                        Filters
                         <Filter size={12} className="opacity-50" />
                     </h3>
-                    <div className="flex flex-row lg:flex-col gap-2 overflow-x-auto lg:overflow-visible no-scrollbar -mx-2 px-2 lg:mx-0 lg:px-0">
+                    <div className="flex flex-wrap gap-2 md:flex-col md:gap-2">
                         {['All', 'Code', 'Doc', 'ADR', 'Pattern', 'CheatSheet'].slice(0, showMoreTypes ? undefined : 4).map(type => (
                             <button
                                 key={type}
@@ -177,17 +302,17 @@ const Notes = () => {
                         ))}
                         <button
                             onClick={() => setShowMoreTypes(!showMoreTypes)}
-                            className="text-[10px] font-bold text-primary hover:underline px-4 py-2 flex items-center gap-2 mt-1 shrink-0  tracking-widest"
+                            className="text-[10px] font-bold text-primary hover:underline px-4 py-2 flex items-center gap-2 mt-1 shrink-0 tracking-widest uppercase"
                         >
-                            {showMoreTypes ? 'min_types' : 'all_types'}
+                            {showMoreTypes ? 'Collapse' : 'Expand'}
                             <ChevronDown size={12} className={`transition-transform ${showMoreTypes ? 'rotate-180' : ''}`} />
                         </button>
                     </div>
                 </div>
 
                 <div className="space-y-6 relative z-10">
-                    <h3 className="text-[10px] font-bold  tracking-[0.3em] text-muted-foreground border-b border-border/50 pb-3 flex items-center justify-between">
-                        NEURAL_TAGS
+                    <h3 className="text-[10px] font-bold tracking-[0.3em] text-muted-foreground border-b border-border/50 pb-3 flex items-center justify-between uppercase">
+                        Tags
                         <Tag size={12} className="opacity-50" />
                     </h3>
                     <div className={`flex flex-wrap gap-2 transition-all duration-300 ${showMoreTags ? 'max-h-[250px] overflow-y-auto pr-2 custom-scrollbar p-1' : ''}`}>
@@ -205,18 +330,18 @@ const Notes = () => {
                         ))}
                         <button
                             onClick={() => setShowMoreTags(!showMoreTags)}
-                            className="text-[10px] font-bold text-primary hover:underline px-4 py-2 flex items-center gap-2 mt-1 shrink-0  tracking-widest"
+                            className="text-[10px] font-bold text-primary hover:underline px-4 py-2 flex items-center gap-2 mt-1 shrink-0 tracking-widest uppercase"
                         >
-                            {showMoreTags ? 'compact' : 'full_index'}
+                            {showMoreTags ? 'Collapse' : 'Expand'}
                             <ChevronDown size={12} className={`transition-transform ${showMoreTags ? 'rotate-180' : ''}`} />
                         </button>
                     </div>
                 </div>
 
                 <div className="hidden lg:block bg-primary/5 p-6 rounded-2xl border border-primary/20 relative z-10">
-                    <div className="text-[9px] font-bold text-primary  tracking-[0.3em] mb-3 flex items-center gap-2">
+                    <div className="text-[9px] font-bold text-primary tracking-[0.3em] mb-3 flex items-center gap-2 uppercase">
                         <div className="w-1.5 h-1.5 rounded-full bg-primary " />
-                        SYS_INTELLIGENCE
+                        Quick Tip
                     </div>
                     <p className="text-[12px] text-muted-foreground/80 leading-relaxed font-medium">
                         Use <code className="text-primary bg-primary/10 px-1.5 py-0.5 rounded-md font-mono">[[Title]]</code> to link records and build your neural knowledge graph.
@@ -225,18 +350,18 @@ const Notes = () => {
             </aside>
 
             {/* Main Content Area */}
-            <div className="flex-1 space-y-8">
-                <div className="flex flex-col xl:flex-row justify-between items-start xl:items-center gap-6 border-b border-border/50 pb-8">
-                    <div>
-                        <h1 className="text-xl font-bold text-foreground  tracking-tighter">Vault_Repository</h1>
+            <div className="flex-1 space-y-8 min-w-0">
+                <div className="flex flex-wrap justify-between items-center gap-6 border-b border-border/50 pb-8 min-w-0">
+                    <div className="flex-1 min-w-[200px]">
+                        <h1 className="text-xl font-bold text-foreground  tracking-tighter">Notes Vault</h1>
                         <div className="flex items-center gap-2 mt-2">
                             <div className="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]" />
-                            <p className="text-[10px] text-muted-foreground font-bold  tracking-[0.3em]">Status: Authorized_Access // {total} Records_Found</p>
+                            <p className="text-[10px] text-muted-foreground font-bold  tracking-[0.3em] truncate uppercase">{total} Notes Found</p>
                         </div>
                     </div>
 
-                    <div className="flex items-center gap-4 w-full xl:w-auto overflow-x-auto no-scrollbar pb-2 xl:pb-0">
-                        <div className="flex bg-background/50 border border-border/50 rounded-xl overflow-hidden p-1 shadow-inner" title="Library layout">
+                    <div className="flex items-center gap-4 overflow-x-auto no-scrollbar pb-2 xl:pb-0">
+                        <div className="flex bg-background/50 border border-border/50 rounded-xl overflow-hidden p-1 shadow-inner shrink-0" title="Library layout">
                             <button
                                 type="button"
                                 onClick={() => setLibraryView('list')}
@@ -257,7 +382,7 @@ const Notes = () => {
                             </button>
                         </div>
 
-                        <div className="flex bg-background/50 border border-border/50 rounded-xl overflow-hidden p-1 shadow-inner">
+                        <div className="flex bg-background/50 border border-border/50 rounded-xl overflow-hidden p-1 shadow-inner shrink-0">
                             {(user ? ['Newest', 'Public', 'Private'] : ['Public']).map((tab) => (
                                 <button
                                     key={tab}
@@ -273,12 +398,12 @@ const Notes = () => {
                         </div>
 
                         {user ? (
-                            <Link to="/notes/new" className="h-12 px-6 bg-primary text-white shadow-xl shadow-primary/20 rounded-xl text-[10px] font-bold  tracking-[0.3em] flex items-center gap-2 group active:scale-95 transition-all shrink-0">
-                                <Plus size={16} strokeWidth={3} /> <span className="hidden sm:inline">Initialize_Record</span>
+                            <Link to="/notes/new" className="h-12 px-6 bg-primary text-white shadow-xl shadow-primary/20 rounded-xl text-[10px] font-bold uppercase tracking-[0.3em] flex items-center gap-2 group active:scale-95 transition-all shrink-0">
+                                <Plus size={16} strokeWidth={3} /> <span className="hidden sm:inline">New Note</span>
                             </Link>
                         ) : (
-                            <Link to="/login" className="h-12 px-6 border-2 border-primary text-primary hover:bg-primary/10 rounded-xl text-[10px] font-bold  tracking-[0.3em] flex items-center gap-2 transition-all shrink-0">
-                                Auth_Login
+                            <Link to="/login" className="h-12 px-6 border-2 border-primary text-primary hover:bg-primary/10 rounded-xl text-[10px] font-bold uppercase tracking-[0.3em] flex items-center gap-2 transition-all shrink-0">
+                                Login to Create
                             </Link>
                         )}
                     </div>
@@ -286,12 +411,12 @@ const Notes = () => {
 
                 {/* Search Feedback */}
                 {(searchTerm || selectedFolder) && (
-                    <div className="flex flex-wrap items-center gap-3 bg-primary/5 px-5 py-3 rounded-2xl border border-primary/20 animate-in slide-in-from-left-4 duration-500">
-                        <div className="p-1.5 bg-primary/10 rounded-lg text-primary">
+                    <div className="flex flex-wrap items-center gap-3 bg-primary/5 px-5 py-3 rounded-2xl border border-primary/20 animate-in slide-in-from-left-4 duration-500 w-full overflow-hidden">
+                        <div className="p-1.5 bg-primary/10 rounded-lg text-primary shrink-0">
                             <Search size={14} strokeWidth={3} />
                         </div>
-                        <p className="text-[11px] font-bold  tracking-[0.2em] text-muted-foreground">
-                            Active_Filter: <span className="text-foreground">{searchTerm || 'DIRECTORY_FILTER'}</span>
+                        <p className="text-[11px] font-bold tracking-[0.2em] text-muted-foreground truncate max-w-full uppercase">
+                            Filter: <span className="text-foreground">{searchTerm || 'Folder'}</span>
                         </p>
                         <button
                             onClick={() => {
@@ -301,9 +426,9 @@ const Notes = () => {
                                 url.searchParams.delete('folder');
                                 window.history.replaceState({}, '', url);
                             }}
-                            className="ml-auto text-[10px] font-bold  tracking-[0.2em] text-primary hover:text-primary/70 transition-colors border-b border-primary/20"
+                            className="ml-auto text-[10px] font-bold uppercase tracking-[0.2em] text-primary hover:text-primary/70 transition-colors border-b border-primary/20"
                         >
-                            Reset_Core
+                            Clear Filter
                         </button>
                     </div>
                 )}
@@ -315,7 +440,7 @@ const Notes = () => {
                             {notes.map((note) => (
                                 <Link
                                     key={note._id}
-                                    to={`/notes/${note._id}`}
+                                    to={note.type === 'code' ? `/playground?id=${note._id}` : `/notes/${note._id}`}
                                     className="group flex flex-col rounded-[2rem] border border-border/50 bg-card/40 backdrop-blur-xl overflow-hidden shadow-2xl hover:shadow-primary/10 hover:border-primary/40 transition-all duration-500 hover:-translate-y-2 relative"
                                 >
 
@@ -338,13 +463,13 @@ const Notes = () => {
                                         )}
                                         <div className="absolute inset-0 bg-gradient-to-t from-card/80 via-transparent to-transparent pointer-events-none" />
                                         <div className="absolute top-4 left-4 flex items-center gap-2">
-                                            <span className={`text-[9px] font-bold  tracking-[0.2em] px-3 py-1 rounded-full border backdrop-blur-md shadow-lg ${note.isPublic ? 'bg-primary/20 border-primary text-primary' : 'bg-background/80 border-border text-muted-foreground'}`}>
-                                                {note.isPublic ? 'PUBLIC_PULSE' : 'SECURE_VAULT'}
+                                            <span className={`text-[9px] font-bold uppercase tracking-[0.2em] px-3 py-1 rounded-full border backdrop-blur-md shadow-lg ${note.isPublic ? 'bg-primary/20 border-primary text-primary' : 'bg-background/80 border-border text-muted-foreground'}`}>
+                                                {note.isPublic ? 'Public' : 'Private'}
                                             </span>
                                             {note.isPinned && <Pin size={16} className="text-primary fill-primary drop-shadow-[0_0_5px_rgba(var(--primary),0.5)]" />}
                                         </div>
-                                        <span className="absolute bottom-4 right-4 text-[9px] font-bold  tracking-[0.2em] text-muted-foreground/60 bg-background/80 backdrop-blur px-3 py-1 rounded-lg border border-border/50 shadow-lg">
-                                            TS::{note.type || 'RAW'}
+                                        <span className="absolute bottom-4 right-4 text-[9px] font-bold uppercase tracking-[0.2em] text-muted-foreground/60 bg-background/80 backdrop-blur px-3 py-1 rounded-lg border border-border/50 shadow-lg">
+                                            {note.type || 'Doc'}
                                         </span>
                                     </div>
                                     <div className="p-6 flex flex-col flex-1 gap-4 relative z-10">
@@ -371,10 +496,10 @@ const Notes = () => {
                                             <div className="w-8 h-8 bg-primary rounded-xl flex items-center justify-center text-white text-xs font-bold shadow-lg shadow-primary/20 border border-white/10 group-hover:scale-110 transition-transform">
                                                 {note.user?.username?.charAt(0).toUpperCase() || 'U'}
                                             </div>
-                                            <span className="text-foreground/90 truncate">{note.user?.username || 'ANON_USER'}</span>
+                                            <span className="text-foreground/90 truncate">{note.user?.username || 'Unknown User'}</span>
                                             <div className="ml-auto flex items-center gap-1.5 opacity-40">
                                                 <Activity size={12} strokeWidth={3} className="text-emerald-500" />
-                                                <span>{(note.views || 0) + 1} PULSE</span>
+                                                <span className="uppercase">{(note.views || 0) + 1} Views</span>
                                             </div>
                                         </div>
                                     </div>
@@ -390,21 +515,21 @@ const Notes = () => {
                                     <div className="flex flex-row sm:flex-col items-center sm:items-end gap-4 w-full sm:w-20 shrink-0 text-center">
                                         <div className="flex flex-col items-center opacity-20 group-hover:opacity-100 transition-opacity min-w-[50px] font-mono">
                                             <span className="text-lg font-bold text-foreground">[{String(i + 1).padStart(2, '0')}]</span>
-                                            <span className="text-[8px] text-muted-foreground  tracking-[0.3em] font-bold">LOG_ID</span>
+                                            <span className="text-[8px] text-muted-foreground uppercase tracking-[0.3em] font-bold">#</span>
                                         </div>
                                         <div className={`flex flex-col items-center border-2 p-2 rounded-2xl min-w-[60px] sm:min-w-[64px] transition-all shadow-lg ${note.isPublic ? 'border-primary/40 text-primary bg-primary/5' : 'border-border/50 text-muted-foreground bg-background/50'}`}>
                                             <LogicSeal content={note.content} id={note._id} size={44} className="mb-1.5 border-none bg-transparent opacity-40 group-hover:opacity-100 transition-opacity" />
-                                            <span className="font-bold text-[9px]  tracking-tighter">{note.isPublic ? 'PUBLIC' : 'SECURE'}</span>
+                                            <span className="font-bold text-[9px] uppercase tracking-tighter">{note.isPublic ? 'Public' : 'Private'}</span>
                                         </div>
-                                        <div className="hidden sm:flex items-center gap-1.5 text-muted-foreground/30 text-[9px] font-bold  tracking-[0.3em] group-hover:text-primary transition-colors">
-                                            {note.type || 'RAW_DOC'}
+                                        <div className="hidden sm:flex items-center gap-1.5 text-muted-foreground/30 text-[9px] font-bold uppercase tracking-[0.3em] group-hover:text-primary transition-colors">
+                                            {note.type || 'Doc'}
                                         </div>
                                     </div>
 
                                     {/* Content Core Column */}
                                     <div className="flex-1 min-w-0">
                                         <Link
-                                            to={`/notes/${note._id}`}
+                                            to={note.type === 'code' ? `/playground?id=${note._id}` : `/notes/${note._id}`}
                                             className="text-2xl font-bold text-foreground  tracking-tighter hover:text-primary transition-colors group-hover:translate-x-1 inline-flex items-center gap-3"
                                         >
                                             {note.isPinned && <Pin size={20} className="text-primary fill-primary shrink-0 " />}
@@ -443,10 +568,10 @@ const Notes = () => {
                                                 </div>
                                                 <div className="flex flex-col pr-4">
                                                     <span className="text-[11px] font-bold  tracking-[0.1em] text-foreground leading-none mb-1">
-                                                        {note.user?.username || 'AUTH_ENTITY'}
+                                                        {note.user?.username || 'Unknown User'}
                                                     </span>
-                                                    <span className="text-[9px] text-muted-foreground/50 font-bold  tracking-[0.2em]">
-                                                        TS::{new Date(note.createdAt).toLocaleDateString([], { month: 'short', day: 'numeric', year: 'numeric' })}
+                                                    <span className="text-[9px] text-muted-foreground/50 font-bold uppercase tracking-[0.2em]">
+                                                        Date: {new Date(note.createdAt).toLocaleDateString([], { month: 'short', day: 'numeric', year: 'numeric' })}
                                                     </span>
                                                 </div>
                                             </div>
@@ -461,10 +586,10 @@ const Notes = () => {
                         <div className="py-40 text-center bg-card/20 backdrop-blur-xl rounded-[3rem] border border-dashed border-border/50 mt-4 relative overflow-hidden group">
 
                             <MessageSquare size={64} className="mx-auto text-muted-foreground/20 mb-8 group-hover:scale-110 transition-transform duration-500" />
-                            <h3 className="text-2xl font-bold text-foreground  tracking-tighter">No_Tactical_Records_Found</h3>
-                            <p className="text-muted-foreground/60 text-sm max-w-sm mx-auto mt-4 font-medium  tracking-widest leading-relaxed">Adjust your neural filters or initiate a new documentation pulse to populate this repository.</p>
-                            <Link to="/notes/new" className="mt-10 h-12 px-10 bg-primary/10 border border-primary/30 text-primary hover:bg-primary/20 rounded-xl font-bold  tracking-[0.3em] text-[10px] inline-flex items-center gap-2 transition-all">
-                                Initialize_Logic_Uplink
+                            <h3 className="text-2xl font-bold text-foreground  tracking-tighter">No Notes Found</h3>
+                            <p className="text-muted-foreground/60 text-sm max-w-sm mx-auto mt-4 font-medium tracking-widest leading-relaxed">Try adjusting your filters or create a new note to get started.</p>
+                            <Link to="/notes/new" className="mt-10 h-12 px-10 bg-primary/10 border border-primary/30 text-primary hover:bg-primary/20 rounded-xl font-bold uppercase tracking-[0.3em] text-[10px] inline-flex items-center gap-2 transition-all">
+                                Create New Note
                             </Link>
                         </div>
                     )}

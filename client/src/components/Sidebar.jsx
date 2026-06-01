@@ -11,7 +11,8 @@ import {
     Code2,
     Moon,
     Sun,
-    Terminal
+    Terminal,
+    Briefcase
 } from 'lucide-react';
 import clsx from 'clsx';
 
@@ -32,6 +33,7 @@ const Sidebar = () => {
         { label: 'My Notes', path: '/notes', icon: FileText },
         { label: 'Categories', path: '/categories', icon: FolderOpen },
         { label: 'Playground', path: '/playground', icon: Terminal },
+        { label: 'Jobs', path: '/jobs', icon: Briefcase },
     ];
 
     if (user?.role === 'admin') {

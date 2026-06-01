@@ -228,7 +228,19 @@ exports.getNotes = async (req, res, next) => {
     let folderParam = req.query.folder;
     if (Array.isArray(folderParam)) folderParam = folderParam[0];
 
-    if (folderParam && folderParam !== 'null' && folderParam !== 'undefined') {
+    const hasExplicitFolder = folderParam && folderParam !== 'null' && folderParam !== 'undefined';
+
+    if (folderParam === 'received') {
+      // Special: show notes that have been shared with this user
+      if (req.user) {
+        filter.sharedWith = req.user._id;
+        delete filter.user; // We are looking for notes owned by OTHERS but shared with ME
+        delete filter.isPublic; // Shared notes don't have to be public
+      }
+    } else if (folderParam === '__root__') {
+      // Special: show notes with NO folder (root / unfiled)
+      filter.folder = null;
+    } else if (hasExplicitFolder) {
       filter.folder = folderParam;
     }
 
@@ -241,8 +253,14 @@ exports.getNotes = async (req, res, next) => {
     } else if (typeParam) {
       filter.type = typeParam;
     } else {
-      // Default: Exclude issues from the technical library/general feed
-      filter.type = { $ne: 'issue' };
+      // When a folder (or root) is selected, show all types including code snippets
+      // Otherwise hide code snippets and issues from the general feed
+      const folderSelected = hasExplicitFolder || folderParam === '__root__';
+      if (folderSelected) {
+        filter.type = { $ne: 'issue' };
+      } else {
+        filter.type = { $nin: ['issue', 'code'] };
+      }
     }
 
     query = Note.find(filter)

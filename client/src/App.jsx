@@ -39,6 +39,9 @@ const Network = lazy(() => import('./pages/Network'));
 const Levels = lazy(() => import('./pages/Levels'));
 const Explorers = lazy(() => import('./pages/Explorers'));
 const Roadmap = lazy(() => import('./pages/Roadmap'));
+const Jobs = lazy(() => import('./pages/Jobs'));
+const Careers = lazy(() => import('./pages/Careers'));
+const FileExplorer = lazy(() => import('./pages/FileExplorer'));
 
 
 
@@ -182,6 +185,9 @@ function App() {
             <Route path="/levels" element={<Levels />} />
 
             <Route path="/explorers" element={<Explorers />} />
+            <Route path="/jobs" element={<Jobs />} />
+            <Route path="/careers" element={<Careers />} />
+            <Route path="/files" element={<PrivateRoute><FileExplorer /></PrivateRoute>} />
 
             {/* Validated Access Routes */}
             <Route path="/dashboard" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
