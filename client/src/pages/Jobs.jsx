@@ -26,7 +26,7 @@ const Jobs = () => {
     };
   }, [dispatch]);
 
-  const filteredJobs = jobs.filter((job) => {
+  const filteredJobs = (Array.isArray(jobs) ? jobs : []).filter((job) => {
     const matchTitle = job.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
                        job.company.toLowerCase().includes(searchTerm.toLowerCase());
     const matchLocation = locationTerm === "" || job.location.toLowerCase().includes(locationTerm.toLowerCase());
