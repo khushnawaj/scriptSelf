@@ -189,7 +189,7 @@ const Notes = () => {
             type: type
         };
 
-        if (isPublic) params.public = true;
+        if (isPublic && selectedFolder !== 'received') params.public = true;
         if (selectedFolder) params.folder = selectedFolder;
 
         dispatch(getNotes(params));
