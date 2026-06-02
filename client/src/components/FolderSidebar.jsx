@@ -4,7 +4,7 @@ import {
     Folder, FolderPlus, FolderOpen, Edit2, Trash2, Plus,
     ChevronRight, ChevronDown, FileText, FileCode, Terminal,
     BookOpen, AlertCircle, MoreVertical, X, Check, RefreshCw,
-    Home, File, Loader2, Inbox
+    Home, File, Loader2, Inbox, HelpCircle
 } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -16,6 +16,7 @@ const FILE_ICONS = {
     adr: { icon: AlertCircle, color: 'text-amber-400' },
     pattern: { icon: BookOpen, color: 'text-purple-400' },
     cheatsheet: { icon: FileCode, color: 'text-cyan-400' },
+    issue: { icon: HelpCircle, color: 'text-rose-400' },
     default: { icon: File, color: 'text-muted-foreground' },
 };
 

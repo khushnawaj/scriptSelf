@@ -6,7 +6,7 @@ import { getCategories } from '../features/categories/categorySlice';
 import Spinner from '../components/Spinner';
 import LogicSeal from '../components/LogicSeal';
 import Pagination from '../components/Pagination';
-import { Activity } from 'react';
+
 import api from '../utils/api';
 import {
     Search,
@@ -30,13 +30,15 @@ import {
     Terminal,
     Trash2,
     Loader2,
-    HardDrive
+    HardDrive,
+    Home,
+    Activity
 } from 'lucide-react';
 import { getCoverGradientStyle } from '../utils/noteCover';
 import { toast } from 'react-hot-toast';
 import FolderSidebar from '../components/FolderSidebar';
 
-const AddFolderCard = ({ onCreated }) => {
+const AddFolderCard = ({ onCreated, parentId }) => {
     const [isCreating, setIsCreating] = useState(false);
     const [name, setName] = useState('');
     const [loading, setLoading] = useState(false);
@@ -46,11 +48,12 @@ const AddFolderCard = ({ onCreated }) => {
         if (!name.trim()) return;
         setLoading(true);
         try {
-            const res = await api.post('/folders', { name: name.trim() });
+            const res = await api.post('/folders', { name: name.trim(), parent: parentId || undefined });
             if (res.data.success) {
                 setName('');
                 setIsCreating(false);
                 toast.success(`Volume "${res.data.data.name}" created successfully!`);
+                window.dispatchEvent(new Event('folderCreated')); // Dispatch event to sync sidebar
                 if (onCreated) onCreated();
             }
         } catch (e) {
@@ -108,6 +111,38 @@ const AddFolderCard = ({ onCreated }) => {
     );
 };
 
+// Helper to find path to a target folder in the tree
+const findFolderPath = (folderList, targetId) => {
+    if (!folderList || !targetId) return null;
+    for (const folder of folderList) {
+        if (folder._id === targetId) {
+            return [folder];
+        }
+        if (folder.children && folder.children.length > 0) {
+            const path = findFolderPath(folder.children, targetId);
+            if (path) {
+                return [folder, ...path];
+            }
+        }
+    }
+    return null;
+};
+
+// Helper to find a specific folder by ID in the tree
+const findFolderById = (folderList, targetId) => {
+    if (!folderList || !targetId) return null;
+    for (const folder of folderList) {
+        if (folder._id === targetId) {
+            return folder;
+        }
+        if (folder.children && folder.children.length > 0) {
+            const found = findFolderById(folder.children, targetId);
+            if (found) return found;
+        }
+    }
+    return null;
+};
+
 const Notes = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -136,6 +171,27 @@ const Notes = () => {
             if (res.data.success) setFolders(res.data.data);
         } catch (e) { /* silent */ }
     }, [user]);
+
+    // Calculate folder path
+    const folderPath = selectedFolder
+        ? (selectedFolder === 'received'
+            ? [{ _id: 'received', name: 'Received' }]
+            : (findFolderPath(folders || [], selectedFolder) || [{ _id: selectedFolder, name: 'Folder' }]))
+        : null;
+
+    // Parent folder ID to go "Up"
+    const parentFolderId = folderPath && folderPath.length > 1
+        ? folderPath[folderPath.length - 2]._id
+        : null;
+
+    // Get subfolders of the currently selected folder
+    const currentFolderObj = selectedFolder && selectedFolder !== 'received'
+        ? findFolderById(folders || [], selectedFolder)
+        : null;
+
+    const subfolders = selectedFolder
+        ? (currentFolderObj?.children || [])
+        : (folders || []); // In root, show all top-level folders
 
     useEffect(() => { fetchFolders(); }, [fetchFolders]);
     const [libraryView, setLibraryView] = useState(() => {
@@ -415,27 +471,130 @@ const Notes = () => {
                     </div>
                 </div>
 
-                {/* Search Feedback */}
-                {(searchTerm || selectedFolder) && (
-                    <div className="flex flex-wrap items-center gap-3 bg-primary/5 px-5 py-3 rounded-2xl border border-primary/20 animate-in slide-in-from-left-4 duration-500 w-full overflow-hidden">
-                        <div className="p-1.5 bg-primary/10 rounded-lg text-primary shrink-0">
-                            <Search size={14} strokeWidth={3} />
+                {/* Folder & Search Breadcrumb Navigation */}
+                {(selectedFolder || searchTerm) && (
+                    <div className="flex flex-col gap-3 w-full bg-card/20 backdrop-blur-xl border border-border/50 p-4 rounded-2xl animate-in slide-in-from-left-4 duration-500">
+                        <div className="flex flex-wrap items-center gap-2 text-xs">
+                            {/* Back/Up Button */}
+                            {selectedFolder && (
+                                <button
+                                    onClick={() => handleFolderSelect(parentFolderId)}
+                                    className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg border border-border/60 bg-background/50 hover:bg-primary/10 hover:text-primary transition-all text-[10px] font-bold uppercase tracking-wider text-muted-foreground mr-2"
+                                    title="Go to parent directory"
+                                >
+                                    <ChevronLeft size={12} strokeWidth={3} />
+                                    Up
+                                </button>
+                            )}
+
+                            {/* Breadcrumb Path */}
+                            <div className="flex items-center flex-wrap gap-1.5 text-muted-foreground font-mono text-[11px]">
+                                <button
+                                    onClick={() => handleFolderSelect(null)}
+                                    className={`flex items-center gap-1.5 hover:text-primary transition-colors ${!selectedFolder ? 'text-primary font-bold' : ''}`}
+                                >
+                                    <HardDrive size={12} className="opacity-70" />
+                                    <span>workspace</span>
+                                </button>
+
+                                {folderPath && folderPath.map((folder, index) => {
+                                    const isLast = index === folderPath.length - 1;
+                                    return (
+                                        <div key={folder._id} className="flex items-center gap-1.5">
+                                            <span className="opacity-40">/</span>
+                                            <button
+                                                disabled={isLast}
+                                                onClick={() => handleFolderSelect(folder._id)}
+                                                className={`hover:text-primary transition-colors ${isLast ? 'text-foreground font-semibold cursor-default' : ''}`}
+                                            >
+                                                {folder.name}
+                                            </button>
+                                        </div>
+                                    );
+                                })}
+                            </div>
+
+                            {/* Reset View */}
+                            {(selectedFolder || searchTerm) && (
+                                <button
+                                    onClick={() => {
+                                        setSearchTerm('');
+                                        handleFolderSelect(null);
+                                        const url = new URL(window.location);
+                                        url.searchParams.delete('folder');
+                                        url.searchParams.delete('search');
+                                        window.history.replaceState({}, '', url);
+                                    }}
+                                    className="ml-auto text-[10px] font-bold uppercase tracking-[0.2em] text-primary hover:text-primary/70 transition-colors border-b border-primary/20"
+                                >
+                                    Reset View
+                                </button>
+                            )}
                         </div>
-                        <p className="text-[11px] font-bold tracking-[0.2em] text-muted-foreground truncate max-w-full uppercase">
-                            Filter: <span className="text-foreground">{searchTerm || 'Folder'}</span>
-                        </p>
-                        <button
-                            onClick={() => {
-                                setSearchTerm('');
-                                setSelectedFolder(null);
-                                const url = new URL(window.location);
-                                url.searchParams.delete('folder');
-                                window.history.replaceState({}, '', url);
-                            }}
-                            className="ml-auto text-[10px] font-bold uppercase tracking-[0.2em] text-primary hover:text-primary/70 transition-colors border-b border-primary/20"
-                        >
-                            Clear Filter
-                        </button>
+
+                        {/* Search Badge */}
+                        {searchTerm && (
+                            <div className="flex items-center gap-2 bg-primary/10 border border-primary/20 px-3 py-1.5 rounded-xl w-fit text-[10px] font-bold uppercase tracking-wider text-primary">
+                                <Search size={10} strokeWidth={3} />
+                                <span>Search: "{searchTerm}"</span>
+                                <button
+                                    onClick={() => {
+                                        setSearchTerm('');
+                                        const url = new URL(window.location);
+                                        url.searchParams.delete('search');
+                                        window.history.replaceState({}, '', url);
+                                    }}
+                                    className="hover:text-foreground ml-1.5 font-bold"
+                                    title="Clear search"
+                                >
+                                    ✕
+                                </button>
+                            </div>
+                        )}
+                    </div>
+                )}
+
+                {/* Subdirectories Grid */}
+                {user && (selectedFolder || (selectedCategory === 'All' && selectedType === 'All')) && (subfolders.length > 0 || (selectedFolder && selectedFolder !== 'received')) && (
+                    <div className="space-y-4 animate-in fade-in duration-500">
+                        <h3 className="text-[10px] font-bold tracking-[0.2em] text-muted-foreground uppercase flex items-center gap-2">
+                            <FolderTree size={12} className="text-primary/70" />
+                            {selectedFolder ? 'Subdirectories' : 'Directories'}
+                        </h3>
+                        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+                            {subfolders.map((folder) => (
+                                <div
+                                    key={folder._id}
+                                    onClick={() => handleFolderSelect(folder._id)}
+                                    className="group cursor-pointer p-4 bg-card/30 hover:bg-primary/5 backdrop-blur-xl border border-border/50 hover:border-primary/40 rounded-2xl transition-all duration-300 flex flex-col justify-between h-32 relative overflow-hidden shadow-sm hover:shadow-md hover:-translate-y-0.5"
+                                >
+                                    <div className="flex justify-between items-start w-full">
+                                        <div className="p-2.5 bg-yellow-500/10 rounded-xl border border-yellow-500/20 text-yellow-500 group-hover:bg-primary/10 group-hover:border-primary/20 group-hover:text-primary transition-all duration-300">
+                                            <Folder size={16} className="fill-yellow-500/10 group-hover:fill-primary/10" />
+                                        </div>
+                                        <ArrowUpRight size={14} className="text-muted-foreground/30 group-hover:text-primary group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all duration-300" />
+                                    </div>
+                                    <div className="min-w-0">
+                                        <h4 className="text-[12px] font-bold text-foreground truncate group-hover:text-primary transition-colors" title={folder.name}>
+                                            {folder.name}
+                                        </h4>
+                                        <p className="text-[9px] text-muted-foreground/50 font-bold tracking-wider uppercase mt-1">
+                                            {folder.noteCount || 0} {folder.noteCount === 1 ? 'record' : 'records'}
+                                        </p>
+                                    </div>
+                                </div>
+                            ))}
+
+                            {/* Inline Add Folder Card */}
+                            {selectedFolder !== 'received' && (
+                                <AddFolderCard
+                                    parentId={selectedFolder}
+                                    onCreated={() => {
+                                        fetchFolders();
+                                    }}
+                                />
+                            )}
+                        </div>
                     </div>
                 )}
 

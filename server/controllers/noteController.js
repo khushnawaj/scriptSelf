@@ -253,12 +253,10 @@ exports.getNotes = async (req, res, next) => {
     } else if (typeParam) {
       filter.type = typeParam;
     } else {
-      // When a folder (or root) is selected, show all types including code snippets
+      // When a folder (or root) is selected, show all types including code snippets and issues
       // Otherwise hide code snippets and issues from the general feed
       const folderSelected = hasExplicitFolder || folderParam === '__root__';
-      if (folderSelected) {
-        filter.type = { $ne: 'issue' };
-      } else {
+      if (!folderSelected) {
         filter.type = { $nin: ['issue', 'code'] };
       }
     }

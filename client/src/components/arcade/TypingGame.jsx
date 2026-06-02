@@ -518,7 +518,7 @@ const TypingGame = ({ dispatch }) => {
                         </h3>
                         <p className="text-xs text-muted-foreground leading-relaxed">
                             System requires explicit syntax matching. <br />
-                            <span className="text-foreground font-bold">Accuracy > Speed.</span>
+                            <span className="text-foreground font-bold">Accuracy &gt; Speed.</span>
                         </p>
                     </div>
                 </aside>
